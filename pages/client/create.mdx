@@ -1,88 +1,37 @@
 ---
 title: 'Criar Clientes'
-description: 'Text, title, and styling in standard markdown'
+api: "POST https://api.abacatepay.com/v1/customer/create"
 icon: 'plus'
+description: 'Permite que você crie um novo cliente para a sua loja.'
+authMethod: "bearer"
 ---
 
-## Titles
+### body
 
-Best used for section headers.
 
-```md
-## Titles
-```
+<ParamField body="name" type="string" placeholder="ex: Lucas Zago">
+  Nome completo do seu cliente
+</ParamField>
 
-### Subtitles
+<ParamField body="cellphone" type="string" placeholder="ex: 11 123456789">
+  Celular do cliente
+</ParamField>
 
-Best use to subsection headers.
 
-```md
-### Subtitles
-```
+<ParamField body="email" type="string" required placeholder="ex: abacatepay@gmail.com">
+  E-mail do cliente
+</ParamField>
 
-<Tip>
 
-Each **title** and **subtitle** creates an anchor and also shows up on the table of contents on the right.
+<ParamField body="taxId" type="string" placeholder="ex: 123.456.789.12">
+  CPF ou CNPJ do cliente.
+</ParamField>
 
-</Tip>
+<ResponseField name="name" type="string"> </ResponseField>
 
-## Text Formatting
+<ResponseField name="cellphone" type="string"> </ResponseField>
 
-We support most markdown formatting. Simply add `**`, `_`, or `~` around text to format it.
+<ResponseField name="email" type="string" required> </ResponseField>
 
-| Style         | How to write it   | Result          |
-| ------------- | ----------------- | --------------- |
-| Bold          | `**bold**`        | **bold**        |
-| Italic        | `_italic_`        | _italic_        |
-| Strikethrough | `~strikethrough~` | ~strikethrough~ |
+<ResponseField name="taxId" type="string"> </ResponseField>
 
-You can combine these. For example, write `**_bold and italic_**` to get **_bold and italic_** text.
-
-You need to use HTML to write superscript and subscript text. That is, add `<sup>` or `<sub>` around your text.
-
-| Text Size   | How to write it          | Result                 |
-| ----------- | ------------------------ | ---------------------- |
-| Superscript | `<sup>superscript</sup>` | <sup>superscript</sup> |
-| Subscript   | `<sub>subscript</sub>`   | <sub>subscript</sub>   |
-
-## Linking to Pages
-
-You can add a link by wrapping text in `[]()`. You would write `[link to google](https://google.com)` to [link to google](https://google.com).
-
-Links to pages in your docs need to be root-relative. Basically, you should include the entire folder path. For example, `[link to text](/writing-content/text)` links to the page "Text" in our components section.
-
-Relative links like `[link to text](../text)` will open slower because we cannot optimize them as easily.
-
-## Blockquotes
-
-### Singleline
-
-To create a blockquote, add a `>` in front of a paragraph.
-
-> Dorothy followed her through many of the beautiful rooms in her castle.
-
-```md
-> Dorothy followed her through many of the beautiful rooms in her castle.
-```
-
-### Multiline
-
-> Dorothy followed her through many of the beautiful rooms in her castle.
->
-> The Witch bade her clean the pots and kettles and sweep the floor and keep the fire fed with wood.
-
-```md
-> Dorothy followed her through many of the beautiful rooms in her castle.
->
-> The Witch bade her clean the pots and kettles and sweep the floor and keep the fire fed with wood.
-```
-
-### LaTeX
-
-Mintlify supports [LaTeX](https://www.latex-project.org) through the Latex component.
-
-<Latex>8 x (vk x H1 - H2) = (0,1)</Latex>
-
-```md
-<Latex>8 x (vk x H1 - H2) = (0,1)</Latex>
-```

@@ -8,6 +8,14 @@
     "dark": "#15803D"
   },
   "favicon": "/favicon.svg",
+  "api": {
+    "mdx": {
+      "server": "https://api.abacatepay.com/v1", 
+      "auth": {
+        "method": "bearer"
+      }
+    }
+},
   "navigation": {
     "tabs": [
       {

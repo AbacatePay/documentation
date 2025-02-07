@@ -1,59 +1,64 @@
 ---
 title: 'Referência'
-description: 'Add image, video, and other HTML elements'
+description: 'Gerencie seus clientes, aqueles que pagam você.'
 icon: 'book-open-cover'
 ---
 
-<img
-  style={{ borderRadius: '0.5rem' }}
-  src="https://mintlify-assets.b-cdn.net/bigbend.jpg"
-/>
+Um cliente é seu usuário final, aquele que você vai cobrar e pagar o seu produto.
 
-## Image
+## <Icon icon="folder-tree" type="solid"/>  Estrutura
 
-### Using Markdown
+Um cliente é representado em nossa API pela seguinte estrutura:
 
-The [markdown syntax](https://www.markdownguide.org/basic-syntax/#images) lets you add images using the following code
-
-```md
-![title](/path/image.jpg)
+```json json
+{
+  "id": "cust_aebxkhDZNaMmJeKsy0AHS0FQ",
+  "metadata": 
+  {
+    "name": "Test Customer",
+    "cellphone": "11999999999",
+    "taxId": "12345678900",
+    "email": "test@example.com"
+  }
+} 
 ```
 
-Note that the image file size must be less than 5MB. Otherwise, we recommend hosting on a service like [Cloudinary](https://cloudinary.com/) or [S3](https://aws.amazon.com/s3/). You can then use that URL and embed.
+## Atributos
 
-### Using Embeds
+### Id: 
 
-To get more customizability with images, you can also use [embeds](/writing-content/embed) to add images
-
-```html
-<img height="200" src="/path/image.jpg" />
+```json json {2}
+{
+  "id": "cust_aebxkhDZNaMmJeKsy0AHS0FQ",
+} 
 ```
 
-## Embeds and HTML elements
+`id` : <u> string. </u> <br />
+Id único do cliente na AbacatePay
 
-<iframe
-  width="560"
-  height="315"
-  src="https://www.youtube.com/embed/4KzFe50RQkQ"
-  title="YouTube video player"
-  frameBorder="0"
-  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-  allowFullScreen
-  style={{ width: '100%', borderRadius: '0.5rem' }}
-></iframe>
+### Metadados: 
+Objeto com os dados do cliente
 
-<br />
+```json json {4-7}
+{
+  "metadata": 
+  {
+    "name": "Test Customer",
+    "cellphone": "11999999999",
+    "taxId": "12345678900",
+    "email": "test@example.com"
+  }
+} 
+```
 
-<Tip>
+* `name` : <u> string. </u> <br /> Nome do cliente (opcional)
 
-Mintlify supports [HTML tags in Markdown](https://www.markdownguide.org/basic-syntax/#html). This is helpful if you prefer HTML tags to Markdown syntax, and lets you create documentation with infinite flexibility.
+* `cellphone` : <u> string. </u> <br /> Telefone do cliente (opcional)
 
+* `taxId` : <u> string. </u> <br /> Documento do cliente, podendo ser CPF ou CNPJ (opcional)
+
+* `email` : <u> string. </u> <br /> E-mail do cliente (obrigatório)
+
+<Tip title="Clientes não são únicos" icon="book" horizontal>
+ É possível criar mais de um cliente com os mesmos dados. Caso você precise que seus clientes sejam únicos, basta guardar o campo `id` em seu sistema
 </Tip>
-
-### iFrames
-
-Loads another HTML page within the document. Most commonly used for embedding videos.
-
-```html
-<iframe src="https://www.youtube.com/embed/4KzFe50RQkQ"> </iframe>
-```
