@@ -48,6 +48,10 @@
               "pages/pix-qrcode/simulate-payment",
               "pages/pix-qrcode/check"
             ]
+          },
+          {
+            "group": "Cupom",
+            "pages": ["pages/coupon/reference", "pages/coupon/create", "pages/coupon/list"]
           }
         ]
       },
