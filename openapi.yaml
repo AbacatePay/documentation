@@ -387,6 +387,12 @@ paths:
                       type: string
                       description: CPF ou CNPJ do cliente.
                       example: 123.456.789-01
+                metadata:
+                      type: object
+                      description: Metadados opcionais para a cobrança
+                      additionalProperties: true
+                      default:
+                       externalId: '123'
               required: ['amount']
               additionalProperties: false
       responses:
