@@ -64,6 +64,13 @@ mintlify install
 mintlify dev
 ```
 
+### OR
+
+1. Run using docker
+```bash
+make start
+```
+
 ### Troubleshooting
 
 - If Mintlify dev isn't running, try `mintlify install` to reinstall dependencies
