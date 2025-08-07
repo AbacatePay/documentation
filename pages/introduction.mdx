@@ -33,7 +33,7 @@ Nossa API foi construída com três princípios fundamentais:
    GET /billing/get       // Busca um pagamento específico
    ```
 
-2. **Indempotente**: Execute a mesma requisição quantas vezes precisar, sem efeitos colaterais
+2. **`Idempotente`**: Execute a mesma requisição quantas vezes precisar, sem efeitos colaterais
    ```javascript
    // Seguro para executar múltiplas vezes
    await abacatePay.billing.create({...});
