@@ -52,6 +52,10 @@
           {
             "group": "Cupom",
             "pages": ["pages/coupon/reference", "pages/coupon/create", "pages/coupon/list"]
+          },
+          {
+            "group": "Saque",
+            "pages": ["pages/withdraw/reference", "pages/withdraw/create"]
           }
         ]
       },
