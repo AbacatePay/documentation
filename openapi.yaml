@@ -583,6 +583,38 @@ paths:
                     type: string
                     description: Mensagem de erro descrevendo o motivo da falha na autenticação.
                     example: 'Token de autenticação inválido ou ausente.'
+  /withdraw/list:
+    get:
+      summary: Listar saques
+      description: Permite que você recupere uma lista de todos os saques criados.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de saques retornada com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    description: Lista de saques criados.
+                    items:
+                      $ref: '#/components/schemas/Transaction'
+                  error:
+                    type: 'null'
+        '401':
+          description: Não autorizado. Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
+                    example: 'Token de autenticação inválido ou ausente.'
 components:
   schemas:
     Customer:
