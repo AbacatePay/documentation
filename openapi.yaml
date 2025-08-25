@@ -515,6 +515,110 @@ paths:
           required: true
           schema:
             type: string
+  /withdraw/create:
+    post:
+      summary: Criar um novo saque
+      description: Permite que você crie um novo saque para transferir valores da sua conta para uma chave PIX.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Dados necessários para criar um saque.
+              required: ['externalId', 'method', 'amount', 'pix']
+              additionalProperties: false
+              properties:
+                description:
+                  type: string
+                  description: Descrição opcional do saque.
+                  example: Saque para conta principal
+                externalId:
+                  type: string
+                  description: Identificador único do saque em seu sistema.
+                  example: 'withdraw-1234'
+                method:
+                  type: string
+                  description: Método de saque disponível.
+                  enum: ['PIX']
+                  example: 'PIX'
+                amount:
+                  type: number
+                  description: Valor do saque em centavos.
+                  minimum: 350
+                  example: 5000
+                pix:
+                  type: object
+                  description: Dados da chave PIX para receber o saque.
+                  required: ['type', 'key']
+                  additionalProperties: false
+                  properties:
+                    type:
+                      type: string
+                      description: Tipo da chave PIX.
+                      enum: ['CPF', 'CNPJ', 'PHONE', 'EMAIL', 'RANDOM']
+                      example: 'CPF'
+                    key:
+                      type: string
+                      description: Valor da chave PIX.
+                      example: '123.456.789-01'
+      responses:
+        '200':
+          description: Saque criado com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Transaction'
+                  error:
+                    type: 'null'
+        '401':
+          description: Não autorizado. Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
+                    example: 'Token de autenticação inválido ou ausente.'
+  /withdraw/list:
+    get:
+      summary: Listar saques
+      description: Permite que você recupere uma lista de todos os saques criados.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de saques retornada com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    description: Lista de saques criados.
+                    items:
+                      $ref: '#/components/schemas/Transaction'
+                  error:
+                    type: 'null'
+        '401':
+          description: Não autorizado. Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
+                    example: 'Token de autenticação inválido ou ausente.'
 components:
   schemas:
     Customer:
@@ -756,6 +860,58 @@ components:
           type: string
           description: Data de expiração do QRCode Pix
           example: '2025-03-25T21:50:20.772Z'
+    Transaction:
+      type: object
+      description: Dados de uma transação (pagamento ou saque).
+      properties:
+        id:
+          type: string
+          description: Identificador único da transação.
+          example: 'tran_123456'
+        status:
+          type: string
+          description: Status atual da transação.
+          enum: ['PENDING', 'EXPIRED', 'CANCELLED', 'COMPLETE', 'REFUNDED']
+          example: 'PENDING'
+        devMode:
+          type: boolean
+          description: Indica se a transação foi criada em ambiente de testes.
+          example: true
+        receiptUrl:
+          type: string
+          format: uri
+          description: URL do comprovante da transação.
+          example: 'https://abacatepay.com/receipt/tran_123456'
+        kind:
+          type: string
+          description: Tipo da transação.
+          enum: ['PAYMENT', 'WITHDRAW']
+          example: 'WITHDRAW'
+          default: 'WITHDRAW'
+        amount:
+          type: number
+          description: Valor da transação em centavos.
+          example: 5000
+        platformFee:
+          type: number
+          description: Taxa da plataforma em centavos.
+          example: 80
+        externalId:
+          type: string
+          description: Identificador externo da transação.
+          example: 'withdraw-1234'
+        createdAt:
+          type: string
+          format: date-time
+          description: Data de criação da transação.
+          example: '2025-03-24T21:50:20.772Z'
+        updatedAt:
+          type: string
+          format: date-time
+          description: Data de atualização da transação.
+          example: '2025-03-24T21:50:20.772Z'
+      required:
+        ['id', 'status', 'devMode', 'receiptUrl', 'kind', 'amount', 'platformFee', 'createdAt', 'updatedAt']
   securitySchemes:
     bearerAuth:
       type: http
