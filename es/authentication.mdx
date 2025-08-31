@@ -1,0 +1,93 @@
+---
+title: 'Autenticação'
+description: 'Como enviar requisições para a nossa API'
+icon: 'lock'
+---
+
+<Tip>
+  **Chave de API**: Sua credencial de acesso à API da AbacatePay. Esta chave identifica sua conta e autoriza suas requisições. **IMPORTANTE**: Sem a chave de API, as requisições serão recusadas.
+</Tip> 
+
+## <Icon icon="lock" type="solid"/>  Gerenciando chaves de API
+
+Gerencie suas chaves de API diretamente em nossa plataforma. Você pode:
+- Listar todas as chaves ativas
+- Criar novas chaves
+- Revogar chaves existentes
+
+<Card title="Ambientes e Chaves de API" icon="book" horizontal>
+  Todas as requisições são enviadas para o mesmo endpoint (`https://api.abacatepay.com`), mas o ambiente é determinado pela chave de API utilizada:
+  - Chaves criadas em **dev mode** processam transações no ambiente de testes
+  - Chaves criadas em **produção** processam transações reais
+  
+  Saiba mais sobre o ambiente de desenvolvimento <a href="./devmode">aqui</a>.
+</Card>
+
+<Card title="Erro de Autenticação" icon="warning" horizontal>
+  A API retornará o código HTTP `401` quando:
+  - A chave de API não for fornecida no header
+  - A chave for inválida
+  - A chave tiver sido revogada
+</Card>
+
+## <Icon icon="key" type="solid"/>  Criando chaves de API
+
+<Card title="Boas Práticas de Segurança" icon="light-emergency-on" horizontal>
+  * Armazene suas chaves em variáveis de ambiente ou gerenciadores de segredos
+  * Nunca compartilhe suas chaves de API
+  * A AbacatePay nunca solicitará suas chaves
+  * Revogue imediatamente qualquer chave comprometida
+</Card>
+
+## Como criar sua chave de API
+
+Siga estes passos no dashboard da AbacatePay:
+
+<Steps>
+  <Step title="Acesse a Seção de Integração">
+    <Card>
+      <img
+        src="/images/criar-chave-api.png"
+        alt="Interface da plataforma AbacatePay mostrando o botão de criação de chave"
+      />
+      <Card title="Clique no botão 'Criar Chave'">
+        Inicie o processo de criação de uma nova chave de API
+      </Card>
+    </Card>
+  </Step>
+  <Step title="Adicione uma Descrição">
+    <Card>
+      <img
+        src="/images/exemplo-de-chave-api.png"
+        alt="Formulário de criação de chave com campo de descrição"
+      />
+      <Card title="Identifique sua chave">
+        Adicione uma descrição clara para identificar o propósito desta chave
+      </Card>
+    </Card>
+  </Step>
+  <Step title="Copie sua Chave">
+    <Card>
+      <img
+        src="/images/copiar-chave-api.png"
+        alt="Lista de chaves com opção para copiar"
+      />
+      <Card title="Armazene sua chave com segurança">
+        Copie a chave gerada e armazene-a em um local seguro
+      </Card>
+    </Card>
+  </Step>
+</Steps>
+
+Após criar sua chave, você pode começar a integrar com nossa API. Lembre-se de incluir a chave em todas as requisições no header `Authorization`:
+
+```bash
+curl -X POST https://api.abacatepay.com/v1/payments \
+  -H "Authorization: Bearer sua_chave_api" \
+  -H "Content-Type: application/json" \
+  -d '{"amount": 1000}'
+```
+
+<Card title="Nota Importante" icon="info" horizontal>
+  O mesmo endpoint (`https://api.abacatepay.com`) é usado tanto para o ambiente de desenvolvimento quanto para produção. O ambiente é determinado automaticamente pela chave de API utilizada na requisição.
+</Card>

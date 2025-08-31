@@ -17,51 +17,156 @@
     }
   },
   "navigation": {
-    "tabs": [
+    "languages": [
       {
-        "tab": "Documentação",
-        "groups": [
+        "language": "pt-BR",
+        "tabs": [
           {
-            "group": "Introdução",
-            "pages": [
-              "pages/introduction",
-              "pages/devmode",
-              "pages/authentication",
-              "pages/webhooks",
-              "pages/production",
-              "pages/sdks"
+            "tab": "Documentação",
+            "groups": [
+              {
+                "group": "Introdução",
+                "pages": [
+                  "pt/introduction",
+                  "pt/devmode",
+                  "pt/authentication",
+                  "pt/webhooks",
+                  "pt/production",
+                  "pt/sdks"
+                ]
+              },
+              {
+                "group": "Cliente",
+                "pages": ["pt/client/reference", "pt/client/create", "pt/client/list"]
+              },
+              {
+                "group": "Cobrança",
+                "pages": ["pt/payment/reference", "pt/payment/create", "pt/payment/list"]
+              },
+              {
+                "group": "Pix QRCode",
+                "pages": [
+                  "pt/pix-qrcode/reference",
+                  "pt/pix-qrcode/create",
+                  "pt/pix-qrcode/simulate-payment",
+                  "pt/pix-qrcode/check"
+                ]
+              },
+              {
+                "group": "Cupom",
+                "pages": ["pt/coupon/reference", "pt/coupon/create", "pt/coupon/list"]
+              },
+              {
+                "group": "Saque",
+                "pages": ["pt/withdraw/reference", "pt/withdraw/create", "pt/withdraw/list"]
+              }
             ]
           },
           {
-            "group": "Cliente",
-            "pages": ["pages/client/reference", "pages/client/create", "pages/client/list"]
-          },
-          {
-            "group": "Cobrança",
-            "pages": ["pages/payment/reference", "pages/payment/create", "pages/payment/list"]
-          },
-          {
-            "group": "Pix QRCode",
-            "pages": [
-              "pages/pix-qrcode/reference",
-              "pages/pix-qrcode/create",
-              "pages/pix-qrcode/simulate-payment",
-              "pages/pix-qrcode/check"
-            ]
-          },
-          {
-            "group": "Cupom",
-            "pages": ["pages/coupon/reference", "pages/coupon/create", "pages/coupon/list"]
-          },
-          {
-            "group": "Saque",
-            "pages": ["pages/withdraw/reference", "pages/withdraw/create", "pages/withdraw/list"]
+            "tab": "Referência da API",
+            "openapi": "openapi-pt.yaml"
           }
         ]
       },
       {
-        "tab": "Referência da API",
-        "openapi": "openapi.yaml"
+        "language": "es",
+        "tabs": [
+          {
+            "tab": "Documentación",
+            "groups": [
+              {
+                "group": "Introducción",
+                "pages": [
+                  "es/introduction",
+                  "es/devmode",
+                  "es/authentication",
+                  "es/webhooks",
+                  "es/production",
+                  "es/sdks"
+                ]
+              },
+              {
+                "group": "Cliente",
+                "pages": ["es/client/reference", "es/client/create", "es/client/list"]
+              },
+              {
+                "group": "Cobranza",
+                "pages": ["es/payment/reference", "es/payment/create", "es/payment/list"]
+              },
+              {
+                "group": "Pix QRCode",
+                "pages": [
+                  "es/pix-qrcode/reference",
+                  "es/pix-qrcode/create",
+                  "es/pix-qrcode/simulate-payment",
+                  "es/pix-qrcode/check"
+                ]
+              },
+              {
+                "group": "Cupón",
+                "pages": ["es/coupon/reference", "es/coupon/create", "es/coupon/list"]
+              },
+              {
+                "group": "Retiro",
+                "pages": ["es/withdraw/reference", "es/withdraw/create", "es/withdraw/list"]
+              }
+            ]
+          },
+          {
+            "tab": "Referencia de la API",
+            "openapi": "openapi-es.yaml"
+          }
+        ]
+      },
+      {
+        "language": "en",
+        "tabs": [
+          {
+            "tab": "Documentation",
+            "groups": [
+              {
+                "group": "Introduction",
+                "pages": [
+                  "en/introduction",
+                  "en/devmode",
+                  "en/authentication",
+                  "en/webhooks",
+                  "en/production",
+                  "en/sdks"
+                ]
+              },
+              {
+                "group": "Customer",
+                "pages": ["en/client/reference", "en/client/create", "en/client/list"]
+              },
+              {
+                "group": "Payment",
+                "pages": ["en/payment/reference", "en/payment/create", "en/payment/list"]
+              },
+              {
+                "group": "Pix QRCode",
+                "pages": [
+                  "en/pix-qrcode/reference",
+                  "en/pix-qrcode/create",
+                  "en/pix-qrcode/simulate-payment",
+                  "en/pix-qrcode/check"
+                ]
+              },
+              {
+                "group": "Coupon",
+                "pages": ["en/coupon/reference", "en/coupon/create", "en/coupon/list"]
+              },
+              {
+                "group": "Withdraw",
+                "pages": ["en/withdraw/reference", "en/withdraw/create", "en/withdraw/list"]
+              }
+            ]
+          },
+          {
+            "tab": "API Reference",
+            "openapi": "openapi-en.yaml"
+          }
+        ]
       }
     ]
   },

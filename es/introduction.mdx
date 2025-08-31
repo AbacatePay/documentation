@@ -1,0 +1,71 @@
+---
+title: Comienza aquí
+icon: 'Avocado'
+description: "¡Toma tu café y aprende sobre AbacatePay!"
+---
+En esta documentación encontrarás todo lo que necesitas para integrar con la API de AbacatePay. Desarrollada por desarrolladores para desarrolladores, nuestra plataforma fue diseñada para ser intuitiva y fácil de usar.
+
+## <Icon icon="Avocado" type="solid"/>  ¿Qué es AbacatePay?
+
+AbacatePay es una pasarela de pago que surgió de nuestra propia necesidad de simplificar cobros en nuestros productos. Nos dimos cuenta de que los medios de pago existentes eran excesivamente complejos:
+- Documentaciones extensas y confusas
+- Procesos de homologación largos y burocráticos
+- Múltiples formas de realizar la misma operación
+- ¡Algunas pasarelas incluso exigen cursos para integración!
+
+¿Nuestra solución? Una plataforma que transforma la complejidad de las Fintechs en una API simple e intuitiva. Mira qué fácil es:
+
+```javascript
+// Ejemplo de creación de cobro
+const payment = await abacatePay.payments.create({
+  amount: 1000,
+  description: "Servicio prestado"
+});
+```
+
+## <Icon icon="laptop" type="solid"/>  API descomplicada
+
+Nuestra API fue construida con tres principios fundamentales:
+
+1. **Basada en intención**: Cada endpoint representa exactamente lo que lees
+   ```
+   POST /billing/create    // Crea un pago
+   GET /billing/get       // Busca un pago específico
+   ```
+
+2. **Idempotente**: Ejecuta la misma petición cuantas veces necesites, sin efectos secundarios
+   ```javascript
+   // Seguro para ejecutar múltiples veces
+   await abacatePay.billing.create({...});
+   ```
+
+3. **Consistente**: Nuestra API siempre retorna una opción conteniendo el error o los datos de retorno, lo que facilita la implementación en lenguajes de tipado fuerte y consistencia en todas las operaciones.
+   ```json
+   {
+     "data": {
+         "id": "bill_12345667",
+         "url": "https://abacatepay.com/pay/bill_12345667",
+         "amount": 1000,
+         "status": "PENDING",
+         "devMode": true,
+         "methods": ["PIX"],
+         "frequency": "ONE_TIME",
+         "nextBilling": null,
+         "customer": {
+            "id": "cust_12345",
+            "metadata": {
+               "email": "customer@example.com"
+            }
+         },
+         "createdAt": "2024-11-04T18:38:28.573",
+         "updatedAt": "2024-11-04T18:38:28.573",
+      },
+      "error": null
+   }
+   ```
+
+Para facilitar aún más, ofrecemos SDKs oficiales y soporte a modo de desarrollo con claves de API dedicadas.
+
+## <Icon icon="cloud" type="solid"/>  ¿Dudas? 
+
+¡Nuestro equipo está siempre listo para ayudar! Contáctanos por email <Icon icon="envelope" type="solid"/> ajuda@abacatepay.com
