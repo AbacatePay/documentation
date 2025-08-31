@@ -1,15 +1,15 @@
 ---
-title: 'Referência'
-description: 'Crie cupons de desconto para seus clientes usarem uma ou várias vezes'
+title: 'Referencia'
+description: 'Crea cupones de descuento para que tus clientes los usen una o varias veces'
 icon: 'book-open-cover'
 ---
 
-Os cupons de desconto permitem que você ofereça reduções de preço aos seus clientes de forma controlada e estratégica. Você pode criar cupons com desconto percentual ou valor fixo, definir limites de uso e acompanhar quantas vezes foram utilizados.
+Los cupones de descuento permiten que ofrezcas reducciones de precio a tus clientes de forma controlada y estratégica. Puedes crear cupones con descuento porcentual o valor fijo, definir límites de uso y acompañar cuántas veces fueron utilizados.
 
 
-## <Icon icon="folder-tree" type="solid"/>  Estrutura
+## <Icon icon="folder-tree" type="solid"/>  Estructura
 
-Um cupom é representado em nossa API pela seguinte estrutura:
+Un cupón está representado en nuestra API por la siguiente estructura:
 
 ```json
 {
@@ -37,16 +37,16 @@ Um cupom é representado em nossa API pela seguinte estrutura:
         ```
 
         `id` : <u> string. </u> <br />
-        Código único do cupom que seus clientes irão utilizar para aplicar o desconto
+        Código único del cupón que tus clientes utilizarán para aplicar el descuento
     </Accordion>
     <Accordion title="notes:">
         ```json {2}
         {
-          "notes": "Cupom de boas-vindas - 10% de desconto",
+          "notes": "Cupón de bienvenida - 10% de descuento",
         }
         ```
         `notes` : <u> string. </u> <br />
-        Descrição interna do cupom para sua organização e controle
+        Descripción interna del cupón para tu organización y control
     </Accordion>
     <Accordion title="maxRedeems:">
         ```json {2}
@@ -55,7 +55,7 @@ Um cupom é representado em nossa API pela seguinte estrutura:
         }
         ```
         `maxRedeems` : <u> number. </u> <br />
-        Limite de vezes que o cupom pode ser utilizado. Use `-1` para cupons ilimitados ou um número específico para limitar o uso
+        Límite de veces que el cupón puede ser utilizado. Usa `-1` para cupones ilimitados o un número específico para limitar el uso
     </Accordion>
     <Accordion title="redeemsCount:">
         ```json {2}
@@ -64,7 +64,7 @@ Um cupom é representado em nossa API pela seguinte estrutura:
         }
         ```
         `redeemsCount` : <u> number. </u> <br />
-        Contador de quantas vezes o cupom já foi utilizado pelos clientes
+        Contador de cuántas veces el cupón ya fue utilizado por los clientes
     </Accordion>
     <Accordion title="discountKind:">
         ```json {2}
@@ -73,13 +73,13 @@ Um cupom é representado em nossa API pela seguinte estrutura:
         }
         ```
         `discountKind` : <u> string. </u> <br />
-        Tipo de desconto aplicado pelo cupom
+        Tipo de descuento aplicado por el cupón
 
         <Info>
-            | Tipo | Descrição |
+            | Tipo | Descripción |
             | ----------- | ------------------------------------- |
-            | `PERCENTAGE` | **Desconto percentual** (ex: 10% de desconto) |
-            | `FIXED` | **Valor fixo** (ex: R$ 5,00 de desconto) |
+            | `PERCENTAGE` | **Descuento porcentual** (ej: 10% de descuento) |
+            | `FIXED` | **Valor fijo** (ej: R$ 5,00 de descuento) |
         </Info>
     </Accordion>
     <Accordion title="discount:">
@@ -89,7 +89,7 @@ Um cupom é representado em nossa API pela seguinte estrutura:
         }
         ```
         `discount` : <u> number. </u> <br />
-        Valor do desconto. Para `PERCENTAGE` use números de 1-100 (ex: 10 = 10%). Para `FIXED` use o valor em centavos (ex: 500 = R$ 5,00)
+        Valor del descuento. Para `PERCENTAGE` usa números de 1-100 (ej: 10 = 10%). Para `FIXED` usa el valor en centavos (ej: 500 = R$ 5,00)
     </Accordion>
     <Accordion title="status:">
         ```json {2}
@@ -98,14 +98,14 @@ Um cupom é representado em nossa API pela seguinte estrutura:
         }
         ```
         `status` : <u> string. </u> <br />
-        Status atual do cupom
+        Estado actual del cupón
 
         <Info>
-            | Status | Descrição |
+            | Estado | Descripción |
             | ----------- | ------------------------------------- |
-            | `ACTIVE` | **O cupom está ativo e pode ser utilizado pelos clientes** |
-            | `DELETED` | **O cupom foi removido e não pode mais ser usado** |
-            | `DISABLED` | **O cupom foi desabilitado ou atingiu o limite máximo de usos** |
+            | `ACTIVE` | **El cupón está activo y puede ser utilizado por los clientes** |
+            | `DELETED` | **El cupón fue removido y no puede más ser usado** |
+            | `DISABLED` | **El cupón fue deshabilitado o alcanzó el límite máximo de usos** |
         </Info>
     </Accordion>
     <Accordion title="devMode:">
@@ -115,7 +115,7 @@ Um cupom é representado em nossa API pela seguinte estrutura:
         }
         ```
         `devMode` : <u> boolean. </u> <br />
-        Indica se o cupom foi criado em ambiente de desenvolvimento (`true`) ou produção (`false`)
+        Indica si el cupón fue creado en ambiente de desarrollo (`true`) o producción (`false`)
     </Accordion>
     <Accordion title="metadata:">
         ```json {2}
@@ -127,7 +127,7 @@ Um cupom é representado em nossa API pela seguinte estrutura:
         }
         ```
         `metadata` : <u> object. </u> <br />
-        Objeto para armazenar informações adicionais sobre o cupom, como campanha, categoria ou outros dados relevantes para sua organização
+        Objeto para almacenar informaciones adicionales sobre el cupón, como campaña, categoría u otros datos relevantes para tu organización
     </Accordion>
     <Accordion title="createdAt:">
         ```json {2}
@@ -136,7 +136,7 @@ Um cupom é representado em nossa API pela seguinte estrutura:
         }
         ```
         `createdAt` : <u> date-time. </u> <br />
-        Data e hora de criação do cupom
+        Fecha y hora de creación del cupón
     </Accordion>
     <Accordion title="updatedAt:">
         ```json {2}
@@ -145,6 +145,6 @@ Um cupom é representado em nossa API pela seguinte estrutura:
         }
         ```
         `updatedAt` : <u> date-time. </u> <br />
-        Data e hora da última atualização do cupom
+        Fecha y hora de la última actualización del cupón
     </Accordion>
 </AccordionGroup>

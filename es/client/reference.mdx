@@ -1,14 +1,14 @@
 ---
-title: 'Referência'
-description: 'Gerencie seus clientes, aqueles que pagam você.'
+title: 'Referencia'
+description: 'Gestiona tus clientes, aquellos que te pagan.'
 icon: 'book-open-cover'
 ---
 
-Um cliente é seu usuário final, aquele que você vai cobrar e pagar o seu produto.
+Un cliente es tu usuario final, aquel al que vas a cobrar y que pagará tu producto.
 
-## <Icon icon="folder-tree" type="solid"/>  Estrutura
+## <Icon icon="folder-tree" type="solid"/>  Estructura
 
-Um cliente é representado em nossa API pela seguinte estrutura:
+Un cliente está representado en nuestra API por la siguiente estructura:
 
 ```json
 {
@@ -33,10 +33,10 @@ Um cliente é representado em nossa API pela seguinte estrutura:
 ```
 
 `id` : <u> string. </u> <br />
-Id único do cliente na AbacatePay
+Id único del cliente en AbacatePay
 
-### metadados: 
-Objeto com os dados do cliente
+### metadatos: 
+Objeto con los datos del cliente
 
 ```json json {2-7}
 {
@@ -49,14 +49,14 @@ Objeto com os dados do cliente
 } 
 ```
 
-* `name` : <u> string. </u> <br /> Nome do cliente (opcional)
+* `name` : <u> string. </u> <br /> Nombre del cliente (opcional)
 
-* `cellphone` : <u> string. </u> <br /> Telefone do cliente (opcional)
+* `cellphone` : <u> string. </u> <br /> Teléfono del cliente (opcional)
 
-* `taxId` : <u> string. </u> <br /> Documento válido do cliente, podendo ser CPF ou CNPJ (opcional)
+* `taxId` : <u> string. </u> <br /> Documento válido del cliente, puede ser CPF o CNPJ (opcional)
 
-* `email` : <u> string. </u> <br /> E-mail do cliente (obrigatório)
+* `email` : <u> string. </u> <br /> E-mail del cliente (obligatorio)
 
-<Tip title="Clientes são únicos por CPF/CNPJ" icon="book" horizontal>
- Não é possível criar um cliente com CPF/CNPJ inválido e caso já exista um cliente com esse CPF/CNPJ, a API não criará o cliente novo mas retornará o cliente já existente
+<Tip title="Los clientes son únicos por CPF/CNPJ" icon="book" horizontal>
+ No es posible crear un cliente con CPF/CNPJ inválido y si ya existe un cliente con ese CPF/CNPJ, la API no creará el nuevo cliente pero retornará el cliente ya existente
 </Tip>

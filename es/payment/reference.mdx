@@ -1,22 +1,22 @@
 ---
-title: "Referência"
-description: "Crie um link de cobrança e deixe seu cliente pagar"
+title: "Referencia"
+description: "Crea un enlace de facturación y deja que tu cliente pague"
 icon: "book-open-cover"
 ---
 
-O termo "cobrança" é genérico. Ele representa um portal de um fluxo de pagamento onde você pode cobrar seu cliente e ele fazer todo o processo de pagamento sem nenhuma interrupção.
+El término "facturación" es genérico. Representa un portal de un flujo de pago donde puedes cobrar a tu cliente y él hacer todo el proceso de pago sin ninguna interrupción.
 
-Atualmente uma cobrança pode ser de duas formas: 
-- `ONE_TIME` para cobranças que serão pagas uma única vez.  preciso enviar os dados do seu cliente. Para cobrançar `ONE_TIME` é obrigatório informar o cliente ao criar a cobrança por meio dos campos `customerId` ou `customer`. 
-  - Só é necessário fornecer uma das opções de identificador do cliente: `customerId` **OU** `customer`.
-- `MULTIPLE_PAYMENTS` é uma cobrança que pode ser paga multiplas vezes e por múltiplas pessoas diferentes. **Ex:** utilização de um único link de pagamento para vender um produto para múltiplas pessoas.
-  - Para cobranças `MULTIPLE_PAYMENTS` o usuário informará informações como CPF, nome e email na página do checkout.
+Actualmente una facturación puede ser de dos formas: 
+- `ONE_TIME` para facturaciones que serán pagadas una única vez. Es necesario enviar los datos de tu cliente. Para facturar `ONE_TIME` es obligatorio informar el cliente al crear la facturación por medio de los campos `customerId` o `customer`. 
+  - Solo es necesario proporcionar una de las opciones de identificador del cliente: `customerId` **O** `customer`.
+- `MULTIPLE_PAYMENTS` es una facturación que puede ser pagada múltiples veces y por múltiples personas diferentes. **Ej:** utilización de un único enlace de pago para vender un producto para múltiples personas.
+  - Para facturaciones `MULTIPLE_PAYMENTS` el usuario informará informaciones como CPF, nombre y email en la página del checkout.
 
 
 
-## <Icon icon="folder-tree" type="solid"/> Estrutura
+## <Icon icon="folder-tree" type="solid"/> Estructura
 
-Uma cobrança é representada em nossa API pela seguinte estrutura:
+Una facturación está representada en nuestra API por la siguiente estructura:
 
 ```json json
 {
@@ -67,7 +67,7 @@ Uma cobrança é representada em nossa API pela seguinte estrutura:
         ```
 
         `id` : <u> string. </u> <br />
-        Id único da cobrança na AbacatePay
+        Id único de la facturación en AbacatePay
     </Accordion>
     <Accordion title="frequency:">
         ```json json {2}
@@ -76,13 +76,13 @@ Uma cobrança é representada em nossa API pela seguinte estrutura:
         }
         ```
         `frequency` : <u> string. </u> <br />
-        Frequência da cobrança. Pode ser `ONE_TIME` ou `MULTIPLE_PAYMENTS`.
+        Frecuencia de la facturación. Puede ser `ONE_TIME` o `MULTIPLE_PAYMENTS`.
 
         <Info >
             |                      |                                                                                                      |
             | ---------------------| ---------------------------------------------------------------------------------------------------- |
-            | `ONE_TIME`           | **Cobrança que aceita um único pagamento. É necessário enviar os dados do cliente**                  |
-            | `MULTIPLE_PAYMENTS`  | **Cobrança em modo checkout, aceita vários pagamentos. Não é necessário enviar os dados do cliente.**|
+            | `ONE_TIME`           | **Facturación que acepta un único pago. Es necesario enviar los datos del cliente**                  |
+            | `MULTIPLE_PAYMENTS`  | **Facturación en modo checkout, acepta varios pagos. No es necesario enviar los datos del cliente.**|
         </Info>
     </Accordion>
      <Accordion title="url:">
@@ -92,7 +92,7 @@ Uma cobrança é representada em nossa API pela seguinte estrutura:
         }
         ```
         `url` : <u> string. </u> <br />
-        URL para seu cliente executar o pagamento da cobrança
+        URL para que tu cliente ejecute el pago de la facturación
 
         ### Amount:
         ```json json {2}
@@ -101,7 +101,7 @@ Uma cobrança é representada em nossa API pela seguinte estrutura:
         }
         ```
         `amount` : <u> number. </u> <br />
-        Valor da cobrança em centavos
+        Valor de la facturación en centavos
     </Accordion>
     <Accordion title="amount:">
         ```json json {2}
@@ -110,7 +110,7 @@ Uma cobrança é representada em nossa API pela seguinte estrutura:
         }
         ```
         `amount` : <u> number. </u> <br />
-        Valor da cobrança em centavos
+        Valor de la facturación en centavos
 
     </Accordion>
        <Accordion title="status:">
@@ -120,16 +120,16 @@ Uma cobrança é representada em nossa API pela seguinte estrutura:
         }
         ```
         `status` : <u> string. </u> <br />
-        Status da cobrança. Pode ser `PENDING`, `EXPIRED`, `CANCELLED`, `PAID`, `REFUNDED`
+        Estado de la facturación. Puede ser `PENDING`, `EXPIRED`, `CANCELLED`, `PAID`, `REFUNDED`
 
         <Info >
             |  |                            |
             | -----------| ------------------------------------- |
-            | `PENDING`  | **A cobrança está com o pagamento pendente**                    |
-            | `EXPIRED`  | **O tempo limite de pagamento foi excedido**                          |
-            | `CANCELLED`| **A cobrança foi cancelada por você** |
-            | `PAID`     | **A cobrança foi paga com sucesso pelo cliente** |
-            | `REFUNDED` | **O valor foi devolvido ao cliente** |
+            | `PENDING`  | **La facturación está con el pago pendiente**                    |
+            | `EXPIRED`  | **El tiempo límite de pago fue excedido**                          |
+            | `CANCELLED`| **La facturación fue cancelada por ti** |
+            | `PAID`     | **La facturación fue pagada con éxito por el cliente** |
+            | `REFUNDED` | **El valor fue devuelto al cliente** |
         </Info>
     </Accordion>
     <Accordion title="methods:">
@@ -139,7 +139,7 @@ Uma cobrança é representada em nossa API pela seguinte estrutura:
         }
         ```
         `methods` : <u> array </u> <br />
-        Tipos de pagamento. Suportamos somente `PIX` no momento.
+        Tipos de pago. Soportamos solamente `PIX` en el momento.
     </Accordion>
     <Accordion title="products:">
        ```json json {2-9}
@@ -155,7 +155,7 @@ Uma cobrança é representada em nossa API pela seguinte estrutura:
         }
         ```
         `products` : <u> array </u> <br />
-        Lista de produtos inclusos na cobrança
+        Lista de productos incluidos en la facturación
     </Accordion>
     <Accordion title="customer:">
         ```json json {2-10}
@@ -172,7 +172,7 @@ Uma cobrança é representada em nossa API pela seguinte estrutura:
         }
         ```
         `customer` : <u> object </u> <br />
-        Cliente que você está cobrando. Veja referência da estrutura <a href="./client/reference.mdx"> aqui </a>
+        Cliente al que estás cobrando. Vea referencia de la estructura <a href="./client/reference.mdx"> aquí </a>
     </Accordion>
     <Accordion title="metadata:">
         ```json json {2-5}
@@ -185,14 +185,14 @@ Uma cobrança é representada em nossa API pela seguinte estrutura:
         }
         ```
         `metadata` : <u> object </u> <br />
-        Objeto com metadados sobre a cobrança
+        Objeto con metadatos sobre la facturación
 
         * `fee`  <u> number </u>
-        Taxa aplicada pela AbacatePay
+        Tasa aplicada por AbacatePay
         * `returnUrl` <u>string </u>
-        URL que o cliente será redirecionado ao clicar no botão "voltar"
+        URL a la que el cliente será redirigido al hacer clic en el botón "volver"
         * `completionUrl` <u>string </u>
-        URL que o cliente será redirecionado ao realizar o pagamento
+        URL a la que el cliente será redirigido al realizar el pago
     </Accordion>
     <Accordion title="nextBilling:">
         ```json json {2}
@@ -202,7 +202,7 @@ Uma cobrança é representada em nossa API pela seguinte estrutura:
         ```
 
         `nextBilling` : <u> date-time | null. </u> <br />
-        Data e hora da próxima cobrança, ou null para cobranças únicas
+        Fecha y hora de la próxima facturación, o null para facturaciones únicas
     </Accordion>
     <Accordion title="allowCoupons:">
         ```json json {2}
@@ -212,7 +212,7 @@ Uma cobrança é representada em nossa API pela seguinte estrutura:
         ```
 
         `allowCoupons` : <u> bool | null. </u> <br />
-        Permite ou não cupons para a cobrança
+        Permite o no cupones para la facturación
     </Accordion>
     <Accordion title="coupons:">
         ```json json {2}
@@ -222,7 +222,7 @@ Uma cobrança é representada em nossa API pela seguinte estrutura:
         ```
 
         `coupons` :<u> array </u> <br />
-        Cupons permitidos na cobrança. Só são considerados os cupons se `allowCoupons` é verdadeiro.
+        Cupones permitidos en la facturación. Solo son considerados los cupones si `allowCoupons` es verdadero.
     </Accordion>
 
 </AccordionGroup>

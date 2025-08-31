@@ -1,14 +1,14 @@
 ---
-title: 'Referência'
-description: 'Gere um QRCode Pix e um código copia-e-cola para o seu cliente'
+title: 'Referencia'
+description: 'Genera un QRCode Pix y un código copia-y-pega para tu cliente'
 icon: 'book-open-cover'
 ---
 
 
 
-## <Icon icon="folder-tree" type="solid"/> Estrutura
+## <Icon icon="folder-tree" type="solid"/> Estructura
 
-Uma cobrança via QRCode Pix é representada em nossa API pela seguinte estrutura:
+Una facturación vía QRCode Pix está representada en nuestra API por la siguiente estructura:
 
 ```json json
 {
@@ -20,7 +20,7 @@ Uma cobrança via QRCode Pix é representada em nossa API pela seguinte estrutur
   "brCode": "...",
   "brCodeBase64": "...",
   "platformFee": 80,
-  "description": "Pagamento PIX com AbacatePay",
+  "description": "Pago PIX con AbacatePay",
   "metadata": {
     "pedidoId": "123"
   },
@@ -40,7 +40,7 @@ Uma cobrança via QRCode Pix é representada em nossa API pela seguinte estrutur
         } 
         ```
         `id` : <u> string. </u> <br />
-        Identificador único da cobrança.
+        Identificador único de la facturación.
     </Accordion>
 
     <Accordion title="amount:">
@@ -50,7 +50,7 @@ Uma cobrança via QRCode Pix é representada em nossa API pela seguinte estrutur
         }
         ```
         `amount` : <u> number. </u> <br />
-        Valor da cobrança em centavos (ex: 4000 = R$ 40,00)
+        Valor de la facturación en centavos (ej: 4000 = R$ 40,00)
     </Accordion>
 
     <Accordion title="status:">
@@ -60,15 +60,15 @@ Uma cobrança via QRCode Pix é representada em nossa API pela seguinte estrutur
         }
         ```
         `status` : <u> string. </u> <br />
-        Status da cobrança. Pode ser `PENDING`, `EXPIRED`, `CANCELLED`, `PAID`, `REFUNDED`.
+        Estado de la facturación. Puede ser `PENDING`, `EXPIRED`, `CANCELLED`, `PAID`, `REFUNDED`.
         <Info>
-            | Status       | Descrição |
+            | Estado       | Descripción |
             | ----------- | ------------------------------------- |
-            | `PENDING`  | **A cobrança está com o pagamento pendente** |
-            | `EXPIRED`  | **O tempo limite de pagamento foi excedido** |
-            | `CANCELLED`| **A cobrança foi cancelada por você** |
-            | `PAID`     | **A cobrança foi paga com sucesso pelo cliente** |
-            | `REFUNDED` | **O valor foi devolvido ao cliente** |
+            | `PENDING`  | **La facturación está con el pago pendiente** |
+            | `EXPIRED`  | **El tiempo límite de pago fue excedido** |
+            | `CANCELLED`| **La facturación fue cancelada por ti** |
+            | `PAID`     | **La facturación fue pagada con éxito por el cliente** |
+            | `REFUNDED` | **El valor fue devuelto al cliente** |
         </Info>
     </Accordion>
 
@@ -79,7 +79,7 @@ Uma cobrança via QRCode Pix é representada em nossa API pela seguinte estrutur
         }
         ```
         `devMode` : <u> boolean. </u> <br />
-        Indica se a cobrança está em ambiente de testes (`true`) ou produção (`false`).
+        Indica si la facturación está en ambiente de pruebas (`true`) o producción (`false`).
     </Accordion>
 
     <Accordion title="method:">
@@ -89,7 +89,7 @@ Uma cobrança via QRCode Pix é representada em nossa API pela seguinte estrutur
         }
         ```
         `method` : <u> string. </u> <br />
-        Método de pagamento.
+        Método de pago.
     </Accordion>
 
     <Accordion title="brCode:">
@@ -99,7 +99,7 @@ Uma cobrança via QRCode Pix é representada em nossa API pela seguinte estrutur
         }
         ```
         `brCode` : <u> string. </u> <br />
-        Código PIX (copia-e-cola) para pagamento.
+        Código PIX (copia-y-pega) para pago.
     </Accordion>
 
     <Accordion title="brCodeBase64:">
@@ -109,7 +109,7 @@ Uma cobrança via QRCode Pix é representada em nossa API pela seguinte estrutur
         }
         ```
         `brCodeBase64` : <u> string. </u> <br />
-        Código PIX no formato Base64 (útil para exibição em imagens).
+        Código PIX en formato Base64 (útil para exhibición en imágenes).
     </Accordion>
 
     <Accordion title="platformFee:">
@@ -119,17 +119,17 @@ Uma cobrança via QRCode Pix é representada em nossa API pela seguinte estrutur
         }
         ```
         `platformFee` : <u> number. </u> <br />
-        Taxa da plataforma em centavos. Exemplo: `80` significa R$ 0,80.
+        Tasa de la plataforma en centavos. Ejemplo: `80` significa R$ 0,80.
     </Accordion>
 
     <Accordion title="description:">
         ```json json {2}
         {
-        "description": "Pagamento PIX com AbacatePay"
+        "description": "Pago PIX con AbacatePay"
         }
         ```
         `description` : <u> string. </u> <br />
-        Descrição da cobrança.
+        Descripción de la facturación.
     </Accordion>
 
     <Accordion title="createdAt:">
@@ -139,7 +139,7 @@ Uma cobrança via QRCode Pix é representada em nossa API pela seguinte estrutur
         }
         ```
         `createdAt` : <u> date-time. </u> <br />
-        Data e hora da criação da cobrança.
+        Fecha y hora de la creación de la facturación.
     </Accordion>
 
     <Accordion title="updatedAt:">
@@ -149,7 +149,7 @@ Uma cobrança via QRCode Pix é representada em nossa API pela seguinte estrutur
         }
         ```
         `updatedAt` : <u> date-time. </u> <br />
-        Última atualização da cobrança.
+        Última actualización de la facturación.
     </Accordion>
 
     <Accordion title="expiresAt:">
@@ -159,7 +159,7 @@ Uma cobrança via QRCode Pix é representada em nossa API pela seguinte estrutur
         }
         ```
         `expiresAt` : <u> date-time. </u> <br />
-        Data e hora de expiração do QRCode.
+        Fecha y hora de expiración del QRCode.
     </Accordion>
 
 </AccordionGroup>

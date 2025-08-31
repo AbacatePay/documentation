@@ -1,93 +1,93 @@
 ---
 title: 'Webhooks'
-description: 'Configure e receba notificações sobre atualizações'
+description: 'Configura y recibe notificaciones sobre actualizaciones'
 icon: 'webhook'
 ---
 
-Webhooks permitem que sua aplicação receba notificações em tempo real sobre eventos importantes da AbacatePay.
+Los webhooks permiten que tu aplicación reciba notificaciones en tiempo real sobre eventos importantes de AbacatePay.
 
-## <Icon icon="mobile" type="solid"/>  Gerenciando webhooks
+## <Icon icon="mobile" type="solid"/>  Gestionando webhooks
 
-Gerencie seus webhooks diretamente em nossa plataforma. Você pode:
-- Listar todos os webhooks ativos
-- Criar novos webhooks
+Gestiona tus webhooks directamente en nuestra plataforma. Puedes:
+- Listar todos los webhooks activos
+- Crear nuevos webhooks
 - Remover webhooks existentes
 
-<Card title="Ambientes e Webhooks" icon="book" horizontal>
-  Os webhooks são específicos para cada ambiente:
-  - Webhooks criados em **dev mode** recebem notificações apenas do ambiente de testes
-  - Webhooks criados em **produção** recebem notificações apenas de dados reais
+<Card title="Ambientes y Webhooks" icon="book" horizontal>
+  Los webhooks son específicos para cada ambiente:
+  - Webhooks creados en **dev mode** reciben notificaciones únicamente del ambiente de pruebas
+  - Webhooks creados en **producción** reciben notificaciones únicamente de datos reales
   
-  Saiba mais sobre o ambiente de desenvolvimento <a href="./devmode">aqui</a>.
+  Sabe más sobre el ambiente de desarrollo <a href="./devmode">aquí</a>.
 </Card>
 
-## <Icon icon="key" type="solid"/>  Criando webhooks
+## <Icon icon="key" type="solid"/>  Creando webhooks
 
-<Card title="Segurança dos Webhooks" icon="light-emergency-on" horizontal>
-  * Configure um secret único para cada webhook
-  * Valide o secret em todas as requisições recebidas
-  * Use HTTPS para todas as URLs de webhook
-  * Implemente retry logic para lidar com falhas temporárias
+<Card title="Seguridad de los Webhooks" icon="light-emergency-on" horizontal>
+  * Configura un secret único para cada webhook
+  * Valida el secret en todas las peticiones recibidas
+  * Usa HTTPS para todas las URLs de webhook
+  * Implementa retry logic para lidiar con fallas temporales
 </Card>
 
-## Como criar seu webhook
+## Cómo crear tu webhook
 
-Siga estes passos no dashboard da AbacatePay:
+Sigue estos pasos en el dashboard de AbacatePay:
 
 <Steps>
-  <Step title="Acesse a Seção de Webhooks">
+  <Step title="Accede a la Sección de Webhooks">
     <Card>
       <img
         src="/images/criar-webhook.png"
-        alt="Interface da plataforma AbacatePay mostrando a seção de webhooks"
+        alt="Interfaz de la plataforma AbacatePay mostrando la sección de webhooks"
       />
-      <Card title="Navegue até a seção Integrar e clique em Webhooks">
-        Inicie o processo de configuração de um novo webhook
+      <Card title="Navega hasta la sección Integrar y haz clic en Webhooks">
+        Inicia el proceso de configuración de un nuevo webhook
       </Card>
     </Card>
   </Step>
-  <Step title="Inicie a Criação">
+  <Step title="Inicia la Creación">
     <Card>
       <img
         src="/images/salvar-webhook.png"
-        alt="Formulário de criação de webhook"
+        alt="Formulario de creación de webhook"
       />
-      <Card title="Clique em 'Criar' e prepare-se para configurar">
-        Você será direcionado ao formulário de configuração
+      <Card title="Haz clic en 'Crear' y prepárate para configurar">
+        Serás direccionado al formulario de configuración
       </Card>
     </Card>
   </Step>
-  <Step title="Configure seu Webhook">
+  <Step title="Configura tu Webhook">
     <Card>
-      <Card title="Preencha os campos necessários:" horizontal> 
-        * **Nome**: Identificador único para seu webhook (ex: "Notificações de Pagamento")
-        * **URL**: Endpoint HTTPS que receberá as notificações
-        * **Secret**: Chave secreta para validar as requisições
+      <Card title="Completa los campos necesarios:" horizontal> 
+        * **Nombre**: Identificador único para tu webhook (ej: "Notificaciones de Pago")
+        * **URL**: Endpoint HTTPS que recibirá las notificaciones
+        * **Secret**: Clave secreta para validar las peticiones
       </Card>
     </Card>
   </Step>
 </Steps>
 
-## <Icon icon="lock" type="solid"/> Protegendo suas requisições
+## <Icon icon="lock" type="solid"/> Protegiendo tus peticiones
 
-Cada notificação enviada para seu webhook inclui o secret configurado como parâmetro de query string para validação.
+Cada notificación enviada para tu webhook incluye el secret configurado como parámetro de query string para validación.
 
-### Exemplo de URL de Webhook
+### Ejemplo de URL de Webhook
 
-URL base do seu webhook:
+URL base de tu webhook:
 ```
-https://meusite.com/webhook/abacatepay
-```
-
-URL com secret (como será chamado):
-```
-https://meusite.com/webhook/abacatepay?webhookSecret=seu_secret_aqui
+https://misitio.com/webhook/abacatepay
 ```
 
-### Exemplo de Implementação
+URL con secret (como será llamado):
+```
+https://misitio.com/webhook/abacatepay?webhookSecret=tu_secret_aqui
+```
+
+### Ejemplo de Implementación
 
 ```javascript
-// Exemplo de validação do webhook
+// Ejemplo de validación del webhook
 app.post('/webhook/abacatepay', (req, res) => {
   const webhookSecret = req.query.webhookSecret;
   
@@ -95,7 +95,7 @@ app.post('/webhook/abacatepay', (req, res) => {
     return res.status(401).json({ error: 'Invalid webhook secret' });
   }
   
-  // Processa a notificação
+  // Procesa la notificación
   const event = req.body;
   console.log('Received webhook:', event);
   
@@ -103,15 +103,15 @@ app.post('/webhook/abacatepay', (req, res) => {
 });
 ```
 
-## <Icon icon="bell" type="solid"/> Eventos Suportados
+## <Icon icon="bell" type="solid"/> Eventos Soportados
 
-Atualmente, suportamos os seguintes eventos:
+Actualmente, soportamos los siguientes eventos:
 
 ### `billing.paid`
 
-Este evento é disparado quando um pagamento é confirmado. O payload varia dependendo da origem do pagamento:
+Este evento es disparado cuando un pago es confirmado. El payload varía dependiendo del origen del pago:
 
-#### Pagamento via PIX QR Code
+#### Pago vía PIX QR Code
 
 ```json
 {
@@ -133,7 +133,7 @@ Este evento é disparado quando um pagamento é confirmado. O payload varia depe
 }
 ```
 
-#### Pagamento via Cobrança
+#### Pago vía Facturación
 
 ```json
 {
@@ -177,12 +177,12 @@ Este evento é disparado quando um pagamento é confirmado. O payload varia depe
 ```
 
 <Card title="Nota Importante" icon="info" horizontal>
-  * O campo `devMode` indica se o evento ocorreu no ambiente de desenvolvimento
-  * Todos os valores monetários são expressos em centavos
-  * O campo `fee` representa a taxa cobrada pela AbacatePay
-  * O campo `event` identifica o tipo de evento recebido
+  * El campo `devMode` indica si el evento ocurrió en el ambiente de desarrollo
+  * Todos los valores monetarios son expresados en centavos
+  * El campo `fee` representa la tasa cobrada por AbacatePay
+  * El campo `event` identifica el tipo de evento recibido
 </Card>
 
-<Card title="Precisa de ajuda?" icon="headset" color="#25c2a0">
-  Nossa equipe está disponível para auxiliar na implementação de webhooks. Entre em contato pelo e-mail <Icon icon="envelope" type="solid"/> ajuda@abacatepay.com
+<Card title="¿Necesitas ayuda?" icon="headset" color="#25c2a0">
+  Nuestro equipo está disponible para auxiliar en la implementación de webhooks. Entre en contacto por el e-mail <Icon icon="envelope" type="solid"/> ayuda@abacatepay.com
 </Card>

@@ -1,55 +1,55 @@
 ---
 title: 'SDKs'
-description: 'Bibliotecas oficiais para integração com a API da AbacatePay'
+description: 'Bibliotecas oficiales para integración con la API de AbacatePay'
 icon: 'boxes-stacked'
 ---
 
 <Tip>
-  **Acelere sua integração com nossos SDKs**: Nossas bibliotecas oficiais facilitam a integração com a API da AbacatePay em várias linguagens de programação.
+  **Acelera tu integración con nuestros SDKs**: Nuestras bibliotecas oficiales facilitan la integración con la API de AbacatePay en varios lenguajes de programación.
 </Tip>
 
-## <Icon icon="code" type="solid"/>  O que são os SDKs da AbacatePay?
+## <Icon icon="code" type="solid"/>  ¿Qué son los SDKs de AbacatePay?
 
-Os SDKs (Software Development Kits) da AbacatePay são bibliotecas que simplificam a comunicação com nossa API. Eles oferecem uma interface amigável e específica para cada linguagem, permitindo que você integre rapidamente nossos serviços de pagamento ao seu aplicativo.
+Los SDKs (Software Development Kits) de AbacatePay son bibliotecas que simplifican la comunicación con nuestra API. Ofrecen una interfaz amigable y específica para cada lenguaje, permitiendo que integres rápidamente nuestros servicios de pago a tu aplicación.
 
-<Card title="Benefícios de usar nossos SDKs" icon="star" horizontal>
-  * **Integração simplificada**: Funções prontas para todos os endpoints da API
-  * **Tipagem forte**: Interfaces completas em linguagens com suporte a tipos
-  * **Tratamento de erros**: Gerenciamento automático dos casos de erro mais comuns
-  * **Menor curva de aprendizado**: Não é necessário conhecer todos os detalhes da API
-  * **Atualizações frequentes**: Mantemos os SDKs atualizados com as mais recentes funcionalidades
+<Card title="Beneficios de usar nuestros SDKs" icon="star" horizontal>
+  * **Integración simplificada**: Funciones listas para todos los endpoints de la API
+  * **Tipado fuerte**: Interfaces completas en lenguajes con soporte a tipos
+  * **Tratamiento de errores**: Gestión automática de los casos de error más comunes
+  * **Menor curva de aprendizaje**: No es necesario conocer todos los detalles de la API
+  * **Actualizaciones frecuentes**: Mantenemos los SDKs actualizados con las más recientes funcionalidades
 </Card>
 
-## <Icon icon="boxes-stacked" type="solid"/>  SDKs Disponíveis
+## <Icon icon="boxes-stacked" type="solid"/>  SDKs Disponibles
 
-Oferecemos SDKs oficiais para diversas linguagens de programação. Escolha o que melhor se adapta à sua stack tecnológica:
+Ofrecemos SDKs oficiales para diversos lenguajes de programación. Elige el que mejor se adapte a tu stack tecnológica:
 
 <Tabs>
   <Tab title="Backend">
     <CardGroup cols={2}>
       <Card title="Node.js" icon="node-js" color="#68A063" href="https://github.com/AbacatePay/abacatepay-nodejs-sdk">
-        SDK oficial para Node.js, compatível com TypeScript e ES modules.
+        SDK oficial para Node.js, compatible con TypeScript y ES modules.
       </Card>
       <Card title="Python" icon="python" color="#366B98" href="https://github.com/AbacatePay/abacatepay-python-sdk">
-        SDK oficial para Python 3.10+, com suporte a async/await e type hints.
+        SDK oficial para Python 3.10+, con soporte a async/await y type hints.
       </Card>
       <Card title="Java" icon="java" color="#E76F00" href="https://github.com/AbacatePay/abacatepay-java-sdk">
-        SDK oficial para Java 8+, compatível com Spring Boot e Jakarta EE.
+        SDK oficial para Java 8+, compatible con Spring Boot y Jakarta EE.
       </Card>
       <Card title="PHP" icon="php" color="#777BB3" href="https://github.com/AbacatePay/abacatepay-php-sdk">
-        SDK oficial para PHP 7.4+, com suporte a Composer e PSR standards.
+        SDK oficial para PHP 7.4+, con soporte a Composer y PSR standards.
       </Card>
       <Card title="Ruby" icon="gem" color="#CC342D" href="https://github.com/AbacatePay/abacatepay-ruby-sdk">
-        SDK oficial para Ruby 2.6+, disponível como gem e com suporte a Rails.
+        SDK oficial para Ruby 2.6+, disponible como gem y con soporte a Rails.
       </Card>
       <Card title="Go" icon="golang" color="#00ADD8" href="https://github.com/AbacatePay/abacatepay-go-sdk">
-        SDK oficial para Go 1.13+, com suporte a módulos e generics.
+        SDK oficial para Go 1.13+, con soporte a módulos y generics.
       </Card>
       <Card title="Rust" icon="rust" color="#DEA584" href="https://github.com/AbacatePay/abacatepay-rust-sdk">
-        SDK oficial para Rust, com foco em segurança e performance.
+        SDK oficial para Rust, con foco en seguridad y performance.
       </Card>
       <Card title="Elixir" icon="elixir" color="#6E4A7E" href="https://github.com/AbacatePay/abacatepay-elixir-sdk">
-        SDK oficial para Elixir, ideal para aplicações escaláveis e distribuídas.
+        SDK oficial para Elixir, ideal para aplicaciones escalables y distribuidas.
       </Card>
     </CardGroup>
   </Tab>
@@ -59,25 +59,25 @@ Oferecemos SDKs oficiais para diversas linguagens de programação. Escolha o qu
         SDK oficial para Kotlin, ideal para aplicativos Android modernos.
       </Card>
       <Card title="Swift" icon="apple" color="#F05138" href="https://github.com/AbacatePay/abacatepay-swift-sdk">
-        SDK oficial para Swift, ideal para aplicativos iOS e macOS.
+        SDK oficial para Swift, ideal para aplicativos iOS y macOS.
       </Card>
     </CardGroup>
   </Tab>
 </Tabs>
 
-## <Icon icon="terminal" type="solid"/>  Exemplos de Uso
+## <Icon icon="terminal" type="solid"/>  Ejemplos de Uso
 
-Veja como é simples usar nossos SDKs em algumas das linguagens mais populares:
+Ve cómo es simple usar nuestros SDKs en algunos de los lenguajes más populares:
 
 <CodeGroup>
 ```javascript Node.js
-// Instalação: npm install abacatepay-nodejs-sdk
+// Instalación: npm install abacatepay-nodejs-sdk
 import AbacatePay from 'abacatepay-nodejs-sdk';
 
-// Inicialize o cliente com sua chave de API
+// Inicializa el cliente con tu clave de API
 const abacate = AbacatePay('your_api_key');
 
-// Crie um pagamento PIX
+// Crea un pago PIX
 async function createPixPayment() {
   const billing = await abacate.billing.create({
     frequency: "ONE_TIME",
@@ -104,25 +104,25 @@ createPixPayment();
 ```
 
 ```python Python
-# Instalação: pip install abacatepay
+# Instalación: pip install abacatepay
 from abacatepay import AbacatePay
 from abacatepay.products import Product
 
-# Inicialize o cliente com sua chave de API
+# Inicializa el cliente con tu clave de API
 client = AbacatePay(
-    api_key="sua_chave_api",
+    api_key="tu_clave_api",
 )
 
-# Crie produtos para a cobrança
+# Crea productos para la facturación
 products = [
     Product(
         external_id="123",
-        name="Produto de teste",
+        name="Producto de prueba",
         quantity=1,
         price=50_00,
         description="Example product"
     ),
-    # Ou como dicionário
+    # O como diccionario
     {
         'external_id': "321",
         'name': "Product as dict",
@@ -132,74 +132,74 @@ products = [
     }
 ]
 
-# Crie uma cobrança
+# Crea una facturación
 billing = client.billing.create(
     products=products,
     return_url="https://yourwebsite.com/return",
     completion_url="https://yourwebsite.com/complete"
 )
 
-print(f"URL da cobrança: {billing.data.url}")
+print(f"URL de la facturación: {billing.data.url}")
 ```
 
 ```php PHP
-// Instalação: composer require abacatepay/sdk
+// Instalación: composer require abacatepay/sdk
 <?php
 require_once 'vendor/autoload.php';
 
 use AbacatePay\Client;
 
-// Inicialize o cliente com sua chave de API
+// Inicializa el cliente con tu clave de API
 $client = new Client([
-    'apiKey' => 'sua_chave_api',
-    'environment' => 'production' // ou 'sandbox' para ambiente de testes
+    'apiKey' => 'tu_clave_api',
+    'environment' => 'production' // o 'sandbox' para ambiente de pruebas
 ]);
 
-// Crie um pagamento PIX
+// Crea un pago PIX
 try {
     $payment = $client->payments->createPix([
         'value' => 1000, // R$ 10,00
-        'description' => 'Pagamento de teste',
+        'description' => 'Pago de prueba',
         'expiresIn' => 3600 // 1 hora
     ]);
 
     echo "QR Code: " . $payment->qrCode . "\n";
-    echo "Chave de cobrança: " . $payment->chargeKey . "\n";
+    echo "Clave de facturación: " . $payment->chargeKey . "\n";
 } catch (Exception $e) {
-    echo "Erro ao criar pagamento: " . $e->getMessage() . "\n";
+    echo "Error al crear pago: " . $e->getMessage() . "\n";
 }
 ```
 </CodeGroup>
 
-## <Icon icon="question-circle" type="solid"/>  Perguntas Frequentes
+## <Icon icon="question-circle" type="solid"/>  Preguntas Frecuentes
 
-<Accordion title="Como instalar o SDK da minha linguagem?">
-  Cada SDK tem instruções de instalação específicas no seu repositório no GitHub. Geralmente, você pode usar o gerenciador de pacotes da sua linguagem, como npm, pip, composer, bundle, etc.
+<Accordion title="¿Cómo instalar el SDK de mi lenguaje?">
+  Cada SDK tiene instrucciones de instalación específicas en su repositorio en GitHub. Generalmente, puedes usar el gestor de paquetes de tu lenguaje, como npm, pip, composer, bundle, etc.
 </Accordion>
 
-<Accordion title="Os SDKs funcionam tanto em modo de desenvolvimento quanto em produção?">
-  Sim! Todos os nossos SDKs suportam ambos os ambientes. Em alguns casos, é preciso configurar o parâmetro `environment` ao inicializar o cliente para `sandbox` ou `production`, ou basta usar a chave de api do ambiente desejado.
+<Accordion title="¿Los SDKs funcionan tanto en modo de desarrollo como en producción?">
+  ¡Sí! Todos nuestros SDKs soportan ambos ambientes. En algunos casos, es preciso configurar el parámetro `environment` al inicializar el cliente para `sandbox` o `production`, o basta usar la clave de api del ambiente deseado.
 </Accordion>
 
-<Accordion title="O que fazer se encontrar um bug em um SDK?">
-  Você pode abrir uma issue no repositório do GitHub do SDK específico. Nossa equipe está sempre atenta para corrigir bugs e melhorar nossos SDKs.
+<Accordion title="¿Qué hacer si encuentro un bug en un SDK?">
+  Puedes abrir una issue en el repositorio de GitHub del SDK específico. Nuestro equipo está siempre atento para corregir bugs y mejorar nuestros SDKs.
 </Accordion>
 
-<Accordion title="Falta um SDK para a linguagem que eu uso. O que fazer?">
-  Entre em contato conosco em <Icon icon="envelope" type="solid"/> ajuda@abacatepay.com informando qual linguagem você precisa. Também aceitamos contribuições da comunidade!
+<Accordion title="Falta un SDK para el lenguaje que uso. ¿Qué hacer?">
+  Entre en contacto con nosotros en <Icon icon="envelope" type="solid"/> ayuda@abacatepay.com informando qué lenguaje necesitas. ¡También aceptamos contribuciones de la comunidad!
 </Accordion>
 
-## <Icon icon="book" type="solid"/>  Recursos Adicionais
+## <Icon icon="book" type="solid"/>  Recursos Adicionales
 
 <CardGroup cols={2}>
   <Card title="Webhooks" icon="webhook" href="./webhooks">
-    Aprenda a configurar webhooks para receber notificações de eventos.
+    Aprende a configurar webhooks para recibir notificaciones de eventos.
   </Card>
-  <Card title="Ambiente de Desenvolvimento" icon="code" href="./devmode">
-    Saiba como usar o ambiente de desenvolvimento para testar suas integrações.
+  <Card title="Ambiente de Desarrollo" icon="code" href="./devmode">
+    Sabe cómo usar el ambiente de desarrollo para probar tus integraciones.
   </Card>
 </CardGroup>
 
-<Card title="Precisa de ajuda com integração?" icon="headset" color="#25c2a0">
-  Nossa equipe está disponível para ajudar com qualquer dúvida sobre nossos SDKs. Entre em contato pelo e-mail <Icon icon="envelope" type="solid"/> ajuda@abacatepay.com
+<Card title="¿Necesitas ayuda con integración?" icon="headset" color="#25c2a0">
+  Nuestro equipo está disponible para ayudar con cualquier duda sobre nuestros SDKs. Entre en contacto por el e-mail <Icon icon="envelope" type="solid"/> ayuda@abacatepay.com
 </Card>

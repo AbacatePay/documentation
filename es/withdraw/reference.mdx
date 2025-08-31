@@ -1,16 +1,16 @@
 ---
-title: "Referência"
-description: "Realize saques para chaves PIX"
+title: "Referencia"
+description: "Realiza retiros para claves PIX"
 icon: "book-open-cover"
 ---
 
-O módulo de **Saque** permite que você transfira valores da sua conta AbacatePay para uma chave PIX de sua escolha. É uma funcionalidade essencial para gerenciar seus fundos e realizar transferências.
+El módulo de **Retiro** permite que transfieras valores de tu cuenta AbacatePay para una clave PIX de tu elección. Es una funcionalidad esencial para gestionar tus fondos y realizar transferencias.
 
-Atualmente, o saque suporta apenas o método **PIX**, que é o método mais rápido e eficiente para transferências no Brasil.
+Actualmente, el retiro soporta únicamente el método **PIX**, que es el método más rápido y eficiente para transferencias en Brasil.
 
-## <Icon icon="folder-tree" type="solid"/> Estrutura
+## <Icon icon="folder-tree" type="solid"/> Estructura
 
-Um saque é representado em nossa API pela seguinte estrutura de transação:
+Un retiro está representado en nuestra API por la siguiente estructura de transacción:
 
 ```json json
 {
@@ -38,7 +38,7 @@ Um saque é representado em nossa API pela seguinte estrutura de transação:
         ```
 
         `id` : <u> string. </u> <br />
-        Id único da transação de saque na AbacatePay
+        Id único de la transacción de retiro en AbacatePay
     </Accordion>
     <Accordion title="status:">
         ```json json {2}
@@ -47,16 +47,16 @@ Um saque é representado em nossa API pela seguinte estrutura de transação:
         }
         ```
         `status` : <u> string. </u> <br />
-        Status atual da transação de saque.
+        Estado actual de la transacción de retiro.
 
         <Info >
             |                      |                                                                                                      |
             | ---------------------| ---------------------------------------------------------------------------------------------------- |
-            | `PENDING`            | **Saque criado e aguardando processamento**                                                          |
-            | `EXPIRED`            | **Saque expirado e não pode mais ser processado**                                                    |
-            | `CANCELLED`          | **Saque cancelado**                                                                                 |
-            | `COMPLETE`           | **Saque processado e concluído com sucesso**                                                        |
-            | `REFUNDED`           | **Saque reembolsado**                                                                               |
+            | `PENDING`            | **Retiro creado y aguardando procesamiento**                                                          |
+            | `EXPIRED`            | **Retiro expirado y no puede más ser procesado**                                                    |
+            | `CANCELLED`          | **Retiro cancelado**                                                                                 |
+            | `COMPLETE`           | **Retiro procesado y concluido con éxito**                                                        |
+            | `REFUNDED`           | **Retiro reembolsado**                                                                               |
         </Info>
     </Accordion>
     <Accordion title="devMode:">
@@ -66,7 +66,7 @@ Um saque é representado em nossa API pela seguinte estrutura de transação:
         }
         ```
         `devMode` : <u> boolean. </u> <br />
-        Indica se o saque foi criado em ambiente de desenvolvimento (sandbox) ou produção. Atualmente suportamos saques somente em produção.
+        Indica si el retiro fue creado en ambiente de desarrollo (sandbox) o producción. Actualmente soportamos retiros únicamente en producción.
     </Accordion>
     <Accordion title="receiptUrl:">
         ```json json {2}
@@ -75,7 +75,7 @@ Um saque é representado em nossa API pela seguinte estrutura de transação:
         }
         ```
         `receiptUrl` : <u> string. </u> <br />
-        URL do comprovante da transação de saque.
+        URL del comprobante de la transacción de retiro.
     </Accordion>
     <Accordion title="kind:">
         ```json json {2}
@@ -84,7 +84,7 @@ Um saque é representado em nossa API pela seguinte estrutura de transação:
         }
         ```
         `kind` : <u> string. </u> <br />
-        Tipo da transação. Para saques, sempre será `WITHDRAW`.
+        Tipo de la transacción. Para retiros, siempre será `WITHDRAW`.
     </Accordion>
     <Accordion title="amount:">
         ```json json {2}
@@ -93,7 +93,7 @@ Um saque é representado em nossa API pela seguinte estrutura de transação:
         }
         ```
         `amount` : <u> number. </u> <br />
-        Valor do saque em centavos. No exemplo, R$ 50,00.
+        Valor del retiro en centavos. En el ejemplo, R$ 50,00.
     </Accordion>
     <Accordion title="platformFee:">
         ```json json {2}
@@ -102,7 +102,7 @@ Um saque é representado em nossa API pela seguinte estrutura de transação:
         }
         ```
         `platformFee` : <u> number. </u> <br />
-        Taxa da plataforma cobrada pelo saque em centavos. No exemplo, R$ 0,80.
+        Tasa de la plataforma cobrada por el retiro en centavos. En el ejemplo, R$ 0,80.
     </Accordion>
     <Accordion title="externalId:">
         ```json json {2}
@@ -111,7 +111,7 @@ Um saque é representado em nossa API pela seguinte estrutura de transação:
         }
         ```
         `externalId` : <u> string. </u> <br />
-        Identificador único do saque em seu sistema. Opcional.
+        Identificador único del retiro en tu sistema. Opcional.
     </Accordion>
     <Accordion title="createdAt:">
         ```json json {2}
@@ -120,7 +120,7 @@ Um saque é representado em nossa API pela seguinte estrutura de transação:
         }
         ```
         `createdAt` : <u> string. </u> <br />
-        Data e hora de criação do saque.
+        Fecha y hora de creación del retiro.
     </Accordion>
     <Accordion title="updatedAt:">
         ```json json {2}
@@ -129,54 +129,54 @@ Um saque é representado em nossa API pela seguinte estrutura de transação:
         }
         ```
         `updatedAt` : <u> string. </u> <br />
-        Data e hora da última atualização do saque.
+        Fecha y hora de la última actualización del retiro.
     </Accordion>
 </AccordionGroup>
 
-## Tipos de Chave PIX
+## Tipos de Clave PIX
 
-O saque suporta os seguintes tipos de chave PIX:
+El retiro soporta los siguientes tipos de clave PIX:
 
 <AccordionGroup>
     <Accordion title="CPF:">
-        Chave PIX baseada no CPF (Cadastro de Pessoa Física) do beneficiário.
+        Clave PIX basada en el CPF (Cadastro de Pessoa Física) del beneficiario.
         
-        **Exemplo:** `123.456.789-01`
+        **Ejemplo:** `123.456.789-01`
     </Accordion>
     <Accordion title="CNPJ:">
-        Chave PIX baseada no CNPJ (Cadastro Nacional da Pessoa Jurídica) do beneficiário.
+        Clave PIX basada en el CNPJ (Cadastro Nacional da Pessoa Jurídica) del beneficiario.
         
-        **Exemplo:** `12.345.678/0001-90`
+        **Ejemplo:** `12.345.678/0001-90`
     </Accordion>
     <Accordion title="PHONE:">
-        Chave PIX baseada no número de telefone celular do beneficiário.
+        Clave PIX basada en el número de teléfono celular del beneficiario.
         
-        **Exemplo:** `+5511999999999`
+        **Ejemplo:** `+5511999999999`
     </Accordion>
     <Accordion title="EMAIL:">
-        Chave PIX baseada no endereço de e-mail do beneficiário.
+        Clave PIX basada en la dirección de e-mail del beneficiario.
         
-        **Exemplo:** `usuario@exemplo.com`
+        **Ejemplo:** `usuario@ejemplo.com`
     </Accordion>
     <Accordion title="RANDOM:">
-        Chave PIX aleatória (chave aleatória) do beneficiário.
+        Clave PIX aleatoria (clave aleatoria) del beneficiario.
         
-        **Exemplo:** `a1b2c3d4-e5f6-7890-abcd-ef1234567890`
+        **Ejemplo:** `a1b2c3d4-e5f6-7890-abcd-ef1234567890`
     </Accordion>
 </AccordionGroup>
 
-## Limites e Taxas
+## Límites y Tasas
 
 - **Valor mínimo:** R$ 3,50 (350 centavos)
-- **Taxa da plataforma:** R$ 0,80 centavos se estiver dentro dos limites descritos em nossos [termos de uso](https://abacatepay.com/termos)
-- **Processamento:** Instantâneo
-- **Disponibilidade:** 24/7 caso os limites diários e noturnos da sua conta não tenham sido excedidos
-- **Limite de uso:** 1 saque por minuto. Tentativas em excesso resultarão em erro HTTP 429 (Too Many Requests). Para aumentar o limite entre em contato com nosso suporte
+- **Tasa de la plataforma:** R$ 0,80 centavos si está dentro de los límites descritos en nuestros [términos de uso](https://abacatepay.com/termos)
+- **Procesamiento:** Instantáneo
+- **Disponibilidad:** 24/7 caso los límites diarios y nocturnos de tu cuenta no hayan sido excedidos
+- **Límite de uso:** 1 retiro por minuto. Intentativas en exceso resultarán en error HTTP 429 (Too Many Requests). Para aumentar el límite entre en contacto con nuestro soporte
 
-## Segurança
+## Seguridad
 
-- Todos os saques são autenticados via Bearer Token
-- Validação automática das chaves PIX
-- Logs detalhados de todas as transações
-- Possibilidade de cancelamento em caso de erro
-- Abusos desta API podem resultar em suspensão da conta conforme descrito em nossos [termos de uso](https://abacatepay.com/termos)
+- Todos los retiros son autenticados vía Bearer Token
+- Validación automática de las claves PIX
+- Logs detallados de todas las transacciones
+- Posibilidad de cancelación en caso de error
+- Abusos de esta API pueden resultar en suspensión de la cuenta conforme descrito en nuestros [términos de uso](https://abacatepay.com/termos)
