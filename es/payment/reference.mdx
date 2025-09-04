@@ -1,0 +1,228 @@
+---
+title: "Referencia"
+description: "Crea un enlace de facturación y deja que tu cliente pague"
+icon: "book-open-cover"
+---
+
+El término "facturación" es genérico. Representa un portal de un flujo de pago donde puedes cobrar a tu cliente y él hacer todo el proceso de pago sin ninguna interrupción.
+
+Actualmente una facturación puede ser de dos formas: 
+- `ONE_TIME` para facturaciones que serán pagadas una única vez. Es necesario enviar los datos de tu cliente. Para facturar `ONE_TIME` es obligatorio informar el cliente al crear la facturación por medio de los campos `customerId` o `customer`. 
+  - Solo es necesario proporcionar una de las opciones de identificador del cliente: `customerId` **O** `customer`.
+- `MULTIPLE_PAYMENTS` es una facturación que puede ser pagada múltiples veces y por múltiples personas diferentes. **Ej:** utilización de un único enlace de pago para vender un producto para múltiples personas.
+  - Para facturaciones `MULTIPLE_PAYMENTS` el usuario informará informaciones como CPF, nombre y email en la página del checkout.
+
+
+
+## <Icon icon="folder-tree" type="solid"/> Estructura
+
+Una facturación está representada en nuestra API por la siguiente estructura:
+
+```json json
+{
+  "id": "bill_uA0M0xwg5R4mSyr0n2PjHQXY",
+  "frequency": "ONE_TIME",
+  "url": "https://abacatepay.com/pay/bill_uA0M0xwg5R4mSyr0n2PjHQXY",
+  "amount": 4000,
+  "status": "PAID",
+  "devMode": true,
+  "methods": ["PIX"],
+  "products": [
+    {
+      "id": "prod_dNFbdDjfpaegmzBWWdNM2Huw",
+      "externalId": "prod-1234",
+      "quantity": 1
+    }
+  ],
+  "customer": {
+    "id": "cust_aebxkhDZNaMmJeKsy0AHS0FQ",
+    "metadata": {
+      "name": "Test Customer",
+      "cellphone": "11999999999",
+      "taxId": "12345678900",
+      "email": "test@example.com"
+    }
+  },
+  "metadata": {
+    "fee": 100,
+    "returnUrl": "https://example.com/billing",
+    "completionUrl": "https://example.com/completion"
+  },
+  "nextBilling": null,
+  "allowCoupons": false,
+  "coupons": [],
+  "createdAt": "2024-12-06T18:56:15.538Z",
+  "updatedAt": "2024-12-06T18:56:15.538Z"
+}
+```
+
+## Atributos:
+
+<AccordionGroup>
+    <Accordion title="id:">
+        ```json json {2}
+        {
+        "id": "bill_uA0M0xwg5R4mSyr0n2PjHQXY",
+        } 
+        ```
+
+        `id` : <u> string. </u> <br />
+        Id único de la facturación en AbacatePay
+    </Accordion>
+    <Accordion title="frequency:">
+        ```json json {2}
+        {
+        "frequency": "ONE_TIME",
+        }
+        ```
+        `frequency` : <u> string. </u> <br />
+        Frecuencia de la facturación. Puede ser `ONE_TIME` o `MULTIPLE_PAYMENTS`.
+
+        <Info >
+            |                      |                                                                                                      |
+            | ---------------------| ---------------------------------------------------------------------------------------------------- |
+            | `ONE_TIME`           | **Facturación que acepta un único pago. Es necesario enviar los datos del cliente**                  |
+            | `MULTIPLE_PAYMENTS`  | **Facturación en modo checkout, acepta varios pagos. No es necesario enviar los datos del cliente.**|
+        </Info>
+    </Accordion>
+     <Accordion title="url:">
+       ```json json {2}
+        {
+          "url": "https://abacatepay.com/pay/bill_uA0M0xwg5R4mSyr0n2PjHQXY",
+        }
+        ```
+        `url` : <u> string. </u> <br />
+        URL para que tu cliente ejecute el pago de la facturación
+
+        ### Amount:
+        ```json json {2}
+        {
+          "amount": 4000,
+        }
+        ```
+        `amount` : <u> number. </u> <br />
+        Valor de la facturación en centavos
+    </Accordion>
+    <Accordion title="amount:">
+        ```json json {2}
+        {
+          "amount": 4000,
+        }
+        ```
+        `amount` : <u> number. </u> <br />
+        Valor de la facturación en centavos
+
+    </Accordion>
+       <Accordion title="status:">
+        ```json json {2}
+        {
+          "status": "PAID",
+        }
+        ```
+        `status` : <u> string. </u> <br />
+        Estado de la facturación. Puede ser `PENDING`, `EXPIRED`, `CANCELLED`, `PAID`, `REFUNDED`
+
+        <Info >
+            |  |                            |
+            | -----------| ------------------------------------- |
+            | `PENDING`  | **La facturación está con el pago pendiente**                    |
+            | `EXPIRED`  | **El tiempo límite de pago fue excedido**                          |
+            | `CANCELLED`| **La facturación fue cancelada por ti** |
+            | `PAID`     | **La facturación fue pagada con éxito por el cliente** |
+            | `REFUNDED` | **El valor fue devuelto al cliente** |
+        </Info>
+    </Accordion>
+    <Accordion title="methods:">
+       ```json json {2}
+        {
+          "methods": ["PIX"],
+        }
+        ```
+        `methods` : <u> array </u> <br />
+        Tipos de pago. Soportamos solamente `PIX` en el momento.
+    </Accordion>
+    <Accordion title="products:">
+       ```json json {2-9}
+        {
+        "products":
+        [
+          {
+            "id": "prod_dNFbdDjfpaegmzBWWdNM2Huw",
+            "externalId": "prod-1234",
+            "quantity": 1
+          }
+        ],
+        }
+        ```
+        `products` : <u> array </u> <br />
+        Lista de productos incluidos en la facturación
+    </Accordion>
+    <Accordion title="customer:">
+        ```json json {2-10}
+        {
+          "customer": {
+            "id": "cust_aebxkhDZNaMmJeKsy0AHS0FQ",
+            "metadata": {
+              "name": "Test Customer",
+              "cellphone": "11999999999",
+              "taxId": "12345678900",
+              "email": "test@example.com"
+            }
+          }
+        }
+        ```
+        `customer` : <u> object </u> <br />
+        Cliente al que estás cobrando. Vea referencia de la estructura <a href="./client/reference.mdx"> aquí </a>
+    </Accordion>
+    <Accordion title="metadata:">
+        ```json json {2-5}
+        {
+          "metadata": {
+            "fee": 100,
+            "returnUrl": "https://example.com/billing",
+            "completionUrl": "https://example.com/completion"
+          }
+        }
+        ```
+        `metadata` : <u> object </u> <br />
+        Objeto con metadatos sobre la facturación
+
+        * `fee`  <u> number </u>
+        Tasa aplicada por AbacatePay
+        * `returnUrl` <u>string </u>
+        URL a la que el cliente será redirigido al hacer clic en el botón "volver"
+        * `completionUrl` <u>string </u>
+        URL a la que el cliente será redirigido al realizar el pago
+    </Accordion>
+    <Accordion title="nextBilling:">
+        ```json json {2}
+        {
+          "nextBilling": null,
+        }
+        ```
+
+        `nextBilling` : <u> date-time | null. </u> <br />
+        Fecha y hora de la próxima facturación, o null para facturaciones únicas
+    </Accordion>
+    <Accordion title="allowCoupons:">
+        ```json json {2}
+        {
+          "allowCoupons": false,
+        }
+        ```
+
+        `allowCoupons` : <u> bool | null. </u> <br />
+        Permite o no cupones para la facturación
+    </Accordion>
+    <Accordion title="coupons:">
+        ```json json {2}
+        {
+          "coupons": [],
+        }
+        ```
+
+        `coupons` :<u> array </u> <br />
+        Cupones permitidos en la facturación. Solo son considerados los cupones si `allowCoupons` es verdadero.
+    </Accordion>
+
+</AccordionGroup>

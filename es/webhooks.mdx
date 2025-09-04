@@ -1,0 +1,188 @@
+---
+title: 'Webhooks'
+description: 'Configura y recibe notificaciones sobre actualizaciones'
+icon: 'webhook'
+---
+
+Los webhooks permiten que tu aplicación reciba notificaciones en tiempo real sobre eventos importantes de AbacatePay.
+
+## <Icon icon="mobile" type="solid"/>  Gestionando webhooks
+
+Gestiona tus webhooks directamente en nuestra plataforma. Puedes:
+- Listar todos los webhooks activos
+- Crear nuevos webhooks
+- Remover webhooks existentes
+
+<Card title="Ambientes y Webhooks" icon="book" horizontal>
+  Los webhooks son específicos para cada ambiente:
+  - Webhooks creados en **dev mode** reciben notificaciones únicamente del ambiente de pruebas
+  - Webhooks creados en **producción** reciben notificaciones únicamente de datos reales
+  
+  Sabe más sobre el ambiente de desarrollo <a href="./devmode">aquí</a>.
+</Card>
+
+## <Icon icon="key" type="solid"/>  Creando webhooks
+
+<Card title="Seguridad de los Webhooks" icon="light-emergency-on" horizontal>
+  * Configura un secret único para cada webhook
+  * Valida el secret en todas las peticiones recibidas
+  * Usa HTTPS para todas las URLs de webhook
+  * Implementa retry logic para lidiar con fallas temporales
+</Card>
+
+## Cómo crear tu webhook
+
+Sigue estos pasos en el dashboard de AbacatePay:
+
+<Steps>
+  <Step title="Accede a la Sección de Webhooks">
+    <Card>
+      <img
+        src="/images/criar-webhook.png"
+        alt="Interfaz de la plataforma AbacatePay mostrando la sección de webhooks"
+      />
+      <Card title="Navega hasta la sección Integrar y haz clic en Webhooks">
+        Inicia el proceso de configuración de un nuevo webhook
+      </Card>
+    </Card>
+  </Step>
+  <Step title="Inicia la Creación">
+    <Card>
+      <img
+        src="/images/salvar-webhook.png"
+        alt="Formulario de creación de webhook"
+      />
+      <Card title="Haz clic en 'Crear' y prepárate para configurar">
+        Serás direccionado al formulario de configuración
+      </Card>
+    </Card>
+  </Step>
+  <Step title="Configura tu Webhook">
+    <Card>
+      <Card title="Completa los campos necesarios:" horizontal> 
+        * **Nombre**: Identificador único para tu webhook (ej: "Notificaciones de Pago")
+        * **URL**: Endpoint HTTPS que recibirá las notificaciones
+        * **Secret**: Clave secreta para validar las peticiones
+      </Card>
+    </Card>
+  </Step>
+</Steps>
+
+## <Icon icon="lock" type="solid"/> Protegiendo tus peticiones
+
+Cada notificación enviada para tu webhook incluye el secret configurado como parámetro de query string para validación.
+
+### Ejemplo de URL de Webhook
+
+URL base de tu webhook:
+```
+https://misitio.com/webhook/abacatepay
+```
+
+URL con secret (como será llamado):
+```
+https://misitio.com/webhook/abacatepay?webhookSecret=tu_secret_aqui
+```
+
+### Ejemplo de Implementación
+
+```javascript
+// Ejemplo de validación del webhook
+app.post('/webhook/abacatepay', (req, res) => {
+  const webhookSecret = req.query.webhookSecret;
+  
+  if (webhookSecret !== process.env.WEBHOOK_SECRET) {
+    return res.status(401).json({ error: 'Invalid webhook secret' });
+  }
+  
+  // Procesa la notificación
+  const event = req.body;
+  console.log('Received webhook:', event);
+  
+  res.status(200).json({ received: true });
+});
+```
+
+## <Icon icon="bell" type="solid"/> Eventos Soportados
+
+Actualmente, soportamos los siguientes eventos:
+
+### `billing.paid`
+
+Este evento es disparado cuando un pago es confirmado. El payload varía dependiendo del origen del pago:
+
+#### Pago vía PIX QR Code
+
+```json
+{
+  "data": {
+    "payment": {
+      "amount": 1000,
+      "fee": 80,
+      "method": "PIX"
+    },
+    "pixQrCode": {
+      "amount": 1000,
+      "id": "pix_char_mXTWdj6sABWnc4uL2Rh1r6tb",
+      "kind": "PIX",
+      "status": "PAID"
+    }
+  },
+  "devMode": false,
+  "event": "billing.paid"
+}
+```
+
+#### Pago vía Facturación
+
+```json
+{
+  "data": {
+    "payment": {
+      "amount": 1000,
+      "fee": 80,
+      "method": "PIX"
+    },
+    "billing": {
+      "amount": 1000,
+      "couponsUsed": [],
+      "customer": {
+        "id": "cust_4hnLDN3YfUWrwQBQKYMwL6Ar",
+        "metadata": {
+          "cellphone": "11111111111",
+          "email": "christopher@abacatepay.com",
+          "name": "Christopher Ribeiro",
+          "taxId": "12345678901"
+        }
+      },
+      "frequency": "ONE_TIME",
+      "id": "bill_QgW1BT3uzaDGR3ANKgmmmabZ",
+      "kind": [
+        "PIX"
+      ],
+      "paidAmount": 1000,
+      "products": [
+        {
+          "externalId": "123",
+          "id": "prod_RGKGsjBWsJwRn1mHyGMFJNjP",
+          "quantity": 1
+        }
+      ],
+      "status": "PAID"
+    }
+  },
+  "devMode": false,
+  "event": "billing.paid"
+}
+```
+
+<Card title="Nota Importante" icon="info" horizontal>
+  * El campo `devMode` indica si el evento ocurrió en el ambiente de desarrollo
+  * Todos los valores monetarios son expresados en centavos
+  * El campo `fee` representa la tasa cobrada por AbacatePay
+  * El campo `event` identifica el tipo de evento recibido
+</Card>
+
+<Card title="¿Necesitas ayuda?" icon="headset" color="#25c2a0">
+  Nuestro equipo está disponible para auxiliar en la implementación de webhooks. Entre en contacto por el e-mail <Icon icon="envelope" type="solid"/> ayuda@abacatepay.com
+</Card>

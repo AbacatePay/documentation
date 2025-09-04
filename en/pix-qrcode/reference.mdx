@@ -1,0 +1,165 @@
+---
+title: 'Reference'
+description: 'Gere um QRCode Pix e um código copia-e-cola para o seu cliente'
+icon: 'book-open-cover'
+---
+
+
+
+## <Icon icon="folder-tree" type="solid"/> Estrutura
+
+Uma cobrança via QRCode Pix é representada em nossa API pela seguinte estrutura:
+
+```json json
+{
+  "id": "pix_charabc123456789",
+  "amount": 4000,
+  "status": "PAID",
+  "devMode": true,
+  "method": "PIX",
+  "brCode": "...",
+  "brCodeBase64": "...",
+  "platformFee": 80,
+  "description": "Pagamento PIX com AbacatePay",
+  "metadata": {
+    "pedidoId": "123"
+  },
+  "createdAt": "2024-12-06T18:56:15.538Z",
+  "updatedAt": "2024-12-06T18:56:15.538Z",
+  "expiresAt": "2024-12-06T18:56:15.538Z"
+}
+```
+
+## Atributos:
+
+<AccordionGroup>
+    <Accordion title="id:">
+        ```json json {2}
+        {
+        "id": "abc123uA0M0xwg5R4mSyr0n2PjHQXY"
+        } 
+        ```
+        `id` : <u> string. </u> <br />
+        Identificador único da cobrança.
+    </Accordion>
+
+    <Accordion title="amount:">
+        ```json json {2}
+        {
+        "amount": 4000
+        }
+        ```
+        `amount` : <u> number. </u> <br />
+        Valor da cobrança em centavos (ex: 4000 = R$ 40,00)
+    </Accordion>
+
+    <Accordion title="status:">
+        ```json json {2}
+        {
+        "status": "PAID"
+        }
+        ```
+        `status` : <u> string. </u> <br />
+        Status da cobrança. Pode ser `PENDING`, `EXPIRED`, `CANCELLED`, `PAID`, `REFUNDED`.
+        <Info>
+            | Status       | Descrição |
+            | ----------- | ------------------------------------- |
+            | `PENDING`  | **A cobrança está com o pagamento pendente** |
+            | `EXPIRED`  | **O tempo limite de pagamento foi excedido** |
+            | `CANCELLED`| **A cobrança foi cancelada por você** |
+            | `PAID`     | **A cobrança foi paga com sucesso pelo cliente** |
+            | `REFUNDED` | **O valor foi devolvido ao cliente** |
+        </Info>
+    </Accordion>
+
+    <Accordion title="devMode:">
+        ```json json {2}
+        {
+        "devMode": true
+        }
+        ```
+        `devMode` : <u> boolean. </u> <br />
+        Indica se a cobrança está em ambiente de testes (`true`) ou produção (`false`).
+    </Accordion>
+
+    <Accordion title="method:">
+        ```json json {2}
+        {
+        "method": "PIX"
+        }
+        ```
+        `method` : <u> string. </u> <br />
+        Método de pagamento.
+    </Accordion>
+
+    <Accordion title="brCode:">
+        ```json json {2}
+        {
+        "brCode": "..."
+        }
+        ```
+        `brCode` : <u> string. </u> <br />
+        Código PIX (copia-e-cola) para pagamento.
+    </Accordion>
+
+    <Accordion title="brCodeBase64:">
+        ```json json {2}
+        {
+        "brCodeBase64": "..."
+        }
+        ```
+        `brCodeBase64` : <u> string. </u> <br />
+        Código PIX no formato Base64 (útil para exibição em imagens).
+    </Accordion>
+
+    <Accordion title="platformFee:">
+        ```json json {2}
+        {
+        "platformFee": 80
+        }
+        ```
+        `platformFee` : <u> number. </u> <br />
+        Taxa da plataforma em centavos. Exemplo: `80` significa R$ 0,80.
+    </Accordion>
+
+    <Accordion title="description:">
+        ```json json {2}
+        {
+        "description": "Pagamento PIX com AbacatePay"
+        }
+        ```
+        `description` : <u> string. </u> <br />
+        Descrição da cobrança.
+    </Accordion>
+
+    <Accordion title="createdAt:">
+        ```json json {2}
+        {
+        "createdAt": "2024-12-06T18:56:15.538Z"
+        }
+        ```
+        `createdAt` : <u> date-time. </u> <br />
+        Data e hora da criação da cobrança.
+    </Accordion>
+
+    <Accordion title="updatedAt:">
+        ```json json {2}
+        {
+        "updatedAt": "2024-12-06T18:56:15.538Z"
+        }
+        ```
+        `updatedAt` : <u> date-time. </u> <br />
+        Última atualização da cobrança.
+    </Accordion>
+
+    <Accordion title="expiresAt:">
+        ```json json {2}
+        {
+        "expiresAt": "2024-12-06T18:56:15.538Z"
+        }
+        ```
+        `expiresAt` : <u> date-time. </u> <br />
+        Data e hora de expiração do QRCode.
+    </Accordion>
+
+</AccordionGroup>

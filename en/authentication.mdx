@@ -1,0 +1,93 @@
+---
+title: 'Authentication'
+description: 'How to send requests to our API'
+icon: 'lock'
+---
+
+<Tip>
+  **API Key**: Your credential to access the AbacatePay API. This key identifies your account and authorizes your requests. **IMPORTANT**: Without the API key, requests will be rejected.
+</Tip> 
+
+## <Icon icon="lock" type="solid"/>  Managing API keys
+
+Manage your API keys directly in our platform. You can:
+- List all active keys
+- Create new keys
+- Revoke existing keys
+
+<Card title="Environments and API Keys" icon="book" horizontal>
+  All requests are sent to the same endpoint (`https://api.abacatepay.com`), but the environment is determined by the API key used:
+  - Keys created in **dev mode** process transactions in the test environment
+  - Keys created in **production** process real transactions
+  
+  Learn more about the development environment <a href="./devmode">here</a>.
+</Card>
+
+<Card title="Authentication Error" icon="warning" horizontal>
+  The API will return HTTP code `401` when:
+  - The API key is not provided in the header
+  - The key is invalid
+  - The key has been revoked
+</Card>
+
+## <Icon icon="key" type="solid"/>  Creating API keys
+
+<Card title="Security Best Practices" icon="light-emergency-on" horizontal>
+  * Store your keys in environment variables or secret managers
+  * Never share your API keys
+  * AbacatePay will never request your keys
+  * Immediately revoke any compromised key
+</Card>
+
+## How to create your API key
+
+Follow these steps in the AbacatePay dashboard:
+
+<Steps>
+  <Step title="Access the Integration Section">
+    <Card>
+      <img
+        src="/images/criar-chave-api.png"
+        alt="AbacatePay platform interface showing the key creation button"
+      />
+      <Card title="Click the 'Create Key' button">
+        Start the process of creating a new API key
+      </Card>
+    </Card>
+  </Step>
+  <Step title="Add a Description">
+    <Card>
+      <img
+        src="/images/exemplo-de-chave-api.png"
+        alt="Key creation form with description field"
+      />
+      <Card title="Identify your key">
+        Add a clear description to identify the purpose of this key
+      </Card>
+    </Card>
+  </Step>
+  <Step title="Copy your Key">
+    <Card>
+      <img
+        src="/images/copiar-chave-api.png"
+        alt="List of keys with copy option"
+      />
+      <Card title="Store your key securely">
+        Copy the generated key and store it in a secure location
+      </Card>
+    </Card>
+  </Step>
+</Steps>
+
+After creating your key, you can start integrating with our API. Remember to include the key in all requests in the `Authorization` header:
+
+```bash
+curl -X POST https://api.abacatepay.com/v1/payments \
+  -H "Authorization: Bearer your_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{"amount": 1000}'
+```
+
+<Card title="Important Note" icon="info" horizontal>
+  The same endpoint (`https://api.abacatepay.com`) is used for both development and production environments. The environment is automatically determined by the API key used in the request.
+</Card>

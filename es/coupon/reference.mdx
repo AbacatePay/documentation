@@ -1,0 +1,150 @@
+---
+title: 'Referencia'
+description: 'Crea cupones de descuento para que tus clientes los usen una o varias veces'
+icon: 'book-open-cover'
+---
+
+Los cupones de descuento permiten que ofrezcas reducciones de precio a tus clientes de forma controlada y estratégica. Puedes crear cupones con descuento porcentual o valor fijo, definir límites de uso y acompañar cuántas veces fueron utilizados.
+
+
+## <Icon icon="folder-tree" type="solid"/>  Estructura
+
+Un cupón está representado en nuestra API por la siguiente estructura:
+
+```json
+{
+  "id": "MY_COUPON",
+  "discountKind": "PERCENTAGE",
+  "discount": 10,
+  "maxRedeems": -1,
+  "redeemsCount": 0,
+  "status": "ACTIVE",
+  "devMode": true,
+  "notes": "teste de cupom",
+  "createdAt": "2025-01-23T14:06:16.880Z",
+  "updatedAt": "2025-01-23T14:06:16.880Z"
+}
+```
+
+## Atributos:
+
+<AccordionGroup>
+    <Accordion title="id:">
+        ```json {2}
+        {
+          "id": "MY_COUPON",
+        } 
+        ```
+
+        `id` : <u> string. </u> <br />
+        Código único del cupón que tus clientes utilizarán para aplicar el descuento
+    </Accordion>
+    <Accordion title="notes:">
+        ```json {2}
+        {
+          "notes": "Cupón de bienvenida - 10% de descuento",
+        }
+        ```
+        `notes` : <u> string. </u> <br />
+        Descripción interna del cupón para tu organización y control
+    </Accordion>
+    <Accordion title="maxRedeems:">
+        ```json {2}
+        {
+          "maxRedeems": -1,
+        }
+        ```
+        `maxRedeems` : <u> number. </u> <br />
+        Límite de veces que el cupón puede ser utilizado. Usa `-1` para cupones ilimitados o un número específico para limitar el uso
+    </Accordion>
+    <Accordion title="redeemsCount:">
+        ```json {2}
+        {
+          "redeemsCount": 0,
+        }
+        ```
+        `redeemsCount` : <u> number. </u> <br />
+        Contador de cuántas veces el cupón ya fue utilizado por los clientes
+    </Accordion>
+    <Accordion title="discountKind:">
+        ```json {2}
+        {
+          "discountKind": "PERCENTAGE",
+        }
+        ```
+        `discountKind` : <u> string. </u> <br />
+        Tipo de descuento aplicado por el cupón
+
+        <Info>
+            | Tipo | Descripción |
+            | ----------- | ------------------------------------- |
+            | `PERCENTAGE` | **Descuento porcentual** (ej: 10% de descuento) |
+            | `FIXED` | **Valor fijo** (ej: R$ 5,00 de descuento) |
+        </Info>
+    </Accordion>
+    <Accordion title="discount:">
+        ```json {2}
+        {
+          "discount": 10,
+        }
+        ```
+        `discount` : <u> number. </u> <br />
+        Valor del descuento. Para `PERCENTAGE` usa números de 1-100 (ej: 10 = 10%). Para `FIXED` usa el valor en centavos (ej: 500 = R$ 5,00)
+    </Accordion>
+    <Accordion title="status:">
+        ```json {2}
+        {
+          "status": "ACTIVE",
+        }
+        ```
+        `status` : <u> string. </u> <br />
+        Estado actual del cupón
+
+        <Info>
+            | Estado | Descripción |
+            | ----------- | ------------------------------------- |
+            | `ACTIVE` | **El cupón está activo y puede ser utilizado por los clientes** |
+            | `DELETED` | **El cupón fue removido y no puede más ser usado** |
+            | `DISABLED` | **El cupón fue deshabilitado o alcanzó el límite máximo de usos** |
+        </Info>
+    </Accordion>
+    <Accordion title="devMode:">
+        ```json {2}
+        {
+          "devMode": true,
+        }
+        ```
+        `devMode` : <u> boolean. </u> <br />
+        Indica si el cupón fue creado en ambiente de desarrollo (`true`) o producción (`false`)
+    </Accordion>
+    <Accordion title="metadata:">
+        ```json {2}
+        {
+          "metadata": {
+            "campaign": "black-friday-2024",
+            "category": "new-customers"
+          },
+        }
+        ```
+        `metadata` : <u> object. </u> <br />
+        Objeto para almacenar informaciones adicionales sobre el cupón, como campaña, categoría u otros datos relevantes para tu organización
+    </Accordion>
+    <Accordion title="createdAt:">
+        ```json {2}
+        {
+          "createdAt": "2025-01-23T14:06:16.880Z",
+        }
+        ```
+        `createdAt` : <u> date-time. </u> <br />
+        Fecha y hora de creación del cupón
+    </Accordion>
+    <Accordion title="updatedAt:">
+        ```json {2}
+        {
+          "updatedAt": "2025-01-23T14:06:16.880Z",
+        }
+        ```
+        `updatedAt` : <u> date-time. </u> <br />
+        Fecha y hora de la última actualización del cupón
+    </Accordion>
+</AccordionGroup>

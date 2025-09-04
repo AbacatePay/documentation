@@ -1,0 +1,62 @@
+---
+title: 'Referencia'
+description: 'Gestiona tus clientes, aquellos que te pagan.'
+icon: 'book-open-cover'
+---
+
+Un cliente es tu usuario final, aquel al que vas a cobrar y que pagará tu producto.
+
+## <Icon icon="folder-tree" type="solid"/>  Estructura
+
+Un cliente está representado en nuestra API por la siguiente estructura:
+
+```json
+{
+  "id": "cust_aebxkhDZNaMmJeKsy0AHS0FQ",
+  "metadata": {
+    "name": "Test Customer",
+    "cellphone": "11999999999",
+    "taxId": "12345678900",
+    "email": "test@example.com"
+  }
+} 
+```
+
+## Atributos
+
+### id: 
+
+```json {2}
+{
+  "id": "cust_aebxkhDZNaMmJeKsy0AHS0FQ",
+} 
+```
+
+`id` : <u> string. </u> <br />
+Id único del cliente en AbacatePay
+
+### metadatos: 
+Objeto con los datos del cliente
+
+```json json {2-7}
+{
+  "metadata": {
+    "name": "Test Customer",
+    "cellphone": "11999999999",
+    "taxId": "12345678900",
+    "email": "test@example.com"
+  }
+} 
+```
+
+* `name` : <u> string. </u> <br /> Nombre del cliente (opcional)
+
+* `cellphone` : <u> string. </u> <br /> Teléfono del cliente (opcional)
+
+* `taxId` : <u> string. </u> <br /> Documento válido del cliente, puede ser CPF o CNPJ (opcional)
+
+* `email` : <u> string. </u> <br /> E-mail del cliente (obligatorio)
+
+<Tip title="Los clientes son únicos por CPF/CNPJ" icon="book" horizontal>
+ No es posible crear un cliente con CPF/CNPJ inválido y si ya existe un cliente con ese CPF/CNPJ, la API no creará el nuevo cliente pero retornará el cliente ya existente
+</Tip>

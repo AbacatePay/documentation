@@ -1,0 +1,921 @@
+openapi: 3.1.0
+info:
+  title: AbacatePay API
+  description: API for managing charges and payments using AbacatePay.
+  version: 1.0.0
+servers:
+  - url: https://api.abacatepay.com/v1
+    description: Single server for production and sandbox environments.
+paths:
+  /customer/create:
+    post:
+      summary: Create a new customer
+      description: Allows you to create a new customer for your store.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Your customer data if you want to create them at the time of creating your charge.
+              required: ['name', 'cellphone', 'email', 'taxId']
+              additionalProperties: false
+              properties:
+                name:
+                  type: string
+                  description: Full name of your customer
+                  example: Daniel Lima
+                cellphone:
+                  type: string
+                  description: Customer's mobile phone
+                  example: (11) 4002-8922
+                email:
+                  type: string
+                  description: Customer's email
+                  example: daniel_lima@abacatepay.com
+                taxId:
+                  type: string
+                  description: Valid CPF or CNPJ of the customer.
+                  example: 123.456.789-01
+      responses:
+        '200':
+          description: Customer created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Customer'
+                  error:
+                    type: 'null'
+        '401':
+          description: Unauthorized. Authentication failed.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message describing the reason for authentication failure.
+                    example: 'Invalid or missing authentication token.'
+  /customer/list:
+    get:
+      summary: List customers
+      description: Allows you to retrieve a list of all your customers.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Customer list returned successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    description: List of customers.
+                    items:
+                      $ref: '#/components/schemas/Customer'
+                  error:
+                    type: 'null'
+        '401':
+          description: Unauthorized. Authentication failed.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message describing the reason for authentication failure.
+                    example: 'Invalid or missing authentication token.'
+  /coupon/create:
+    post:
+      summary: Create a new coupon
+      description: Allows you to create a new coupon that can be used by your customers to apply discounts.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  $ref: '#/components/schemas/Coupon'
+                error:
+                  type: 'null'
+      responses:
+        '200':
+          description: Coupon created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/CouponResponse'
+                  error:
+                    type: 'null'
+        '401':
+          description: Unauthorized. Authentication failed.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message describing the reason for authentication failure.
+                    example: 'Invalid or missing authentication token.'
+  /coupon/list:
+    get:
+      summary: List coupons
+      description: Allows you to retrieve a list of all your coupons.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Coupon list returned successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    description: List of coupons.
+                    items:
+                      $ref: '#/components/schemas/CouponResponse'
+                  error:
+                    type: 'null'
+        '401':
+          description: Unauthorized. Authentication failed.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message describing the reason for authentication failure.
+                    example: 'Invalid or missing authentication token.'
+  /billing/create:
+    post:
+      summary: Create a new charge
+      description: Allows you to create a payment link for your customer to pay you.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                frequency:
+                  type: string
+                  description: Defines the type of charge frequency. For one-time charges, use `ONE_TIME`. For charges that can be paid more than once, use `MULTIPLE_PAYMENTS`.
+                  enum: ['ONE_TIME', 'MULTIPLE_PAYMENTS']
+                  default: 'ONE_TIME'
+                  example: 'ONE_TIME'
+                methods:
+                  type: array
+                  description: Payment methods that will be used. Currently, only PIX is supported.
+                  items:
+                    type: string
+                    enum: ['PIX']
+                  minItems: 1
+                  maxItems: 1
+                  uniqueItems: true
+                  default: ['PIX']
+                  example: ['PIX']
+                products:
+                  type: array
+                  description: List of products your customer is paying for.
+                  items:
+                    type: object
+                    properties:
+                      externalId:
+                        type: string
+                        description: The product id in your system. We use this id to create your product in AbacatePay automatically, so make sure your id is unique.
+                        example: 'prod-1234'
+                      name:
+                        type: string
+                        description: Product name.
+                        example: 'Fitness Program Subscription'
+                      description:
+                        type: string
+                        description: Detailed product description.
+                        example: 'Access to premium fitness program for 1 month.'
+                      quantity:
+                        type: integer
+                        description: Quantity of the product being purchased.
+                        minimum: 1
+                        example: 2
+                      price:
+                        type: integer
+                        description: Price per unit of the product in cents. Minimum is 100 (1 BRL).
+                        minimum: 100
+                        example: 2000
+                    required: ['externalId', 'name', 'quantity', 'price']
+                    additionalProperties: false
+                  minItems: 1
+                  example:
+                    - externalId: 'prod-1234'
+                      name: 'Fitness Program Subscription'
+                      description: 'Access to premium fitness program for 1 month.'
+                      quantity: 2
+                      price: 2000
+                returnUrl:
+                  type: string
+                  format: uri
+                  description: URL to redirect the customer if they click the "Back" option.
+                  example: 'https://example.com/billing'
+                completionUrl:
+                  type: string
+                  format: uri
+                  description: URL to redirect the customer when payment is completed.
+                  example: 'https://example.com/completion'
+                customerId:
+                  type: string
+                  description: The id of a customer already registered in your store.
+                  example: 'cust_abcdefghij'
+                customer:
+                  type: object
+                  description: Your customer data. If the customer doesn't exist, they will be created.
+                  required: ['name', 'cellphone', 'email', 'taxId']
+                  additionalProperties: false
+                  properties:
+                    name:
+                      type: string
+                      description: Full name of your customer
+                      example: Daniel Lima
+                    cellphone:
+                      type: string
+                      description: Customer's mobile phone
+                      example: (11) 4002-8922
+                    email:
+                      type: string
+                      description: Customer's email
+                      example: daniel_lima@abacatepay.com
+                    taxId:
+                      type: string
+                      description: CPF or CNPJ of the customer.
+                      example: 123.456.789-01
+                allowCoupons: 
+                  type: boolean
+                  default: false
+                  example: false
+                  description: If true, coupons can be used with the billing
+                coupons: 
+                  type: array
+                  description: List of available coupons to be used with the billing
+                  example: ['ABKT10', "ABKT5", "PROMO10"]
+                  default: []
+                  maxItems: 50
+                  items:
+                    type: string
+                externalId:
+                  type: string
+                  description: If you have a unique identifier from your application for charges, completely optional.
+                  example: 'your_id_123'
+
+              required: ['frequency', 'methods', 'products', 'returnUrl', 'completionUrl']
+              additionalProperties: false
+      responses:
+        '200':
+          description: Charge created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Billing'
+                  error:
+                    type: 'null'
+        '401':
+          description: Unauthorized. Authentication failed.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message describing the reason for authentication failure.
+                    example: 'Invalid or missing authentication token.'
+  /billing/list:
+    get:
+      summary: List charges
+      description: Allows you to retrieve a list of all created charges.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Charge list returned successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    description: List of created charges.
+                    items:
+                      $ref: '#/components/schemas/Billing'
+                  error:
+                    type: 'null'
+        '401':
+          description: Unauthorized. Authentication failed.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message describing the reason for authentication failure.
+                    example: 'Invalid or missing authentication token.'
+  /pixQrCode/create:
+    post:
+      summary: 'Create PIX QRCode'
+      description: Allows you to create a copy-and-paste code and a PIX QRCode for your customer to make the payment.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: number
+                  description: Charge amount in cents.
+                expiresIn:
+                  type: number
+                  description: Charge expiration time in seconds.
+                description:
+                  type: string
+                  maxLength: 140
+                  description: Message that will appear at the time of PIX payment.
+                customer:
+                  type: object
+                  description: |
+                    Your customer data to create them.
+                    The customer object is not mandatory, but when providing any customer information, all fields `name`, `cellphone`, `email` and `taxId` are required.
+                  required: ['name', 'cellphone', 'email', 'taxId']
+                  additionalProperties: false
+                  properties:
+                    name:
+                      type: string
+                      description: Full name of your customer
+                      example: Daniel Lima
+                    cellphone:
+                      type: string
+                      description: Customer's mobile phone
+                      example: (11) 4002-8922
+                    email:
+                      type: string
+                      description: Customer's email
+                      example: daniel_lima@abacatepay.com
+                    taxId:
+                      type: string
+                      description: CPF or CNPJ of the customer.
+                      example: 123.456.789-01
+                metadata:
+                      type: object
+                      description: Optional metadata for the charge
+                      additionalProperties: true
+                      default:
+                       externalId: '123'
+              required: ['amount']
+              additionalProperties: false
+      responses:
+        '200':
+          description: PIX QRCode created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/PixQRCode'
+                  error:
+                    type: 'null'
+        '401':
+          description: Unauthorized. Authentication failed.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message describing the reason for authentication failure.
+                    example: 'Invalid or missing authentication token.'
+  /pixQrCode/check:
+    get:
+      summary: 'Check Status'
+      description: Check PIX QRCode payment status.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Status returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Information about the PIX QRCode progress.
+                        enum: ['PENDING', 'EXPIRED', 'CANCELLED', 'PAID', 'REFUNDED']
+                        example: 'PENDING'
+                      expiresAt:
+                        type: string
+                        description: PIX QRCode expiration date
+                        example: '2025-03-25T21:50:20.772Z'
+                  error:
+                    type: 'null'
+        '401':
+          description: Unauthorized. Authentication failed.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message describing the reason for authentication failure.
+                    example: 'Invalid or missing authentication token.'
+      parameters:
+        - name: id
+          in: query
+          description: PIX QRCode ID
+          required: true
+          schema:
+            type: string
+  /pixQrCode/simulate-payment:
+    post:
+      summary: 'Simulate Payment'
+      description: Simulates payment of a PIX QRCode created in development mode.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                metadata:
+                  type: object
+                  description: Optional metadata for the request
+                  default: {}
+      responses:
+        '200':
+          description: Payment completed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/PixQRCode'
+                  error:
+                    type: 'null'
+        '401':
+          description: Unauthorized. Authentication failed.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message describing the reason for authentication failure.
+                    example: 'Invalid or missing authentication token.'
+      parameters:
+        - name: id
+          in: query
+          description: PIX QRCode ID
+          required: true
+          schema:
+            type: string
+  /withdraw/create:
+    post:
+      summary: Create a new withdrawal
+      description: Allows you to create a new withdrawal to transfer values from your account to a PIX key.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Data needed to create a withdrawal.
+              required: ['externalId', 'method', 'amount', 'pix']
+              additionalProperties: false
+              properties:
+                description:
+                  type: string
+                  description: Optional withdrawal description.
+                  example: Withdrawal to main account
+                externalId:
+                  type: string
+                  description: Unique withdrawal identifier in your system.
+                  example: 'withdraw-1234'
+                method:
+                  type: string
+                  description: Available withdrawal method.
+                  enum: ['PIX']
+                  example: 'PIX'
+                amount:
+                  type: number
+                  description: Withdrawal amount in cents.
+                  minimum: 350
+                  example: 5000
+                pix:
+                  type: object
+                  description: PIX key data to receive the withdrawal.
+                  required: ['type', 'key']
+                  additionalProperties: false
+                  properties:
+                    type:
+                      type: string
+                      description: PIX key type.
+                      enum: ['CPF', 'CNPJ', 'PHONE', 'EMAIL', 'RANDOM']
+                      example: 'CPF'
+                    key:
+                      type: string
+                      description: PIX key value.
+                      example: '123.456.789-01'
+      responses:
+        '200':
+          description: Withdrawal created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Transaction'
+                  error:
+                    type: 'null'
+        '401':
+          description: Unauthorized. Authentication failed.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message describing the reason for authentication failure.
+                    example: 'Invalid or missing authentication token.'
+  /withdraw/list:
+    get:
+      summary: List withdrawals
+      description: Allows you to retrieve a list of all created withdrawals.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Withdrawal list returned successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    description: List of created withdrawals.
+                    items:
+                      $ref: '#/components/schemas/Transaction'
+                  error:
+                    type: 'null'
+        '401':
+          description: Unauthorized. Authentication failed.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message describing the reason for authentication failure.
+                    example: 'Invalid or missing authentication token.'
+components:
+  schemas:
+    Customer:
+      type: object
+      description: Your customer data.
+      required: ['name', 'cellphone', 'email', 'taxId']
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          description: Unique customer identifier
+          example: 'bill_123456'
+        metadata:
+          type: object
+          description: Customer data
+          properties:
+            name:
+              type: string
+              description: Full name of your customer
+              example: Daniel Lima
+            cellphone:
+              type: string
+              description: Customer's mobile phone
+              example: (11) 4002-8922
+            email:
+              type: string
+              description: Customer's email
+              example: daniel_lima@abacatepay.com
+            taxId:
+              type: string
+              description: CPF or CNPJ of the customer.
+              example: 123.456.789-01
+    Coupon:
+      type: object
+      description: Your coupon data.
+      required: ['code', 'discount', 'discountKind']
+      additionalProperties: false
+      properties:
+        code:
+          type: string
+          description: Unique coupon identifier
+          example: DEYVIN_20
+        notes:
+          type: string
+          description: Description about the coupon
+          example: Discount coupon for my audience
+        maxRedeems:
+          type: number
+          description: Number of times the coupon can be redeemed. -1 means this coupon can be redeemed without limits
+          example: 10
+          default: -1
+        discountKind:
+          type: string
+          description: Type of discount applied, percentage or fixed
+          enum: ['PERCENTAGE', 'FIXED']
+        discount:
+          type: number
+          description: Discount value to be applied
+        metadata:
+          type: object
+          description: Key-value object for coupon metadata
+          default: {}
+    CouponResponse:
+      type: object
+      description: Your coupon data.
+      required: ['id', 'discount', 'discountKind', 'status', 'createdAt', 'updatedAt']
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          description: Unique coupon identifier
+          example: DEYVIN_20
+        notes:
+          type: string
+          description: Description about the coupon
+          example: Discount coupon for my audience
+        maxRedeems:
+          type: integer
+          description: Number of times the coupon can be redeemed. -1 means unlimited.
+          example: -1
+          default: 10
+        redeemsCount:
+          type: integer
+          description: Number of times the coupon has already been redeemed.
+          example: 0
+        discountKind:
+          type: string
+          description: Type of discount applied, percentage or fixed
+          enum: ['PERCENTAGE', 'FIXED']
+          example: PERCENTAGE
+        discount:
+          type: number
+          description: Discount value to be applied
+          example: 123
+        devMode:
+          type: boolean
+          description: Indicates if the coupon was created in test environment.
+          example: true
+        status:
+          type: string
+          description: Current coupon status.
+          enum: ['ACTIVE', 'INACTIVE', 'EXPIRED']
+          example: ACTIVE
+        createdAt:
+          type: string
+          format: date-time
+          description: Coupon creation date.
+          example: '2025-05-25T23:43:25.250Z'
+        updatedAt:
+          type: string
+          format: date-time
+          description: Coupon update date.
+          example: '2025-05-25T23:43:25.250Z'
+        metadata:
+          type: object
+          description: Key-value object for coupon metadata
+          default: {}
+
+    Billing:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique charge identifier.
+          example: 'bill_123456'
+        url:
+          type: string
+          format: uri
+          description: URL where the user can complete the payment.
+          example: 'https://pay.abacatepay.com/bill-5678'
+        amount:
+          type: number
+          description: Total amount to be paid in cents.
+          example: 4000
+        status:
+          type: string
+          description: Current charge status.
+          enum: ['PENDING', 'EXPIRED', 'CANCELLED', 'PAID', 'REFUNDED']
+          example: 'PENDING'
+        devMode:
+          type: boolean
+          description: Indicates if the charge was created in test environment.
+          example: true
+        methods:
+          type: array
+          description: Payment methods supported for this charge.
+          items:
+            type: string
+            enum: ['PIX']
+          example: ['PIX']
+        products:
+          type: array
+          description: List of products in the charge.
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                description: Unique product identifier.
+                example: 'prod_123456'
+              externalId:
+                type: string
+                description: The product id in your system.
+                example: 'prod-1234'
+              quantity:
+                type: integer
+                description: Quantity of the product being purchased.
+                example: 2
+        frequency:
+          type: string
+          description: Charge frequency.
+          enum: ['ONE_TIME', 'MULTIPLE_PAYMENTS']
+          example: 'ONE_TIME'
+        nextBilling:
+          type: string
+          format: date-time
+          nullable: true
+          description: Date and time of the next charge, or null for one-time charges.
+          example: 'null'
+        customer:
+          type: object
+          nullable: true
+          $ref: '#/components/schemas/Customer'
+        allowCoupons: 
+          type: boolean
+          nullable: true
+          default: false
+          description: If true, coupons can be used with the billing
+        coupons: 
+          type: array
+          description: List of available coupons to be used with the billing
+          nullable: true
+          default: []
+          items:
+            type: string
+      required:
+        ['id', 'url', 'amount', 'status', 'devMode', 'methods', 'products', 'frequency', 'createdAt', 'updatedAt']
+    PixQRCode:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique PIX QRCode identifier.
+          example: 'pix_char_123456'
+        amount:
+          type: number
+          description: Amount to be paid.
+          example: 100
+        status:
+          type: string
+          description: Information about the PIX QRCode progress.
+          enum: ['PENDING', 'EXPIRED', 'CANCELLED', 'PAID', 'REFUNDED']
+          example: 'PENDING'
+        devMode:
+          type: boolean
+          description: Environment where the PIX QRCode was created.
+          example: true
+        brCode:
+          type: string
+          description: PIX QRCode copy-and-paste code.
+          example: '00020101021226950014br.gov.bcb.pix'
+        brCodeBase64:
+          type: string
+          description: PIX QRCode image in Base64.
+          example: 'data:image/png;base64,iVBORw0KGgoAAA'
+        platformFee:
+          type: number
+          description: Platform fees
+          example: 80
+        createdAt:
+          type: string
+          description: PIX QRCode creation date.
+          example: '2025-03-24T21:50:20.772Z'
+        updatedAt:
+          type: string
+          description: PIX QRCode update date.
+          example: '2025-03-24T21:50:20.772Z'
+        expiresAt:
+          type: string
+          description: PIX QRCode expiration date
+          example: '2025-03-25T21:50:20.772Z'
+    Transaction:
+      type: object
+      description: Transaction data (payment or withdrawal).
+      properties:
+        id:
+          type: string
+          description: Unique transaction identifier.
+          example: 'tran_123456'
+        status:
+          type: string
+          description: Current transaction status.
+          enum: ['PENDING', 'EXPIRED', 'CANCELLED', 'COMPLETE', 'REFUNDED']
+          example: 'PENDING'
+        devMode:
+          type: boolean
+          description: Indicates if the transaction was created in test environment.
+          example: true
+        receiptUrl:
+          type: string
+          format: uri
+          description: Transaction receipt URL.
+          example: 'https://abacatepay.com/receipt/tran_123456'
+        kind:
+          type: string
+          description: Transaction type.
+          enum: ['PAYMENT', 'WITHDRAW']
+          example: 'WITHDRAW'
+          default: 'WITHDRAW'
+        amount:
+          type: number
+          description: Transaction amount in cents.
+          example: 5000
+        platformFee:
+          type: number
+          description: Platform fee in cents.
+          example: 80
+        externalId:
+          type: string
+          description: External transaction identifier.
+          example: 'withdraw-1234'
+        createdAt:
+          type: string
+          format: date-time
+          description: Transaction creation date.
+          example: '2025-03-24T21:50:20.772Z'
+        updatedAt:
+          type: string
+          format: date-time
+          description: Transaction update date.
+          example: '2025-03-24T21:50:20.772Z'
+      required:
+        ['id', 'status', 'devMode', 'receiptUrl', 'kind', 'amount', 'platformFee', 'createdAt', 'updatedAt']
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Bearer authentication header in the format `Bearer <abacatepay-api-key>` where `<abacatepay-api-key>` is your API key.
+
