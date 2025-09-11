@@ -619,6 +619,46 @@ paths:
                     type: string
                     description: Mensagem de erro descrevendo o motivo da falha na autenticação.
                     example: 'Token de autenticação inválido ou ausente.'
+  /store/get:
+    get:
+      summary: Obter detalhes da loja
+      description: Permite que você recupere os detalhes da sua conta/loja, incluindo informações de saldo.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Detalhes da loja retornados com sucesso.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: object
+                    properties:
+                      error:
+                        type: string
+                        description: Mensagem de erro caso ocorra algum problema.
+                        example: 'Erro ao recuperar dados da loja.'
+                      data:
+                        type: 'null'
+                    required: ['error']
+                  - type: object
+                    properties:
+                      error:
+                        type: 'null'
+                      data:
+                        $ref: '#/components/schemas/Store'
+                    required: ['error', 'data']
+        '401':
+          description: Não autorizado. Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
+                    example: 'Token de autenticação inválido ou ausente.'
 components:
   schemas:
     Customer:
@@ -912,6 +952,38 @@ components:
           example: '2025-03-24T21:50:20.772Z'
       required:
         ['id', 'status', 'devMode', 'receiptUrl', 'kind', 'amount', 'platformFee', 'createdAt', 'updatedAt']
+    Store:
+      type: object
+      description: Dados da loja/conta do usuário.
+      required: ['id', 'name', 'balance']
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          description: Identificador único da loja.
+          example: 'store_123456'
+        name:
+          type: string
+          description: Nome da loja.
+          example: 'Minha Loja Online'
+        balance:
+          type: object
+          description: Informações de saldo da loja.
+          required: ['available', 'pending', 'blocked']
+          additionalProperties: false
+          properties:
+            available:
+              type: number
+              description: Saldo disponível para saque em centavos.
+              example: 15000
+            pending:
+              type: number
+              description: Saldo pendente de confirmação em centavos.
+              example: 5000
+            blocked:
+              type: number
+              description: Saldo bloqueado em disputas em centavos.
+              example: 2000
   securitySchemes:
     bearerAuth:
       type: http
