@@ -1,0 +1,112 @@
+---
+title: 'Obter detalhes da loja'
+openapi: "GET /store/get"
+---
+
+<Note>
+  Este endpoint permite que você recupere todas as informações da sua loja, incluindo saldos disponíveis, pendentes e bloqueados.
+</Note>
+
+## Exemplo de uso
+
+<CodeGroup>
+
+```bash cURL
+curl -X GET "https://api.abacatepay.com/v1/store/get" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json"
+```
+
+```javascript JavaScript
+const response = await fetch('https://api.abacatepay.com/v1/store/get', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  }
+});
+
+const data = await response.json();
+console.log(data);
+```
+
+```python Python
+import requests
+
+headers = {
+    'Authorization': 'Bearer YOUR_API_KEY',
+    'Content-Type': 'application/json'
+}
+
+response = requests.get('https://api.abacatepay.com/v1/store/get', headers=headers)
+data = response.json()
+print(data)
+```
+
+```php PHP
+<?php
+$headers = [
+    'Authorization: Bearer YOUR_API_KEY',
+    'Content-Type: application/json'
+];
+
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, 'https://api.abacatepay.com/v1/store/get');
+curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+$response = curl_exec($ch);
+$data = json_decode($response, true);
+curl_close($ch);
+
+print_r($data);
+?>
+```
+
+</CodeGroup>
+
+## Resposta de sucesso
+
+```json
+{
+  "error": null,
+  "data": {
+    "id": "store_123456",
+    "name": "Minha Loja Online",
+    "balance": {
+      "available": 15000,
+      "pending": 5000,
+      "blocked": 2000
+    }
+  }
+}
+```
+
+## Resposta de erro
+
+```json
+{
+  "error": "Erro ao recuperar dados da loja.",
+  "data": null
+}
+```
+
+## Casos de uso
+
+<AccordionGroup>
+  <Accordion title="Verificar saldo disponível">
+    Use este endpoint para verificar quanto dinheiro você tem disponível para saque antes de criar uma nova transação de saque.
+  </Accordion>
+
+  <Accordion title="Dashboard da loja">
+    Ideal para exibir informações da loja em dashboards administrativos, mostrando saldos e identificação da conta.
+  </Accordion>
+
+  <Accordion title="Reconciliação de contas">
+    Útil para processos de reconciliação, permitindo verificar o estado atual dos saldos da sua conta.
+  </Accordion>
+</AccordionGroup>
+
+<Warning title="Autenticação obrigatória" icon="lock" horizontal>
+  Este endpoint requer autenticação via Bearer token. Certifique-se de incluir sua chave de API no cabeçalho Authorization.
+</Warning>
