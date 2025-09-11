@@ -1,0 +1,74 @@
+---
+title: 'Referência'
+description: 'Gerencie sua loja e visualize informações da sua conta.'
+icon: 'store'
+---
+
+A **Loja** representa sua conta na AbacatePay, contendo todas as informações essenciais sobre seu negócio e saldos disponíveis.
+
+## <Icon icon="folder-tree" type="solid"/>  Estrutura
+
+Uma loja é representada em nossa API pela seguinte estrutura:
+
+```json
+{
+  "id": "store_123456",
+  "name": "Minha Loja Online",
+  "balance": {
+    "available": 15000,
+    "pending": 5000,
+    "blocked": 2000
+  }
+} 
+```
+
+## Atributos:
+
+<AccordionGroup>
+    <Accordion title="id:">
+        ```json {2}
+        {
+          "id": "store_123456",
+        } 
+        ```
+
+        `id` : <u> string. </u> <br />
+        Identificador único da sua loja na AbacatePay
+    </Accordion>
+    <Accordion title="name:">
+        ```json {3}
+        {
+          "name": "Minha Loja Online",
+        } 
+        ```
+
+        `name` : <u> string. </u> <br />
+        Nome da sua loja/empresa
+    </Accordion>
+    <Accordion title="balance:">
+        ```json {4-8}
+        {
+          "balance": {
+            "available": 15000,
+            "pending": 5000,
+            "blocked": 2000
+          }
+        } 
+        ```
+
+        `balance` : <u> object. </u> <br />
+        Objeto contendo informações sobre os saldos da sua conta
+
+        * `available` : <u> number. </u> <br /> Saldo disponível para saque em centavos
+        * `pending` : <u> number. </u> <br /> Saldo pendente de confirmação em centavos
+        * `blocked` : <u> number. </u> <br /> Saldo bloqueado em disputas em centavos
+
+        <Tip title="Valores em centavos" icon="coins" horizontal>
+         Todos os valores de saldo são retornados em centavos. Para converter para reais, divida por 100. Por exemplo: 15000 centavos = R$ 150,00
+        </Tip>
+
+        <Warning title="Saldo bloqueado" icon="exclamation-triangle" horizontal>
+         O saldo bloqueado representa valores que estão em disputa ou sob análise. Estes valores não estão disponíveis para saque até que a situação seja resolvida.
+        </Warning>
+    </Accordion>
+</AccordionGroup>
