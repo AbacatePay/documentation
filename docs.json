@@ -55,7 +55,7 @@
           },
           {
             "group": "Saque",
-            "pages": ["pages/withdraw/reference", "pages/withdraw/create", "pages/withdraw/list"]
+            "pages": ["pages/withdraw/reference", "pages/withdraw/create", "pages/withdraw/get", "pages/withdraw/list"]
           },
           {
             "group": "Loja",

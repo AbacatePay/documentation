@@ -587,6 +587,56 @@ paths:
                     type: string
                     description: Mensagem de erro descrevendo o motivo da falha na autenticação.
                     example: 'Token de autenticação inválido ou ausente.'
+  /withdraw/get:
+    get:
+      summary: Buscar saque
+      description: Permite que você recupere os detalhes de um saque específico usando o externalId.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: externalId
+          in: query
+          description: Identificador único do saque em seu sistema.
+          required: true
+          schema:
+            type: string
+            example: 'withdraw-1234'
+      responses:
+        '200':
+          description: Detalhes do saque retornados com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Transaction'
+                  error:
+                    type: 'null'
+        '401':
+          description: Não autorizado. Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
+                    example: 'Token de autenticação inválido ou ausente.'
+        '404':
+          description: Saque não encontrado.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: 'null'
+                  error:
+                    type: string
+                    description: Mensagem de erro indicando que o saque não foi encontrado.
+                    example: 'Saque não encontrado com o externalId fornecido.'
   /withdraw/list:
     get:
       summary: Listar saques
