@@ -111,68 +111,119 @@ Atualmente, suportamos os seguintes eventos:
 
 Este evento é disparado quando um pagamento é confirmado. O payload varia dependendo da origem do pagamento:
 
-#### Pagamento via PIX QR Code
+<Tabs>
+  <Tab title="PIX QR Code">
+    ```json
+    {
+      "data": {
+        "payment": {
+          "amount": 1000,
+          "fee": 80,
+          "method": "PIX"
+        },
+        "pixQrCode": {
+          "amount": 1000,
+          "id": "pix_char_mXTWdj6sABWnc4uL2Rh1r6tb",
+          "kind": "PIX",
+          "status": "PAID"
+        }
+      },
+      "devMode": false,
+      "event": "billing.paid"
+    }
+    ```
+  </Tab>
+  <Tab title="Cobrança">
+    ```json
+    {
+      "data": {
+        "payment": {
+          "amount": 1000,
+          "fee": 80,
+          "method": "PIX"
+        },
+        "billing": {
+          "amount": 1000,
+          "couponsUsed": [],
+          "customer": {
+            "id": "cust_4hnLDN3YfUWrwQBQKYMwL6Ar",
+            "metadata": {
+              "cellphone": "11111111111",
+              "email": "christopher@abacatepay.com",
+              "name": "Christopher Ribeiro",
+              "taxId": "12345678901"
+            }
+          },
+          "frequency": "ONE_TIME",
+          "id": "bill_QgW1BT3uzaDGR3ANKgmmmabZ",
+          "kind": [
+            "PIX"
+          ],
+          "paidAmount": 1000,
+          "products": [
+            {
+              "externalId": "123",
+              "id": "prod_RGKGsjBWsJwRn1mHyGMFJNjP",
+              "quantity": 1
+            }
+          ],
+          "status": "PAID"
+        }
+      },
+      "devMode": false,
+      "event": "billing.paid"
+    }
+    ```
+  </Tab>
+</Tabs>
+
+### `withdraw.done`
+
+Este evento é disparado quando um saque é concluído com sucesso. O payload contém o objeto Transaction:
 
 ```json
 {
   "data": {
-    "payment": {
-      "amount": 1000,
-      "fee": 80,
-      "method": "PIX"
-    },
-    "pixQrCode": {
-      "amount": 1000,
-      "id": "pix_char_mXTWdj6sABWnc4uL2Rh1r6tb",
-      "kind": "PIX",
-      "status": "PAID"
+    "transaction": {
+      "id": "tran_123456",
+      "status": "COMPLETE",
+      "devMode": false,
+      "receiptUrl": "https://abacatepay.com/receipt/tran_123456",
+      "kind": "WITHDRAW",
+      "amount": 5000,
+      "platformFee": 80,
+      "externalId": "withdraw-1234",
+      "createdAt": "2025-03-24T21:50:20.772Z",
+      "updatedAt": "2025-03-24T21:55:20.772Z"
     }
   },
   "devMode": false,
-  "event": "billing.paid"
+  "event": "withdraw.done"
 }
 ```
 
-#### Pagamento via Cobrança
+### `withdraw.failed`
+
+Este evento é disparado quando um saque não é concluído. O payload contém o objeto Transaction:
 
 ```json
 {
   "data": {
-    "payment": {
-      "amount": 1000,
-      "fee": 80,
-      "method": "PIX"
-    },
-    "billing": {
-      "amount": 1000,
-      "couponsUsed": [],
-      "customer": {
-        "id": "cust_4hnLDN3YfUWrwQBQKYMwL6Ar",
-        "metadata": {
-          "cellphone": "11111111111",
-          "email": "christopher@abacatepay.com",
-          "name": "Christopher Ribeiro",
-          "taxId": "12345678901"
-        }
-      },
-      "frequency": "ONE_TIME",
-      "id": "bill_QgW1BT3uzaDGR3ANKgmmmabZ",
-      "kind": [
-        "PIX"
-      ],
-      "paidAmount": 1000,
-      "products": [
-        {
-          "externalId": "123",
-          "id": "prod_RGKGsjBWsJwRn1mHyGMFJNjP",
-          "quantity": 1
-        }
-      ],
-      "status": "PAID"
+    "transaction": {
+      "id": "tran_789012",
+      "status": "CANCELLED",
+      "devMode": false,
+      "receiptUrl": "https://abacatepay.com/receipt/tran_789012",
+      "kind": "WITHDRAW",
+      "amount": 3000,
+      "platformFee": 0,
+      "externalId": "withdraw-5678",
+      "createdAt": "2025-03-24T22:00:20.772Z",
+      "updatedAt": "2025-03-24T22:05:20.772Z"
     }
   },
   "devMode": false,
-  "event": "billing.paid"
+  "event": "withdraw.failed"
 }
 ```
 
