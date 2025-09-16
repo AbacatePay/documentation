@@ -841,7 +841,8 @@ components:
           example: 'https://pay.abacatepay.com/bill-5678'
         amount:
           type: number
-          description: Valor total a ser pago em centavos.
+          description: Valor total a ser pago em centavos. (Deprecated)
+          deprecated: true
           example: 4000
         status:
           type: string
@@ -905,7 +906,7 @@ components:
           items:
             type: string
       required:
-        ['id', 'url', 'amount', 'status', 'devMode', 'methods', 'products', 'frequency', 'createdAt', 'updatedAt']
+        ['id', 'url', 'status', 'devMode', 'methods', 'products', 'frequency', 'createdAt', 'updatedAt']
     PixQRCode:
       type: object
       properties:
