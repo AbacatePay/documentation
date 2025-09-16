@@ -4,13 +4,11 @@ description: "Crie um link de cobrança e deixe seu cliente pagar"
 icon: "book-open-cover"
 ---
 
-O termo "cobrança" é genérico. Ele representa um portal de um fluxo de pagamento onde você pode cobrar seu cliente e ele fazer todo o processo de pagamento sem nenhuma interrupção.
+Uma cobrança é um portal onde seu cliente pode realizar um pagamento sem interrupções.
 
-Atualmente uma cobrança pode ser de duas formas: 
-- `ONE_TIME` para cobranças que serão pagas uma única vez.  preciso enviar os dados do seu cliente. Para cobrançar `ONE_TIME` é obrigatório informar o cliente ao criar a cobrança por meio dos campos `customerId` ou `customer`. 
-  - Só é necessário fornecer uma das opções de identificador do cliente: `customerId` **OU** `customer`.
-- `MULTIPLE_PAYMENTS` é uma cobrança que pode ser paga multiplas vezes e por múltiplas pessoas diferentes. **Ex:** utilização de um único link de pagamento para vender um produto para múltiplas pessoas.
-  - Para cobranças `MULTIPLE_PAYMENTS` o usuário informará informações como CPF, nome e email na página do checkout.
+Tipos de cobrança:
+- `ONE_TIME`: Cobrança que aceita um único pagamento do mesmo cliente.
+- `MULTIPLE_PAYMENTS`: Cobrança em modo link de pagamento, aceita vários pagamentos de clientes diferentes.
 
 
 
@@ -23,7 +21,7 @@ Uma cobrança é representada em nossa API pela seguinte estrutura:
   "id": "bill_uA0M0xwg5R4mSyr0n2PjHQXY",
   "frequency": "ONE_TIME",
   "url": "https://abacatepay.com/pay/bill_uA0M0xwg5R4mSyr0n2PjHQXY",
-  "amount": 4000,
+  
   "status": "PAID",
   "devMode": true,
   "methods": ["PIX"],
@@ -81,8 +79,8 @@ Uma cobrança é representada em nossa API pela seguinte estrutura:
         <Info >
             |                      |                                                                                                      |
             | ---------------------| ---------------------------------------------------------------------------------------------------- |
-            | `ONE_TIME`           | **Cobrança que aceita um único pagamento. É necessário enviar os dados do cliente**                  |
-            | `MULTIPLE_PAYMENTS`  | **Cobrança em modo checkout, aceita vários pagamentos. Não é necessário enviar os dados do cliente.**|
+            | `ONE_TIME`           | **Cobrança que aceita um único pagamento do mesmo cliente.**                                                          |
+            | `MULTIPLE_PAYMENTS`  | **Cobrança em modo link de pagamento, aceita vários pagamentos de clientes diferentes.**                                             |
         </Info>
     </Accordion>
      <Accordion title="url:">
@@ -94,25 +92,9 @@ Uma cobrança é representada em nossa API pela seguinte estrutura:
         `url` : <u> string. </u> <br />
         URL para seu cliente executar o pagamento da cobrança
 
-        ### Amount:
-        ```json json {2}
-        {
-          "amount": 4000,
-        }
-        ```
-        `amount` : <u> number. </u> <br />
-        Valor da cobrança em centavos
+        
     </Accordion>
-    <Accordion title="amount:">
-        ```json json {2}
-        {
-          "amount": 4000,
-        }
-        ```
-        `amount` : <u> number. </u> <br />
-        Valor da cobrança em centavos
-
-    </Accordion>
+    
        <Accordion title="status:">
         ```json json {2}
         {
@@ -172,7 +154,7 @@ Uma cobrança é representada em nossa API pela seguinte estrutura:
         }
         ```
         `customer` : <u> object </u> <br />
-        Cliente que você está cobrando. Veja referência da estrutura <a href="./client/reference.mdx"> aqui </a>
+        Cliente que você está cobrando. Opcional. Veja referência da estrutura <a href="./client/reference.mdx"> aqui </a>
     </Accordion>
     <Accordion title="metadata:">
         ```json json {2-5}
