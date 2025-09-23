@@ -117,11 +117,15 @@ Uma cobrança é representada em nossa API pela seguinte estrutura:
     <Accordion title="methods:">
        ```json json {2}
         {
-          "methods": ["PIX"],
+          "methods": ["PIX", "CARD"],
         }
         ```
         `methods` : <u> array </u> <br />
-        Tipos de pagamento. Suportamos somente `PIX` no momento.
+        Tipos de pagamento suportados: `PIX` e `CARD` (beta).
+
+        <Card title="Cartão de crédito (beta)" icon="info" horizontal>
+          Pagamentos por cartão estão em beta. Para habilitar, entre em contato com o suporte: ajuda@abacatepay.com
+        </Card>
     </Accordion>
     <Accordion title="products:">
        ```json json {2-9}

@@ -187,12 +187,12 @@ paths:
                   example: 'ONE_TIME'
                 methods:
                   type: array
-                  description: Métodos de pagamento que serão utilizados. Atualmente, apenas PIX é suportado.
+                  description: Métodos de pagamento que serão utilizados. Atualmente, apenas PIX é suportado, CARD encontra-se em beta.
                   items:
                     type: string
-                    enum: ['PIX']
+                    enum: ['PIX', 'CARD']
                   minItems: 1
-                  maxItems: 1
+                  maxItems: 2
                   uniqueItems: true
                   default: ['PIX']
                   example: ['PIX']
@@ -858,7 +858,7 @@ components:
           description: Métodos de pagamento suportados para esta cobrança.
           items:
             type: string
-            enum: ['PIX']
+            enum: ['PIX', 'CARD']
           example: ['PIX']
         products:
           type: array
