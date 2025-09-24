@@ -6,7 +6,7 @@ icon: 'webhook'
 
 Webhooks permitem que sua aplicação receba notificações em tempo real sobre eventos importantes da AbacatePay.
 
-## <Icon icon="mobile" type="solid"/>  Gerenciando webhooks
+## <Icon icon="mobile" type="solid"/> Gerenciar webhooks
 
 Gerencie seus webhooks diretamente em nossa plataforma. Você pode:
 - Listar todos os webhooks ativos
@@ -21,7 +21,7 @@ Gerencie seus webhooks diretamente em nossa plataforma. Você pode:
   Saiba mais sobre o ambiente de desenvolvimento <a href="./devmode">aqui</a>.
 </Card>
 
-## <Icon icon="key" type="solid"/>  Criando webhooks
+## <Icon icon="key" type="solid"/> Criar webhooks
 
 <Card title="Segurança dos Webhooks" icon="light-emergency-on" horizontal>
   * Configure um secret único para cada webhook
@@ -41,7 +41,7 @@ Siga estes passos no dashboard da AbacatePay:
         src="/images/criar-webhook.png"
         alt="Interface da plataforma AbacatePay mostrando a seção de webhooks"
       />
-      <Card title="Navegue até a seção Integrar e clique em Webhooks">
+      <Card title="Navegue até a seção Webhooks">
         Inicie o processo de configuração de um novo webhook
       </Card>
     </Card>
@@ -68,11 +68,13 @@ Siga estes passos no dashboard da AbacatePay:
   </Step>
 </Steps>
 
-## <Icon icon="lock" type="solid"/> Protegendo suas requisições
+## <Icon icon="lock" type="solid"/> Segurança e verificação
 
-Cada notificação enviada para seu webhook inclui o secret configurado como parâmetro de query string para validação.
+As notificações podem (e devem) ser validadas em duas camadas complementares:
 
-### Exemplo de URL de Webhook
+### 1) Secret na URL (autenticação simples)
+
+Cada chamada de webhook inclui o secret configurado como parâmetro de query string.
 
 URL base do seu webhook:
 ```
@@ -84,28 +86,23 @@ URL com secret (como será chamado):
 https://meusite.com/webhook/abacatepay?webhookSecret=seu_secret_aqui
 ```
 
-### Exemplo de Implementação
-
+Exemplo de validação (Express):
 ```javascript
-// Exemplo de validação do webhook
 app.post('/webhook/abacatepay', (req, res) => {
   const webhookSecret = req.query.webhookSecret;
-  
   if (webhookSecret !== process.env.WEBHOOK_SECRET) {
     return res.status(401).json({ error: 'Invalid webhook secret' });
   }
-  
-  // Processa a notificação
+
   const event = req.body;
   console.log('Received webhook:', event);
-  
   res.status(200).json({ received: true });
 });
 ```
 
-### Verificando a assinatura do Webhook
+### 2) Assinatura HMAC no cabeçalho (integridade do corpo)
 
-Além do `webhookSecret`, você pode verificar a integridade da mensagem conferindo a assinatura enviada no cabeçalho `X-Webhook-Signature`. O exemplo abaixo calcula a assinatura HMAC-SHA256 sobre o corpo bruto da requisição e compara de forma segura com o valor recebido.
+Além do `webhookSecret`, valide a integridade da mensagem conferindo a assinatura enviada em `X-Webhook-Signature`. O exemplo abaixo mostra como validar a assinatura HMAC-SHA256 de forma segura.
 
 ```typescript
 import crypto from "node:crypto";
@@ -135,7 +132,7 @@ export function verifyAbacateSignature(rawBody: string, signatureFromHeader: str
 }
 ```
 
-Nota: para que a verificação funcione, é essencial ler o corpo bruto da requisição (sem transformações) antes de qualquer middleware que o parseie. Garanta que você capture os bytes exatos recebidos ao calcular o HMAC.
+Importante: para que a verificação funcione, leia o corpo bruto da requisição (sem transformações) antes de qualquer middleware que faça parsing. Use exatamente os mesmos bytes recebidos ao calcular o HMAC.
 
 ## <Icon icon="bell" type="solid"/> Eventos Suportados
 
@@ -261,11 +258,13 @@ Este evento é disparado quando um saque não é concluído. O payload contém o
 }
 ```
 
-<Card title="Nota Importante" icon="info" horizontal>
+<Card title="Boas práticas e notas importantes" icon="info" horizontal>
   * O campo `devMode` indica se o evento ocorreu no ambiente de desenvolvimento
-  * Todos os valores monetários são expressos em centavos
+  * Valores monetários são expressos em centavos
   * O campo `fee` representa a taxa cobrada pela AbacatePay
   * O campo `event` identifica o tipo de evento recebido
+  * Implemente retries idempotentes e processe cada `id` de evento uma única vez
+  * Registre falhas de verificação e responda com `4xx/5xx` apropriadamente
 </Card>
 
 <Card title="Precisa de ajuda?" icon="headset" color="#25c2a0">
