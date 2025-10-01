@@ -115,6 +115,7 @@ Este evento é disparado quando um pagamento é confirmado. O payload varia depe
   <Tab title="PIX QR Code">
     ```json
     {
+      "id": "log_12345abcdef",
       "data": {
         "payment": {
           "amount": 1000,
@@ -136,6 +137,7 @@ Este evento é disparado quando um pagamento é confirmado. O payload varia depe
   <Tab title="Cobrança">
     ```json
     {
+      "id": "log_12345abcdef",
       "data": {
         "payment": {
           "amount": 1000,
@@ -183,6 +185,7 @@ Este evento é disparado quando um saque é concluído com sucesso. O payload co
 
 ```json
 {
+  "id": "log_12345abcdef",
   "data": {
     "transaction": {
       "id": "tran_123456",
@@ -208,6 +211,7 @@ Este evento é disparado quando um saque não é concluído. O payload contém o
 
 ```json
 {
+  "id": "log_12345abcdef",
   "data": {
     "transaction": {
       "id": "tran_789012",
