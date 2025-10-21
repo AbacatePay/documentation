@@ -558,7 +558,7 @@ paths:
                     type:
                       type: string
                       description: Tipo da chave PIX.
-                      enum: ['CPF', 'CNPJ', 'PHONE', 'EMAIL', 'RANDOM']
+                      enum: ['CPF', 'CNPJ', 'PHONE', 'EMAIL', 'RANDOM','BR_CODE']
                       example: 'CPF'
                     key:
                       type: string
