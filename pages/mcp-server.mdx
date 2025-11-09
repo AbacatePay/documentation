@@ -1,0 +1,416 @@
+---
+title: Servidor MCP
+description: "Integre a AbacatePay com assistentes de IA como Claude e Cursor através do Model Context Protocol"
+icon: 'robot'
+---
+
+O servidor MCP (Model Context Protocol) da AbacatePay permite que você gerencie pagamentos, clientes e cobranças diretamente através de assistentes de IA como Claude Desktop, Cursor e outras ferramentas compatíveis com MCP.
+
+## <Icon icon="Avocado" type="solid"/> O que é o Servidor MCP?
+
+O Model Context Protocol é um protocolo desenvolvido pela Anthropic que permite que assistentes de IA acessem ferramentas e recursos externos de forma segura e padronizada. Nosso servidor MCP expõe todas as funcionalidades da API AbacatePay como ferramentas que podem ser usadas por assistentes de IA.
+
+**Principais benefícios:**
+
+- 🤖 **Integração com IA**: Use comandos naturais para gerenciar pagamentos
+- 🔐 **Seguro**: Suporte a múltiplas API keys e isolamento de dados
+- 🚀 **Fácil de usar**: Configure uma vez e use em qualquer cliente MCP
+- 🌐 **Flexível**: Funciona em modo stdio (Cursor/Claude) e HTTP (automações)
+
+## <Icon icon="download" type="solid"/> Instalação
+
+### Pré-requisitos
+
+- [Bun](https://bun.sh) instalado (versão 1.0.0 ou superior)
+
+### Instalação
+
+```bash
+git clone https://github.com/AbacatePay/abacatepay-mcp.git
+cd abacatepay-mcp
+bun install
+```
+
+## <Icon icon="cog" type="solid"/> Configuração
+
+O servidor MCP funciona de duas formas diferentes dependendo de como você vai usá-lo:
+
+### 📱 Modo stdio (Cursor, Claude Desktop)
+
+No modo stdio, o servidor se comunica via entrada/saída padrão. A API key deve ser configurada via variável de ambiente.
+
+#### Configuração no Cursor
+
+1. Abra as configurações do Cursor:
+   - Pressione `Ctrl+Shift+P` (ou `Cmd+Shift+P` no Mac)
+   - Digite "Preferences: Open User Settings (JSON)"
+   - Ou vá em: `File` → `Preferences` → `Settings` → Clique no ícone `{}` no canto superior direito
+
+2. Adicione a configuração:
+
+```json
+{
+  "mcp.servers": {
+    "abacate-pay": {
+      "command": "bun",
+      "args": ["/caminho/completo/para/abacatepay-mcp/src/index.ts"],
+      "env": {
+        "ABACATE_PAY_API_KEY": "sua_api_key_aqui"
+      }
+    }
+  }
+}
+```
+
+3. Reinicie o Cursor para aplicar as mudanças.
+
+#### Configuração no Claude Desktop
+
+1. Abra o arquivo de configuração do Claude Desktop:
+   - **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+   - **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
+
+2. Adicione a configuração:
+
+```json
+{
+  "mcpServers": {
+    "abacate-pay": {
+      "command": "bun",
+      "args": ["/caminho/completo/para/abacatepay-mcp/src/index.ts"],
+      "env": {
+        "ABACATE_PAY_API_KEY": "sua_api_key_aqui"
+      }
+    }
+  }
+}
+```
+
+3. Reinicie o Claude Desktop.
+
+<Card title="Importante" icon="info-circle" color="#25c2a0">
+  No modo stdio, a API key deve ser configurada via variável de ambiente `env` na configuração do cliente, pois não há headers HTTP disponíveis.
+</Card>
+
+### 🌐 Modo HTTP (AgentKit, n8n, automações)
+
+No modo HTTP, o servidor aceita requisições HTTP e pode ser usado com ferramentas de automação.
+
+#### Iniciando o servidor HTTP
+
+```bash
+# Iniciar servidor HTTP
+bun run start:http
+
+# Ou com porta customizada
+MCP_PORT=8080 bun run start:http
+```
+
+#### Autenticação no modo HTTP
+
+A API key pode ser fornecida de duas formas:
+
+**1. Via Header HTTP (Recomendado):**
+
+```bash
+curl -X POST http://localhost:3000/mcp \
+  -H "Authorization: Bearer sua_api_key_aqui" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "tools/call",
+    "params": {
+      "name": "createCustomer",
+      "arguments": {
+        "name": "João Silva",
+        "cellphone": "(11) 99999-9999",
+        "email": "joao@exemplo.com",
+        "taxId": "123.456.789-01"
+      }
+    }
+  }'
+```
+
+**2. Via Header X-API-Key:**
+
+```bash
+curl -X POST http://localhost:3000/mcp \
+  -H "X-API-Key: sua_api_key_aqui" \
+  -H "Content-Type: application/json" \
+  -d '{...}'
+```
+
+<Card title="Dica" icon="lightbulb" horizontal>
+  No modo HTTP, se você passar a API key no header `Authorization` ou `X-API-Key`, não precisa passar como parâmetro da ferramenta. O servidor automaticamente usa a chave do header.
+</Card>
+
+## <Icon icon="tools" type="solid"/> Ferramentas Disponíveis
+
+O servidor MCP expõe as seguintes ferramentas:
+
+### 👥 Clientes
+
+#### `createCustomer`
+
+Cria um novo cliente no Abacate Pay.
+
+**Parâmetros:**
+
+- `name` (string, obrigatório): Nome completo do cliente
+- `cellphone` (string, obrigatório): Celular do cliente (ex: (11) 4002-8922 ou 79991251557)
+- `email` (string, obrigatório): E-mail do cliente
+- `taxId` (string, obrigatório): CPF ou CNPJ válido do cliente (ex: 123.456.789-01)
+- `apiKey` (string, opcional): Chave de API (opcional se configurada globalmente)
+
+**Exemplo de uso no Cursor:**
+
+```
+Crie um cliente chamado João Silva, com email joao@exemplo.com, 
+celular (11) 99999-9999 e CPF 123.456.789-01
+```
+
+#### `listCustomers`
+
+Lista todos os clientes cadastrados no Abacate Pay.
+
+**Parâmetros:**
+
+- `apiKey` (string, opcional): Chave de API (opcional se configurada globalmente)
+
+**Exemplo de uso no Cursor:**
+
+```
+Liste todos os meus clientes cadastrados
+```
+
+### 💰 Cobranças
+
+#### `createBilling`
+
+Cria uma nova cobrança no Abacate Pay.
+
+**Parâmetros:**
+
+- `frequency` (enum, opcional): Tipo de frequência - `ONE_TIME` ou `MULTIPLE_PAYMENTS` (padrão: `ONE_TIME`)
+- `methods` (array, opcional): Métodos de pagamento - atualmente apenas `["PIX"]` (padrão: `["PIX"]`)
+- `products` (array, obrigatório): Lista de produtos
+  - `externalId` (string): ID externo do produto
+  - `name` (string): Nome do produto
+  - `description` (string): Descrição do produto
+  - `quantity` (number): Quantidade do produto
+  - `price` (number): Preço unitário em centavos
+- `returnUrl` (string, obrigatório): URL para redirecionar caso o cliente clique em 'Voltar'
+- `completionUrl` (string, obrigatório): URL para redirecionar quando o pagamento for concluído
+- `customerId` (string, opcional): ID de um cliente já cadastrado
+- `apiKey` (string, opcional): Chave de API (opcional se configurada globalmente)
+
+**Exemplo de uso no Cursor:**
+
+```
+Crie uma cobrança de R$ 100,00 para o produto "Assinatura Mensal" 
+com URL de retorno https://meusite.com/retorno e 
+URL de conclusão https://meusite.com/sucesso
+```
+
+#### `getBilling`
+
+Busca os detalhes de uma cobrança específica.
+
+**Parâmetros:**
+
+- `id` (string, obrigatório): ID da cobrança
+- `apiKey` (string, opcional): Chave de API (opcional se configurada globalmente)
+
+### 📱 PIX
+
+#### `createPixQrCode`
+
+Cria um QR Code PIX para pagamento direto.
+
+**Parâmetros:**
+
+- `amount` (number, obrigatório): Valor da cobrança em centavos
+- `expiresIn` (number, opcional): Tempo de expiração em segundos
+- `description` (string, opcional): Mensagem que aparecerá no pagamento PIX (máx 140 caracteres)
+- `customer` (object, opcional): Dados do cliente
+  - `name` (string): Nome completo do cliente
+  - `cellphone` (string): Celular do cliente
+  - `email` (string): E-mail do cliente
+  - `taxId` (string): CPF ou CNPJ do cliente
+- `apiKey` (string, opcional): Chave de API (opcional se configurada globalmente)
+
+**Exemplo de uso no Cursor:**
+
+```
+Crie um QR Code PIX de R$ 50,00 com a descrição "Pagamento de serviço"
+```
+
+#### `simulatePixPayment`
+
+Simula o pagamento de um QR Code PIX (apenas em modo desenvolvimento).
+
+**Parâmetros:**
+
+- `id` (string, obrigatório): ID do QR Code PIX para simular o pagamento
+- `metadata` (object, opcional): Metadados opcionais para a requisição
+- `apiKey` (string, opcional): Chave de API (opcional se configurada globalmente)
+
+#### `getPixQrCode`
+
+Verifica o status de um QR Code PIX.
+
+**Parâmetros:**
+
+- `id` (string, obrigatório): ID do QR Code PIX para verificar o status
+- `apiKey` (string, opcional): Chave de API (opcional se configurada globalmente)
+
+### 🎫 Cupons
+
+#### `createCoupon`
+
+Cria um novo cupom de desconto.
+
+**Parâmetros:**
+
+- `code` (string, obrigatório): Código único do cupom (ex: DESCONTO20)
+- `discountKind` (enum, obrigatório): Tipo de desconto - `PERCENTAGE` (porcentagem) ou `FIXED` (valor fixo)
+- `discountValue` (number, obrigatório): Valor do desconto (em porcentagem ou centavos, dependendo do tipo)
+- `maxUses` (number, opcional): Número máximo de usos do cupom
+- `expiresAt` (string, opcional): Data de expiração do cupom (formato ISO 8601)
+- `apiKey` (string, opcional): Chave de API (opcional se configurada globalmente)
+
+**Exemplo de uso no Cursor:**
+
+```
+Crie um cupom de desconto de 15% com código ALEX15 que vale para até 100 usos
+```
+
+#### `getCoupon`
+
+Busca os detalhes de um cupom específico.
+
+**Parâmetros:**
+
+- `code` (string, obrigatório): Código do cupom
+- `apiKey` (string, opcional): Chave de API (opcional se configurada globalmente)
+
+### 🔄 Saques
+
+#### `createWithdraw`
+
+Cria um novo saque para transferir valores da conta para uma chave PIX.
+
+**Parâmetros:**
+
+- `description` (string, obrigatório): Descrição do saque
+- `externalId` (string, obrigatório): ID externo para identificação do saque
+- `method` (string, obrigatório): Método de pagamento (ex: PIX)
+- `amount` (number, obrigatório): Valor do saque em centavos
+- `pix` (object, obrigatório): Dados da chave PIX para o saque
+  - `type` (string): Tipo da chave PIX (ex: CPF, CNPJ, EMAIL, PHONE, RANDOM)
+  - `key` (string): Chave PIX (CPF, CNPJ, email, telefone ou chave aleatória)
+- `apiKey` (string, opcional): Chave de API (opcional se configurada globalmente)
+
+## <Icon icon="code" type="solid"/> Exemplos de Uso
+
+### Exemplo 1: Campanha com Influencer
+
+```
+Eu contratei um influencer chamado Alex para divulgar meu negócio. 
+Você pode criar um cupom com 15% de desconto usando o código ALEX15 
+que vale para até 100 usos? Preciso acompanhar o desempenho da campanha.
+```
+
+### Exemplo 2: Investigação de Cobranças
+
+```
+Tive uma cobrança estranha ontem que não reconheço. Você pode buscar 
+todas as cobranças de ontem e me mostrar os detalhes para eu verificar 
+o que pode ter acontecido?
+```
+
+### Exemplo 3: Novo Cliente Corporativo
+
+```
+Acabei de fechar um contrato com a empresa TechSolutions LTDA 
+(CNPJ: 12.345.678/0001-90). Pode criar o cadastro deles com o email 
+contato@techsolutions.com e telefone (11) 3456-7890? Depois preciso 
+gerar um QR Code PIX de R$ 10.000 para o pagamento.
+```
+
+### Exemplo 4: Integração HTTP com n8n
+
+```javascript
+// Exemplo de requisição HTTP para criar um cliente
+const response = await fetch('http://localhost:3000/mcp', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer sua_api_key_aqui',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    jsonrpc: '2.0',
+    id: 1,
+    method: 'tools/call',
+    params: {
+      name: 'createCustomer',
+      arguments: {
+        name: 'João Silva',
+        cellphone: '(11) 99999-9999',
+        email: 'joao@exemplo.com',
+        taxId: '123.456.789-01'
+      }
+    }
+  })
+});
+
+const result = await response.json();
+console.log(result);
+```
+
+## <Icon icon="exclamation-triangle" type="solid"/> Problemas Comuns
+
+### Erro de API Key
+
+```
+❌ Erro: API key é obrigatória
+```
+
+**Solução:**
+
+- **Modo stdio (Cursor/Claude)**: Verifique se a API key está configurada corretamente na variável de ambiente `env` do arquivo de configuração
+- **Modo HTTP**: Verifique se a API key está sendo enviada no header `Authorization` ou `X-API-Key`
+
+### Servidor MCP não conecta
+
+**Solução:**
+
+1. Verifique se o caminho para o arquivo está correto no arquivo de configuração
+2. Reinicie o cliente (Cursor/Claude Desktop) após adicionar a configuração
+3. Certifique-se de que o Bun está instalado e funcionando:
+
+```bash
+# Verificar instalação do Bun
+bun --version
+
+# Se necessário, instalar o Bun
+curl -fsSL https://bun.sh/install | bash
+```
+
+### Erro de permissão
+
+**Solução:**
+
+Certifique-se de que o Bun está instalado corretamente e que o caminho do arquivo está acessível.
+
+## <Icon icon="cloud" type="solid"/> Recursos Adicionais
+
+- **Repositório GitHub**: [github.com/AbacatePay/abacatepay-mcp](https://github.com/AbacatePay/abacatepay-mcp)
+- **Documentação da API**: Consulte a seção de API nesta documentação
+- **Suporte**: Entre em contato pelo email <Icon icon="envelope" type="solid"/> ajuda@abacatepay.com
+
+<Card title="Precisa de ajuda?" icon="headset" color="#25c2a0">
+  Nossa equipe está disponível para auxiliar na integração do servidor MCP. Entre em contato pelo e-mail <Icon icon="envelope" type="solid"/> ajuda@abacatepay.com
+</Card>
+

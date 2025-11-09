@@ -29,7 +29,8 @@
               "pages/authentication",
               "pages/webhooks",
               "pages/production",
-              "pages/sdks"
+              "pages/sdks",
+              "pages/mcp-server"
             ]
           },
           {
