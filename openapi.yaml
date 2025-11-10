@@ -286,7 +286,12 @@ paths:
                   type: string
                   description: Caso você tenha um identificador único da sua aplicação para cobranças, completamente opcional.
                   example: 'seu_id_123'
-
+                metadata:
+                  type: object
+                  description: Metadados opcionais para a cobrança
+                  additionalProperties: true
+                  default:
+                   externalId: '123'
               required: ['frequency', 'methods', 'products', 'returnUrl', 'completionUrl']
               additionalProperties: false
       responses:
