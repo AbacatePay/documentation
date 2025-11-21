@@ -1,0 +1,100 @@
+---
+title: 'Trust MRR Integration'
+description: 'Compartilhe suas métricas de receita de forma transparente'
+icon: 'chart-line'
+---
+
+Trust MRR é um modelo de transparência onde startups e indie hackers compartilham publicamente seu MRR (Monthly Recurring Revenue) real, promovendo abertura no ecossistema de negócios digitais.
+
+## <Icon icon="lightbulb" type="solid"/> Como funciona
+
+A AbacatePay oferece rotas dedicadas para você compartilhar suas métricas de receita de duas formas:
+
+1. **Integração com plataformas Trust MRR**: Conecte-se com plataformas que seguem o modelo Trust MRR fornecendo um token read-only. A plataforma começa a coletar seus dados automaticamente.
+
+2. **Consumo direto das rotas**: Você mesmo pode consumir nossas APIs para exibir suas métricas em seu próprio site, dashboard pessoal ou qualquer aplicação customizada.
+
+<Card title="Por que compartilhar?" icon="handshake" horizontal>
+  * **Transparência**: Construa confiança com sua comunidade
+  * **Networking**: Conecte-se com outros empreendedores
+  * **Credibilidade**: Demonstre crescimento real do seu negócio
+  * **Inspiração**: Ajude outros a validar suas ideias
+</Card>
+
+## <Icon icon="key" type="solid"/> Obtendo seu Token
+
+Para integrar com plataformas Trust MRR ou consumir diretamente nossas rotas, você precisa gerar um token read-only na AbacatePay:
+
+<Steps>
+  <Step title="Acesse os Apps">
+    <Card>
+        <img
+        src="/images/trustMrr1.png"
+        alt="Interface da plataforma AbacatePay mostrando o botão Apps"
+      />
+      <Card title="Navegue até Apps">
+        No dashboard da AbacatePay, acesse o sidebar e localize "Apps"
+      </Card>
+    </Card>
+  </Step>
+  <Step title="Encontre Trust MRR">
+    <Card>
+        <img
+        src="/images/trustMrr2.png"
+        alt="Interface da plataforma AbacatePay mostrando o botão trust MRR"
+      />
+      <Card title="Localize a integração">
+        Procure pelo app "Trust MRR" na lista de integrações disponíveis
+      </Card>
+    </Card>
+  </Step>
+  <Step title="Gere seu Token">
+    <Card>
+        <img 
+        src="/images/trustMrr3.png" 
+        />
+      <Card title="Crie um token read-only">
+        Ative o plugin e clique em "Salvar configurações" para criar um token.
+      </Card>
+    </Card>
+  </Step>
+  <Step title="Use onde quiser">
+      <Card title="Configure conforme sua necessidade">
+        Copie o token gerado e use-o para:
+        * Conectar com plataformas Trust MRR
+        * Consumir diretamente as rotas da AbacatePay
+        * Exibir métricas no seu próprio site ou dashboard
+
+    </Card>
+  </Step>
+</Steps>
+
+Agora com o token que dá acesso à sua receita, continue para descobrir como utilizá-lo.
+
+<Card title="Segurança do Token" icon="shield" color="#ff6b6b">
+  * O token é **read-only** - não permite modificações nos seus dados
+  * Você pode revogar o acesso a qualquer momento
+  * Cada token é único e específico para sua conta
+  * Nunca compartilhe seu token publicamente
+</Card>
+
+## <Icon icon="code" type="solid"/> API de Métricas
+
+A AbacatePay expõe rotas dedicadas para consumo de dados de receita. Você pode usar essas rotas de duas formas:
+
+<CardGroup cols={2}>
+  <Card 
+    title="Documentação Completa das Rotas" 
+    icon="book-open-cover"
+    href="trustMRR/reference"
+  >
+    Consulte a referência completa da API com exemplos de requisição, resposta e todos os detalhes das rotas disponíveis.
+  </Card>
+  <Card title="Integrar com plataformas Trust MRR" icon="plug">
+    Conecte-se com plataformas que seguem o modelo Trust MRR fornecendo seu token read-only. A plataforma começa a coletar seus dados automaticamente.
+  </Card>
+</CardGroup>
+
+<Card title="Precisa de ajuda?" icon="headset" color="#25c2a0">
+  Nossa equipe está disponível para auxiliar na integração com Trust MRR. Entre em contato pelo e-mail <Icon icon="envelope" type="solid"/> ajuda@abacatepay.com
+</Card>

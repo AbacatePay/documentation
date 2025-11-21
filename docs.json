@@ -29,7 +29,8 @@
               "pages/authentication",
               "pages/webhooks",
               "pages/production",
-              "pages/sdks"
+              "pages/sdks",
+              "pages/trustMRR"
             ]
           },
           {
@@ -60,6 +61,10 @@
           {
             "group": "Loja",
             "pages": ["pages/store/reference", "pages/store/get"]
+          },
+          {
+            "group": "Trust MRR",
+            "pages": ["pages/trustMRR/reference", "pages/trustMRR/mrr", "pages/trustMRR/get", "pages/trustMRR/list"]
           }
         ]
       },
