@@ -714,6 +714,182 @@ paths:
                     type: string
                     description: Mensagem de erro descrevendo o motivo da falha na autenticação.
                     example: 'Token de autenticação inválido ou ausente.'
+  /public-mrr/merchant-info:
+    get:
+      summary: Obter informações do merchant
+      description: Retorna informações básicas da loja (nome, website e data de criação).
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Informações do merchant retornadas com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        description: Nome da loja
+                        example: 'Example Tech'
+                      website:
+                        type: string
+                        description: Website da loja
+                        example: 'https://www.example.com'
+                      createdAt:
+                        type: string
+                        format: date-time
+                        description: Data de criação da loja
+                        example: '2024-12-06T18:53:31.756Z'
+                    required: ['name', 'website', 'createdAt']
+                    additionalProperties: false
+                  error:
+                    type: 'null'
+        '401':
+          description: Não autorizado. Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
+                    example: 'Token de autenticação inválido ou ausente.'
+  /public-mrr/mrr:
+    get:
+      summary: Obter MRR (Monthly Recurring Revenue)
+      description: Retorna o MRR (receita recorrente mensal) e o total de assinaturas ativas da loja.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Dados de MRR retornados com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      mrr:
+                        type: number
+                        description: Receita recorrente mensal em centavos. Valor 0 indica que não há receita recorrente no momento.
+                        example: 0
+                      totalActiveSubscriptions:
+                        type: integer
+                        description: Total de assinaturas ativas. Valor 0 indica que não há assinaturas ativas no momento.
+                        example: 0
+                    required: ['mrr', 'totalActiveSubscriptions']
+                    additionalProperties: false
+                  error:
+                    type: 'null'
+        '401':
+          description: Não autorizado. Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
+                    example: 'Token de autenticação inválido ou ausente.'
+  /public-mrr/revenue:
+    get:
+      summary: Obter receita por período
+      description: Retorna a receita total, total de transações e transações por dia em um período específico. Os dados são cacheados por 1 hora (3600 segundos) para melhor performance. A data de fim deve ser posterior à data de início.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: startDate
+          in: query
+          required: true
+          description: Data de início do período (formato YYYY-MM-DD)
+          schema:
+            type: string
+            format: date
+            example: '2024-01-01'
+        - name: endDate
+          in: query
+          required: true
+          description: Data de fim do período (formato YYYY-MM-DD)
+          schema:
+            type: string
+            format: date
+            example: '2024-01-31'
+      responses:
+        '200':
+          description: Dados de receita retornados com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      totalRevenue:
+                        type: number
+                        description: Receita total do período em centavos
+                        example: 150000
+                      totalTransactions:
+                        type: integer
+                        description: Total de transações no período
+                        example: 45
+                      transactionsPerDay:
+                        type: object
+                        description: Objeto com transações agrupadas por dia (chave é a data no formato YYYY-MM-DD)
+                        additionalProperties:
+                          type: object
+                          properties:
+                            amount:
+                              type: number
+                              description: Valor total das transações do dia em centavos
+                              example: 5000
+                            count:
+                              type: integer
+                              description: Quantidade de transações do dia
+                              example: 3
+                          required: ['amount', 'count']
+                          additionalProperties: false
+                        example:
+                          '2024-01-15':
+                            amount: 5000
+                            count: 3
+                          '2024-01-16':
+                            amount: 3000
+                            count: 2
+                    required: ['totalRevenue', 'totalTransactions', 'transactionsPerDay']
+                    additionalProperties: false
+                  error:
+                    type: 'null'
+        '400':
+          description: Erro de validação. Parâmetros inválidos ou ausentes.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Mensagem de erro descrevendo o problema de validação.
+                    example: 'Start date and end date are required'
+        '401':
+          description: Não autorizado. Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
+                    example: 'Token de autenticação inválido ou ausente.'
 components:
   schemas:
     Customer:
