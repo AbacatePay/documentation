@@ -1,0 +1,164 @@
+---
+title: 'Referência'
+description: 'Compartilhe suas métricas de receita de forma transparente'
+icon: 'book-open-cover'
+---
+
+As rotas Trust MRR permitem que você compartilhe suas métricas de receita de forma transparente, seja integrando com plataformas Trust MRR ou consumindo diretamente as APIs para exibir em seu próprio site ou dashboard.
+
+## <Icon icon="folder-tree" type="solid"/> Estrutura
+
+### Informações do Merchant
+
+Informações básicas da loja retornadas pela rota `/public-mrr/merchant-info`:
+
+```json
+{
+  "data": {
+    "name": "Example Tech",
+    "website": "https://www.example.com",
+    "createdAt": "2024-12-06T18:53:31.756Z"
+  },
+  "error": null
+}
+```
+
+### MRR (Monthly Recurring Revenue)
+
+Dados de receita recorrente mensal retornados pela rota `/public-mrr/mrr`:
+
+```json
+{
+  "data": {
+    "mrr": 0,
+    "totalActiveSubscriptions": 0
+  },
+  "error": null
+}
+```
+
+### Receita por Período
+
+Dados de receita por período retornados pela rota `/public-mrr/revenue`:
+
+```json
+{
+  "data": {
+    "totalRevenue": 150000,
+    "totalTransactions": 45,
+    "transactionsPerDay": {
+      "2024-01-15": {
+        "amount": 5000,
+        "count": 3
+      },
+      "2024-01-16": {
+        "amount": 3000,
+        "count": 2
+      }
+    }
+  },
+  "error": null
+}
+```
+
+## Atributos:
+
+<AccordionGroup>
+    <Accordion title="name:">
+        ```json {3}
+        {
+          "name": "Example Tech",
+        } 
+        ```
+
+        `name` : <u> string. </u> <br />
+        Nome da loja
+    </Accordion>
+    <Accordion title="website:">
+        ```json {4}
+        {
+          "website": "https://www.example.com",
+        } 
+        ```
+
+        `website` : <u> string. </u> <br />
+        Website da loja
+    </Accordion>
+    <Accordion title="createdAt:">
+        ```json {5}
+        {
+          "createdAt": "2024-12-06T18:53:31.756Z",
+        } 
+        ```
+
+        `createdAt` : <u> date-time. </u> <br />
+        Data de criação da loja
+    </Accordion>
+    <Accordion title="mrr:">
+        ```json {3}
+        {
+          "mrr": 0,
+        } 
+        ```
+
+        `mrr` : <u> number. </u> <br />
+        Receita recorrente mensal em centavos. Valor 0 indica que não há receita recorrente no momento.
+    </Accordion>
+    <Accordion title="totalActiveSubscriptions:">
+        ```json {4}
+        {
+          "totalActiveSubscriptions": 0,
+        } 
+        ```
+
+        `totalActiveSubscriptions` : <u> integer. </u> <br />
+        Total de assinaturas ativas. Valor 0 indica que não há assinaturas ativas no momento.
+    </Accordion>
+    <Accordion title="totalRevenue:">
+        ```json {3}
+        {
+          "totalRevenue": 150000,
+        } 
+        ```
+
+        `totalRevenue` : <u> number. </u> <br />
+        Receita total do período em centavos
+    </Accordion>
+    <Accordion title="totalTransactions:">
+        ```json {4}
+        {
+          "totalTransactions": 45,
+        } 
+        ```
+
+        `totalTransactions` : <u> integer. </u> <br />
+        Total de transações no período
+    </Accordion>
+    <Accordion title="transactionsPerDay:">
+        ```json {5-12}
+        {
+          "transactionsPerDay": {
+            "2024-01-15": {
+              "amount": 5000,
+              "count": 3
+            },
+            "2024-01-16": {
+              "amount": 3000,
+              "count": 2
+            }
+          }
+        } 
+        ```
+
+        `transactionsPerDay` : <u> object. </u> <br />
+        Objeto com transações agrupadas por dia (chave é a data no formato YYYY-MM-DD)
+
+        * `amount` : <u> number. </u> <br /> Valor total das transações do dia em centavos
+        * `count` : <u> integer. </u> <br /> Quantidade de transações do dia
+    </Accordion>
+</AccordionGroup>
+
+<Tip title="Valores em centavos" icon="coins" horizontal>
+ Todos os valores monetários são retornados em centavos. Para converter para reais, divida por 100. Por exemplo: 150000 centavos = R$ 1.500,00
+</Tip>
+
