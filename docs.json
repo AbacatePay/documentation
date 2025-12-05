@@ -7,6 +7,9 @@
     "light": "#07C983",
     "dark": "#15803D"
   },
+  "fonts": {
+    "family": "Fustat"
+  },
   "favicon": "/favicon.ico",
   "api": {
     "mdx": {
@@ -18,6 +21,10 @@
   },
   "navigation": {
     "tabs": [
+      {
+        "tab": "Bem-vindo",
+        "pages": ["pages/welcome"]
+      },
       {
         "tab": "Documentação",
         "groups": [
