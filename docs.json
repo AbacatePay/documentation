@@ -23,7 +23,19 @@
     "tabs": [
       {
         "tab": "Bem-vindo",
-        "pages": ["pages/welcome"]
+        "pages": ["pages/start/welcome"]
+      },
+      {
+        "tab": "Comece aqui",
+        "groups": [
+          {
+            "group": "Comece aqui",
+            "pages": [
+              "pages/start/introduction",
+              "pages/start/quickstart"
+            ]
+          }
+        ]
       },
       {
         "tab": "Documentação",

@@ -1,0 +1,134 @@
+---
+title: 'Primeira requisição'
+description: 'Comece a usar a API da AbacatePay em minutos'
+icon: 'rocket'
+---
+
+<Info>
+    Este guia rápido te ajudará a fazer sua primeira requisição à API da
+    AbacatePay em poucos minutos.
+</Info>
+
+## <Icon icon="check" type="solid"/> Pré-requisitos
+
+Antes de começar, você precisa de:
+
+- Uma conta na AbacatePay
+- Uma chave de API (criada no dashboard)
+- Conhecimento básico de HTTP e JSON
+
+<Card title="Novo na AbacatePay?" icon="user-plus" horizontal>
+    Se você ainda não tem uma conta, acesse o{" "}
+    <a href="https://www.abacatepay.com/app" target="_blank">
+    dashboard
+  </a>{" "}
+  e crie sua conta gratuitamente.
+</Card>
+
+## <Icon icon="key" type="solid"/> Passo 1: Obter sua Chave de API
+
+Primeiro, você precisa criar uma chave de API no dashboard da AbacatePay:
+
+<Steps>
+  <Step title="Acesse o Dashboard">
+    Faça login no{" "}
+    <a href="https://www.abacatepay.com/app" target="_blank">
+      dashboard da AbacatePay
+    </a>
+  </Step>
+  <Step title="Crie uma Chave de API">
+    Navegue até a seção de integração e clique em "Criar Chave"
+  </Step>
+  <Step title="Copie sua Chave">
+    Copie a chave gerada e armazene-a em um local seguro
+  </Step>
+</Steps>
+
+<Warning>
+  **Importante**: Sua chave de API é uma credencial sensível. Nunca a
+  compartilhe publicamente ou a commite em repositórios de código.
+</Warning>
+
+<Card title="Modo Dev vs Produção" icon="toggle-on" horizontal>
+  O modo da cobrança (dev ou produção) é determinado automaticamente pela **chave de API** utilizada na requisição:
+  - **Chave de API de Dev**: Transações simuladas, ideal para testes
+  - **Chave de API de Produção**: Transações reais, requer conta verificada
+  
+  Observe que na resposta, o campo `devMode` indica se a cobrança foi criada em modo de desenvolvimento ou produção.
+</Card>
+
+Para mais detalhes sobre autenticação, consulte a <a href="./authentication">documentação de autenticação</a>.
+
+## <Icon icon="code" type="solid"/> Passo 2: Fazer sua Primeira Requisição
+
+Agora vamos criar sua primeira cobrança usando a API. Todas as requisições devem incluir sua chave de API no header `Authorization`.
+
+### Exemplo com cURL
+
+```bash
+curl --request POST \
+  --url https://api.abacatepay.com/v1/pixQrCode/create \
+  --header 'Authorization: Bearer (Sua chave de API aqui)' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "amount": 1000
+  }'
+```
+
+### Resposta de Sucesso
+
+```json
+  {
+    "error":null,
+    "data":{
+      "amount":1000,
+      "status":"PENDING",
+      "devMode":true,
+      "method":"PIX",
+      "brCode":"0002010121126580014BR.GOV.BCB.PIX0136devmode-pix-pix_char_cY2F0nwmknGfg2jdRLrkgmgN520400005303986540610.005802BR5920AbacatePay DevMode6009Sao Paulo62070503***6304B14F",
+      "brCodeBase64":"data:image/png;base64,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",
+      "platformFee":80,
+      "createdAt":"2025-12-08T17:01:48.857Z",
+      "updatedAt":"2025-12-08T17:01:48.857Z",
+      "expiresAt":"2025-12-09T17:01:48.857Z",
+      "id":"pix_char_cY2F1nwmknGfg2jdRxrkgmgN"
+    }
+  }
+```
+
+
+
+<Card title="Visualizar sua Cobrança" icon="eye" horizontal>
+  Após criar sua cobrança, você pode visualizá-la no dashboard da AbacatePay. Acesse o{" "}
+  <a href="https://www.abacatepay.com/app" target="_blank">dashboard</a>{" "}
+  e navegue até a seção de **Cobranças** para ver todos os detalhes da cobrança criada, incluindo status, valores e histórico de pagamentos.
+</Card>
+
+
+
+
+## <Icon icon="arrow-right" type="solid"/> Próximos Passos
+
+Agora que você fez sua primeira requisição, explore mais funcionalidades:
+
+<CardGroup cols={2}>
+  <Card title="Criar Clientes" icon="users" href="/pages/client/create">
+    Aprenda a criar e gerenciar clientes via API
+  </Card>
+  <Card title="Criar Cobranças" icon="money-bill" href="/pages/payment/create">
+    Veja todas as opções disponíveis para criar cobranças
+  </Card>
+  <Card title="Configurar Webhooks" icon="bell" href="/pages/webhooks">
+    Receba notificações em tempo real sobre eventos
+  </Card>
+  <Card title="SDKs Oficiais" icon="code" href="/pages/sdks">
+    Use nossos SDKs para facilitar a integração
+  </Card>
+</CardGroup>
+
+## <Icon icon="question-circle" type="solid"/> Precisa de Ajuda?
+
+<Card title="Suporte" icon="headset" horizontal>
+  Nossa equipe está sempre pronta para ajudar! Entre em contato pelo e-mail{" "}
+  <Icon icon="envelope" type="solid" /> ajuda@abacatepay.com
+</Card>

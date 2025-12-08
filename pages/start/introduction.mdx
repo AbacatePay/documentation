@@ -18,8 +18,8 @@ Nossa solução? Uma plataforma que transforma a complexidade das Fintechs em um
 ```javascript
 // Exemplo de criação de cobrança
 const payment = await abacatePay.payments.create({
-  amount: 1000,
-  description: "Serviço prestado"
+   amount: 1000,
+   description: "Serviço prestado"
 });
 ```
 
@@ -42,7 +42,7 @@ Nossa API foi construída com três princípios fundamentais:
 3. **Consistente**: Nossa API retorna sempre um option contendo o erro ou os dados de retorno, o que facilita a implementação em linguagens de tipagem forte e consistência em todas as operações.
    ```json
    {
-     "data": {
+   "data": {
          "id": "bill_12345667",
          "url": "https://abacatepay.com/pay/bill_12345667",
          "amount": 1000,
@@ -64,8 +64,11 @@ Nossa API foi construída com três princípios fundamentais:
    }
    ```
 
+   <Card title="Estrutura de Resposta" icon="info" horizontal>
+      Todas as respostas da API seguem o padrão `{(data, error)}`. Se `error` for
+      `null`, a operação foi bem-sucedida e os dados estarão em `data`.
+   </Card>
+
 Para facilitar ainda mais, oferecemos SDKs oficiais e suporte a modo de desenvolvimento com chaves de API dedicadas.
 
-## <Icon icon="cloud" type="solid"/>  Dúvidas? 
 
-Nossa equipe está sempre pronta para ajudar! Entre em contato pelo email <Icon icon="envelope" type="solid"/> ajuda@abacatepay.com
