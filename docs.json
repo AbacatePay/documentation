@@ -46,9 +46,7 @@
               "pages/devmode",
               "pages/authentication",
               "pages/webhooks",
-              "pages/production",
-              "pages/sdks",
-              "pages/trustMRR"
+              "pages/production"
             ]
           },
           {
@@ -89,6 +87,10 @@
       {
         "tab": "Referência da API",
         "openapi": "openapi.yaml"
+      },
+      {
+        "tab": "SDKs",
+        "pages": ["pages/sdks"]
       }
     ]
   },
