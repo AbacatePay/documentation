@@ -50,7 +50,7 @@ mode: "custom"
     </Card>
 
     <Card icon="key" title="Chaves de API" href="/pages/authentication">
-      Consulte como gerar e gerenciar suas credenciais com segurança.
+      Consulte como gerar e gerenciar suas credenciais com segurança. 
     </Card>
 
     <Card icon="terminal" title="Ambiente de testes" href="/pages/devmode">
@@ -98,13 +98,19 @@ mode: "custom"
         Dicas para usar a AbacatePay sem precisar de código.
       </Card>
     </div>
+
+    <div id="card-14" style={{ display: "none" }}>
+      <Card icon="coins" title="Produção" href="/pages/production">
+        Como realizar vendas reais na AbacatePay.
+      </Card>
+    </div>
   </div>
   
   <div style={{ textAlign: "center", marginTop: "32px" }}>
     <button
       id="load-more-btn"
       onClick={() => {
-        const cards = ['card-11', 'card-12', 'card-13'];
+        const cards = ['card-11', 'card-12', 'card-13', 'card-14'];
         const btn = document.getElementById('load-more-btn');
         const firstCard = document.getElementById('card-11');
         const isHidden = firstCard && firstCard.style.display === 'none';

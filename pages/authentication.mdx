@@ -1,12 +1,37 @@
 ---
-title: 'Autenticação'
+title: 'Chaves de API'
 description: 'Como enviar requisições para a nossa API'
-icon: 'lock'
+icon: 'key'
 ---
 
 <Tip>
   **Chave de API**: Sua credencial de acesso à API da AbacatePay. Esta chave identifica sua conta e autoriza suas requisições. **IMPORTANTE**: Sem a chave de API, as requisições serão recusadas.
 </Tip> 
+
+<div style={{ 
+  position: "relative", 
+  paddingBottom: "56.25%", 
+  height: 0, 
+  overflow: "hidden",
+  maxWidth: "800px",
+  margin: "32px auto",
+  borderRadius: "8px"
+}}>
+  <iframe
+    src="https://www.youtube.com/embed/SEU_VIDEO_ID"
+    title="Dev mode - AbacatePay"
+    frameBorder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    allowFullScreen
+    style={{ 
+      position: "absolute", 
+      top: 0, 
+      left: 0, 
+      width: "100%", 
+      height: "100%" 
+    }}
+  />
+</div>
 
 ## <Icon icon="lock" type="solid"/>  Gerenciando chaves de API
 
@@ -30,9 +55,9 @@ Gerencie suas chaves de API diretamente em nossa plataforma. Você pode:
   - A chave tiver sido revogada
 </Card>
 
-## <Icon icon="key" type="solid"/>  Criando chaves de API
+## <Icon icon="key" type="solid"/>  Boas práticas de segurança
 
-<Card title="Boas Práticas de Segurança" icon="light-emergency-on" horizontal>
+<Card icon="light-emergency-on" horizontal>
   * Armazene suas chaves em variáveis de ambiente ou gerenciadores de segredos
   * Nunca compartilhe suas chaves de API
   * A AbacatePay nunca solicitará suas chaves
