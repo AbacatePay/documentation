@@ -91,6 +91,10 @@
       {
         "tab": "SDKs",
         "pages": ["pages/sdks"]
+      },
+      {
+        "tab": "ChangeLog",
+        "pages": ["pages/changelog"]
       }
     ]
   },
