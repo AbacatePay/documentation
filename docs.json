@@ -45,7 +45,7 @@
         "tab": "Documentação",
         "groups": [
           {
-            "group": "Criar uma cobrança",
+            "group": "Cobre usando nosso checkout",
             "pages": ["pages/payment/reference", "pages/payment/create", "pages/payment/list", "pages/payment/one"]
           },
           {

@@ -168,8 +168,8 @@ paths:
                     example: 'Token de autenticação inválido ou ausente.'
   /billing/create:
     post:
-      summary: Criar uma nova cobrança
-      description: Permite que você crie um link de cobrança pro seu cliente pagar você.
+      summary: Criar uma nova cobrança com nosso checkout
+      description: Gera um link de pagamento para que seu cliente possa realizar o pagamento.
       security:
         - bearerAuth: []
       requestBody:
@@ -291,7 +291,7 @@ paths:
                   description: Metadados opcionais para a cobrança
                   additionalProperties: true
                   default:
-                   externalId: '123'
+                  externalId: '123'
               required: ['frequency', 'methods', 'products', 'returnUrl', 'completionUrl']
               additionalProperties: false
       responses:
@@ -1221,4 +1221,4 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
-      description: Cabeçalho de autenticação Bearer no formato `Bearer <abacatepay-api-key>` onde `<abacatepay-api-key>` é a sua chave de API. 
+      description: Todas as requisições devem incluir sua chave de API no header Authorization usando o formato Bearer <abacatepay-api-key>. Sem esse header a requisição será rejeitada.
