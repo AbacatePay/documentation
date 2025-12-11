@@ -168,8 +168,8 @@ paths:
                     example: 'Token de autenticação inválido ou ausente.'
   /billing/create:
     post:
-      summary: Criar uma nova cobrança com nosso checkout
-      description: Gera um link de pagamento para que seu cliente possa realizar o pagamento.
+      summary: Criar uma nova cobrança com checkout
+      description: Cria uma cobrança com checkout integrado e retorna a URL para o cliente concluir o pagamento.
       security:
         - bearerAuth: []
       requestBody:
@@ -178,124 +178,147 @@ paths:
           application/json:
             schema:
               type: object
+              required:
+                - products
+                - returnUrl
+                - completionUrl
+              additionalProperties: false
               properties:
                 frequency:
                   type: string
-                  description: Define o tipo de frequência da cobrança. Para cobranças únicas, use `ONE_TIME`. Para cobranças que podem ser pagas mais de uma vez, use `MULTIPLE_PAYMENTS`.
-                  enum: ['ONE_TIME', 'MULTIPLE_PAYMENTS']
-                  default: 'ONE_TIME'
-                  example: 'ONE_TIME'
+                  description: |
+                    Define o tipo da cobrança:
+                    - `ONE_TIME`: link para um único pagamento (padrão)
+                    - `MULTIPLE_PAYMENTS`: link que pode ser usado por vários pagadores
+                    
+                    **Campo opcional**: Se não for informado, será usado `ONE_TIME` por padrão.  
+                    Envie este campo apenas se quiser criar um link para múltiplos pagamentos (`MULTIPLE_PAYMENTS`).
+                  enum: [ONE_TIME, MULTIPLE_PAYMENTS]
+                  default: ONE_TIME
+                  example: ONE_TIME
                 methods:
                   type: array
-                  description: Métodos de pagamento que serão utilizados. Atualmente, apenas PIX é suportado, CARD encontra-se em beta.
+                  description: |
+                    Métodos de pagamento aceitos no checkout.
+                    Por padrão, a cobrança é criada aceitando PIX e cartão.
                   items:
                     type: string
-                    enum: ['PIX', 'CARD']
+                    enum: [PIX, CARD]
                   minItems: 1
                   maxItems: 2
                   uniqueItems: true
-                  default: ['PIX']
-                  example: ['PIX']
+                  default: [PIX, CARD]
+                  example: [PIX, CARD]
                 products:
                   type: array
-                  description: Lista de produtos que seu cliente está pagando.
+                  description: |
+                    Lista de produtos incluídos na cobrança.
+                    Este é o único campo obrigatório — o valor total é calculado a partir destes itens.
+                  minItems: 1
                   items:
                     type: object
+                    additionalProperties: false
+                    required: [externalId, name, quantity, price]
                     properties:
                       externalId:
                         type: string
-                        description: O id do produto em seu sistema. Utilizamos esse id para criar seu produto na AbacatePay de forma automática, então certifique-se de que seu id é único.
-                        example: 'prod-1234'
+                        description: ID do produto no seu sistema. Deve ser único.
+                        example: prod-1234
                       name:
                         type: string
                         description: Nome do produto.
-                        example: 'Assinatura de Programa Fitness'
+                        example: Assinatura de Programa Fitness
                       description:
                         type: string
-                        description: Descrição detalhada do produto.
-                        example: 'Acesso ao programa fitness premium por 1 mês.'
+                        description: Descrição do produto.
+                        example: Acesso ao programa fitness premium por 1 mês.
                       quantity:
                         type: integer
-                        description: Quantidade do produto sendo adquirida.
+                        description: Quantidade deste produto.
                         minimum: 1
                         example: 2
                       price:
                         type: integer
-                        description: Preço por unidade do produto em centavos. O mínimo é 100 (1 BRL).
+                        description: Preço unitário em centavos (mínimo 100 = R$ 1,00).
                         minimum: 100
                         example: 2000
-                    required: ['externalId', 'name', 'quantity', 'price']
-                    additionalProperties: false
-                  minItems: 1
                   example:
-                    - externalId: 'prod-1234'
-                      name: 'Assinatura de Programa Fitness'
-                      description: 'Acesso ao programa fitness premium por 1 mês.'
+                    - externalId: prod-1234
+                      name: Assinatura de Programa Fitness
+                      description: Acesso ao programa fitness premium por 1 mês.
                       quantity: 2
                       price: 2000
                 returnUrl:
                   type: string
                   format: uri
-                  description: URL para redirecionar o cliente caso o mesmo clique na opção "Voltar".
-                  example: 'https://example.com/billing'
+                  description: URL para onde o cliente será redirecionado ao clicar em "Voltar" no checkout.
+                  example: https://example.com/billing
                 completionUrl:
                   type: string
                   format: uri
-                  description: URL para redirecionar o cliente quando o pagamento for concluído.
-                  example: 'https://example.com/completion'
+                  description: URL para onde o cliente será redirecionado após o pagamento ser concluído.
+                  example: https://example.com/completion
                 customerId:
                   type: string
-                  description: O id de um cliente já cadastrado em sua loja.
-                  example: 'cust_abcdefghij'
+                  description: |
+                    ID de um cliente já cadastrado na sua loja.
+                    Se informado, o checkout será pré-preenchido com os dados deste cliente.
+                  example: cust_abcdefghij
                 customer:
                   type: object
-                  description: Dados do seu cliente. Caso o cliente não exista ele será criado.
-                  required: ['name', 'cellphone', 'email', 'taxId']
+                  description: |
+                    Dados do cliente. Se o cliente ainda não existir, será criado automaticamente.
+                    Opcional quando `customerId` for usado.
+                    
+                    **Importante**: O objeto `customer` não é obrigatório, mas ao informar qualquer campo do `customer`, todos os campos (`name`, `cellphone`, `email` e `taxId`) se tornam obrigatórios.
                   additionalProperties: false
+                  required: [name, cellphone, email, taxId]
                   properties:
                     name:
                       type: string
-                      description: Nome completo do seu cliente
+                      description: Nome completo do cliente.
                       example: Daniel Lima
                     cellphone:
                       type: string
-                      description: Celular do cliente
-                      example: (11) 4002-8922
+                      description: Celular do cliente.
+                      example: "11 4002-8922"
                     email:
                       type: string
-                      description: E-mail do cliente
+                      description: E-mail do cliente.
                       example: daniel_lima@abacatepay.com
                     taxId:
                       type: string
                       description: CPF ou CNPJ do cliente.
                       example: 123.456.789-01
-                allowCoupons: 
+                allowCoupons:
                   type: boolean
+                  description: Indica se a cobrança aceita uso de cupons.
                   default: false
                   example: false
-                  description: Se verdadeiro cupons podem ser usados na billing
-                coupons: 
+
+                coupons:
                   type: array
-                  description: Lista de cupons disponíveis para resem usados com a billing
-                  example: ['ABKT10', "ABKT5", "PROMO10"]
-                  default: []
-                  maxItems: 50
+                  description: Lista de cupons que podem ser utilizados nesta cobrança.
                   items:
                     type: string
+                  maxItems: 50
+                  default: []
+                  example: ["ABKT10", "ABKT5", "PROMO10"]
+
                 externalId:
                   type: string
-                  description: Caso você tenha um identificador único da sua aplicação para cobranças, completamente opcional.
-                  example: 'seu_id_123'
+                  description: ID da cobrança no seu sistema, caso queira manter uma referência própria.
+                  example: seu_id_123
+
                 metadata:
                   type: object
-                  description: Metadados opcionais para a cobrança
+                  description: Metadados adicionais da cobrança. Campo livre para a sua aplicação.
                   additionalProperties: true
-                  default:
-                  externalId: '123'
-              required: ['frequency', 'methods', 'products', 'returnUrl', 'completionUrl']
-              additionalProperties: false
+                  example:
+                    source: "landing-page-black-friday"
+                    campaign: "BF-2025"
       responses:
-        '200':
+        "200":
           description: Cobrança criada com sucesso.
           content:
             application/json:
@@ -303,10 +326,10 @@ paths:
                 type: object
                 properties:
                   data:
-                    $ref: '#/components/schemas/Billing'
+                    $ref: "#/components/schemas/Billing"
                   error:
-                    type: 'null'
-        '401':
+                    type: "null"
+        "401":
           description: Não autorizado. Falha na autenticação.
           content:
             application/json:
@@ -315,8 +338,8 @@ paths:
                 properties:
                   error:
                     type: string
-                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
-                    example: 'Token de autenticação inválido ou ausente.'
+                    description: Motivo da falha na autenticação.
+                    example: Token de autenticação inválido ou ausente.
   /billing/list:
     get:
       summary: Listar cobranças
@@ -1221,4 +1244,7 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
-      description: Todas as requisições devem incluir sua chave de API no header Authorization usando o formato Bearer <abacatepay-api-key>. Sem esse header a requisição será rejeitada.
+      description: |
+        Todas as requisições devem incluir sua chave de API no header Authorization usando o formato `Bearer <abacatepay-api-key>`. Sem esse header a requisição será rejeitada.
+        
+        Saiba mais sobre como criar e usar chaves de API na [documentação de autenticação](/pages/authentication).
