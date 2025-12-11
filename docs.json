@@ -32,7 +32,11 @@
             "group": "Comece aqui",
             "pages": [
               "pages/start/introduction",
-              "pages/start/quickstart"
+              "pages/start/quickstart",
+              "pages/devmode",
+              "pages/authentication",
+              "pages/webhooks",
+              "pages/production"
             ]
           }
         ]
@@ -41,21 +45,12 @@
         "tab": "Documentação",
         "groups": [
           {
-            "group": "Introdução",
-            "pages": [
-              "pages/devmode",
-              "pages/authentication",
-              "pages/webhooks",
-              "pages/production"
-            ]
+            "group": "Criar uma cobrança",
+            "pages": ["pages/payment/reference", "pages/payment/create", "pages/payment/list", "pages/payment/one"]
           },
           {
             "group": "Cliente",
             "pages": ["pages/client/reference", "pages/client/create", "pages/client/list"]
-          },
-          {
-            "group": "Cobrança",
-            "pages": ["pages/payment/reference", "pages/payment/create", "pages/payment/list"]
           },
           {
             "group": "Pix QRCode",
