@@ -325,12 +325,12 @@ paths:
   /billing/list:
     get:
       summary: Listar cobranças
-      description: Permite que você recupere uma lista de todas as cobranças criadas.
+      description: Retorna todas as cobranças que você criou.
       security:
         - bearerAuth: []
       responses:
         '200':
-          description: Lista de cobranças retornada com sucesso.
+          description: Cobranças listadas com sucesso.
           content:
             application/json:
               schema:
@@ -338,13 +338,13 @@ paths:
                 properties:
                   data:
                     type: array
-                    description: Lista de cobranças criadas.
+                    description: Lista de cobranças.
                     items:
                       $ref: '#/components/schemas/Billing'
                   error:
                     type: 'null'
         '401':
-          description: Não autorizado. Falha na autenticação.
+          description: Falha na autenticação.
           content:
             application/json:
               schema:
@@ -352,8 +352,8 @@ paths:
                 properties:
                   error:
                     type: string
-                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
                     example: 'Token de autenticação inválido ou ausente.'
+
   /pixQrCode/create:
     post:
       summary: 'Criar QRCode PIX'

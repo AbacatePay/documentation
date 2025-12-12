@@ -46,7 +46,11 @@
         "groups": [
           {
             "group": "Cobre usando nosso checkout",
-            "pages": ["pages/payment/reference", "pages/payment/create", "pages/payment/list", "pages/payment/one"]
+            "pages": ["pages/payment/reference", "pages/payment/create" ]
+          },
+          {
+            "group": "Localize suas cobranças",
+            "pages": ["pages/payment/list", "pages/payment/one"]
           },
           {
             "group": "Cliente",
@@ -78,10 +82,6 @@
             "pages": ["pages/trustMRR/reference", "pages/trustMRR/mrr", "pages/trustMRR/get", "pages/trustMRR/list"]
           }
         ]
-      },
-      {
-        "tab": "Referência da API",
-        "openapi": "openapi.yaml"
       },
       {
         "tab": "SDKs",
