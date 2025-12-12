@@ -179,91 +179,54 @@ paths:
             schema:
               type: object
               required:
-                - products
-                - returnUrl
-                - completionUrl
+                - items
               additionalProperties: false
               properties:
-                frequency:
-                  type: string
-                  description: |
-                    Define o tipo da cobrança:
-                    - `ONE_TIME`: link para um único pagamento (padrão)
-                    - `MULTIPLE_PAYMENTS`: link que pode ser usado por vários pagadores
-                    
-                    **Campo opcional**: Se não for informado, será usado `ONE_TIME` por padrão.  
-                    Envie este campo apenas se quiser criar um link para múltiplos pagamentos (`MULTIPLE_PAYMENTS`).
-                  enum: [ONE_TIME, MULTIPLE_PAYMENTS]
-                  default: ONE_TIME
-                  example: ONE_TIME
-                methods:
+                items:
                   type: array
                   description: |
-                    Métodos de pagamento aceitos no checkout.
-                    Por padrão, a cobrança é criada aceitando PIX e cartão.
-                  items:
-                    type: string
-                    enum: [PIX, CARD]
-                  minItems: 1
-                  maxItems: 2
-                  uniqueItems: true
-                  default: [PIX, CARD]
-                  example: [PIX, CARD]
-                products:
-                  type: array
-                  description: |
-                    Lista de produtos incluídos na cobrança.
+                    Lista de itens incluídos na cobrança.
                     Este é o único campo obrigatório — o valor total é calculado a partir destes itens.
                   minItems: 1
                   items:
                     type: object
                     additionalProperties: false
-                    required: [externalId, name, quantity, price]
+                    required: [id, quantity]
                     properties:
-                      externalId:
+                      id:
                         type: string
-                        description: ID do produto no seu sistema. Deve ser único.
+                        description: ID público do produto no seu sistema.
                         example: prod-1234
-                      name:
-                        type: string
-                        description: Nome do produto.
-                        example: Assinatura de Programa Fitness
-                      description:
-                        type: string
-                        description: Descrição do produto.
-                        example: Acesso ao programa fitness premium por 1 mês.
                       quantity:
                         type: integer
-                        description: Quantidade deste produto.
+                        description: Quantidade deste item.
                         minimum: 1
                         example: 2
-                      price:
-                        type: integer
-                        description: Preço unitário em centavos (mínimo 100 = R$ 1,00).
-                        minimum: 100
-                        example: 2000
                   example:
-                    - externalId: prod-1234
-                      name: Assinatura de Programa Fitness
-                      description: Acesso ao programa fitness premium por 1 mês.
-                      quantity: 2
-                      price: 2000
+                    - id: prod-1234
                 returnUrl:
                   type: string
                   format: uri
                   description: URL para onde o cliente será redirecionado ao clicar em "Voltar" no checkout.
                   example: https://example.com/billing
+                  x-mint:
+                    hidden: true
                 completionUrl:
                   type: string
                   format: uri
                   description: URL para onde o cliente será redirecionado após o pagamento ser concluído.
                   example: https://example.com/completion
+                  x-mint:
+                    hidden: true
                 customerId:
                   type: string
                   description: |
                     ID de um cliente já cadastrado na sua loja.
                     Se informado, o checkout será pré-preenchido com os dados deste cliente.
-                  example: cust_abcdefghij
+                    
+                    **Exemplo**: `"cust_abcdefghij"`
+                  x-mint:
+                    hidden: true
                 customer:
                   type: object
                   description: |
@@ -273,50 +236,69 @@ paths:
                     **Importante**: O objeto `customer` não é obrigatório, mas ao informar qualquer campo do `customer`, todos os campos (`name`, `cellphone`, `email` e `taxId`) se tornam obrigatórios.
                   additionalProperties: false
                   required: [name, cellphone, email, taxId]
+                  x-mint:
+                    hidden: true
                   properties:
                     name:
                       type: string
-                      description: Nome completo do cliente.
-                      example: Daniel Lima
+                      description: |
+                        Nome completo do cliente.
+                        
+                        **Exemplo**: `"Daniel Lima"`
                     cellphone:
                       type: string
-                      description: Celular do cliente.
-                      example: "11 4002-8922"
+                      description: |
+                        Celular do cliente.
+                        
+                        **Exemplo**: `"11 4002-8922"`
                     email:
                       type: string
-                      description: E-mail do cliente.
-                      example: daniel_lima@abacatepay.com
+                      description: |
+                        E-mail do cliente.
+                        
+                        **Exemplo**: `"daniel_lima@abacatepay.com"`
                     taxId:
                       type: string
-                      description: CPF ou CNPJ do cliente.
-                      example: 123.456.789-01
-                allowCoupons:
-                  type: boolean
-                  description: Indica se a cobrança aceita uso de cupons.
-                  default: false
-                  example: false
-
+                      description: |
+                        CPF ou CNPJ do cliente.
+                        
+                        **Exemplo**: `"123.456.789-01"`
                 coupons:
                   type: array
-                  description: Lista de cupons que podem ser utilizados nesta cobrança.
+                  description: |
+                    Lista de cupons que podem ser utilizados nesta cobrança.
+                    
+                    **Exemplo**: `["ABKT10", "ABKT5", "PROMO10"]`
                   items:
                     type: string
                   maxItems: 50
-                  default: []
-                  example: ["ABKT10", "ABKT5", "PROMO10"]
+                  x-mint:
+                    hidden: true
 
                 externalId:
                   type: string
-                  description: ID da cobrança no seu sistema, caso queira manter uma referência própria.
-                  example: seu_id_123
+                  description: |
+                    ID da cobrança no seu sistema, caso queira manter uma referência própria.
+                    
+                    **Exemplo**: `"seu_id_123"`
+                  x-mint:
+                    hidden: true
 
                 metadata:
                   type: object
-                  description: Metadados adicionais da cobrança. Campo livre para a sua aplicação.
+                  description: |
+                    Metadados adicionais da cobrança. Campo livre para a sua aplicação.
+                    
+                    **Exemplo**:
+                    ```json
+                    {
+                      "source": "landing-page-black-friday",
+                      "campaign": "BF-2025"
+                    }
+                    ```
                   additionalProperties: true
-                  example:
-                    source: "landing-page-black-friday"
-                    campaign: "BF-2025"
+                  x-mint:
+                    hidden: true
       responses:
         "200":
           description: Cobrança criada com sucesso.
@@ -1057,13 +1039,6 @@ components:
           type: boolean
           description: Indica se a cobrança foi criada em ambiente de testes.
           example: true
-        methods:
-          type: array
-          description: Métodos de pagamento suportados para esta cobrança.
-          items:
-            type: string
-            enum: ['PIX', 'CARD']
-          example: ['PIX']
         products:
           type: array
           description: Lista de produtos na cobrança.
@@ -1082,11 +1057,6 @@ components:
                 type: integer
                 description: Quantidade do produto sendo adquirida.
                 example: 2
-        frequency:
-          type: string
-          description: Frequência da cobrança.
-          enum: ['ONE_TIME', 'MULTIPLE_PAYMENTS']
-          example: 'ONE_TIME'
         nextBilling:
           type: string
           format: date-time
@@ -1097,11 +1067,6 @@ components:
           type: object
           nullable: true
           $ref: '#/components/schemas/Customer'
-        allowCoupons: 
-          type: boolean
-          nullable: true
-          default: false
-          description: Se verdadeiro cupons podem ser usados na billing
         coupons: 
           type: array
           description: Lista de cupons disponíveis para resem usados com a billing
@@ -1110,7 +1075,7 @@ components:
           items:
             type: string
       required:
-        ['id', 'url', 'status', 'devMode', 'methods', 'products', 'frequency', 'createdAt', 'updatedAt']
+        ['id', 'url', 'status', 'devMode', 'products', 'createdAt', 'updatedAt']
     PixQRCode:
       type: object
       properties:
