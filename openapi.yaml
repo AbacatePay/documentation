@@ -168,7 +168,7 @@ paths:
                     example: 'Token de autenticação inválido ou ausente.'
   /billing/create:
     post:
-      summary: Criar uma nova cobrança com checkout
+      summary: Criar uma cobrança com nosso Checkout
       description: Cria uma cobrança com checkout integrado e retorna a URL para o cliente concluir o pagamento.
       security:
         - bearerAuth: []
