@@ -45,12 +45,8 @@
         "tab": "Documentação",
         "groups": [
           {
-            "group": "Cobre usando nosso checkout",
-            "pages": ["pages/payment/reference", "pages/payment/create" ]
-          },
-          {
-            "group": "Localize suas cobranças",
-            "pages": ["pages/payment/list", "pages/payment/one"]
+            "group": "Cobrar com Checkout",
+            "pages": ["pages/payment/reference", "pages/payment/create","pages/payment/list", "pages/payment/one" ]
           },
           {
             "group": "Cliente",

@@ -204,6 +204,13 @@ paths:
                         example: 2
                   example:
                     - id: prod-1234
+                method:
+                  type: string
+                  description: Método de pagamento disponível.
+                  enum: ['PIX', 'CARD']
+                  example: 'PIX'
+                  x-mint:
+                    hidden: true
                 returnUrl:
                   type: string
                   format: uri
