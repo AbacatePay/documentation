@@ -6,6 +6,41 @@ icon: 'book-open-cover'
 
 Um cliente é seu usuário final, aquele que você vai cobrar e pagar o seu produto.
 
+## Quando criar um cliente?
+
+Você pode criar um cliente de duas formas:
+
+### 1. Criar o cliente antes da cobrança
+
+Use a rota `/customer/create` quando:
+- Você já conhece os dados do cliente antes de gerar a cobrança
+- Você quer reutilizar o `customerId` em múltiplas cobranças
+- Você tem clientes recorrentes ou quer pré-cadastrar clientes
+
+**Exemplo:**
+```json
+POST /customer/create
+{
+  "name": "Daniel Lima",
+  "cellphone": "(11) 4002-8922",
+  "email": "daniel_lima@abacatepay.com",
+  "taxId": "123.456.789-01"
+}
+```
+
+Após criar o cliente, você receberá um `customerId` que pode ser usado no campo `customerId` ao criar cobranças, pré-preenchendo os dados do checkout.
+
+### 2. Criar o cliente automaticamente durante a cobrança
+
+O cliente também pode ser criado automaticamente de duas formas:
+
+**Ao criar uma cobrança via `/billing/create`:**
+- Você pode passar os dados do cliente no campo `customer`
+- O cliente será criado automaticamente junto com a cobrança
+
+**Quando o cliente preenche os dados no checkout:**
+- Se você não fornecer os dados do cliente, ele será criado automaticamente quando preencher os dados no checkout da AbacatePay
+
 ## <Icon icon="folder-tree" type="solid"/>  Estrutura
 
 Um cliente é representado em nossa API pela seguinte estrutura:

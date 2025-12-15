@@ -49,7 +49,7 @@
             "pages": ["pages/payment/reference", "pages/payment/create","pages/payment/list", "pages/payment/one" ]
           },
           {
-            "group": "Cliente",
+            "group": "Crie seus clientes",
             "pages": ["pages/client/reference", "pages/client/create", "pages/client/list"]
           },
           {
