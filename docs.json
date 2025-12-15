@@ -3,9 +3,13 @@
   "theme": "mint",
   "name": "AbacatePay",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#9EEA6C",
+    "light": "#9EEA6C",
+    "dark": "#9EEA6C"
+  },
+  "appearance": {
+    "default": "dark",
+    "strict": true
   },
   "fonts": {
     "family": "Fustat"
