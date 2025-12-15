@@ -62,7 +62,7 @@
             ]
           },
           {
-            "group": "Cupom",
+            "group": "Crie seus cupons",
             "pages": ["pages/coupon/reference", "pages/coupon/create", "pages/coupon/list"]
           },
           {
@@ -95,6 +95,10 @@
   },
   "navbar": {
     "links": [
+      {
+        "label": "llms.txt",
+        "href": "https://www.abacatepay.com/llms.txt"
+      },
       {
         "label": "Repositorio",
         "href": "https://github.com/AbacatePay/documentation"
