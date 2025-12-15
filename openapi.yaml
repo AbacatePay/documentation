@@ -332,7 +332,10 @@ paths:
   /billing/list:
     get:
       summary: Listar cobranças
-      description: Retorna todas as cobranças que você criou.
+      description: |
+        Retorna todas as cobranças que você criou.
+        
+        Você pode usar essa rota para listar todas suas cobranças e visualizar seus status, valores e informações relacionadas.
       security:
         - bearerAuth: []
       responses:
@@ -360,7 +363,6 @@ paths:
                   error:
                     type: string
                     example: 'Token de autenticação inválido ou ausente.'
-
   /pixQrCode/create:
     post:
       summary: 'Criar QRCode PIX'
