@@ -1,0 +1,37 @@
+---
+title: 'Changelog da API'
+description: 'Mantenha-se atualizado com as mudanças e histórico de versões da API'
+icon: 'scroll'
+---
+
+Acompanhe as atualizações e o histórico de versões da API.
+Este changelog é atualizado continuamente com melhorias, correções e mudanças relevantes.
+Sugestões de features ou melhorias podem ser enviadas pela área de Roadmap no dashboard.
+Feedbacks também são bem-vindos no nosso Discord (#dev).
+
+## Atualizações Recentes
+
+<Update label="18 de Dez, 2024" description="Nova Funcionalidade" tags={['nova-funcionalidade']}>
+  As chaves de API agora suportam um campo `scopes`. Os escopos válidos são `read` e `write`. As chaves têm acesso total por padrão se nenhum escopo for especificado. Todas as chaves de API existentes terão ambos os escopos.
+</Update>
+
+<Update label="15 de Dez, 2024" description="Correção de Bug" tags={['bug-fix']}>
+  Corrigido problema onde webhooks não eram enviados em casos de pagamentos cancelados. Agora todos os eventos são corretamente notificados.
+</Update>
+
+<Update label="12 de Dez, 2024" description="Melhoria" tags={['melhoria']}>
+  Melhorado o tempo de resposta da API de consulta de pagamentos. Consultas agora são até 40% mais rápidas.
+</Update>
+
+<Update label="8 de Dez, 2024" description="Nova Funcionalidade" tags={['nova-funcionalidade']}>
+  Adicionado suporte para múltiplos produtos em uma única cobrança. Agora é possível criar checkout pages com vários itens de uma vez.
+</Update>
+
+<Update label="5 de Dez, 2024" description="Mudança Incompatível" tags={['breaking-change']}>
+  O campo `status` em respostas de pagamento foi renomeado para `paymentStatus`. Atualize seu código para usar o novo nome do campo.
+</Update>
+
+<Update label="1 de Dez, 2024" description="Documentação" tags={['documentacao']}>
+  Documentação completa atualizada com novos exemplos de código e casos de uso. Adicionados guias para integração com React e Vue.js.
+</Update>
+

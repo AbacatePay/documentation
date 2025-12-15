@@ -89,7 +89,7 @@
       },
       {
         "tab": "ChangeLog",
-        "pages": ["pages/changelog"]
+        "pages": ["pages/changelog/index"]
       }
     ]
   },
