@@ -1,0 +1,77 @@
+---
+title: 'AbacatePay Node.js SDK'
+description: 'SDK oficial para Node.js - Aceite pagamentos em segundos com uma integração simples'
+icon: 'node-js'
+---
+
+<Card 
+  title="AbacatePay Node.js SDK" 
+  icon="node-js" 
+  href="https://github.com/AbacatePay/abacatepay-nodejs-sdk"
+>
+  Official AbacatePay SDK - Accept payments in seconds with a simple integration.
+</Card>
+
+## Installation
+
+```bash
+npm install abacatepay-nodejs-sdk
+```
+
+## Quick Usage
+
+```js
+import AbacatePay from "abacatepay-nodejs-sdk";
+
+// Initialize the SDK with your API key
+const abacate = AbacatePay("your_api_key");
+```
+
+## Creating a Payment
+
+```js
+// Create a one-time payment
+const billing = await abacate.billing.create({
+  frequency: "ONE_TIME",
+  methods: ["PIX"],
+  products: [
+    {
+      externalId: "PRO-PLAN",
+      name: "Pro plan",
+      quantity: 1,
+      price: 1000, // Amount in cents
+    },
+  ],
+  returnUrl: "https://yoursite.com/app",
+  completionUrl: "https://yoursite.com/payment/success",
+  customer: {
+    name: "Customer Name",
+    email: "customer@example.com",
+    cellphone: "+5511999999999",
+    taxId: "09240529020",
+  },
+});
+```
+
+## Response
+
+```js
+{
+  id: 'bill_12345667',
+  url: 'https://abacatepay.com/pay/bill_12345667', // Payment URL for your customer
+  amount: 1000,
+  status: 'PENDING',
+  devMode: true,
+  methods: ['PIX'],
+  frequency: 'ONE_TIME',
+  nextBilling: null,
+  customer: {
+    id: 'cust_12345',
+    metadata: {
+      email: 'customer@example.com'
+    }
+  },
+  createdAt: '2024-11-04T18:38:28.573',
+  updatedAt: '2024-11-04T18:38:28.573',
+}
+```

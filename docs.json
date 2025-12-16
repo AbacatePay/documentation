@@ -85,7 +85,12 @@
       },
       {
         "tab": "SDKs",
-        "pages": ["pages/sdks"]
+        "groups": [
+          {
+            "group": "SDKs",
+            "pages": ["pages/sdks", "pages/sdks/nodejs"]
+          }
+        ]
       },
       {
         "tab": "ChangeLog",
