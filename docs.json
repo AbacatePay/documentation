@@ -88,7 +88,7 @@
         "groups": [
           {
             "group": "SDKs",
-            "pages": ["pages/sdks/sdks", "pages/sdks/nodejs", "pages/sdks/python", "pages/sdks/java"]
+            "pages": ["pages/sdks/sdks", "pages/sdks/nodejs", "pages/sdks/python", "pages/sdks/java", "pages/sdks/php", "pages/sdks/ruby"]
           }
         ]
       },
