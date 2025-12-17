@@ -1,0 +1,103 @@
+---
+title: 'Rust'
+description: 'SDK oficial para Rust - Aceite pagamentos em segundos com uma integração simples'
+icon: 'rust'
+---
+
+<Card 
+  title="AbacatePay Rust SDK" 
+  icon="rust" 
+  href="https://github.com/AbacatePay/abacatepay-rust-sdk"
+>
+  Official AbacatePay SDK - Accept payments in seconds with a simple integration.
+</Card>
+
+## Instalação
+
+Adicione a dependência ao seu `Cargo.toml`:
+
+```toml
+[dependencies]
+abacatepay-rust-sdk = "0.1.0"
+tokio = { version = "1", features = ["full"] }
+```
+
+Ou instale diretamente via cargo:
+
+```bash
+cargo add abacatepay-rust-sdk
+cargo add tokio --features full
+```
+
+## Quick Usage
+
+```rust
+use abacatepay_rust_sdk::AbacatePay;
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    // Initialize the SDK with your API key
+    let client = AbacatePay::new("your_api_key".to_string());
+    
+    // Use the client...
+    Ok(())
+}
+```
+
+## Criando uma Cobrança
+
+```rust
+use abacatepay_rust_sdk::{
+    AbacatePay, BillingKind, BillingMethods, CreateBillingData, CreateBillingProduct,
+};
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let client = AbacatePay::new("your_api_key".to_string());
+
+    // Criando uma Cobrança Única
+    let billing_data = CreateBillingData {
+        frequency: BillingKind::OneTime,
+        methods: vec![BillingMethods::Pix],
+        products: vec![CreateBillingProduct {
+            external_id: "PRO-PLAN".to_string(),
+            name: "Pro plan".to_string(),
+            quantity: 1,
+            price: 1000.0, // Preço em centavos
+            description: Some("Pro plan subscription".to_string()),
+        }],
+        return_url: "https://yoursite.com/app".to_string(),
+        completion_url: "https://yoursite.com/payment/success".to_string(),
+        customer_id: None,
+    };
+
+    let billing = client.create_billing(billing_data).await?;
+    println!("{}", billing.url); // URL de pagamento para seu cliente
+
+    Ok(())
+}
+```
+
+## Response
+
+```rust
+{
+    "id": "bill_12345667",
+    "url": "https://abacatepay.com/pay/bill_12345667",  // URL de pagamento para seu cliente
+    "amount": 1000,
+    "status": "PENDING",
+    "devMode": true,
+    "methods": ["PIX"],
+    "frequency": "ONE_TIME",
+    "nextBilling": null,
+    "customer": {
+        "id": "cust_12345",
+        "metadata": {
+            "email": "customer@example.com"
+        }
+    },
+    "createdAt": "2024-11-04T18:38:28.573",
+    "updatedAt": "2024-11-04T18:38:28.573"
+}
+```
+
