@@ -1,0 +1,93 @@
+---
+title: 'AbacatePay Python SDK'
+description: 'SDK oficial para Python - Aceite pagamentos em segundos com uma integração simples'
+icon: 'python'
+---
+
+<Card 
+  title="AbacatePay Python SDK" 
+  icon="python" 
+  href="https://github.com/AbacatePay/abacatepay-python-sdk"
+>
+  Official AbacatePay SDK - Accept payments in seconds with a simple integration.
+</Card>
+
+## Instalação
+
+### Usando pip
+
+```bash
+pip install abacatepay
+```
+
+### Usando Poetry
+
+```bash
+poetry add abacatepay
+```
+
+## Quick Usage
+
+```python
+import abacatepay
+
+# Initialize the SDK with your API key
+client = abacatepay.AbacatePay("your_api_key")
+```
+
+## Criando uma Cobrança
+
+```python
+from abacatepay.products import Product
+
+products = [
+    Product(
+        external_id="PRO-PLAN",
+        name="Pro plan",
+        quantity=1,
+        price=1000,  # Amount in cents
+        description="Pro plan subscription"
+    ),
+    # ou como um dicionário
+    {
+        'external_id': "BASIC-PLAN",
+        'name': "Basic plan",
+        'quantity': 1,
+        'price': 500,
+        'description': "Basic plan subscription"
+    }
+]
+
+# Criando uma Cobrança Única
+billing = client.billing.create(
+    products=products,
+    return_url="https://yoursite.com/app",
+    completion_url="https://yoursite.com/payment/success"
+)
+
+print(billing.data.url)
+```
+
+## Response
+
+```python
+{
+    'id': 'bill_12345667',
+    'url': 'https://abacatepay.com/pay/bill_12345667',  # URL de pagamento para seu cliente
+    'amount': 1000,
+    'status': 'PENDING',
+    'devMode': True,
+    'methods': ['PIX'],
+    'frequency': 'ONE_TIME',
+    'nextBilling': None,
+    'customer': {
+        'id': 'cust_12345',
+        'metadata': {
+            'email': 'customer@example.com'
+        }
+    },
+    'createdAt': '2024-11-04T18:38:28.573',
+    'updatedAt': '2024-11-04T18:38:28.573',
+}
+```
+

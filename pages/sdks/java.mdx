@@ -1,0 +1,100 @@
+---
+title: 'AbacatePay Java SDK'
+description: 'SDK oficial para Java - Aceite pagamentos em segundos com uma integração simples'
+icon: 'java'
+---
+
+<Card 
+  title="AbacatePay Java SDK" 
+  icon="java" 
+  href="https://github.com/AbacatePay/abacatepay-java-sdk"
+>
+  Official AbacatePay SDK - Accept payments in seconds with a simple integration.
+</Card>
+
+## Instalação
+
+### Requisitos
+
+Certifique-se de ter instalado:
+- **Java**: JDK 8 ou superior
+- **Maven**: Para gerenciar dependências e construir o projeto
+
+### Instalando Maven
+
+**Linux:**
+```bash
+sudo apt install maven
+```
+
+**Windows (usando Chocolatey):**
+```bash
+choco install maven -y
+```
+
+### Adicionando a dependência Feign
+
+Adicione a dependência Feign ao seu `pom.xml`:
+
+```xml
+<dependency>
+    <groupId>io.github.openfeign</groupId>
+    <artifactId>feign-core</artifactId>
+    <version>11.7</version>
+</dependency>
+```
+
+## Quick Usage
+
+```java
+import com.abacatepay.AbacatePay;
+
+// Initialize the SDK with your API key
+AbacatePay abacate = new AbacatePay("your_api_key");
+```
+
+## Criando uma Cobrança
+
+```java
+import com.abacatepay.AbacatePay;
+import com.abacatepay.model.billing.CreateBillingData;
+import com.abacatepay.model.billing.CreateBillingResponse;
+import java.util.Arrays;
+
+AbacatePay abacate = new AbacatePay("your_api_key");
+
+// Criando uma Cobrança Única
+CreateBillingData billingData = new CreateBillingData();
+billingData.setFrequency("ONE_TIME");
+billingData.setMethods(Arrays.asList("PIX"));
+// Configure os produtos conforme necessário
+billingData.setReturnUrl("https://yoursite.com/app");
+billingData.setCompletionUrl("https://yoursite.com/payment/success");
+
+CreateBillingResponse billing = abacate.createBilling(billingData);
+System.out.println(billing.getUrl()); // URL de pagamento para seu cliente
+```
+
+## Response
+
+```java
+{
+    "id": "bill_12345667",
+    "url": "https://abacatepay.com/pay/bill_12345667",  // URL de pagamento para seu cliente
+    "amount": 1000,
+    "status": "PENDING",
+    "devMode": true,
+    "methods": ["PIX"],
+    "frequency": "ONE_TIME",
+    "nextBilling": null,
+    "customer": {
+        "id": "cust_12345",
+        "metadata": {
+            "email": "customer@example.com"
+        }
+    },
+    "createdAt": "2024-11-04T18:38:28.573",
+    "updatedAt": "2024-11-04T18:38:28.573"
+}
+```
+
