@@ -1,0 +1,120 @@
+---
+title: 'Go '
+description: 'SDK oficial para Go - Aceite pagamentos em segundos com uma integração simples'
+icon: 'golang'
+---
+
+<Card 
+  title="AbacatePay Go" 
+  icon="golang" 
+  href="https://github.com/AbacatePay/abacatepay-go-sdk"
+>
+  Official AbacatePay SDK - Accept payments in seconds with a simple integration.
+</Card>
+
+## Instalação
+
+```bash
+go get github.com/AbacatePay/abacatepay-go-sdk
+```
+
+## Quick Usage
+
+```go
+package main
+
+import (
+	"context"
+	"github.com/AbacatePay/abacatepay-go-sdk/abacatepay"
+	"time"
+)
+
+func main() {
+	// Initialize the SDK with your API key
+	client, err := abacatepay.New(&abacatepay.ClientConfig{
+		ApiKey:  "your_api_key",
+		Timeout: 10 * time.Second,
+	})
+	if err != nil {
+		panic(err)
+	}
+	
+	// Use the client...
+}
+```
+
+## Criando uma Cobrança
+
+```go
+package main
+
+import (
+	"context"
+	"github.com/AbacatePay/abacatepay-go-sdk/abacatepay"
+	"github.com/AbacatePay/abacatepay-go-sdk/v1/billing"
+	"log"
+	"time"
+)
+
+func main() {
+	client, err := abacatepay.New(&abacatepay.ClientConfig{
+		ApiKey:  "your_api_key",
+		Timeout: 10 * time.Second,
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	// Criando uma Cobrança Única
+	body := &billing.CreateBillingBody{
+		Frequency:     billing.OneTime,
+		Methods:       []billing.Method{billing.PIX},
+		CompletionUrl: "https://yoursite.com/payment/success",
+		ReturnUrl:     "https://yoursite.com/app",
+		Products: []*billing.BillingProduct{
+			{
+				ExternalId:  "PRO-PLAN",
+				Name:        "Pro plan",
+				Description: "Pro plan subscription",
+				Quantity:    1,
+				Price:       1000, // Preço em centavos
+			},
+		},
+		Customer: &billing.BillingCustomer{
+			Email: "customer@example.com",
+		},
+	}
+
+	ctx := context.Background()
+	createResponse, err := client.Billing.Create(ctx, body)
+	if err != nil {
+		panic(err)
+	}
+
+	log.Println(createResponse.Data.Url) // URL de pagamento para seu cliente
+}
+```
+
+## Response
+
+```go
+{
+    "id": "bill_12345667",
+    "url": "https://abacatepay.com/pay/bill_12345667",  // URL de pagamento para seu cliente
+    "amount": 1000,
+    "status": "PENDING",
+    "devMode": true,
+    "methods": ["PIX"],
+    "frequency": "ONE_TIME",
+    "nextBilling": null,
+    "customer": {
+        "id": "cust_12345",
+        "metadata": {
+            "email": "customer@example.com"
+        }
+    },
+    "createdAt": "2024-11-04T18:38:28.573",
+    "updatedAt": "2024-11-04T18:38:28.573"
+}
+```
+
