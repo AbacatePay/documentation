@@ -1,0 +1,106 @@
+---
+title: 'Kotlin'
+description: 'SDK oficial para Kotlin - Aceite pagamentos em segundos com uma integração simples'
+icon: 'android'
+---
+
+<Card 
+  title="AbacatePay Kotlin SDK" 
+  icon="android" 
+  href="https://github.com/AbacatePay/abacatepay-kotlin-sdk"
+>
+  Official AbacatePay SDK - Accept payments in seconds with a simple integration.
+</Card>
+
+## Instalação
+
+### Requisitos
+
+- Android 5+ (se estiver usando Android)
+- Java 11+
+- Kotlin 2+
+
+### Adicionando a dependência
+
+Adicione ao seu `build.gradle.kts` ou `build.gradle`:
+
+```kotlin
+repositories {
+    mavenCentral()
+    maven { url = uri("https://jitpack.io") }
+}
+
+dependencies {
+    implementation("com.github.abacatepay:abacatepay-kotlin-sdk:0.0.5")
+}
+```
+
+## Quick Usage
+
+```kotlin
+import kotlinx.coroutines.runBlocking
+import com.abacatepay.AbacatePayClient
+
+runBlocking {
+    // Initialize the SDK with your API key
+    val client = AbacatePayClient(apiKey = "your_api_key")
+    
+    // Use the client...
+    val billings = client.listBillings()
+}
+```
+
+## Criando uma Cobrança
+
+```kotlin
+import kotlinx.coroutines.runBlocking
+import com.abacatepay.AbacatePayClient
+import com.abacatepay.models.*
+
+runBlocking {
+    val client = AbacatePayClient(apiKey = "your_api_key")
+
+    // Criando uma Cobrança Única
+    val billing = client.createBilling(
+        frequency = BillingFrequency.ONE_TIME,
+        methods = listOf(BillingMethod.PIX),
+        products = listOf(
+            BillingProduct(
+                externalId = "PRO-PLAN",
+                name = "Pro plan",
+                description = "Pro plan subscription",
+                quantity = 1,
+                price = 1000 // Preço em centavos
+            )
+        ),
+        returnUrl = "https://yoursite.com/app",
+        completionUrl = "https://yoursite.com/payment/success"
+    )
+
+    println(billing.url) // URL de pagamento para seu cliente
+}
+```
+
+## Response
+
+```kotlin
+{
+    "id": "bill_12345667",
+    "url": "https://abacatepay.com/pay/bill_12345667",  // URL de pagamento para seu cliente
+    "amount": 1000,
+    "status": "PENDING",
+    "devMode": true,
+    "methods": ["PIX"],
+    "frequency": "ONE_TIME",
+    "nextBilling": null,
+    "customer": {
+        "id": "cust_12345",
+        "metadata": {
+            "email": "customer@example.com"
+        }
+    },
+    "createdAt": "2024-11-04T18:38:28.573",
+    "updatedAt": "2024-11-04T18:38:28.573"
+}
+```
+

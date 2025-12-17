@@ -1,0 +1,97 @@
+---
+title: 'Swift'
+description: 'SDK oficial para Swift - Aceite pagamentos em segundos com uma integração simples'
+icon: 'apple'
+---
+
+<Card 
+  title="AbacatePay Swift SDK" 
+  icon="apple" 
+  href="https://github.com/AbacatePay/abacatepay-swift-sdk"
+>
+  Official AbacatePay SDK - Accept payments in seconds with a simple integration.
+</Card>
+
+## Instalação
+
+### Usando Swift Package Manager
+
+Adicione a dependência ao seu `Package.swift`:
+
+```swift
+dependencies: [
+    .package(url: "https://github.com/AbacatePay/abacatepay-swift-sdk", from: "1.0.0")
+]
+```
+
+Ou no Xcode, vá em **File > Add Package Dependencies** e adicione:
+```
+https://github.com/AbacatePay/abacatepay-swift-sdk
+```
+
+## Quick Usage
+
+```swift
+import Foundation
+import AbacatePay
+
+// Initialize the SDK with your API key
+let abacatePay = AbacatePay(apiKey: "your_api_key")
+```
+
+## Criando uma Cobrança
+
+```swift
+import Foundation
+import AbacatePay
+
+let abacatePay = AbacatePay(apiKey: "your_api_key")
+
+// Criando uma Cobrança Única
+let billingData = CreateBillingData(
+    frequency: .oneTime,
+    methods: [.pix],
+    products: [
+        .init(
+            externalId: "PRO-PLAN",
+            name: "Pro plan",
+            quantity: 1,
+            price: 1000 // Preço em centavos
+        )
+    ],
+    returnUrl: "https://yoursite.com/app",
+    completionUrl: "https://yoursite.com/payment/success",
+    automaticTaxReceipt: true
+)
+
+do {
+    let billing = try await abacatePay.billing.create(data: billingData)
+    print(billing.url) // URL de pagamento para seu cliente
+} catch {
+    print("Error creating billing:", error)
+}
+```
+
+## Response
+
+```swift
+{
+    id: "bill_12345667",
+    url: "https://abacatepay.com/pay/bill_12345667",  // URL de pagamento para seu cliente
+    amount: 1000,
+    status: "PENDING",
+    devMode: true,
+    methods: ["PIX"],
+    frequency: "ONE_TIME",
+    nextBilling: nil,
+    customer: {
+        id: "cust_12345",
+        metadata: {
+            email: "customer@example.com"
+        }
+    },
+    createdAt: "2024-11-04T18:38:28.573",
+    updatedAt: "2024-11-04T18:38:28.573"
+}
+```
+
