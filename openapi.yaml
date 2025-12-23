@@ -19,7 +19,7 @@ paths:
           application/json:
             schema:
               type: object
-              description: Os dados do seu cliente caso deseje criá-lo no momento da criação da sua cobrança.
+              description: Os dados do seu cliente.
               required: ['name', 'cellphone', 'email', 'taxId']
               additionalProperties: false
               properties:
@@ -39,6 +39,13 @@ paths:
                   type: string
                   description: CPF ou CNPJ válido do cliente.
                   example: 123.456.789-01
+                metadata:
+                  type: object
+                  description: Metadados adicionais do cliente. Campo livre para a sua aplicação.
+                  additionalProperties: true
+                  example:
+                    source: 'landing-page'
+                    campaign: 'black-friday-2025'
       responses:
         '200':
           description: Cliente criado com sucesso.
@@ -48,7 +55,42 @@ paths:
                 type: object
                 properties:
                   data:
-                    $ref: '#/components/schemas/Customer'
+                    type: object
+                    description: Dados do cliente criado.
+                    properties:
+                      id:
+                        type: string
+                        description: Identificador único público do cliente
+                        example: 'cust_aebxkhDZNaMmJeKsy0AHS0FQ'
+                      devMode:
+                        type: boolean
+                        description: Indica se o cliente foi criado em ambiente de testes.
+                        example: true
+                      name:
+                        type: string
+                        description: Nome completo do cliente
+                        example: Daniel Lima
+                      cellphone:
+                        type: string
+                        description: Celular do cliente
+                        example: '(11) 4002-8922'
+                      email:
+                        type: string
+                        description: E-mail do cliente
+                        example: daniel_lima@abacatepay.com
+                      taxId:
+                        type: string
+                        description: CPF ou CNPJ do cliente
+                        example: '123.456.789-01'
+                      metadata:
+                        type: object
+                        description: Metadados adicionais do cliente
+                        additionalProperties: true
+                        example:
+                          source: 'landing-page'
+                          campaign: 'black-friday-2025'
+                    required: ['id', 'devMode', 'name', 'cellphone', 'email', 'taxId']
+                    additionalProperties: false
                   error:
                     type: 'null'
         '401':
@@ -85,7 +127,42 @@ paths:
                     type: array
                     description: Lista de clientes.
                     items:
-                      $ref: '#/components/schemas/Customer'
+                      type: object
+                      description: Dados do cliente.
+                      properties:
+                        id:
+                          type: string
+                          description: Identificador único público do cliente
+                          example: 'cust_aebxkhDZNaMmJeKsy0AHS0FQ'
+                        devMode:
+                          type: boolean
+                          description: Indica se o cliente foi criado em ambiente de testes.
+                          example: true
+                        name:
+                          type: string
+                          description: Nome completo do cliente
+                          example: Daniel Lima
+                        cellphone:
+                          type: string
+                          description: Celular do cliente
+                          example: '(11) 4002-8922'
+                        email:
+                          type: string
+                          description: E-mail do cliente
+                          example: daniel_lima@abacatepay.com
+                        taxId:
+                          type: string
+                          description: CPF ou CNPJ do cliente
+                          example: '123.456.789-01'
+                        metadata:
+                          type: object
+                          description: Metadados adicionais do cliente
+                          additionalProperties: true
+                          example:
+                            source: 'landing-page'
+                            campaign: 'black-friday-2025'
+                      required: ['id', 'devMode', 'name', 'cellphone', 'email', 'taxId']
+                      additionalProperties: false
                   error:
                     type: 'null'
         '401':
@@ -922,33 +999,40 @@ components:
     Customer:
       type: object
       description: Os dados do seu cliente.
-      required: ['name', 'cellphone', 'email', 'taxId']
+      required: ['id', 'devMode', 'name', 'cellphone', 'email', 'taxId']
       additionalProperties: false
       properties:
         id:
           type: string
-          description: Identificador único do cliente
-          example: 'bill_123456'
+          description: Identificador único público do cliente
+          example: 'cust_aebxkhDZNaMmJeKsy0AHS0FQ'
+        devMode:
+          type: boolean
+          description: Indica se o cliente foi criado em ambiente de testes.
+          example: true
+        name:
+          type: string
+          description: Nome completo do cliente
+          example: Daniel Lima
+        cellphone:
+          type: string
+          description: Celular do cliente
+          example: '(11) 4002-8922'
+        email:
+          type: string
+          description: E-mail do cliente
+          example: daniel_lima@abacatepay.com
+        taxId:
+          type: string
+          description: CPF ou CNPJ do cliente
+          example: '123.456.789-01'
         metadata:
           type: object
-          description: Dados do cliente
-          properties:
-            name:
-              type: string
-              description: Nome completo do seu cliente
-              example: Daniel Lima
-            cellphone:
-              type: string
-              description: Celular do cliente
-              example: (11) 4002-8922
-            email:
-              type: string
-              description: E-mail do cliente
-              example: daniel_lima@abacatepay.com
-            taxId:
-              type: string
-              description: CPF ou CNPJ do cliente.
-              example: 123.456.789-01
+          description: Metadados adicionais do cliente
+          additionalProperties: true
+          example:
+            source: 'landing-page'
+            campaign: 'black-friday-2025'
     Coupon:
       type: object
       description: Os dados do seu cupom.
