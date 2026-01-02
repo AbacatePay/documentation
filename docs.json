@@ -54,7 +54,7 @@
           },
           {
             "group": "Crie seus clientes",
-            "pages": ["pages/client/reference", "pages/client/create", "pages/client/list"]
+            "pages": ["pages/client/reference", "pages/client/create", "pages/client/list", "pages/client/get", "pages/client/delete"]
           },
           {
             "group": "Pix QRCode",

@@ -108,13 +108,33 @@ paths:
     get:
       summary: Listar clientes
       description: |
-        Retorna todos os clientes que você cadastrou.
+        Retorna todos os clientes que você cadastrou com suporte a paginação.
         
         Você pode usar essa rota para visualizar todos os seus clientes e suas informações.
         
         **Alternativa**: Você também pode visualizar e gerenciar seus clientes pelo [Dashboard da AbacatePay](https://www.abacatepay.com/app/clientes).
       security:
         - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          description: Número da página (começa em 1)
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+            example: 1
+        - name: limit
+          in: query
+          description: Quantidade de itens por página
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+            example: 20
       responses:
         '200':
           description: Lista de clientes retornada com sucesso.
@@ -163,6 +183,28 @@ paths:
                             campaign: 'black-friday-2025'
                       required: ['id', 'devMode', 'name', 'cellphone', 'email', 'taxId']
                       additionalProperties: false
+                  pagination:
+                    type: object
+                    description: Informações de paginação
+                    properties:
+                      page:
+                        type: integer
+                        description: Página atual
+                        example: 1
+                      limit:
+                        type: integer
+                        description: Quantidade de itens por página
+                        example: 20
+                      total:
+                        type: integer
+                        description: Total de itens
+                        example: 150
+                      totalPages:
+                        type: integer
+                        description: Total de páginas
+                        example: 8
+                    required: ['page', 'limit', 'total', 'totalPages']
+                    additionalProperties: false
                   error:
                     type: 'null'
         '401':
@@ -176,6 +218,184 @@ paths:
                     type: string
                     description: Mensagem de erro descrevendo o motivo da falha na autenticação.
                     example: 'Token de autenticação inválido ou ausente.'
+  /customer/get:
+    get:
+      summary: Buscar um cliente
+      description: |
+        Retorna os dados de um cliente específico baseado em filtros.
+        
+        Você pode usar essa rota para buscar um cliente por ID ou outros critérios.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: query
+          description: Identificador único público do cliente
+          required: false
+          schema:
+            type: string
+            example: 'cust_aebxkhDZNaMmJeKsy0AHS0FQ'
+      responses:
+        '200':
+          description: Cliente encontrado com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: Dados do cliente.
+                    properties:
+                      id:
+                        type: string
+                        description: Identificador único público do cliente
+                        example: 'cust_aebxkhDZNaMmJeKsy0AHS0FQ'
+                      devMode:
+                        type: boolean
+                        description: Indica se o cliente foi criado em ambiente de testes.
+                        example: true
+                      name:
+                        type: string
+                        description: Nome completo do cliente
+                        example: Daniel Lima
+                      cellphone:
+                        type: string
+                        description: Celular do cliente
+                        example: '(11) 4002-8922'
+                      email:
+                        type: string
+                        description: E-mail do cliente
+                        example: daniel_lima@abacatepay.com
+                      taxId:
+                        type: string
+                        description: CPF ou CNPJ do cliente
+                        example: '123.456.789-01'
+                      metadata:
+                        type: object
+                        description: Metadados adicionais do cliente
+                        additionalProperties: true
+                        example:
+                          source: 'landing-page'
+                          campaign: 'black-friday-2025'
+                    required: ['id', 'devMode', 'name', 'cellphone', 'email', 'taxId']
+                    additionalProperties: false
+                  error:
+                    type: 'null'
+        '401':
+          description: Não autorizado. Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
+                    example: 'Token de autenticação inválido ou ausente.'
+        '404':
+          description: Cliente não encontrado.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Mensagem de erro indicando que o cliente não foi encontrado.
+                    example: 'Cliente não encontrado.'
+  /customer/delete:
+    delete:
+      summary: Deletar um cliente
+      description: |
+        Remove um cliente da sua loja.
+        
+        Esta operação é irreversível. Use com cuidado.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Dados para identificar o cliente a ser deletado.
+              required: ['id']
+              additionalProperties: false
+              properties:
+                id:
+                  type: string
+                  description: Identificador único público do cliente a ser deletado
+                  example: 'cust_aebxkhDZNaMmJeKsy0AHS0FQ'
+      responses:
+        '200':
+          description: Cliente deletado com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: Dados do cliente deletado.
+                    properties:
+                      id:
+                        type: string
+                        description: Identificador único público do cliente
+                        example: 'cust_aebxkhDZNaMmJeKsy0AHS0FQ'
+                      devMode:
+                        type: boolean
+                        description: Indica se o cliente foi criado em ambiente de testes.
+                        example: true
+                      name:
+                        type: string
+                        description: Nome completo do cliente
+                        example: Daniel Lima
+                      cellphone:
+                        type: string
+                        description: Celular do cliente
+                        example: '(11) 4002-8922'
+                      email:
+                        type: string
+                        description: E-mail do cliente
+                        example: daniel_lima@abacatepay.com
+                      taxId:
+                        type: string
+                        description: CPF ou CNPJ do cliente
+                        example: '123.456.789-01'
+                      metadata:
+                        type: object
+                        description: Metadados adicionais do cliente
+                        additionalProperties: true
+                        example:
+                          source: 'landing-page'
+                          campaign: 'black-friday-2025'
+                    required: ['id', 'devMode', 'name', 'cellphone', 'email', 'taxId']
+                    additionalProperties: false
+                  error:
+                    type: 'null'
+        '401':
+          description: Não autorizado. Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
+                    example: 'Token de autenticação inválido ou ausente.'
+        '404':
+          description: Cliente não encontrado.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Mensagem de erro indicando que o cliente não foi encontrado.
+                    example: 'Cliente não encontrado.'
   /coupon/create:
     post:
       summary: Criar um novo cupom
