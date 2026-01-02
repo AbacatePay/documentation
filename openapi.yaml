@@ -256,7 +256,7 @@ paths:
                     type: string
                     description: Mensagem de erro descrevendo o motivo da falha na autenticação.
                     example: 'Token de autenticação inválido ou ausente.'
-  /billing/create:
+  /checkout/create:
     post:
       summary: Criar uma cobrança com nosso Checkout
       description: Cria uma cobrança com checkout integrado e retorna a URL para o cliente concluir o pagamento.
@@ -289,7 +289,7 @@ paths:
                     properties:
                       id:
                         type: string
-                        description: ID público do produto no seu sistema.
+                        description: ID público do produto na sua loja.
                         example: prod-1234
                       quantity:
                         type: integer
@@ -418,7 +418,7 @@ paths:
                     type: string
                     description: Motivo da falha na autenticação.
                     example: Token de autenticação inválido ou ausente.
-  /billing/list:
+  /checkout/list:
     get:
       summary: Listar cobranças
       description: |
