@@ -1045,7 +1045,7 @@ paths:
           required: true
           schema:
             type: string
-  /withdraw/create:
+  /payout/create:
     post:
       summary: Criar um novo saque
       description: Permite que você crie um novo saque para transferir valores da sua conta para uma chave PIX.
@@ -1117,7 +1117,7 @@ paths:
                     type: string
                     description: Mensagem de erro descrevendo o motivo da falha na autenticação.
                     example: 'Token de autenticação inválido ou ausente.'
-  /withdraw/get:
+  /payout/get:
     get:
       summary: Buscar saque
       description: Permite que você recupere os detalhes de um saque específico usando o externalId.
@@ -1167,12 +1167,33 @@ paths:
                     type: string
                     description: Mensagem de erro indicando que o saque não foi encontrado.
                     example: 'Saque não encontrado com o externalId fornecido.'
-  /withdraw/list:
+  /payout/list:
     get:
       summary: Listar saques
-      description: Permite que você recupere uma lista de todos os saques criados.
+      description: |
+        Permite que você recupere uma lista de todos os saques criados com suporte a paginação.
       security:
         - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          description: Número da página (começa em 1)
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+            example: 1
+        - name: limit
+          in: query
+          description: Quantidade de itens por página
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+            example: 20
       responses:
         '200':
           description: Lista de saques retornada com sucesso.
@@ -1186,6 +1207,28 @@ paths:
                     description: Lista de saques criados.
                     items:
                       $ref: '#/components/schemas/Transaction'
+                  pagination:
+                    type: object
+                    description: Informações de paginação
+                    properties:
+                      page:
+                        type: integer
+                        description: Página atual
+                        example: 1
+                      limit:
+                        type: integer
+                        description: Quantidade de itens por página
+                        example: 20
+                      total:
+                        type: integer
+                        description: Total de itens
+                        example: 150
+                      totalPages:
+                        type: integer
+                        description: Total de páginas
+                        example: 8
+                    required: ['page', 'limit', 'total', 'totalPages']
+                    additionalProperties: false
                   error:
                     type: 'null'
         '401':
