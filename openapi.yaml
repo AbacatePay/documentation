@@ -108,13 +108,33 @@ paths:
     get:
       summary: Listar clientes
       description: |
-        Retorna todos os clientes que você cadastrou.
+        Retorna todos os clientes que você cadastrou com suporte a paginação.
         
         Você pode usar essa rota para visualizar todos os seus clientes e suas informações.
         
         **Alternativa**: Você também pode visualizar e gerenciar seus clientes pelo [Dashboard da AbacatePay](https://www.abacatepay.com/app/clientes).
       security:
         - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          description: Número da página (começa em 1)
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+            example: 1
+        - name: limit
+          in: query
+          description: Quantidade de itens por página
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+            example: 20
       responses:
         '200':
           description: Lista de clientes retornada com sucesso.
@@ -163,6 +183,28 @@ paths:
                             campaign: 'black-friday-2025'
                       required: ['id', 'devMode', 'name', 'cellphone', 'email', 'taxId']
                       additionalProperties: false
+                  pagination:
+                    type: object
+                    description: Informações de paginação
+                    properties:
+                      page:
+                        type: integer
+                        description: Página atual
+                        example: 1
+                      limit:
+                        type: integer
+                        description: Quantidade de itens por página
+                        example: 20
+                      total:
+                        type: integer
+                        description: Total de itens
+                        example: 150
+                      totalPages:
+                        type: integer
+                        description: Total de páginas
+                        example: 8
+                    required: ['page', 'limit', 'total', 'totalPages']
+                    additionalProperties: false
                   error:
                     type: 'null'
         '401':
@@ -176,6 +218,184 @@ paths:
                     type: string
                     description: Mensagem de erro descrevendo o motivo da falha na autenticação.
                     example: 'Token de autenticação inválido ou ausente.'
+  /customer/get:
+    get:
+      summary: Buscar um cliente
+      description: |
+        Retorna os dados de um cliente específico baseado em filtros.
+        
+        Você pode usar essa rota para buscar um cliente por ID ou outros critérios.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: query
+          description: Identificador único público do cliente
+          required: false
+          schema:
+            type: string
+            example: 'cust_aebxkhDZNaMmJeKsy0AHS0FQ'
+      responses:
+        '200':
+          description: Cliente encontrado com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: Dados do cliente.
+                    properties:
+                      id:
+                        type: string
+                        description: Identificador único público do cliente
+                        example: 'cust_aebxkhDZNaMmJeKsy0AHS0FQ'
+                      devMode:
+                        type: boolean
+                        description: Indica se o cliente foi criado em ambiente de testes.
+                        example: true
+                      name:
+                        type: string
+                        description: Nome completo do cliente
+                        example: Daniel Lima
+                      cellphone:
+                        type: string
+                        description: Celular do cliente
+                        example: '(11) 4002-8922'
+                      email:
+                        type: string
+                        description: E-mail do cliente
+                        example: daniel_lima@abacatepay.com
+                      taxId:
+                        type: string
+                        description: CPF ou CNPJ do cliente
+                        example: '123.456.789-01'
+                      metadata:
+                        type: object
+                        description: Metadados adicionais do cliente
+                        additionalProperties: true
+                        example:
+                          source: 'landing-page'
+                          campaign: 'black-friday-2025'
+                    required: ['id', 'devMode', 'name', 'cellphone', 'email', 'taxId']
+                    additionalProperties: false
+                  error:
+                    type: 'null'
+        '401':
+          description: Não autorizado. Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
+                    example: 'Token de autenticação inválido ou ausente.'
+        '404':
+          description: Cliente não encontrado.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Mensagem de erro indicando que o cliente não foi encontrado.
+                    example: 'Cliente não encontrado.'
+  /customer/delete:
+    delete:
+      summary: Deletar um cliente
+      description: |
+        Remove um cliente da sua loja.
+        
+        Esta operação é irreversível. Use com cuidado.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Dados para identificar o cliente a ser deletado.
+              required: ['id']
+              additionalProperties: false
+              properties:
+                id:
+                  type: string
+                  description: Identificador único público do cliente a ser deletado
+                  example: 'cust_aebxkhDZNaMmJeKsy0AHS0FQ'
+      responses:
+        '200':
+          description: Cliente deletado com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: Dados do cliente deletado.
+                    properties:
+                      id:
+                        type: string
+                        description: Identificador único público do cliente
+                        example: 'cust_aebxkhDZNaMmJeKsy0AHS0FQ'
+                      devMode:
+                        type: boolean
+                        description: Indica se o cliente foi criado em ambiente de testes.
+                        example: true
+                      name:
+                        type: string
+                        description: Nome completo do cliente
+                        example: Daniel Lima
+                      cellphone:
+                        type: string
+                        description: Celular do cliente
+                        example: '(11) 4002-8922'
+                      email:
+                        type: string
+                        description: E-mail do cliente
+                        example: daniel_lima@abacatepay.com
+                      taxId:
+                        type: string
+                        description: CPF ou CNPJ do cliente
+                        example: '123.456.789-01'
+                      metadata:
+                        type: object
+                        description: Metadados adicionais do cliente
+                        additionalProperties: true
+                        example:
+                          source: 'landing-page'
+                          campaign: 'black-friday-2025'
+                    required: ['id', 'devMode', 'name', 'cellphone', 'email', 'taxId']
+                    additionalProperties: false
+                  error:
+                    type: 'null'
+        '401':
+          description: Não autorizado. Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
+                    example: 'Token de autenticação inválido ou ausente.'
+        '404':
+          description: Cliente não encontrado.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Mensagem de erro indicando que o cliente não foi encontrado.
+                    example: 'Cliente não encontrado.'
   /coupon/create:
     post:
       summary: Criar um novo cupom
@@ -190,15 +410,10 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                data:
-                  $ref: '#/components/schemas/Coupon'
-                error:
-                  type: 'null'
+              $ref: '#/components/schemas/Coupon'
       responses:
         '200':
-          description: Cliente criado com sucesso.
+          description: Cupom criado com sucesso.
           content:
             application/json:
               schema:
@@ -223,13 +438,33 @@ paths:
     get:
       summary: Listar cupons
       description: |
-        Retorna todos os cupons que você criou.
+        Retorna todos os cupons que você criou com suporte a paginação.
         
         Você pode usar essa rota para visualizar todos os seus cupons, incluindo seus status (ativos, inativos ou expirados), descontos aplicados e quantas vezes foram utilizados.
         
         **Alternativa**: Você também pode visualizar e gerenciar seus cupons pelo [Dashboard da AbacatePay](https://www.abacatepay.com/app/cupons).
       security:
         - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          description: Número da página (começa em 1)
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+            example: 1
+        - name: limit
+          in: query
+          description: Quantidade de itens por página
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+            example: 20
       responses:
         '200':
           description: Lista de cupons retornada com sucesso.
@@ -243,6 +478,28 @@ paths:
                     description: Lista de cupons.
                     items:
                       $ref: '#/components/schemas/CouponResponse'
+                  pagination:
+                    type: object
+                    description: Informações de paginação
+                    properties:
+                      page:
+                        type: integer
+                        description: Página atual
+                        example: 1
+                      limit:
+                        type: integer
+                        description: Quantidade de itens por página
+                        example: 20
+                      total:
+                        type: integer
+                        description: Total de itens
+                        example: 150
+                      totalPages:
+                        type: integer
+                        description: Total de páginas
+                        example: 8
+                    required: ['page', 'limit', 'total', 'totalPages']
+                    additionalProperties: false
                   error:
                     type: 'null'
         '401':
@@ -256,7 +513,172 @@ paths:
                     type: string
                     description: Mensagem de erro descrevendo o motivo da falha na autenticação.
                     example: 'Token de autenticação inválido ou ausente.'
-  /billing/create:
+  /coupon/get:
+    get:
+      summary: Buscar um cupom
+      description: |
+        Retorna os dados de um cupom específico baseado em filtros.
+        
+        Você pode usar essa rota para buscar um cupom por ID ou outros critérios.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: query
+          description: Identificador único do cupom
+          required: false
+          schema:
+            type: string
+            example: 'MY_COUPON'
+      responses:
+        '200':
+          description: Cupom encontrado com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/CouponResponse'
+                  error:
+                    type: 'null'
+        '401':
+          description: Não autorizado. Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
+                    example: 'Token de autenticação inválido ou ausente.'
+        '404':
+          description: Cupom não encontrado.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Mensagem de erro indicando que o cupom não foi encontrado.
+                    example: 'Cupom não encontrado.'
+  /coupon/delete:
+    delete:
+      summary: Deletar um cupom
+      description: |
+        Remove um cupom da sua loja.
+        
+        Esta operação é irreversível. Use com cuidado.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Dados para identificar o cupom a ser deletado.
+              required: ['id']
+              additionalProperties: false
+              properties:
+                id:
+                  type: string
+                  description: Identificador único do cupom a ser deletado
+                  example: 'MY_COUPON'
+      responses:
+        '200':
+          description: Cupom deletado com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/CouponResponse'
+                  error:
+                    type: 'null'
+        '401':
+          description: Não autorizado. Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
+                    example: 'Token de autenticação inválido ou ausente.'
+        '404':
+          description: Cupom não encontrado.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Mensagem de erro indicando que o cupom não foi encontrado.
+                    example: 'Cupom não encontrado.'
+  /coupon/toggle:
+    patch:
+      summary: Alternar status de um cupom
+      description: |
+        Alterna o status de um cupom entre ativo e inativo.
+        
+        Use essa rota para ativar ou desativar um cupom sem precisar deletá-lo.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Dados para identificar o cupom a ser alternado.
+              required: ['id']
+              additionalProperties: false
+              properties:
+                id:
+                  type: string
+                  description: Identificador único do cupom
+                  example: 'MY_COUPON'
+      responses:
+        '200':
+          description: Status do cupom alternado com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/CouponResponse'
+                  error:
+                    type: 'null'
+        '401':
+          description: Não autorizado. Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
+                    example: 'Token de autenticação inválido ou ausente.'
+        '404':
+          description: Cupom não encontrado.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Mensagem de erro indicando que o cupom não foi encontrado.
+                    example: 'Cupom não encontrado.'
+  /checkout/create:
     post:
       summary: Criar uma cobrança com nosso Checkout
       description: Cria uma cobrança com checkout integrado e retorna a URL para o cliente concluir o pagamento.
@@ -271,6 +693,10 @@ paths:
               required:
                 - items
               additionalProperties: false
+              example:
+                items:
+                  - id: prod-1234
+                    quantity: 2
               properties:
                 items:
                   type: array
@@ -285,34 +711,29 @@ paths:
                     properties:
                       id:
                         type: string
-                        description: ID público do produto no seu sistema.
+                        description: ID público do produto na sua loja.
                         example: prod-1234
                       quantity:
                         type: integer
                         description: Quantidade deste item.
                         minimum: 1
                         example: 2
-                  example:
-                    - id: prod-1234
                 method:
                   type: string
                   description: Método de pagamento disponível.
                   enum: ['PIX', 'CARD']
-                  example: 'PIX'
                   x-mint:
                     hidden: true
                 returnUrl:
                   type: string
                   format: uri
                   description: URL para onde o cliente será redirecionado ao clicar em "Voltar" no checkout.
-                  example: https://example.com/billing
                   x-mint:
                     hidden: true
                 completionUrl:
                   type: string
                   format: uri
                   description: URL para onde o cliente será redirecionado após o pagamento ser concluído.
-                  example: https://example.com/completion
                   x-mint:
                     hidden: true
                 customerId:
@@ -419,7 +840,7 @@ paths:
                     type: string
                     description: Motivo da falha na autenticação.
                     example: Token de autenticação inválido ou ausente.
-  /billing/list:
+  /checkout/list:
     get:
       summary: Listar cobranças
       description: |
@@ -624,10 +1045,19 @@ paths:
           required: true
           schema:
             type: string
-  /withdraw/create:
+  /payout/create:
     post:
       summary: Criar um novo saque
-      description: Permite que você crie um novo saque para transferir valores da sua conta para uma chave PIX.
+      description: |
+        Permite que você crie um novo saque para transferir valores da sua conta para uma chave PIX de sua escolha.
+        
+        Esta rota pode ser usada para:
+        - Realizar saques da sua conta para sua própria chave PIX
+        - Enviar dinheiro para outras contas
+        - Realizar pagamentos diretamente pela API
+        - Efetuar transferências para fornecedores, parceiros ou terceiros
+        
+        **Importante**: A chave PIX de destino não precisa ter a mesma titularidade do CNPJ da sua conta. Você pode realizar saques para qualquer chave PIX válida.
       security:
         - bearerAuth: []
       requestBody:
@@ -696,7 +1126,7 @@ paths:
                     type: string
                     description: Mensagem de erro descrevendo o motivo da falha na autenticação.
                     example: 'Token de autenticação inválido ou ausente.'
-  /withdraw/get:
+  /payout/get:
     get:
       summary: Buscar saque
       description: Permite que você recupere os detalhes de um saque específico usando o externalId.
@@ -746,12 +1176,33 @@ paths:
                     type: string
                     description: Mensagem de erro indicando que o saque não foi encontrado.
                     example: 'Saque não encontrado com o externalId fornecido.'
-  /withdraw/list:
+  /payout/list:
     get:
       summary: Listar saques
-      description: Permite que você recupere uma lista de todos os saques criados.
+      description: |
+        Permite que você recupere uma lista de todos os saques criados com suporte a paginação.
       security:
         - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          description: Número da página (começa em 1)
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+            example: 1
+        - name: limit
+          in: query
+          description: Quantidade de itens por página
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+            example: 20
       responses:
         '200':
           description: Lista de saques retornada com sucesso.
@@ -765,6 +1216,28 @@ paths:
                     description: Lista de saques criados.
                     items:
                       $ref: '#/components/schemas/Transaction'
+                  pagination:
+                    type: object
+                    description: Informações de paginação
+                    properties:
+                      page:
+                        type: integer
+                        description: Página atual
+                        example: 1
+                      limit:
+                        type: integer
+                        description: Quantidade de itens por página
+                        example: 20
+                      total:
+                        type: integer
+                        description: Total de itens
+                        example: 150
+                      totalPages:
+                        type: integer
+                        description: Total de páginas
+                        example: 8
+                    required: ['page', 'limit', 'total', 'totalPages']
+                    additionalProperties: false
                   error:
                     type: 'null'
         '401':
