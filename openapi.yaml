@@ -271,6 +271,10 @@ paths:
               required:
                 - items
               additionalProperties: false
+              example:
+                items:
+                  - id: prod-1234
+                    quantity: 2
               properties:
                 items:
                   type: array
@@ -292,27 +296,22 @@ paths:
                         description: Quantidade deste item.
                         minimum: 1
                         example: 2
-                  example:
-                    - id: prod-1234
                 method:
                   type: string
                   description: Método de pagamento disponível.
                   enum: ['PIX', 'CARD']
-                  example: 'PIX'
                   x-mint:
                     hidden: true
                 returnUrl:
                   type: string
                   format: uri
                   description: URL para onde o cliente será redirecionado ao clicar em "Voltar" no checkout.
-                  example: https://example.com/billing
                   x-mint:
                     hidden: true
                 completionUrl:
                   type: string
                   format: uri
                   description: URL para onde o cliente será redirecionado após o pagamento ser concluído.
-                  example: https://example.com/completion
                   x-mint:
                     hidden: true
                 customerId:
