@@ -410,15 +410,10 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                data:
-                  $ref: '#/components/schemas/Coupon'
-                error:
-                  type: 'null'
+              $ref: '#/components/schemas/Coupon'
       responses:
         '200':
-          description: Cliente criado com sucesso.
+          description: Cupom criado com sucesso.
           content:
             application/json:
               schema:
@@ -443,13 +438,33 @@ paths:
     get:
       summary: Listar cupons
       description: |
-        Retorna todos os cupons que você criou.
+        Retorna todos os cupons que você criou com suporte a paginação.
         
         Você pode usar essa rota para visualizar todos os seus cupons, incluindo seus status (ativos, inativos ou expirados), descontos aplicados e quantas vezes foram utilizados.
         
         **Alternativa**: Você também pode visualizar e gerenciar seus cupons pelo [Dashboard da AbacatePay](https://www.abacatepay.com/app/cupons).
       security:
         - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          description: Número da página (começa em 1)
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+            example: 1
+        - name: limit
+          in: query
+          description: Quantidade de itens por página
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+            example: 20
       responses:
         '200':
           description: Lista de cupons retornada com sucesso.
@@ -463,6 +478,28 @@ paths:
                     description: Lista de cupons.
                     items:
                       $ref: '#/components/schemas/CouponResponse'
+                  pagination:
+                    type: object
+                    description: Informações de paginação
+                    properties:
+                      page:
+                        type: integer
+                        description: Página atual
+                        example: 1
+                      limit:
+                        type: integer
+                        description: Quantidade de itens por página
+                        example: 20
+                      total:
+                        type: integer
+                        description: Total de itens
+                        example: 150
+                      totalPages:
+                        type: integer
+                        description: Total de páginas
+                        example: 8
+                    required: ['page', 'limit', 'total', 'totalPages']
+                    additionalProperties: false
                   error:
                     type: 'null'
         '401':
@@ -476,6 +513,171 @@ paths:
                     type: string
                     description: Mensagem de erro descrevendo o motivo da falha na autenticação.
                     example: 'Token de autenticação inválido ou ausente.'
+  /coupon/get:
+    get:
+      summary: Buscar um cupom
+      description: |
+        Retorna os dados de um cupom específico baseado em filtros.
+        
+        Você pode usar essa rota para buscar um cupom por ID ou outros critérios.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: query
+          description: Identificador único do cupom
+          required: false
+          schema:
+            type: string
+            example: 'MY_COUPON'
+      responses:
+        '200':
+          description: Cupom encontrado com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/CouponResponse'
+                  error:
+                    type: 'null'
+        '401':
+          description: Não autorizado. Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
+                    example: 'Token de autenticação inválido ou ausente.'
+        '404':
+          description: Cupom não encontrado.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Mensagem de erro indicando que o cupom não foi encontrado.
+                    example: 'Cupom não encontrado.'
+  /coupon/delete:
+    delete:
+      summary: Deletar um cupom
+      description: |
+        Remove um cupom da sua loja.
+        
+        Esta operação é irreversível. Use com cuidado.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Dados para identificar o cupom a ser deletado.
+              required: ['id']
+              additionalProperties: false
+              properties:
+                id:
+                  type: string
+                  description: Identificador único do cupom a ser deletado
+                  example: 'MY_COUPON'
+      responses:
+        '200':
+          description: Cupom deletado com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/CouponResponse'
+                  error:
+                    type: 'null'
+        '401':
+          description: Não autorizado. Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
+                    example: 'Token de autenticação inválido ou ausente.'
+        '404':
+          description: Cupom não encontrado.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Mensagem de erro indicando que o cupom não foi encontrado.
+                    example: 'Cupom não encontrado.'
+  /coupon/toggle:
+    patch:
+      summary: Alternar status de um cupom
+      description: |
+        Alterna o status de um cupom entre ativo e inativo.
+        
+        Use essa rota para ativar ou desativar um cupom sem precisar deletá-lo.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Dados para identificar o cupom a ser alternado.
+              required: ['id']
+              additionalProperties: false
+              properties:
+                id:
+                  type: string
+                  description: Identificador único do cupom
+                  example: 'MY_COUPON'
+      responses:
+        '200':
+          description: Status do cupom alternado com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/CouponResponse'
+                  error:
+                    type: 'null'
+        '401':
+          description: Não autorizado. Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
+                    example: 'Token de autenticação inválido ou ausente.'
+        '404':
+          description: Cupom não encontrado.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Mensagem de erro indicando que o cupom não foi encontrado.
+                    example: 'Cupom não encontrado.'
   /checkout/create:
     post:
       summary: Criar uma cobrança com nosso Checkout
