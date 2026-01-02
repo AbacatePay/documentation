@@ -1048,7 +1048,16 @@ paths:
   /payout/create:
     post:
       summary: Criar um novo saque
-      description: Permite que você crie um novo saque para transferir valores da sua conta para uma chave PIX.
+      description: |
+        Permite que você crie um novo saque para transferir valores da sua conta para uma chave PIX de sua escolha.
+        
+        Esta rota pode ser usada para:
+        - Realizar saques da sua conta para sua própria chave PIX
+        - Enviar dinheiro para outras contas
+        - Realizar pagamentos diretamente pela API
+        - Efetuar transferências para fornecedores, parceiros ou terceiros
+        
+        **Importante**: A chave PIX de destino não precisa ter a mesma titularidade do CNPJ da sua conta. Você pode realizar saques para qualquer chave PIX válida.
       security:
         - bearerAuth: []
       requestBody:
