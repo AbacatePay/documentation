@@ -4,8 +4,6 @@ description: 'Gerencie seus clientes, aqueles que pagam você.'
 icon: 'book-open-cover'
 ---
 
-Um cliente é seu usuário final, aquele que você vai cobrar e pagar o seu produto.
-
 <div style={{ 
     position: "relative", 
     paddingBottom: "56.25%", 
@@ -30,91 +28,144 @@ Um cliente é seu usuário final, aquele que você vai cobrar e pagar o seu prod
     }}
 />
 </div>
-## Quando criar um cliente?
 
-Você pode criar um cliente de duas formas:
+## Criar cliente
 
-### 1. Criar o cliente antes da cobrança
+Use `/customers/create` para criar um cliente antes da cobrança. Útil quando você já conhece os dados do cliente ou quer reutilizar o `customerId` em múltiplas cobranças.
 
-Use a rota `/customer/create` quando:
-- Você já conhece os dados do cliente antes de gerar a cobrança
-- Você quer reutilizar o `customerId` em múltiplas cobranças
-- Você tem clientes recorrentes ou quer pré-cadastrar clientes
+<Card title="Campos obrigatórios" icon="info" horizontal>
+  Apenas `email` é obrigatório. Recomendamos também enviar `name`, `cellphone` e `taxId` quando disponíveis.
+</Card>
 
 **Exemplo:**
 ```json
-POST /customer/create
+POST /customers/create
 {
-  "name": "Daniel Lima",
-  "cellphone": "(11) 4002-8922",
-  "email": "daniel_lima@abacatepay.com",
-  "taxId": "123.456.789-01"
+  "data": {
+    "email": "customer@example.com",        // obrigatório
+    "taxId": "12345678900",                 // opcional
+    "name": "João Silva",                   // opcional
+    "cellphone": "+5511999999999",          // opcional
+    "zipCode": "01310-100"                  // opcional
+  },
+  "metadata": {                             // Aqui você pode adicionar dados adicionais da sua aplicação
+    "customField": "value"
+  }
 }
 ```
 
-Após criar o cliente, você receberá um `customerId` que pode ser usado no campo `customerId` ao criar cobranças, pré-preenchendo os dados do checkout.
-
-### 2. Criar o cliente automaticamente durante a cobrança
-
-O cliente também pode ser criado automaticamente de duas formas:
-
-**Ao criar uma cobrança via `/billing/create`:**
-- Você pode passar os dados do cliente no campo `customer`
-- O cliente será criado automaticamente junto com a cobrança
-
-**Quando o cliente preenche os dados no checkout:**
-- Se você não fornecer os dados do cliente, ele será criado automaticamente quando preencher os dados no checkout da AbacatePay
-
-## <Icon icon="folder-tree" type="solid"/>  Estrutura
-
-Um cliente é representado em nossa API pela seguinte estrutura:
-
+**Resposta:**
 ```json
 {
-  "id": "cust_aebxkhDZNaMmJeKsy0AHS0FQ",
-  "metadata": {
-    "name": "Test Customer",
-    "cellphone": "11999999999",
+  "data": {
+    "id": "cust_abc123xyz",
+    "devMode": false,
+    "email": "customer@example.com",
     "taxId": "12345678900",
-    "email": "test@example.com"
-  }
-} 
+    "country": "BR",
+    "name": "João Silva",
+    "cellphone": "+5511999999999",
+    "zipCode": "01310-100",
+    "metadata": {
+      "customField": "value"
+    }
+  },
+  "error": null
+}
 ```
+
+O `customerId` retornado pode ser usado ao criar cobranças, pré-preenchendo os dados do checkout.
+
+**Alternativa**: O cliente também pode ser criado automaticamente ao criar uma cobrança via `/checkout/create` ou quando o cliente preenche os dados no checkout.
 
 ## Atributos
 
-### id: 
+<AccordionGroup>
+    <Accordion title="id:">
+        ```json {2}
+        {
+          "id": "cust_abc123xyz",
+        } 
+        ```
 
-```json {2}
-{
-  "id": "cust_aebxkhDZNaMmJeKsy0AHS0FQ",
-} 
-```
-
-`id` : <u> string. </u> <br />
-Id único do cliente na AbacatePay
-
-### metadados: 
-Objeto com os dados do cliente
-
-```json json {2-7}
-{
-  "metadata": {
-    "name": "Test Customer",
-    "cellphone": "11999999999",
-    "taxId": "12345678900",
-    "email": "test@example.com"
-  }
-} 
-```
-
-* `name` : <u> string. </u> <br /> Nome do cliente (opcional)
-
-* `cellphone` : <u> string. </u> <br /> Telefone do cliente (opcional)
-
-* `taxId` : <u> string. </u> <br /> Documento válido do cliente, podendo ser CPF ou CNPJ (opcional)
-
-* `email` : <u> string. </u> <br /> E-mail do cliente (obrigatório)
+        `id` : <u> string. </u> <br />
+        Identificador único do cliente na AbacatePay
+    </Accordion>
+    <Accordion title="email:">
+        ```json {2}
+        {
+          "email": "customer@example.com",
+        }
+        ```
+        `email` : <u> string. </u> <br />
+        E-mail do cliente (obrigatório)
+    </Accordion>
+    <Accordion title="name:">
+        ```json {2}
+        {
+          "name": "João Silva",
+        }
+        ```
+        `name` : <u> string. </u> <br />
+        Nome completo do cliente (opcional)
+    </Accordion>
+    <Accordion title="cellphone:">
+        ```json {2}
+        {
+          "cellphone": "+5511999999999",
+        }
+        ```
+        `cellphone` : <u> string. </u> <br />
+        Telefone do cliente (opcional)
+    </Accordion>
+    <Accordion title="taxId:">
+        ```json {2}
+        {
+          "taxId": "12345678900",
+        }
+        ```
+        `taxId` : <u> string. </u> <br />
+        CPF ou CNPJ do cliente (opcional)
+    </Accordion>
+    <Accordion title="country:">
+        ```json {2}
+        {
+          "country": "BR",
+        }
+        ```
+        `country` : <u> string. </u> <br />
+        País do cliente (opcional)
+    </Accordion>
+    <Accordion title="zipCode:">
+        ```json {2}
+        {
+          "zipCode": "01310-100",
+        }
+        ```
+        `zipCode` : <u> string. </u> <br />
+        CEP do cliente (opcional)
+    </Accordion>
+    <Accordion title="devMode:">
+        ```json {2}
+        {
+          "devMode": false,
+        }
+        ```
+        `devMode` : <u> boolean. </u> <br />
+        Indica se o cliente foi criado em ambiente de desenvolvimento (`true`) ou produção (`false`)
+    </Accordion>
+    <Accordion title="metadata:">
+        ```json {2}
+        {
+          "metadata": {
+            "customField": "value"
+          },
+        }
+        ```
+        `metadata` : <u> object. </u> <br />
+        Objeto para armazenar informações adicionais sobre o cliente (opcional)
+    </Accordion>
+</AccordionGroup>
 
 <Tip title="Clientes são únicos por CPF/CNPJ" icon="book" horizontal>
  Não é possível criar um cliente com CPF/CNPJ inválido e caso já exista um cliente com esse CPF/CNPJ, a API não criará o cliente novo mas retornará o cliente já existente

@@ -7,10 +7,15 @@ servers:
   - url: https://api.abacatepay.com/v1
     description: Único servidor para os ambientes de produção e sandbox.
 paths:
-  /customer/create:
+  /customers/create:
     post:
       summary: Criar um novo cliente
-      description: Permite que você crie um novo cliente para a sua loja.
+      description: |
+        Permite que você crie um novo cliente para a sua loja.
+        
+        **Campo obrigatório**: Apenas o `email` é obrigatório para criar um cliente.
+        
+        **Recomendado**: Embora os demais campos sejam opcionais, é altamente recomendado fornecer `name`, `cellphone`, `taxId` e `zipCode` quando disponíveis, pois essas informações melhoram a experiência do cliente no checkout e facilitam a identificação.
       security:
         - bearerAuth: []
       requestBody:
@@ -19,33 +24,54 @@ paths:
           application/json:
             schema:
               type: object
-              description: Os dados do seu cliente.
-              required: ['name', 'cellphone', 'email', 'taxId']
+              description: |
+                Os dados do seu cliente.
+                
+                **Obrigatório**: Apenas `email` é obrigatório.
+                
+                **Opcional mas recomendado**: `name`, `cellphone`, `taxId`, `zipCode` e `metadata` são opcionais, mas recomendados para melhor experiência do cliente.
+              required: ['email']
               additionalProperties: false
+              example:
+                email: daniel_lima@abacatepay.com
               properties:
-                name:
-                  type: string
-                  description: Nome completo do seu cliente
-                  example: Daniel Lima
-                cellphone:
-                  type: string
-                  description: Celular do cliente
-                  example: (11) 4002-8922
                 email:
                   type: string
-                  description: E-mail do cliente
+                  description: E-mail do cliente (obrigatório)
                   example: daniel_lima@abacatepay.com
+                name:
+                  type: string
+                  description: Nome completo do seu cliente (opcional)
+                  example: Daniel Lima
+                  x-mint:
+                    hidden: true
+                cellphone:
+                  type: string
+                  description: Celular do cliente (opcional)
+                  example: (11) 4002-8922
+                  x-mint:
+                    hidden: true
                 taxId:
                   type: string
-                  description: CPF ou CNPJ válido do cliente.
+                  description: CPF ou CNPJ válido do cliente (opcional)
                   example: 123.456.789-01
+                  x-mint:
+                    hidden: true
+                zipCode:
+                  type: string
+                  description: CEP do cliente (opcional)
+                  example: '01310-100'
+                  x-mint:
+                    hidden: true
                 metadata:
                   type: object
-                  description: Metadados adicionais do cliente. Campo livre para a sua aplicação.
+                  description: Metadados adicionais do cliente. Campo livre para a sua aplicação (opcional)
                   additionalProperties: true
                   example:
                     source: 'landing-page'
                     campaign: 'black-friday-2025'
+                  x-mint:
+                    hidden: true
       responses:
         '200':
           description: Cliente criado com sucesso.
@@ -61,38 +87,47 @@ paths:
                       id:
                         type: string
                         description: Identificador único público do cliente
-                        example: 'cust_aebxkhDZNaMmJeKsy0AHS0FQ'
+                        example: 'cust_abc123xyz'
                       devMode:
                         type: boolean
                         description: Indica se o cliente foi criado em ambiente de testes.
-                        example: true
-                      name:
-                        type: string
-                        description: Nome completo do cliente
-                        example: Daniel Lima
-                      cellphone:
-                        type: string
-                        description: Celular do cliente
-                        example: '(11) 4002-8922'
+                        example: false
                       email:
                         type: string
                         description: E-mail do cliente
-                        example: daniel_lima@abacatepay.com
+                        example: 'customer@example.com'
+                        required: true
                       taxId:
                         type: string
                         description: CPF ou CNPJ do cliente
-                        example: '123.456.789-01'
+                        example: '12345678900'
+                      country:
+                        type: string
+                        description: País do cliente
+                        example: 'BR'
+                      name:
+                        type: string
+                        description: Nome completo do cliente
+                        example: 'João Silva'
+                      cellphone:
+                        type: string
+                        description: Celular do cliente
+                        example: '+5511999999999'
+                      zipCode:
+                        type: string
+                        description: CEP do cliente
+                        example: '01310-100'
                       metadata:
                         type: object
                         description: Metadados adicionais do cliente
                         additionalProperties: true
                         example:
-                          source: 'landing-page'
-                          campaign: 'black-friday-2025'
-                    required: ['id', 'devMode', 'name', 'cellphone', 'email', 'taxId']
+                          customField: 'value'
                     additionalProperties: false
                   error:
-                    type: 'null'
+                    type: string
+                    nullable: true
+                    example: null
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -104,7 +139,7 @@ paths:
                     type: string
                     description: Mensagem de erro descrevendo o motivo da falha na autenticação.
                     example: 'Token de autenticação inválido ou ausente.'
-  /customer/list:
+  /customers/list:
     get:
       summary: Listar clientes
       description: |
@@ -204,9 +239,11 @@ paths:
                         description: Total de páginas
                         example: 8
                     required: ['page', 'limit', 'total', 'totalPages']
-                      additionalProperties: false
+                    additionalProperties: false
                   error:
-                    type: 'null'
+                    type: 'string'
+                    example: null
+                    nullable: true
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -218,7 +255,7 @@ paths:
                     type: string
                     description: Mensagem de erro descrevendo o motivo da falha na autenticação.
                     example: 'Token de autenticação inválido ou ausente.'
-  /customer/get:
+  /customers/get:
     get:
       summary: Buscar um cliente
       description: |
@@ -281,7 +318,9 @@ paths:
                     required: ['id', 'devMode', 'name', 'cellphone', 'email', 'taxId']
                     additionalProperties: false
                   error:
-                    type: 'null'
+                    type: 'string'
+                    example: null
+                    nullable: true
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -304,7 +343,7 @@ paths:
                     type: string
                     description: Mensagem de erro indicando que o cliente não foi encontrado.
                     example: 'Cliente não encontrado.'
-  /customer/delete:
+  /customers/delete:
     delete:
       summary: Deletar um cliente
       description: |
@@ -373,7 +412,9 @@ paths:
                     required: ['id', 'devMode', 'name', 'cellphone', 'email', 'taxId']
                     additionalProperties: false
                   error:
-                    type: 'null'
+                    type: 'string'
+                    example: null
+                    nullable: true
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
