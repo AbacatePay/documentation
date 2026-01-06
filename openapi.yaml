@@ -1149,19 +1149,17 @@ paths:
           required: true
           schema:
             type: string
-  /payout/create:
+  /payouts/create:
     post:
       summary: Criar um novo saque
       description: |
-        Permite que você crie um novo saque para transferir valores da sua conta para uma chave PIX de sua escolha.
+        Permite que você crie um novo saque para transferir valores da sua conta.
         
         Esta rota pode ser usada para:
-        - Realizar saques da sua conta para sua própria chave PIX
+        - Realizar saques da sua conta
         - Enviar dinheiro para outras contas
         - Realizar pagamentos diretamente pela API
         - Efetuar transferências para fornecedores, parceiros ou terceiros
-        
-        **Importante**: A chave PIX de destino não precisa ter a mesma titularidade do CNPJ da sua conta. Você pode realizar saques para qualquer chave PIX válida.
       security:
         - bearerAuth: []
       requestBody:
@@ -1171,42 +1169,27 @@ paths:
             schema:
               type: object
               description: Dados necessários para criar um saque.
-              required: ['externalId', 'method', 'amount', 'pix']
+              required: ['amount', 'externalId']
               additionalProperties: false
+              example:
+                amount: 10000
+                externalId: 'saque-123'
               properties:
-                description:
-                  type: string
-                  description: Descrição opcional do saque.
-                  example: Saque para conta principal
-                externalId:
-                  type: string
-                  description: Identificador único do saque em seu sistema.
-                  example: 'withdraw-1234'
-                method:
-                  type: string
-                  description: Método de saque disponível.
-                  enum: ['PIX']
-                  example: 'PIX'
                 amount:
                   type: number
                   description: Valor do saque em centavos.
                   minimum: 350
-                  example: 5000
-                pix:
-                  type: object
-                  description: Dados da chave PIX para receber o saque.
-                  required: ['type', 'key']
-                  additionalProperties: false
-                  properties:
-                    type:
-                      type: string
-                      description: Tipo da chave PIX.
-                      enum: ['CPF', 'CNPJ', 'PHONE', 'EMAIL', 'RANDOM','BR_CODE']
-                      example: 'CPF'
-                    key:
-                      type: string
-                      description: Valor da chave PIX.
-                      example: '123.456.789-01'
+                  example: 10000
+                description:
+                  type: string
+                  description: Descrição opcional do saque.
+                  example: 'Saque para conta bancária'
+                  x-mint:
+                    hidden: true
+                externalId:
+                  type: string
+                  description: Identificador único do saque em seu sistema.
+                  example: 'saque-123'
       responses:
         '200':
           description: Saque criado com sucesso.
@@ -1216,9 +1199,54 @@ paths:
                 type: object
                 properties:
                   data:
-                    $ref: '#/components/schemas/Transaction'
+                    type: object
+                    description: Dados da transação de saque criada.
+                    properties:
+                      id:
+                        type: string
+                        description: Identificador único da transação.
+                        example: 'txn_abc123xyz'
+                      status:
+                        type: string
+                        description: Status atual da transação.
+                        enum: ['PENDING', 'EXPIRED', 'CANCELLED', 'COMPLETE', 'REFUNDED']
+                        example: 'PENDING'
+                      devMode:
+                        type: boolean
+                        description: Indica se a transação foi criada em ambiente de testes.
+                        example: false
+                      receiptUrl:
+                        type: string
+                        format: uri
+                        nullable: true
+                        description: URL do comprovante da transação.
+                        example: null
+                      amount:
+                        type: number
+                        description: Valor da transação em centavos.
+                        example: 10000
+                      platformFee:
+                        type: number
+                        description: Taxa da plataforma em centavos.
+                        example: 100
+                      externalId:
+                        type: string
+                        description: Identificador externo da transação.
+                        example: 'saque-123'
+                      createdAt:
+                        type: string
+                        format: date-time
+                        description: Data de criação da transação.
+                        example: '2024-11-04T18:38:28.573Z'
+                      updatedAt:
+                        type: string
+                        format: date-time
+                        description: Data de atualização da transação.
+                        example: '2024-11-04T18:38:28.573Z'
                   error:
-                    type: 'null'
+                    type: string
+                    nullable: true
+                    example: null
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -1230,7 +1258,7 @@ paths:
                     type: string
                     description: Mensagem de erro descrevendo o motivo da falha na autenticação.
                     example: 'Token de autenticação inválido ou ausente.'
-  /payout/get:
+  /payouts/get:
     get:
       summary: Buscar saque
       description: Permite que você recupere os detalhes de um saque específico usando o externalId.
@@ -1253,9 +1281,54 @@ paths:
                 type: object
                 properties:
                   data:
-                    $ref: '#/components/schemas/Transaction'
+                    type: object
+                    description: Dados da transação de saque.
+                    properties:
+                      id:
+                        type: string
+                        description: Identificador único da transação.
+                        example: 'txn_abc123xyz'
+                      status:
+                        type: string
+                        description: Status atual da transação.
+                        enum: ['PENDING', 'EXPIRED', 'CANCELLED', 'COMPLETE', 'REFUNDED']
+                        example: 'COMPLETE'
+                      devMode:
+                        type: boolean
+                        description: Indica se a transação foi criada em ambiente de testes.
+                        example: false
+                      receiptUrl:
+                        type: string
+                        format: uri
+                        nullable: true
+                        description: URL do comprovante da transação.
+                        example: 'https://app.abacatepay.com/receipt/txn_abc123xyz'
+                      amount:
+                        type: number
+                        description: Valor da transação em centavos.
+                        example: 10000
+                      platformFee:
+                        type: number
+                        description: Taxa da plataforma em centavos.
+                        example: 100
+                      externalId:
+                        type: string
+                        description: Identificador externo da transação.
+                        example: 'saque-123'
+                      createdAt:
+                        type: string
+                        format: date-time
+                        description: Data de criação da transação.
+                        example: '2024-11-04T18:38:28.573Z'
+                      updatedAt:
+                        type: string
+                        format: date-time
+                        description: Data de atualização da transação.
+                        example: '2024-11-04T19:15:42.123Z'
                   error:
-                    type: 'null'
+                    type: string
+                    nullable: true
+                    example: null
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -1275,12 +1348,14 @@ paths:
                 type: object
                 properties:
                   data:
-                    type: 'null'
+                    type: string
+                    nullable: true
+                    example: null
                   error:
                     type: string
                     description: Mensagem de erro indicando que o saque não foi encontrado.
                     example: 'Saque não encontrado com o externalId fornecido.'
-  /payout/list:
+  /payouts/list:
     get:
       summary: Listar saques
       description: |
@@ -1343,7 +1418,9 @@ paths:
                     required: ['page', 'limit', 'total', 'totalPages']
                     additionalProperties: false
                   error:
-                    type: 'null'
+                    type: string
+                    nullable: true
+                    example: null
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
