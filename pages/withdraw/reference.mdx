@@ -4,26 +4,29 @@ description: "Realize saques para chaves PIX"
 icon: "book-open-cover"
 ---
 
-O módulo de **Saque** permite que você transfira valores da sua conta AbacatePay para uma chave PIX de sua escolha. É uma funcionalidade essencial para gerenciar seus fundos e realizar transferências.
+O módulo de **payouts** permite que você transfira valores da sua conta AbacatePay para uma chave PIX de sua escolha. É uma funcionalidade essencial para gerenciar seus fundos e realizar transferências.
 
-Atualmente, o saque suporta apenas o método **PIX**, que é o método mais rápido e eficiente para transferências no Brasil.
+Atualmente, o payouts suporta apenas o método **PIX**, que é o método mais rápido e eficiente para transferências no Brasil.
 
 ## <Icon icon="folder-tree" type="solid"/> Estrutura
 
-Um saque é representado em nossa API pela seguinte estrutura de transação:
+Um payout é representado em nossa API pela seguinte estrutura de transação:
 
-```json json
+```json
 {
-  "id": "tran_1234567890abcdef",
-  "status": "PENDING",
-  "devMode": true,
-  "receiptUrl": "https://abacatepay.com/receipt/tran_1234567890abcdef",
-  "kind": "WITHDRAW",
-  "amount": 5000,
-  "platformFee": 80,
-  "externalId": "withdraw-1234",
-  "createdAt": "2024-12-06T18:56:15.538Z",
-  "updatedAt": "2024-12-06T18:56:15.538Z"
+  "data": {
+    "id": "tran_1234567890abcdef",
+    "status": "PENDING",
+    "devMode": true,
+    "receiptUrl": "https://abacatepay.com/receipt/tran_1234567890abcdef",
+    "kind": "WITHDRAW",
+    "amount": 5000,
+    "platformFee": 80,
+    "externalId": "withdraw-1234",
+    "createdAt": "2024-12-06T18:56:15.538Z",
+    "updatedAt": "2024-12-06T18:56:15.538Z"
+  },
+  "error": null
 }
 ```
 

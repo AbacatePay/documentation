@@ -200,15 +200,110 @@ export function verifyAbacateSignature(rawBody: string, signature: string): bool
 
 A AbacatePay envia diferentes eventos conforme o que acontece na sua conta.
 
-### **Evento: `billing.paid`**  
-Disparado quando um pagamento é confirmado.  
-*(Os exemplos permanecem como no seu conteúdo original.)*
+<Tabs>
+  <Tab title="Checkout">
+    ### **Evento: `billing.paid`**  
+    Disparado quando um pagamento é confirmado.
+
+    ```json
+    {
+      "id": "log_12345abcdef",
+      "data": {
+        "payment": {
+          "amount": 1000,
+          "fee": 80,
+          "method": "PIX"
+        },
+        "billing": {
+          "id": "bill_abc123xyz",
+          "externalId": "pedido-123",
+          "url": "https://app.abacatepay.com/pay/bill_abc123xyz",
+          "amount": 10000,
+          "status": "PAID"
+        }
+      },
+      "devMode": false,
+      "event": "billing.paid"
+    }
+    ```
+  </Tab>
+
+  <Tab title="Transparente">
+    ### **Evento: `billing.paid`**  
+    Disparado quando um pagamento é confirmado.
+
+    ```json
+    {
+      "id": "log_12345abcdef",
+      "data": {
+        "payment": {
+          "amount": 1000,
+          "fee": 80,
+          "method": "PIX"
+        },
+        "pixQrCode": {
+          "amount": 1000,
+          "id": "pix_char_mXTWdj6sABWnc4uL2Rh1r6tb",
+          "kind": "PIX",
+          "status": "PAID"
+        }
+      },
+      "devMode": false,
+      "event": "billing.paid"
+    }
+    ```
+  </Tab>
+</Tabs>
 
 ### **Evento: `payout.done`**  
 Saque concluído com sucesso.
 
+```json
+{
+  "id": "log_67890ghijkl",
+  "data": {
+    "transaction": {
+      "id": "tran_1234567890abcdef",
+      "status": "COMPLETE",
+      "devMode": false,
+      "receiptUrl": "https://abacatepay.com/receipt/tran_1234567890abcdef",
+      "kind": "WITHDRAW",
+      "amount": 5000,
+      "platformFee": 80,
+      "externalId": "withdraw-1234",
+      "createdAt": "2024-12-06T18:56:15.538Z",
+      "updatedAt": "2024-12-06T19:00:30.123Z"
+    }
+  },
+  "devMode": false,
+  "event": "payout.done"
+}
+```
+
 ### **Evento: `payout.failed`**  
 Saque que falhou.
+
+```json
+{
+  "id": "log_11111mnopqr",
+  "data": {
+    "transaction": {
+      "id": "tran_abcdef1234567890",
+      "status": "CANCELLED",
+      "devMode": false,
+      "receiptUrl": "https://abacatepay.com/receipt/tran_abcdef1234567890",
+      "kind": "WITHDRAW",
+      "amount": 5000,
+      "platformFee": 0,
+      "externalId": "withdraw-5678",
+      "createdAt": "2024-12-06T20:10:15.538Z",
+      "updatedAt": "2024-12-06T20:15:45.789Z"
+    }
+  },
+  "devMode": false,
+  "event": "payout.failed"
+}
+```
 
 ---
 

@@ -4,23 +4,15 @@ description: "Crie uma cobrança com checkout integrado"
 icon: "book-open-cover"
 ---
 
-Uma **cobrança (Billing)** é uma forma simples de gerar um **link de pagamento** para que seu cliente finalize o pagamento no **Checkout da AbacatePay**.
-
-> ✔ Toda cobrança criada por esta rota **usa 100% o checkout da AbacatePay**  
-> ✔ O cliente acessa a **URL gerada** e conclui o pagamento  
-> ✔ Ideal para produtos, serviços, planos ou cobranças avulsas
-
----
-
-## O que é o Checkout?
-
-O Checkout é uma página segura onde o pagador:
+O **Checkout da AbacatePay** é uma página segura onde seus clientes finalizam o pagamento. Você cria a cobrança com os itens que deseja vender, e nós geramos automaticamente uma URL onde o cliente:
 
 - insere seus dados (se você não os fornecer)
 - escolhe a forma de pagamento (`PIX`, `CARD`)
 - conclui o pagamento
 
-Você cria a cobrança → nós criamos a página → seu cliente paga.
+> ✔ Ideal para produtos, serviços, planos ou cobranças avulsas  
+> ✔ Processo 100% gerenciado pela AbacatePay  
+> ✔ Você recebe notificações via webhook quando o pagamento é confirmado
 
 <img
   src="/images/payment-checkout-placeholder.png"
@@ -37,45 +29,31 @@ Você cria a cobrança → nós criamos a página → seu cliente paga.
 
 ## <Icon icon="folder-tree" type="solid"/> Estrutura de resposta da cobrança
 
-```json json
+```json
 {
-  "id": "bill_uA0M0xwg5R4mSyr0n2PjHQXY",
-  "frequency": "ONE_TIME",
-  "url": "https://abacatepay.com/pay/bill_uA0M0xwg5R4mSyr0n2PjHQXY",
-
-  "status": "PAID",
-  "devMode": true,
-  "methods": ["PIX", "CARD"],
-
-  "products": [
-    {
-      "id": "prod_dNFbdDjfpaegmzBWWdNM2Huw",
-      "externalId": "prod-1234",
-      "quantity": 1
-    }
-  ],
-
-  "customer": {
-    "id": "cust_aebxkhDZNaMmJeKsy0AHS0FQ",
-    "metadata": {
-      "name": "Test Customer",
-      "cellphone": "11999999999",
-      "taxId": "12345678900",
-      "email": "test@example.com"
-    }
-  },
-
-  "metadata": {
-    "fee": 100,
-    "returnUrl": "https://example.com/billing",
-    "completionUrl": "https://example.com/completion"
-  },
-
-  "receiptUrl": null,
-  "nextBilling": null,
-  "allowCoupons": false,
-  "coupons": [],
-
-  "createdAt": "2024-12-06T18:56:15.538Z",
-  "updatedAt": "2024-12-06T18:56:15.538Z"
+    "data": {
+      "id": "bill_abc123xyz",
+      "externalId": "pedido-123",
+      "url": "https://app.abacatepay.com/pay/bill_abc123xyz",
+      "amount": 10000,
+      "paidAmount": null,
+      "items": [
+        {
+          "id": "prod_456",
+          "quantity": 2
+        }
+      ],
+      "status": "PENDING",
+      "coupons": [],
+      "devMode": false,
+      "customerId": null,
+      "returnUrl": null,
+      "completionUrl": null,
+      "receiptUrl": null,
+      "metadata": {},
+      "createdAt": "2024-11-04T18:38:28.573Z",
+      "updatedAt": "2024-11-04T18:38:28.573Z"
+    },
+    "error": null
 }
+```

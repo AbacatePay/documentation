@@ -7,10 +7,15 @@ servers:
   - url: https://api.abacatepay.com/v1
     description: Único servidor para os ambientes de produção e sandbox.
 paths:
-  /customer/create:
+  /customers/create:
     post:
       summary: Criar um novo cliente
-      description: Permite que você crie um novo cliente para a sua loja.
+      description: |
+        Permite que você crie um novo cliente para a sua loja.
+        
+        **Campo obrigatório**: Apenas o `email` é obrigatório para criar um cliente.
+        
+        **Recomendado**: Embora os demais campos sejam opcionais, é altamente recomendado fornecer `name`, `cellphone`, `taxId` e `zipCode` quando disponíveis, pois essas informações melhoram a experiência do cliente no checkout e facilitam a identificação.
       security:
         - bearerAuth: []
       requestBody:
@@ -19,33 +24,54 @@ paths:
           application/json:
             schema:
               type: object
-              description: Os dados do seu cliente.
-              required: ['name', 'cellphone', 'email', 'taxId']
+              description: |
+                Os dados do seu cliente.
+                
+                **Obrigatório**: Apenas `email` é obrigatório.
+                
+                **Opcional mas recomendado**: `name`, `cellphone`, `taxId`, `zipCode` e `metadata` são opcionais, mas recomendados para melhor experiência do cliente.
+              required: ['email']
               additionalProperties: false
+              example:
+                email: daniel_lima@abacatepay.com
               properties:
-                name:
-                  type: string
-                  description: Nome completo do seu cliente
-                  example: Daniel Lima
-                cellphone:
-                  type: string
-                  description: Celular do cliente
-                  example: (11) 4002-8922
                 email:
                   type: string
-                  description: E-mail do cliente
+                  description: E-mail do cliente (obrigatório)
                   example: daniel_lima@abacatepay.com
+                name:
+                  type: string
+                  description: Nome completo do seu cliente (opcional)
+                  example: Daniel Lima
+                  x-mint:
+                    hidden: true
+                cellphone:
+                  type: string
+                  description: Celular do cliente (opcional)
+                  example: (11) 4002-8922
+                  x-mint:
+                    hidden: true
                 taxId:
                   type: string
-                  description: CPF ou CNPJ válido do cliente.
+                  description: CPF ou CNPJ válido do cliente (opcional)
                   example: 123.456.789-01
+                  x-mint:
+                    hidden: true
+                zipCode:
+                  type: string
+                  description: CEP do cliente (opcional)
+                  example: '01310-100'
+                  x-mint:
+                    hidden: true
                 metadata:
                   type: object
-                  description: Metadados adicionais do cliente. Campo livre para a sua aplicação.
+                  description: Metadados adicionais do cliente. Campo livre para a sua aplicação (opcional)
                   additionalProperties: true
                   example:
                     source: 'landing-page'
                     campaign: 'black-friday-2025'
+                  x-mint:
+                    hidden: true
       responses:
         '200':
           description: Cliente criado com sucesso.
@@ -61,38 +87,47 @@ paths:
                       id:
                         type: string
                         description: Identificador único público do cliente
-                        example: 'cust_aebxkhDZNaMmJeKsy0AHS0FQ'
+                        example: 'cust_abc123xyz'
                       devMode:
                         type: boolean
                         description: Indica se o cliente foi criado em ambiente de testes.
-                        example: true
-                      name:
-                        type: string
-                        description: Nome completo do cliente
-                        example: Daniel Lima
-                      cellphone:
-                        type: string
-                        description: Celular do cliente
-                        example: '(11) 4002-8922'
+                        example: false
                       email:
                         type: string
                         description: E-mail do cliente
-                        example: daniel_lima@abacatepay.com
+                        example: 'customer@example.com'
+                        required: true
                       taxId:
                         type: string
                         description: CPF ou CNPJ do cliente
-                        example: '123.456.789-01'
+                        example: '12345678900'
+                      country:
+                        type: string
+                        description: País do cliente
+                        example: 'BR'
+                      name:
+                        type: string
+                        description: Nome completo do cliente
+                        example: 'João Silva'
+                      cellphone:
+                        type: string
+                        description: Celular do cliente
+                        example: '+5511999999999'
+                      zipCode:
+                        type: string
+                        description: CEP do cliente
+                        example: '01310-100'
                       metadata:
                         type: object
                         description: Metadados adicionais do cliente
                         additionalProperties: true
                         example:
-                          source: 'landing-page'
-                          campaign: 'black-friday-2025'
-                    required: ['id', 'devMode', 'name', 'cellphone', 'email', 'taxId']
+                          customField: 'value'
                     additionalProperties: false
                   error:
-                    type: 'null'
+                    type: string
+                    nullable: true
+                    example: null
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -104,7 +139,7 @@ paths:
                     type: string
                     description: Mensagem de erro descrevendo o motivo da falha na autenticação.
                     example: 'Token de autenticação inválido ou ausente.'
-  /customer/list:
+  /customers/list:
     get:
       summary: Listar clientes
       description: |
@@ -206,7 +241,9 @@ paths:
                     required: ['page', 'limit', 'total', 'totalPages']
                     additionalProperties: false
                   error:
-                    type: 'null'
+                    type: 'string'
+                    example: null
+                    nullable: true
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -218,7 +255,7 @@ paths:
                     type: string
                     description: Mensagem de erro descrevendo o motivo da falha na autenticação.
                     example: 'Token de autenticação inválido ou ausente.'
-  /customer/get:
+  /customers/get:
     get:
       summary: Buscar um cliente
       description: |
@@ -281,7 +318,9 @@ paths:
                     required: ['id', 'devMode', 'name', 'cellphone', 'email', 'taxId']
                     additionalProperties: false
                   error:
-                    type: 'null'
+                    type: 'string'
+                    example: null
+                    nullable: true
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -304,7 +343,7 @@ paths:
                     type: string
                     description: Mensagem de erro indicando que o cliente não foi encontrado.
                     example: 'Cliente não encontrado.'
-  /customer/delete:
+  /customers/delete:
     delete:
       summary: Deletar um cliente
       description: |
@@ -373,7 +412,9 @@ paths:
                     required: ['id', 'devMode', 'name', 'cellphone', 'email', 'taxId']
                     additionalProperties: false
                   error:
-                    type: 'null'
+                    type: 'string'
+                    example: null
+                    nullable: true
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -396,7 +437,7 @@ paths:
                     type: string
                     description: Mensagem de erro indicando que o cliente não foi encontrado.
                     example: 'Cliente não encontrado.'
-  /coupon/create:
+  /coupons/create:
     post:
       summary: Criar um novo cupom
       description: |
@@ -410,7 +451,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Coupon'
+                  $ref: '#/components/schemas/Coupon'
       responses:
         '200':
           description: Cupom criado com sucesso.
@@ -422,7 +463,9 @@ paths:
                   data:
                     $ref: '#/components/schemas/CouponResponse'
                   error:
-                    type: 'null'
+                    type: 'string'
+                    nullable: true
+                    example: null
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -434,7 +477,7 @@ paths:
                     type: string
                     description: Mensagem de erro descrevendo o motivo da falha na autenticação.
                     example: 'Token de autenticação inválido ou ausente.'
-  /coupon/list:
+  /coupons/list:
     get:
       summary: Listar cupons
       description: |
@@ -501,7 +544,9 @@ paths:
                     required: ['page', 'limit', 'total', 'totalPages']
                     additionalProperties: false
                   error:
-                    type: 'null'
+                    type: 'string'
+                    nullable: true
+                    example: null
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -513,7 +558,7 @@ paths:
                     type: string
                     description: Mensagem de erro descrevendo o motivo da falha na autenticação.
                     example: 'Token de autenticação inválido ou ausente.'
-  /coupon/get:
+  /coupons/get:
     get:
       summary: Buscar um cupom
       description: |
@@ -541,7 +586,9 @@ paths:
                   data:
                     $ref: '#/components/schemas/CouponResponse'
                   error:
-                    type: 'null'
+                    type: 'string'
+                    nullable: true
+                    example: null
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -564,7 +611,7 @@ paths:
                     type: string
                     description: Mensagem de erro indicando que o cupom não foi encontrado.
                     example: 'Cupom não encontrado.'
-  /coupon/delete:
+  /coupons/delete:
     delete:
       summary: Deletar um cupom
       description: |
@@ -598,7 +645,9 @@ paths:
                   data:
                     $ref: '#/components/schemas/CouponResponse'
                   error:
-                    type: 'null'
+                    type: 'string'
+                    nullable: true
+                    example: null
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -621,7 +670,7 @@ paths:
                     type: string
                     description: Mensagem de erro indicando que o cupom não foi encontrado.
                     example: 'Cupom não encontrado.'
-  /coupon/toggle:
+  /coupons/toggle:
     patch:
       summary: Alternar status de um cupom
       description: |
@@ -655,7 +704,9 @@ paths:
                   data:
                     $ref: '#/components/schemas/CouponResponse'
                   error:
-                    type: 'null'
+                    type: 'string'
+                    nullable: true
+                    example: null
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -678,7 +729,7 @@ paths:
                     type: string
                     description: Mensagem de erro indicando que o cupom não foi encontrado.
                     example: 'Cupom não encontrado.'
-  /checkout/create:
+  /checkouts/create:
     post:
       summary: Criar uma cobrança com nosso Checkout
       description: Cria uma cobrança com checkout integrado e retorna a URL para o cliente concluir o pagamento.
@@ -840,7 +891,60 @@ paths:
                     type: string
                     description: Motivo da falha na autenticação.
                     example: Token de autenticação inválido ou ausente.
-  /checkout/list:
+  /checkouts/get:
+    get:
+      summary: Buscar uma cobrança
+      description: |
+        Retorna os dados de uma cobrança específica usando o ID.
+        
+        Você pode usar essa rota para buscar uma cobrança por ID e visualizar seus detalhes, status e informações relacionadas.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: query
+          description: Identificador único da cobrança
+          required: true
+          schema:
+            type: string
+            example: 'bill_abc123xyz'
+      responses:
+        '200':
+          description: Cobrança encontrada com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Billing'
+                  error:
+                    type: string
+                    nullable: true
+                    example: null
+        '401':
+          description: Não autorizado. Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
+                    example: 'Token de autenticação inválido ou ausente.'
+        '404':
+          description: Cobrança não encontrada.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Mensagem de erro indicando que a cobrança não foi encontrada.
+                    example: 'Cobrança não encontrada.'
+  /checkouts/list:
     get:
       summary: Listar cobranças
       description: |
@@ -1045,19 +1149,17 @@ paths:
           required: true
           schema:
             type: string
-  /payout/create:
+  /payouts/create:
     post:
       summary: Criar um novo saque
       description: |
-        Permite que você crie um novo saque para transferir valores da sua conta para uma chave PIX de sua escolha.
+        Permite que você crie um novo saque para transferir valores da sua conta.
         
         Esta rota pode ser usada para:
-        - Realizar saques da sua conta para sua própria chave PIX
+        - Realizar saques da sua conta
         - Enviar dinheiro para outras contas
         - Realizar pagamentos diretamente pela API
         - Efetuar transferências para fornecedores, parceiros ou terceiros
-        
-        **Importante**: A chave PIX de destino não precisa ter a mesma titularidade do CNPJ da sua conta. Você pode realizar saques para qualquer chave PIX válida.
       security:
         - bearerAuth: []
       requestBody:
@@ -1067,42 +1169,27 @@ paths:
             schema:
               type: object
               description: Dados necessários para criar um saque.
-              required: ['externalId', 'method', 'amount', 'pix']
+              required: ['amount', 'externalId']
               additionalProperties: false
+              example:
+                amount: 10000
+                externalId: 'saque-123'
               properties:
-                description:
-                  type: string
-                  description: Descrição opcional do saque.
-                  example: Saque para conta principal
-                externalId:
-                  type: string
-                  description: Identificador único do saque em seu sistema.
-                  example: 'withdraw-1234'
-                method:
-                  type: string
-                  description: Método de saque disponível.
-                  enum: ['PIX']
-                  example: 'PIX'
                 amount:
                   type: number
                   description: Valor do saque em centavos.
                   minimum: 350
-                  example: 5000
-                pix:
-                  type: object
-                  description: Dados da chave PIX para receber o saque.
-                  required: ['type', 'key']
-                  additionalProperties: false
-                  properties:
-                    type:
-                      type: string
-                      description: Tipo da chave PIX.
-                      enum: ['CPF', 'CNPJ', 'PHONE', 'EMAIL', 'RANDOM','BR_CODE']
-                      example: 'CPF'
-                    key:
-                      type: string
-                      description: Valor da chave PIX.
-                      example: '123.456.789-01'
+                  example: 10000
+                description:
+                  type: string
+                  description: Descrição opcional do saque.
+                  example: 'Saque para conta bancária'
+                  x-mint:
+                    hidden: true
+                externalId:
+                  type: string
+                  description: Identificador único do saque em seu sistema.
+                  example: 'saque-123'
       responses:
         '200':
           description: Saque criado com sucesso.
@@ -1112,9 +1199,54 @@ paths:
                 type: object
                 properties:
                   data:
-                    $ref: '#/components/schemas/Transaction'
+                    type: object
+                    description: Dados da transação de saque criada.
+                    properties:
+                      id:
+                        type: string
+                        description: Identificador único da transação.
+                        example: 'txn_abc123xyz'
+                      status:
+                        type: string
+                        description: Status atual da transação.
+                        enum: ['PENDING', 'EXPIRED', 'CANCELLED', 'COMPLETE', 'REFUNDED']
+                        example: 'PENDING'
+                      devMode:
+                        type: boolean
+                        description: Indica se a transação foi criada em ambiente de testes.
+                        example: false
+                      receiptUrl:
+                        type: string
+                        format: uri
+                        nullable: true
+                        description: URL do comprovante da transação.
+                        example: null
+                      amount:
+                        type: number
+                        description: Valor da transação em centavos.
+                        example: 10000
+                      platformFee:
+                        type: number
+                        description: Taxa da plataforma em centavos.
+                        example: 100
+                      externalId:
+                        type: string
+                        description: Identificador externo da transação.
+                        example: 'saque-123'
+                      createdAt:
+                        type: string
+                        format: date-time
+                        description: Data de criação da transação.
+                        example: '2024-11-04T18:38:28.573Z'
+                      updatedAt:
+                        type: string
+                        format: date-time
+                        description: Data de atualização da transação.
+                        example: '2024-11-04T18:38:28.573Z'
                   error:
-                    type: 'null'
+                    type: string
+                    nullable: true
+                    example: null
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -1126,7 +1258,7 @@ paths:
                     type: string
                     description: Mensagem de erro descrevendo o motivo da falha na autenticação.
                     example: 'Token de autenticação inválido ou ausente.'
-  /payout/get:
+  /payouts/get:
     get:
       summary: Buscar saque
       description: Permite que você recupere os detalhes de um saque específico usando o externalId.
@@ -1149,9 +1281,54 @@ paths:
                 type: object
                 properties:
                   data:
-                    $ref: '#/components/schemas/Transaction'
+                    type: object
+                    description: Dados da transação de saque.
+                    properties:
+                      id:
+                        type: string
+                        description: Identificador único da transação.
+                        example: 'txn_abc123xyz'
+                      status:
+                        type: string
+                        description: Status atual da transação.
+                        enum: ['PENDING', 'EXPIRED', 'CANCELLED', 'COMPLETE', 'REFUNDED']
+                        example: 'COMPLETE'
+                      devMode:
+                        type: boolean
+                        description: Indica se a transação foi criada em ambiente de testes.
+                        example: false
+                      receiptUrl:
+                        type: string
+                        format: uri
+                        nullable: true
+                        description: URL do comprovante da transação.
+                        example: 'https://app.abacatepay.com/receipt/txn_abc123xyz'
+                      amount:
+                        type: number
+                        description: Valor da transação em centavos.
+                        example: 10000
+                      platformFee:
+                        type: number
+                        description: Taxa da plataforma em centavos.
+                        example: 100
+                      externalId:
+                        type: string
+                        description: Identificador externo da transação.
+                        example: 'saque-123'
+                      createdAt:
+                        type: string
+                        format: date-time
+                        description: Data de criação da transação.
+                        example: '2024-11-04T18:38:28.573Z'
+                      updatedAt:
+                        type: string
+                        format: date-time
+                        description: Data de atualização da transação.
+                        example: '2024-11-04T19:15:42.123Z'
                   error:
-                    type: 'null'
+                    type: string
+                    nullable: true
+                    example: null
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -1171,12 +1348,14 @@ paths:
                 type: object
                 properties:
                   data:
-                    type: 'null'
+                    type: string
+                    nullable: true
+                    example: null
                   error:
                     type: string
                     description: Mensagem de erro indicando que o saque não foi encontrado.
                     example: 'Saque não encontrado com o externalId fornecido.'
-  /payout/list:
+  /payouts/list:
     get:
       summary: Listar saques
       description: |
@@ -1239,7 +1418,9 @@ paths:
                     required: ['page', 'limit', 'total', 'totalPages']
                     additionalProperties: false
                   error:
-                    type: 'null'
+                    type: string
+                    nullable: true
+                    example: null
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -1598,63 +1779,93 @@ components:
         id:
           type: string
           description: Identificador único da cobrança.
-          example: 'bill_123456'
+          example: 'bill_abc123xyz'
+        externalId:
+          type: string
+          nullable: true
+          description: ID da cobrança no seu sistema.
+          example: 'pedido-123'
         url:
           type: string
           format: uri
           description: URL onde o usuário pode concluir o pagamento.
-          example: 'https://pay.abacatepay.com/bill-5678'
+          example: 'https://app.abacatepay.com/pay/bill_abc123xyz'
         amount:
           type: number
-          description: Valor total a ser pago em centavos. (Deprecated)
-          deprecated: true
-          example: 4000
-        status:
-          type: string
-          description: Status atual da cobrança.
-          enum: ['PENDING', 'EXPIRED', 'CANCELLED', 'PAID', 'REFUNDED']
-          example: 'PENDING'
-        devMode:
-          type: boolean
-          description: Indica se a cobrança foi criada em ambiente de testes.
-          example: true
-        products:
+          description: Valor total a ser pago em centavos.
+          example: 10000
+        paidAmount:
+          type: number
+          nullable: true
+          description: Valor já pago em centavos. Null se ainda não foi pago.
+          example: null
+        items:
           type: array
-          description: Lista de produtos na cobrança.
+          description: Lista de itens na cobrança.
           items:
             type: object
             properties:
               id:
                 type: string
-                description: Identificador único do produto.
-                example: 'prod_123456'
-              externalId:
-                type: string
-                description: O id do produto em seu sistema.
-                example: 'prod-1234'
+                description: ID do produto.
+                example: 'prod_456'
               quantity:
                 type: integer
-                description: Quantidade do produto sendo adquirida.
+                description: Quantidade do item.
                 example: 2
-        nextBilling:
+        status:
           type: string
-          format: date-time
-          nullable: true
-          description: Data e hora da próxima cobrança, ou null para cobranças únicas.
-          example: 'null'
-        customer:
-          type: object
-          nullable: true
-          $ref: '#/components/schemas/Customer'
-        coupons: 
+          description: Status atual da cobrança.
+          enum: ['PENDING', 'EXPIRED', 'CANCELLED', 'PAID', 'REFUNDED']
+          example: 'PENDING'
+        coupons:
           type: array
-          description: Lista de cupons disponíveis para resem usados com a billing
-          nullable: true
-          default: []
+          description: Lista de cupons aplicados na cobrança.
           items:
             type: string
-      required:
-        ['id', 'url', 'status', 'devMode', 'products', 'createdAt', 'updatedAt']
+          example: []
+        devMode:
+          type: boolean
+          description: Indica se a cobrança foi criada em ambiente de testes.
+          example: false
+        customerId:
+          type: string
+          nullable: true
+          description: ID do cliente associado à cobrança.
+          example: null
+        returnUrl:
+          type: string
+          format: uri
+          nullable: true
+          description: URL para onde o cliente será redirecionado ao clicar em "Voltar".
+          example: null
+        completionUrl:
+          type: string
+          format: uri
+          nullable: true
+          description: URL para onde o cliente será redirecionado após o pagamento.
+          example: null
+        receiptUrl:
+          type: string
+          format: uri
+          nullable: true
+          description: URL do comprovante de pagamento.
+          example: null
+        metadata:
+          type: object
+          description: Metadados adicionais da cobrança.
+          additionalProperties: true
+          example: {}
+        createdAt:
+          type: string
+          format: date-time
+          description: Data e hora de criação da cobrança.
+          example: '2024-11-04T18:38:28.573Z'
+        updatedAt:
+          type: string
+          format: date-time
+          description: Data e hora da última atualização da cobrança.
+          example: '2024-11-04T18:38:28.573Z'
     PixQRCode:
       type: object
       properties:
