@@ -17,10 +17,9 @@ Nossa solução? Uma plataforma que transforma a complexidade das Fintechs em um
 
 ```javascript
 // Exemplo de criação de cobrança
-const payment = await abacatePay.payments.create({
-   amount: 1000,
-   description: "Serviço prestado"
-});
+abacatePay.checkout.create({
+   items: [{ id: 'pro', quantity: 1 }]
+})
 ```
 
 ## <Icon icon="laptop" type="solid"/>  API descomplicada
@@ -33,32 +32,31 @@ Nossa API foi construída com três princípios fundamentais:
    GET /billing/get       // Busca um pagamento específico
    ```
 
-2. **Idempotente**: Execute a mesma requisição quantas vezes precisar, sem efeitos colaterais
-   ```javascript
-   // Seguro para executar múltiplas vezes
-   await abacatePay.billing.create({...});
-   ```
-
-3. **Consistente**: Nossa API retorna sempre um option contendo o erro ou os dados de retorno, o que facilita a implementação em linguagens de tipagem forte e consistência em todas as operações.
+2. **Consistente**: Nossa API retorna sempre um option contendo o erro ou os dados de retorno, o que facilita a implementação em linguagens de tipagem forte e consistência em todas as operações.
    ```json
    {
-   "data": {
-         "id": "bill_12345667",
-         "url": "https://abacatepay.com/pay/bill_12345667",
-         "amount": 1000,
-         "status": "PENDING",
-         "devMode": true,
-         "methods": ["PIX", "CARD"],
-         "frequency": "ONE_TIME",
-         "nextBilling": null,
-         "customer": {
-            "id": "cust_12345",
-            "metadata": {
-               "email": "customer@example.com"
+      "data": {
+         "id": "bill_abc123xyz",
+         "externalId": "pedido-123",
+         "url": "https://app.abacatepay.com/pay/bill_abc123xyz",
+         "amount": 10000,
+         "paidAmount": null,
+         "items": [
+            {
+               "id": "prod_456",
+               "quantity": 2
             }
-         },
-         "createdAt": "2024-11-04T18:38:28.573",
-         "updatedAt": "2024-11-04T18:38:28.573",
+         ],
+         "status": "PENDING",
+         "coupons": [],
+         "devMode": false,
+         "customerId": null,
+         "returnUrl": null,
+         "completionUrl": null,
+         "receiptUrl": null,
+         "metadata": {},
+         "createdAt": "2024-11-04T18:38:28.573Z",
+         "updatedAt": "2024-11-04T18:38:28.573Z"
       },
       "error": null
    }
