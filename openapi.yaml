@@ -719,7 +719,7 @@ paths:
                     type: string
                     description: Mensagem de erro indicando que o cupom não foi encontrado.
                     example: 'Cupom não encontrado.'
-  /checkout/create:
+  /checkouts/create:
     post:
       summary: Criar uma cobrança com nosso Checkout
       description: Cria uma cobrança com checkout integrado e retorna a URL para o cliente concluir o pagamento.
@@ -881,7 +881,60 @@ paths:
                     type: string
                     description: Motivo da falha na autenticação.
                     example: Token de autenticação inválido ou ausente.
-  /checkout/list:
+  /checkouts/get:
+    get:
+      summary: Buscar uma cobrança
+      description: |
+        Retorna os dados de uma cobrança específica usando o ID.
+        
+        Você pode usar essa rota para buscar uma cobrança por ID e visualizar seus detalhes, status e informações relacionadas.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: query
+          description: Identificador único da cobrança
+          required: true
+          schema:
+            type: string
+            example: 'bill_abc123xyz'
+      responses:
+        '200':
+          description: Cobrança encontrada com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Billing'
+                  error:
+                    type: string
+                    nullable: true
+                    example: null
+        '401':
+          description: Não autorizado. Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
+                    example: 'Token de autenticação inválido ou ausente.'
+        '404':
+          description: Cobrança não encontrada.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Mensagem de erro indicando que a cobrança não foi encontrada.
+                    example: 'Cobrança não encontrada.'
+  /checkouts/list:
     get:
       summary: Listar cobranças
       description: |
@@ -1639,63 +1692,93 @@ components:
         id:
           type: string
           description: Identificador único da cobrança.
-          example: 'bill_123456'
+          example: 'bill_abc123xyz'
+        externalId:
+          type: string
+          nullable: true
+          description: ID da cobrança no seu sistema.
+          example: 'pedido-123'
         url:
           type: string
           format: uri
           description: URL onde o usuário pode concluir o pagamento.
-          example: 'https://pay.abacatepay.com/bill-5678'
+          example: 'https://app.abacatepay.com/pay/bill_abc123xyz'
         amount:
           type: number
-          description: Valor total a ser pago em centavos. (Deprecated)
-          deprecated: true
-          example: 4000
-        status:
-          type: string
-          description: Status atual da cobrança.
-          enum: ['PENDING', 'EXPIRED', 'CANCELLED', 'PAID', 'REFUNDED']
-          example: 'PENDING'
-        devMode:
-          type: boolean
-          description: Indica se a cobrança foi criada em ambiente de testes.
-          example: true
-        products:
+          description: Valor total a ser pago em centavos.
+          example: 10000
+        paidAmount:
+          type: number
+          nullable: true
+          description: Valor já pago em centavos. Null se ainda não foi pago.
+          example: null
+        items:
           type: array
-          description: Lista de produtos na cobrança.
+          description: Lista de itens na cobrança.
           items:
             type: object
             properties:
               id:
                 type: string
-                description: Identificador único do produto.
-                example: 'prod_123456'
-              externalId:
-                type: string
-                description: O id do produto em seu sistema.
-                example: 'prod-1234'
+                description: ID do produto.
+                example: 'prod_456'
               quantity:
                 type: integer
-                description: Quantidade do produto sendo adquirida.
+                description: Quantidade do item.
                 example: 2
-        nextBilling:
+        status:
           type: string
-          format: date-time
-          nullable: true
-          description: Data e hora da próxima cobrança, ou null para cobranças únicas.
-          example: 'null'
-        customer:
-          type: object
-          nullable: true
-          $ref: '#/components/schemas/Customer'
-        coupons: 
+          description: Status atual da cobrança.
+          enum: ['PENDING', 'EXPIRED', 'CANCELLED', 'PAID', 'REFUNDED']
+          example: 'PENDING'
+        coupons:
           type: array
-          description: Lista de cupons disponíveis para resem usados com a billing
-          nullable: true
-          default: []
+          description: Lista de cupons aplicados na cobrança.
           items:
             type: string
-      required:
-        ['id', 'url', 'status', 'devMode', 'products', 'createdAt', 'updatedAt']
+          example: []
+        devMode:
+          type: boolean
+          description: Indica se a cobrança foi criada em ambiente de testes.
+          example: false
+        customerId:
+          type: string
+          nullable: true
+          description: ID do cliente associado à cobrança.
+          example: null
+        returnUrl:
+          type: string
+          format: uri
+          nullable: true
+          description: URL para onde o cliente será redirecionado ao clicar em "Voltar".
+          example: null
+        completionUrl:
+          type: string
+          format: uri
+          nullable: true
+          description: URL para onde o cliente será redirecionado após o pagamento.
+          example: null
+        receiptUrl:
+          type: string
+          format: uri
+          nullable: true
+          description: URL do comprovante de pagamento.
+          example: null
+        metadata:
+          type: object
+          description: Metadados adicionais da cobrança.
+          additionalProperties: true
+          example: {}
+        createdAt:
+          type: string
+          format: date-time
+          description: Data e hora de criação da cobrança.
+          example: '2024-11-04T18:38:28.573Z'
+        updatedAt:
+          type: string
+          format: date-time
+          description: Data e hora da última atualização da cobrança.
+          example: '2024-11-04T18:38:28.573Z'
     PixQRCode:
       type: object
       properties:
