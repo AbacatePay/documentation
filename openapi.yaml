@@ -204,7 +204,7 @@ paths:
                         description: Total de páginas
                         example: 8
                     required: ['page', 'limit', 'total', 'totalPages']
-                    additionalProperties: false
+                      additionalProperties: false
                   error:
                     type: 'null'
         '401':
@@ -410,7 +410,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Coupon'
+                  $ref: '#/components/schemas/Coupon'
       responses:
         '200':
           description: Cupom criado com sucesso.
