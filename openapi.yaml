@@ -184,38 +184,38 @@ paths:
                     items:
                       type: object
                       description: Dados do cliente.
-                      properties:
-                        id:
-                          type: string
-                          description: Identificador único público do cliente
-                          example: 'cust_aebxkhDZNaMmJeKsy0AHS0FQ'
-                        devMode:
-                          type: boolean
-                          description: Indica se o cliente foi criado em ambiente de testes.
-                          example: true
-                        name:
-                          type: string
-                          description: Nome completo do cliente
-                          example: Daniel Lima
-                        cellphone:
-                          type: string
-                          description: Celular do cliente
-                          example: '(11) 4002-8922'
-                        email:
-                          type: string
-                          description: E-mail do cliente
-                          example: daniel_lima@abacatepay.com
-                        taxId:
-                          type: string
-                          description: CPF ou CNPJ do cliente
-                          example: '123.456.789-01'
-                        metadata:
-                          type: object
-                          description: Metadados adicionais do cliente
-                          additionalProperties: true
-                          example:
-                            source: 'landing-page'
-                            campaign: 'black-friday-2025'
+                    properties:
+                      id:
+                        type: string
+                        description: Identificador único público do cliente
+                        example: 'cust_aebxkhDZNaMmJeKsy0AHS0FQ'
+                      devMode:
+                        type: boolean
+                        description: Indica se o cliente foi criado em ambiente de testes.
+                        example: true
+                      name:
+                        type: string
+                        description: Nome completo do cliente
+                        example: Daniel Lima
+                      cellphone:
+                        type: string
+                        description: Celular do cliente
+                        example: '(11) 4002-8922'
+                      email:
+                        type: string
+                        description: E-mail do cliente
+                        example: daniel_lima@abacatepay.com
+                      taxId:
+                        type: string
+                        description: CPF ou CNPJ do cliente
+                        example: '123.456.789-01'
+                      metadata:
+                        type: object
+                        description: Metadados adicionais do cliente
+                        additionalProperties: true
+                        example:
+                          source: 'landing-page'
+                          campaign: 'black-friday-2025'
                       required:
                         - id
                         - devMode
@@ -1036,7 +1036,7 @@ paths:
                       description: Metadados opcionais para a cobrança
                       additionalProperties: true
                       default:
-                      externalId: '123'
+                       externalId: '123'
               required: ['amount']
               additionalProperties: false
       responses:
@@ -1425,6 +1425,204 @@ paths:
                         example: 8
                     required: ['page', 'limit', 'total', 'totalPages']
                     additionalProperties: false
+                  error:
+                    type: string
+                    nullable: true
+                    example: null
+        '401':
+          description: Não autorizado. Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
+                    example: 'Token de autenticação inválido ou ausente.'
+  /subscriptions/create:
+    post:
+      summary: Criar uma nova assinatura
+      description: |
+        Permite que você crie uma nova assinatura para cobranças recorrentes automáticas.
+        
+        Esta rota é ideal para criar planos de assinatura com cobranças periódicas, como planos mensais, anuais ou personalizados. As assinaturas são processadas automaticamente de acordo com a frequência configurada.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Dados necessários para criar uma assinatura.
+              required: ['amount', 'name', 'externalId', 'method', 'frequency', 'customerId']
+              additionalProperties: false
+              example:
+                amount: 10000
+                name: 'Plano Premium Mensal'
+                externalId: 'subs-123'
+                description: 'Assinatura mensal do plano premium'
+                method: 'PIX'
+                frequency:
+                  cycle: 'MONTHLY'
+                  dayOfProcessing: 5
+                retryPolicy:
+                  maxRetry: 3
+                  retryEvery: 2
+                customerId: 'cust_abc123xyz'
+              properties:
+                amount:
+                  type: number
+                  description: Valor da assinatura em centavos.
+                  minimum: 1
+                  example: 10000
+                name:
+                  type: string
+                  description: Nome da assinatura.
+                  example: 'Plano Premium Mensal'
+                externalId:
+                  type: string
+                  description: Identificador único da assinatura em seu sistema.
+                  example: 'subs-123'
+                description:
+                  type: string
+                  description: Descrição opcional da assinatura.
+                  example: 'Assinatura mensal do plano premium'
+                  x-mint:
+                    hidden: true
+                method:
+                  type: string
+                  description: Método de pagamento da assinatura.
+                  enum: ['PIX', 'CARD']
+                  example: 'PIX'
+                frequency:
+                  type: object
+                  description: Configuração da frequência de cobrança.
+                  required: ['cycle', 'dayOfProcessing']
+                  additionalProperties: false
+                  properties:
+                    cycle:
+                      type: string
+                      description: Ciclo de cobrança da assinatura.
+                      enum: ['MONTHLY', 'YEARLY', 'WEEKLY', 'DAILY']
+                      example: 'MONTHLY'
+                    dayOfProcessing:
+                      type: integer
+                      description: Dia do mês em que a cobrança será processada (1-31).
+                      minimum: 1
+                      maximum: 31
+                      example: 5
+                retryPolicy:
+                  type: object
+                  description: Política de retentativa em caso de falha no pagamento.
+                  required: ['maxRetry', 'retryEvery']
+                  additionalProperties: false
+                  properties:
+                    maxRetry:
+                      type: integer
+                      description: Número máximo de tentativas de cobrança.
+                      minimum: 1
+                      maximum: 10
+                      example: 3
+                    retryEvery:
+                      type: integer
+                      description: Intervalo em dias entre tentativas de cobrança.
+                      minimum: 1
+                      maximum: 30
+                      example: 2
+                  x-mint:
+                    hidden: true
+                customerId:
+                  type: string
+                  description: Identificador do cliente que terá a assinatura.
+                  example: 'cust_abc123xyz'
+      responses:
+        '200':
+          description: Assinatura criada com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Subscription'
+                  error:
+                    type: string
+                    nullable: true
+                    example: null
+        '401':
+          description: Não autorizado. Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
+                    example: 'Token de autenticação inválido ou ausente.'
+  /subscriptions/list:
+    get:
+      summary: Listar assinaturas
+      description: |
+        Permite que você recupere uma lista de todas as assinaturas criadas com suporte a paginação baseada em cursor.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: limit
+          in: query
+          description: Quantidade de itens por página
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+            example: 20
+        - name: cursor
+          in: query
+          description: Cursor para paginação (obtido na resposta anterior)
+          required: false
+          schema:
+            type: string
+            example: '507f1f77bcf86cd799439011'
+      responses:
+        '200':
+          description: Lista de assinaturas retornada com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    description: Lista de assinaturas.
+                    items:
+                      $ref: '#/components/schemas/Subscription'
+                  pagination:
+                    type: object
+                    description: Informações de paginação baseada em cursor.
+                    required: ['limit', 'hasNext', 'hasPrevious']
+                    additionalProperties: false
+                    properties:
+                      limit:
+                        type: integer
+                        description: Limite de itens por página.
+                        example: 20
+                      nextCursor:
+                        type: string
+                        nullable: true
+                        description: Cursor para próxima página.
+                        example: '507f1f77bcf86cd799439011'
+                      hasNext:
+                        type: boolean
+                        description: Indica se existe próxima página.
+                        example: true
+                      hasPrevious:
+                        type: boolean
+                        description: Indica se existe página anterior.
+                        example: false
                   error:
                     type: string
                     nullable: true
@@ -1999,7 +2197,130 @@ components:
               type: number
               description: Saldo bloqueado em disputas em centavos.
               example: 0
-  securitySchemes: 
+    Frequency:
+      type: object
+      description: Configuração da frequência de cobrança da assinatura.
+      required: ['cycle', 'dayOfProcessing']
+      additionalProperties: false
+      properties:
+        cycle:
+          type: string
+          description: Ciclo de cobrança da assinatura.
+          enum: ['MONTHLY', 'YEARLY', 'WEEKLY', 'DAILY']
+          example: 'MONTHLY'
+        dayOfProcessing:
+          type: integer
+          description: Dia do mês em que a cobrança será processada (1-31).
+          minimum: 1
+          maximum: 31
+          example: 5
+    RetryPolicy:
+      type: object
+      description: Política de retentativa em caso de falha no pagamento.
+      required: ['maxRetry', 'retryEvery']
+      additionalProperties: false
+      properties:
+        maxRetry:
+          type: integer
+          description: Número máximo de tentativas de cobrança.
+          minimum: 1
+          maximum: 10
+          example: 3
+        retryEvery:
+          type: integer
+          description: Intervalo em dias entre tentativas de cobrança.
+          minimum: 1
+          maximum: 30
+          example: 2
+    SubscriptionEvent:
+      type: object
+      description: Evento relacionado à assinatura.
+      required: ['event', 'description', 'createdAt']
+      additionalProperties: false
+      properties:
+        event:
+          type: string
+          description: Tipo do evento.
+          example: 'CREATED'
+        description:
+          type: string
+          description: Descrição do evento.
+          example: 'Subscription was created.'
+        createdAt:
+          type: string
+          format: date-time
+          description: Data de criação do evento.
+          example: '2024-11-04T18:38:28.573Z'
+    Subscription:
+      type: object
+      description: Dados de uma assinatura (subscription).
+      required: ['id', 'externalId', 'name', 'description', 'amount', 'currency', 'method', 'status', 'frequency', 'customerId', 'devMode', 'events', 'createdAt', 'updatedAt']
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          description: Identificador único da assinatura.
+          example: 'subs_abc123xyz'
+        externalId:
+          type: string
+          description: Identificador externo da assinatura.
+          example: 'subs-123'
+        name:
+          type: string
+          description: Nome da assinatura.
+          example: 'Plano Premium Mensal'
+        description:
+          type: string
+          description: Descrição da assinatura.
+          example: 'Assinatura mensal do plano premium'
+        amount:
+          type: number
+          description: Valor da assinatura em centavos.
+          example: 10000
+        currency:
+          type: string
+          description: Moeda da assinatura.
+          example: 'BRL'
+        method:
+          type: string
+          description: Método de pagamento da assinatura.
+          enum: ['PIX', 'CARD']
+          example: 'PIX'
+        status:
+          type: string
+          description: Status atual da assinatura.
+          enum: ['PENDING', 'ACTIVE', 'CANCELLED', 'EXPIRED', 'FAILED']
+          example: 'PENDING'
+        frequency:
+          $ref: '#/components/schemas/Frequency'
+        retryPolicy:
+          oneOf:
+            - $ref: '#/components/schemas/RetryPolicy'
+            - type: 'null'
+        customerId:
+          type: string
+          description: Identificador do cliente que possui a assinatura.
+          example: 'cust_abc123xyz'
+        devMode:
+          type: boolean
+          description: Indica se a assinatura foi criada em ambiente de testes.
+          example: false
+        events:
+          type: array
+          description: Lista de eventos relacionados à assinatura.
+          items:
+            $ref: '#/components/schemas/SubscriptionEvent'
+        createdAt:
+          type: string
+          format: date-time
+          description: Data de criação da assinatura.
+          example: '2024-11-04T18:38:28.573Z'
+        updatedAt:
+          type: string
+          format: date-time
+          description: Data de atualização da assinatura.
+          example: '2024-11-04T18:38:28.573Z'
+  securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer

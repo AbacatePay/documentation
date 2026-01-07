@@ -70,6 +70,10 @@
             "pages": ["pages/coupon/reference", "pages/coupon/create", "pages/coupon/list", "pages/coupon/get", "pages/coupon/delete", "pages/coupon/toggle"]
           },
           {
+            "group": "Assinaturas",
+            "pages": ["pages/items/reference", "pages/items/create", "pages/items/list"]
+          },
+          {
             "group": "Saques / Transferências externas",
             "pages": ["pages/withdraw/reference", "pages/withdraw/create", "pages/withdraw/get", "pages/withdraw/list"]
           },
