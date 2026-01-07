@@ -885,7 +885,9 @@ paths:
                   data:
                     $ref: "#/components/schemas/Billing"
                   error:
-                    type: "null"
+                    type: "string"
+                    nullable: true
+                    example: null
         "401":
           description: Não autorizado. Falha na autenticação.
           content:

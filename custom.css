@@ -3,7 +3,7 @@ button[class*="try-it"],
 button[aria-label*="Try it"],
 button:has-text("Try it") {
   background-color: #9EEA6C !important;
-  color: #000 !important;
+  color: #0A1B39 !important;
 }
 
 /* Seletor mais específico para o botão Try it do Mintlify */
@@ -12,7 +12,7 @@ button[data-testid="try-it-button"],
 pre button[class*="try"],
 .mintlify-code button {
   background-color: #9EEA6C !important;
-  color: #000 !important;
+  color: #0A1B39 !important;
 }
 
 /* Estilo para hover */
@@ -26,6 +26,6 @@ button[aria-label*="Try it"]:hover {
 [class*="try-it"] button,
 button:contains("Try it") {
   background-color: #9EEA6C !important;
-  color: #000 !important;
+  color: #0A1B39 !important;
 }
 
