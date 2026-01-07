@@ -57,7 +57,7 @@
             "pages": ["pages/client/reference", "pages/client/create", "pages/client/list", "pages/client/get", "pages/client/delete"]
           },
           {
-            "group": "Pix QRCode",
+            "group": "Transparente",
             "pages": [
               "pages/pix-qrcode/reference",
               "pages/pix-qrcode/create",

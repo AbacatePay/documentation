@@ -1,6 +1,6 @@
 ---
 title: 'Referência'
-description: 'Gere um QRCode Pix e um código copia-e-cola para o seu cliente'
+description: 'Crie um checkout transparente e receba um QRCode em Base64 e código copia-e-cola PIX'
 icon: 'book-open-cover'
 ---
 
@@ -8,27 +8,35 @@ icon: 'book-open-cover'
 
 ## <Icon icon="folder-tree" type="solid"/> Estrutura
 
+Esta rota permite criar um **checkout transparente** via PIX. Ao criar uma cobrança, a API retorna um código **Base64** para você gerar o QRCode e um código **copia-e-cola PIX** que pode ser enviado ao seu cliente.
+
 Uma cobrança via QRCode Pix é representada em nossa API pela seguinte estrutura:
 
 ```json json
 {
-  "id": "pix_charabc123456789",
-  "amount": 4000,
-  "status": "PAID",
-  "devMode": true,
-  "method": "PIX",
-  "brCode": "...",
-  "brCodeBase64": "...",
-  "platformFee": 80,
-  "description": "Pagamento PIX com AbacatePay",
-  "metadata": {
-    "pedidoId": "123"
-  },
-  "createdAt": "2024-12-06T18:56:15.538Z",
-  "updatedAt": "2024-12-06T18:56:15.538Z",
-  "expiresAt": "2024-12-06T18:56:15.538Z"
+    "data": {
+        "id": "pix_abc123xyz",
+        "amount": 10000,
+        "status": "PENDING",
+        "devMode": false,
+        "brCode": "00020160014BR.GOV.BCB.PIX070503***6304ABCD",
+        "brCodeBase64": "data:image/png;base64,iVBORw0KG...",
+        "platformFee": 100,
+        "createdAt": "2024-11-04T18:38:28.573Z",
+        "updatedAt": "2024-11-04T18:38:28.573Z",
+        "expiresAt": "2024-11-04T19:38:28.573Z"
+    },
+    "error": null
 }
 ```
+
+## 💡 Dicas e Ideias de Uso
+
+Esta rota de checkout transparente oferece diversas possibilidades de integração:
+
+- **Venda via WhatsApp e Telegram**: Você pode gerar o QRCode e o código copia-e-cola e enviar diretamente ao seu cliente através de mensagens no WhatsApp ou Telegram, facilitando o processo de pagamento.
+
+- **Checkout próprio na sua aplicação**: Crie uma experiência de checkout totalmente personalizada e integrada ao design da sua aplicação. Isso permite maior controle sobre a interface, melhor experiência do usuário e a possibilidade de manter seu cliente dentro do seu ambiente, aumentando a conversão e fortalecendo sua marca.
 
 ## Atributos:
 
@@ -99,7 +107,7 @@ Uma cobrança via QRCode Pix é representada em nossa API pela seguinte estrutur
         }
         ```
         `brCode` : <u> string. </u> <br />
-        Código PIX (copia-e-cola) para pagamento.
+        Código PIX (copia-e-cola) que pode ser enviado ao seu cliente para realizar o pagamento.
     </Accordion>
 
     <Accordion title="brCodeBase64:">
@@ -109,7 +117,7 @@ Uma cobrança via QRCode Pix é representada em nossa API pela seguinte estrutur
         }
         ```
         `brCodeBase64` : <u> string. </u> <br />
-        Código PIX no formato Base64 (útil para exibição em imagens).
+        Código PIX no formato Base64 que você pode usar para gerar e exibir o QRCode visual para o seu cliente.
     </Accordion>
 
     <Accordion title="platformFee:">
@@ -163,3 +171,7 @@ Uma cobrança via QRCode Pix é representada em nossa API pela seguinte estrutur
     </Accordion>
 
 </AccordionGroup>
+
+<Info>
+Por enquanto, esta rota aceita apenas o método de pagamento **PIX**.
+</Info>

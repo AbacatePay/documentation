@@ -984,7 +984,7 @@ paths:
                   error:
                     type: string
                     example: 'Token de autenticação inválido ou ausente.'
-  /pixQrCode/create:
+  /transparents/create:
     post:
       summary: 'Criar QRCode PIX'
       description: Permite que você crie um código copia-e-cola e um QRCode Pix para seu cliente fazer o pagamento.
@@ -1062,7 +1062,7 @@ paths:
                     type: string
                     description: Mensagem de erro descrevendo o motivo da falha na autenticação.
                     example: 'Token de autenticação inválido ou ausente.'
-  /pixQrCode/check:
+  /transparents/check:
     get:
       summary: 'Checar Status'
       description: Checar status do pagamento do QRCode Pix.
@@ -1108,7 +1108,7 @@ paths:
           required: true
           schema:
             type: string
-  /pixQrCode/simulate-payment:
+  /transparents/simulate-payment:
     post:
       summary: 'Simular Pagamento'
       description: Simula o pagamento de um QRCode Pix criado no modo de desenvolvimento.
