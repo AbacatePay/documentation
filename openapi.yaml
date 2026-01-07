@@ -1036,7 +1036,7 @@ paths:
                       description: Metadados opcionais para a cobrança
                       additionalProperties: true
                       default:
-                       externalId: '123'
+                      externalId: '123'
               required: ['amount']
               additionalProperties: false
       responses:
@@ -1504,7 +1504,9 @@ paths:
                     required: ['name', 'website', 'createdAt']
                     additionalProperties: false
                   error:
-                    type: 'null'
+                    type: string
+                    nullable: true
+                    example: null
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -1544,7 +1546,9 @@ paths:
                     required: ['mrr', 'totalActiveSubscriptions']
                     additionalProperties: false
                   error:
-                    type: 'null'
+                    type: string
+                    nullable: true
+                    example: null
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -1624,7 +1628,9 @@ paths:
                     required: ['totalRevenue', 'totalTransactions', 'transactionsPerDay']
                     additionalProperties: false
                   error:
-                    type: 'null'
+                    type: string
+                    nullable: true
+                    example: null
         '400':
           description: Erro de validação. Parâmetros inválidos ou ausentes.
           content:
