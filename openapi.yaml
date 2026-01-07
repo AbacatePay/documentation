@@ -216,7 +216,13 @@ paths:
                           example:
                             source: 'landing-page'
                             campaign: 'black-friday-2025'
-                      required: ['id', 'devMode', 'name', 'cellphone', 'email', 'taxId']
+                      required:
+                        - id
+                        - devMode
+                        - name
+                        - cellphone
+                        - email
+                        - taxId
                       additionalProperties: false
                   pagination:
                     type: object
@@ -281,42 +287,42 @@ paths:
                 type: object
                 properties:
                   data:
-                    type: object
-                    description: Dados do cliente.
-                    properties:
-                      id:
-                        type: string
-                        description: Identificador único público do cliente
-                        example: 'cust_aebxkhDZNaMmJeKsy0AHS0FQ'
-                      devMode:
-                        type: boolean
-                        description: Indica se o cliente foi criado em ambiente de testes.
-                        example: true
-                      name:
-                        type: string
-                        description: Nome completo do cliente
-                        example: Daniel Lima
-                      cellphone:
-                        type: string
-                        description: Celular do cliente
-                        example: '(11) 4002-8922'
-                      email:
-                        type: string
-                        description: E-mail do cliente
-                        example: daniel_lima@abacatepay.com
-                      taxId:
-                        type: string
-                        description: CPF ou CNPJ do cliente
-                        example: '123.456.789-01'
-                      metadata:
-                        type: object
-                        description: Metadados adicionais do cliente
-                        additionalProperties: true
-                        example:
-                          source: 'landing-page'
-                          campaign: 'black-friday-2025'
-                    required: ['id', 'devMode', 'name', 'cellphone', 'email', 'taxId']
-                    additionalProperties: false
+                      type: object
+                      description: Dados do cliente.
+                      properties:
+                        id:
+                          type: string
+                          description: Identificador único público do cliente
+                          example: 'cust_aebxkhDZNaMmJeKsy0AHS0FQ'
+                        devMode:
+                          type: boolean
+                          description: Indica se o cliente foi criado em ambiente de testes.
+                          example: true
+                        name:
+                          type: string
+                          description: Nome completo do cliente
+                          example: Daniel Lima
+                        cellphone:
+                          type: string
+                          description: Celular do cliente
+                          example: '(11) 4002-8922'
+                        email:
+                          type: string
+                          description: E-mail do cliente
+                          example: daniel_lima@abacatepay.com
+                        taxId:
+                          type: string
+                          description: CPF ou CNPJ do cliente
+                          example: '123.456.789-01'
+                        metadata:
+                          type: object
+                          description: Metadados adicionais do cliente
+                          additionalProperties: true
+                          example:
+                            source: 'landing-page'
+                            campaign: 'black-friday-2025'
+                      required: ['id', 'devMode', 'name', 'cellphone', 'email', 'taxId']
+                      additionalProperties: false
                   error:
                     type: 'string'
                     example: null
@@ -1151,15 +1157,17 @@ paths:
             type: string
   /payouts/create:
     post:
-      summary: Criar um novo saque
+      summary: Criar um novo payout
       description: |
-        Permite que você crie um novo saque para transferir valores da sua conta.
+        Permite que você crie um novo payout para transferir valores da sua conta AbacatePay.
         
-        Esta rota pode ser usada para:
-        - Realizar saques da sua conta
-        - Enviar dinheiro para outras contas
-        - Realizar pagamentos diretamente pela API
-        - Efetuar transferências para fornecedores, parceiros ou terceiros
+        Você pode usar esta rota para:
+        - **Realizar saques** da sua conta para sua própria chave PIX
+        - **Enviar dinheiro** para outras contas
+        - **Realizar pagamentos** diretamente pela API
+        - **Efetuar transferências** para fornecedores, parceiros ou terceiros
+        
+        **Importante**: A chave PIX de destino não precisa ter a mesma titularidade do CNPJ da sua conta. Você pode realizar payouts para qualquer chave PIX válida.
       security:
         - bearerAuth: []
       requestBody:
@@ -1168,7 +1176,7 @@ paths:
           application/json:
             schema:
               type: object
-              description: Dados necessários para criar um saque.
+              description: Dados necessários para criar um payout.
               required: ['amount', 'externalId']
               additionalProperties: false
               example:
@@ -1177,22 +1185,22 @@ paths:
               properties:
                 amount:
                   type: number
-                  description: Valor do saque em centavos.
+                  description: Valor do payout em centavos.
                   minimum: 350
                   example: 10000
                 description:
                   type: string
-                  description: Descrição opcional do saque.
+                  description: Descrição opcional do payout.
                   example: 'Saque para conta bancária'
                   x-mint:
                     hidden: true
                 externalId:
                   type: string
-                  description: Identificador único do saque em seu sistema.
+                  description: Identificador único do payout em seu sistema.
                   example: 'saque-123'
       responses:
         '200':
-          description: Saque criado com sucesso.
+          description: Payout criado com sucesso.
           content:
             application/json:
               schema:
@@ -1200,7 +1208,7 @@ paths:
                 properties:
                   data:
                     type: object
-                    description: Dados da transação de saque criada.
+                    description: Dados da transação de payout criada.
                     properties:
                       id:
                         type: string
@@ -1260,21 +1268,21 @@ paths:
                     example: 'Token de autenticação inválido ou ausente.'
   /payouts/get:
     get:
-      summary: Buscar saque
-      description: Permite que você recupere os detalhes de um saque específico usando o externalId.
+      summary: Buscar payout
+      description: Permite que você recupere os detalhes de um payout específico usando o externalId.
       security:
         - bearerAuth: []
       parameters:
         - name: externalId
           in: query
-          description: Identificador único do saque em seu sistema.
+          description: Identificador único do payout em seu sistema.
           required: true
           schema:
             type: string
-            example: 'withdraw-1234'
+            example: 'saque-123'
       responses:
         '200':
-          description: Detalhes do saque retornados com sucesso.
+          description: Detalhes do payout retornados com sucesso.
           content:
             application/json:
               schema:
@@ -1282,7 +1290,7 @@ paths:
                 properties:
                   data:
                     type: object
-                    description: Dados da transação de saque.
+                    description: Dados da transação de payout.
                     properties:
                       id:
                         type: string
@@ -1357,9 +1365,9 @@ paths:
                     example: 'Saque não encontrado com o externalId fornecido.'
   /payouts/list:
     get:
-      summary: Listar saques
+      summary: Listar payouts
       description: |
-        Permite que você recupere uma lista de todos os saques criados com suporte a paginação.
+        Permite que você recupere uma lista de todos os payouts criados com suporte a paginação.
       security:
         - bearerAuth: []
       parameters:
@@ -1384,7 +1392,7 @@ paths:
             example: 20
       responses:
         '200':
-          description: Lista de saques retornada com sucesso.
+          description: Lista de payouts retornada com sucesso.
           content:
             application/json:
               schema:
@@ -1444,23 +1452,14 @@ paths:
           content:
             application/json:
               schema:
-                oneOf:
-                  - type: object
-                    properties:
-                      error:
-                        type: string
-                        description: Mensagem de erro caso ocorra algum problema.
-                        example: 'Erro ao recuperar dados da loja.'
-                      data:
-                        type: 'null'
-                    required: ['error']
-                  - type: object
-                    properties:
-                      error:
-                        type: 'null'
-                      data:
-                        $ref: '#/components/schemas/Store'
-                    required: ['error', 'data']
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Store'
+                  error:
+                    type: string
+                    nullable: true
+                    example: null
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -1818,7 +1817,7 @@ components:
           description: Status atual da cobrança.
           enum: ['PENDING', 'EXPIRED', 'CANCELLED', 'PAID', 'REFUNDED']
           example: 'PENDING'
-        coupons:
+        coupons: 
           type: array
           description: Lista de cupons aplicados na cobrança.
           items:
@@ -1971,11 +1970,11 @@ components:
         id:
           type: string
           description: Identificador único da loja.
-          example: 'store_123456'
+          example: 'store_abc123xyz'
         name:
           type: string
           description: Nome da loja.
-          example: 'Minha Loja Online'
+          example: 'Minha Loja'
         balance:
           type: object
           description: Informações de saldo da loja.
@@ -1985,16 +1984,16 @@ components:
             available:
               type: number
               description: Saldo disponível para saque em centavos.
-              example: 15000
+              example: 50000
             pending:
               type: number
               description: Saldo pendente de confirmação em centavos.
-              example: 5000
+              example: 10000
             blocked:
               type: number
               description: Saldo bloqueado em disputas em centavos.
-              example: 2000
-  securitySchemes:
+              example: 0
+  securitySchemes: 
     bearerAuth:
       type: http
       scheme: bearer
