@@ -6,6 +6,31 @@ icon: "book-open-cover"
 
 O **Checkout da AbacatePay** é uma página segura onde seus clientes finalizam o pagamento. Você cria a cobrança com os itens que deseja vender, e nós geramos automaticamente uma URL onde o cliente:
 
+<div style={{ 
+    position: "relative", 
+    paddingBottom: "56.25%", 
+    height: 0, 
+    overflow: "hidden",
+    maxWidth: "800px",
+    margin: "32px auto",
+    borderRadius: "8px"
+}}>
+<iframe
+    src="https://www.youtube.com/embed/SEU_VIDEO_ID"
+    title="Criar Cobrança com Checkout - AbacatePay"
+    frameBorder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    allowFullScreen
+    style={{ 
+        position: "absolute", 
+        top: 0, 
+        left: 0, 
+        width: "100%", 
+        height: "100%" 
+    }}
+/>
+</div>
+
 - insere seus dados (se você não os fornecer)
 - escolhe a forma de pagamento (`PIX`, `CARD`)
 - conclui o pagamento
@@ -26,34 +51,69 @@ O **Checkout da AbacatePay** é uma página segura onde seus clientes finalizam 
 />
 
 
+## Criar cobrança
 
-## <Icon icon="folder-tree" type="solid"/> Estrutura de resposta da cobrança
+Use `/checkouts/create` para criar uma cobrança com checkout integrado. Você fornece os itens que deseja vender, e nós geramos automaticamente uma URL onde o cliente concluirá o pagamento.
 
+<Card title="Campos obrigatórios" icon="info" horizontal>
+  Apenas `items` é obrigatório. O valor total é calculado automaticamente a partir dos itens fornecidos.
+</Card>
+
+**Exemplo:**
 ```json
+POST /checkouts/create
 {
-    "data": {
-      "id": "bill_abc123xyz",
-      "externalId": "pedido-123",
-      "url": "https://app.abacatepay.com/pay/bill_abc123xyz",
-      "amount": 10000,
-      "paidAmount": null,
-      "items": [
-        {
-          "id": "prod_456",
-          "quantity": 2
-        }
-      ],
-      "status": "PENDING",
-      "coupons": [],
-      "devMode": false,
-      "customerId": null,
-      "returnUrl": null,
-      "completionUrl": null,
-      "receiptUrl": null,
-      "metadata": {},
-      "createdAt": "2024-11-04T18:38:28.573Z",
-      "updatedAt": "2024-11-04T18:38:28.573Z"
-    },
-    "error": null
+  "items": [                                    // obrigatório
+    {
+      "id": "prod_456",                         // ID do produto na sua loja
+      "quantity": 2                             // quantidade
+    }
+  ],
+  "customerId": "cust_abc123xyz",              // opcional - ID do cliente já cadastrado
+  "customer": {                                 // opcional - dados do cliente (todos obrigatórios se usar)
+    "name": "João Silva",
+    "email": "customer@example.com",
+    "cellphone": "+5511999999999",
+    "taxId": "12345678900"
+  },
+  "externalId": "pedido-123",                  // opcional - ID no seu sistema
+  "returnUrl": "https://seusite.com/voltar",   // opcional - URL de retorno
+  "completionUrl": "https://seusite.com/sucesso", // opcional - URL após pagamento
+  "metadata": {                                 // opcional - dados adicionais
+    "customField": "value"
+  }
 }
 ```
+
+**Resposta:**
+```json
+{
+  "data": {
+    "id": "bill_abc123xyz",
+    "externalId": "pedido-123",
+    "url": "https://app.abacatepay.com/pay/bill_abc123xyz",
+    "amount": 10000,
+    "paidAmount": null,
+    "items": [
+      {
+        "id": "prod_456",
+        "quantity": 2
+      }
+    ],
+    "status": "PENDING",
+    "coupons": [],
+    "devMode": false,
+    "customerId": null,
+    "returnUrl": null,
+    "completionUrl": null,
+    "receiptUrl": null,
+    "metadata": {},
+    "createdAt": "2024-11-04T18:38:28.573Z",
+    "updatedAt": "2024-11-04T18:38:28.573Z"
+  },
+  "error": null
+}
+```
+<Tip title="Use a `url` retornada para redirecionar o cliente ao checkout e finalizar o pagamento." icon="book" horizontal>
+Use a `url` retornada para redirecionar o cliente ao checkout e finalizar o pagamento.
+</Tip>

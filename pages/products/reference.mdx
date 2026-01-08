@@ -1,0 +1,71 @@
+---
+title: "Referência"
+description: "Gerencie produtos para suas cobranças"
+icon: "book-open-cover"
+---
+<div style={{ 
+    position: "relative", 
+    paddingBottom: "56.25%", 
+    height: 0, 
+    overflow: "hidden",
+    maxWidth: "800px",
+    margin: "32px auto",
+    borderRadius: "8px"
+}}>
+<iframe
+    src="https://www.youtube.com/embed/SEU_VIDEO_ID"
+    title="Criar Cobrança com Checkout - AbacatePay"
+    frameBorder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    allowFullScreen
+    style={{ 
+        position: "absolute", 
+        top: 0, 
+        left: 0, 
+        width: "100%", 
+        height: "100%" 
+    }}
+/>  
+</div>
+
+Os produtos permitem que você crie e gerencie itens que podem ser utilizados nas suas cobranças. Com os produtos, você pode definir preços, descrições e organizar seu catálogo de forma centralizada.
+
+## Criar produto
+
+Use `/products/create` para criar um novo produto. Você pode definir nome, preço, moeda e descrição opcional do produto.
+
+<Card title="Campos obrigatórios" icon="info" horizontal>
+  Os campos `externalId`, `name`, `price` e `currency` são obrigatórios. O `externalId` deve ser único no seu sistema.
+</Card>
+
+**Exemplo:**
+```json
+POST /products/create
+{
+  "externalId": "prod-123",              // obrigatório - identificador único do produto no seu sistema
+  "name": "Produto Exemplo",             // obrigatório - nome do produto
+  "price": 10000,                        // obrigatório - preço em centavos
+  "currency": "BRL",                     // obrigatório - moeda do produto
+  "description": "Descrição do produto"  // opcional - descrição do produto
+}
+```
+
+**Resposta:**
+```json
+{
+  "data": {
+    "id": "prod_abc123xyz",
+    "externalId": "prod-123",
+    "name": "Produto Exemplo",
+    "description": "Descrição do produto",
+    "price": 10000,
+    "devMode": false,
+    "currency": "BRL",
+    "createdAt": "2024-11-04T18:38:28.573Z",
+    "updatedAt": "2024-11-04T18:38:28.573Z",
+    "status": "ACTIVE"
+  },
+  "error": null
+}
+```
+

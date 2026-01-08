@@ -1,0 +1,119 @@
+---
+title: "Referência"
+description: "Gerencie assinaturas recorrentes para seus clientes"
+icon: "book-open-cover"
+---
+
+<div style={{ 
+    position: "relative", 
+    paddingBottom: "56.25%", 
+    height: 0, 
+    overflow: "hidden",
+    maxWidth: "800px",
+    margin: "32px auto",
+    borderRadius: "8px"
+}}>
+<iframe
+    src="https://www.youtube.com/embed/SEU_VIDEO_ID"
+    title="Criar Cobrança com Checkout - AbacatePay"
+    frameBorder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    allowFullScreen
+    style={{ 
+        position: "absolute", 
+        top: 0, 
+        left: 0, 
+        width: "100%", 
+        height: "100%" 
+    }}
+/>  
+</div>
+
+```json
+{
+  "externalId": "prod-123",
+  "name": "Produto Exemplo",
+  "price": 10000,
+  "frequency": {
+    "cycle": "MONTHLY",
+  },
+  "currency": "BRL",
+  "description": "Descrição do produto",
+  "image": "https://example.com/image.jpg"
+}
+```
+
+As assinaturas permitem que você crie planos de cobrança recorrente automática para seus clientes. Com as assinaturas, você pode configurar cobranças periódicas (mensais, anuais, etc.) que são processadas automaticamente de acordo com a frequência definida.
+
+## <Icon icon="folder-tree" type="solid"/> Estrutura
+
+Uma assinatura é representada em nossa API pela seguinte estrutura:
+
+```json
+{
+  "data": {
+    "id": "subs_abc123xyz",
+    "externalId": "subs-123",
+    "name": "Plano Premium Mensal",
+    "description": "Assinatura mensal do plano premium",
+    "amount": 10000,
+    "currency": "BRL",
+    "method": "PIX",
+    "status": "PENDING",
+    "frequency": {
+      "cycle": "MONTHLY",
+    },
+    "retryPolicy": {
+      "maxRetry": 3,
+      "retryEvery": 2
+    },
+    "customerId": "cust_abc123xyz",
+    "devMode": false,
+    "events": [
+      {
+        "event": "CREATED",
+        "description": "Subscription was created.",
+        "createdAt": "2024-11-04T18:38:28.573Z"
+      }
+    ],
+    "createdAt": "2024-11-04T18:38:28.573Z",
+    "updatedAt": "2024-11-04T18:38:28.573Z"
+  },
+  "error": null
+}
+```
+
+## Status da Assinatura
+
+As assinaturas podem ter os seguintes status:
+
+- **PENDING**: Assinatura criada e aguardando ativação
+- **ACTIVE**: Assinatura ativa e processando cobranças recorrentes
+- **CANCELLED**: Assinatura cancelada pelo cliente ou pela loja
+- **EXPIRED**: Assinatura expirada
+- **FAILED**: Assinatura falhou após todas as tentativas de cobrança configuradas
+
+## Frequência de Cobrança
+
+Você pode configurar diferentes ciclos de cobrança:
+
+- **MONTHLY**: Cobrança mensal
+- **YEARLY**: Cobrança anual
+- **WEEKLY**: Cobrança semanal
+- **DAILY**: Cobrança diária
+
+O campo `dayOfProcessing` define em qual dia do mês a cobrança será processada (1-31).
+
+## Política de Retentativa
+
+A política de retentativa permite configurar quantas vezes o sistema deve tentar cobrar a assinatura em caso de falha no pagamento:
+
+- **maxRetry**: Número máximo de tentativas (1-10)
+- **retryEvery**: Intervalo em dias entre tentativas (1-30)
+
+## Segurança
+
+- Todas as assinaturas são autenticadas via Bearer Token
+- Logs detalhados de todas as transações
+- Possibilidade de cancelamento a qualquer momento
+- Abusos desta API podem resultar em suspensão da conta conforme descrito em nossos [termos de uso](https://abacatepay.com/termos)

@@ -57,7 +57,7 @@
             "pages": ["pages/client/reference", "pages/client/create", "pages/client/list", "pages/client/get", "pages/client/delete"]
           },
           {
-            "group": "Pix QRCode",
+            "group": "Transparente",
             "pages": [
               "pages/pix-qrcode/reference",
               "pages/pix-qrcode/create",
@@ -68,6 +68,14 @@
           {
             "group": "Crie seus cupons",
             "pages": ["pages/coupon/reference", "pages/coupon/create", "pages/coupon/list", "pages/coupon/get", "pages/coupon/delete", "pages/coupon/toggle"]
+          },
+          {
+            "group": "Produtos",
+            "pages": ["pages/products/reference", "pages/products/create", "pages/products/list", "pages/products/get", "pages/products/delete"]
+          },
+          {
+            "group": "Assinaturas",
+            "pages": ["pages/items/reference", "pages/items/create", "pages/items/list"]
           },
           {
             "group": "Saques / Transferências externas",
