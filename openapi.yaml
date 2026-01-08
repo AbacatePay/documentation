@@ -2216,7 +2216,7 @@ components:
     Frequency:
       type: object
       description: Configuração da frequência de cobrança da assinatura.
-      required: ['cycle', 'dayOfProcessing']
+      required: ['cycle']
       additionalProperties: false
       properties:
         cycle:

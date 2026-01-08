@@ -4,6 +4,20 @@ description: "Gerencie assinaturas recorrentes para seus clientes"
 icon: "book-open-cover"
 ---
 
+```json
+{
+  "externalId": "prod-123",
+  "name": "Produto Exemplo",
+  "price": 10000,
+  "frequency": {
+    "cycle": "MONTHLY",
+  },
+  "currency": "BRL",
+  "description": "Descrição do produto",
+  "image": "https://example.com/image.jpg"
+}
+```
+
 As assinaturas permitem que você crie planos de cobrança recorrente automática para seus clientes. Com as assinaturas, você pode configurar cobranças periódicas (mensais, anuais, etc.) que são processadas automaticamente de acordo com a frequência definida.
 
 ## <Icon icon="folder-tree" type="solid"/> Estrutura
@@ -23,7 +37,6 @@ Uma assinatura é representada em nossa API pela seguinte estrutura:
     "status": "PENDING",
     "frequency": {
       "cycle": "MONTHLY",
-      "dayOfProcessing": 5
     },
     "retryPolicy": {
       "maxRetry": 3,
@@ -79,174 +92,3 @@ A política de retentativa permite configurar quantas vezes o sistema deve tenta
 - Logs detalhados de todas as transações
 - Possibilidade de cancelamento a qualquer momento
 - Abusos desta API podem resultar em suspensão da conta conforme descrito em nossos [termos de uso](https://abacatepay.com/termos)
-
-## Atributos:
-
-<AccordionGroup>
-    <Accordion title="id:">
-        ```json json {2}
-        {
-        "id": "subs_abc123xyz",
-        } 
-        ```
-
-        `id` : <u> string. </u> <br />
-        Identificador único da assinatura na AbacatePay
-    </Accordion>
-    <Accordion title="externalId:">
-        ```json json {2}
-        {
-        "externalId": "subs-123",
-        }
-        ```
-        `externalId` : <u> string. </u> <br />
-        Identificador único da assinatura em seu sistema.
-    </Accordion>
-    <Accordion title="name:">
-        ```json json {2}
-        {
-        "name": "Plano Premium Mensal",
-        }
-        ```
-        `name` : <u> string. </u> <br />
-        Nome da assinatura.
-    </Accordion>
-    <Accordion title="description:">
-        ```json json {2}
-        {
-        "description": "Assinatura mensal do plano premium",
-        }
-        ```
-        `description` : <u> string. </u> <br />
-        Descrição da assinatura.
-    </Accordion>
-    <Accordion title="amount:">
-        ```json json {2}
-        {
-        "amount": 10000,
-        }
-        ```
-        `amount` : <u> number. </u> <br />
-        Valor da assinatura em centavos. No exemplo, R$ 100,00.
-    </Accordion>
-    <Accordion title="currency:">
-        ```json json {2}
-        {
-        "currency": "BRL",
-        }
-        ```
-        `currency` : <u> string. </u> <br />
-        Moeda da assinatura. Atualmente suportamos apenas BRL (Real Brasileiro).
-    </Accordion>
-    <Accordion title="method:">
-        ```json json {2}
-        {
-        "method": "PIX",
-        }
-        ```
-        `method` : <u> string. </u> <br />
-        Método de pagamento da assinatura. Atualmente suportamos apenas PIX.
-    </Accordion>
-    <Accordion title="status:">
-        ```json json {2}
-        {
-        "status": "PENDING",
-        }
-        ```
-        `status` : <u> string. </u> <br />
-        Status atual da assinatura.
-
-        <Info >
-            |                      |                                                                                                      |
-            | ---------------------| ---------------------------------------------------------------------------------------------------- |
-            | `PENDING`            | **Assinatura criada e aguardando ativação**                                                          |
-            | `ACTIVE`             | **Assinatura ativa e processando cobranças**                                                    |
-            | `CANCELLED`          | **Assinatura cancelada**                                                                                 |
-            | `EXPIRED`            | **Assinatura expirada**                                                        |
-            | `FAILED`             | **Assinatura falhou após todas as tentativas**                                                                               |
-        </Info>
-    </Accordion>
-    <Accordion title="frequency:">
-        ```json json {2}
-        {
-        "frequency": {
-          "cycle": "MONTHLY",
-          "dayOfProcessing": 5
-        },
-        }
-        ```
-        `frequency` : <u> object. </u> <br />
-        Configuração da frequência de cobrança da assinatura.
-
-        **Propriedades:**
-        - `cycle` (string): Ciclo de cobrança. Valores possíveis: `MONTHLY`, `YEARLY`, `WEEKLY`, `DAILY`
-        - `dayOfProcessing` (number): Dia do mês em que a cobrança será processada (1-31)
-    </Accordion>
-    <Accordion title="retryPolicy:">
-        ```json json {2}
-        {
-        "retryPolicy": {
-          "maxRetry": 3,
-          "retryEvery": 2
-        },
-        }
-        ```
-        `retryPolicy` : <u> object. </u> <br />
-        Política de retentativa em caso de falha no pagamento.
-
-        **Propriedades:**
-        - `maxRetry` (number): Número máximo de tentativas de cobrança (1-10)
-        - `retryEvery` (number): Intervalo em dias entre tentativas de cobrança (1-30)
-    </Accordion>
-    <Accordion title="customerId:">
-        ```json json {2}
-        {
-        "customerId": "cust_abc123xyz",
-        }
-        ```
-        `customerId` : <u> string. </u> <br />
-        Identificador do cliente que possui a assinatura.
-    </Accordion>
-    <Accordion title="devMode:">
-        ```json json {2}
-        {
-        "devMode": false,
-        }
-        ```
-        `devMode` : <u> boolean. </u> <br />
-        Indica se a assinatura foi criada em ambiente de desenvolvimento (sandbox) ou produção.
-    </Accordion>
-    <Accordion title="events:">
-        ```json json {2}
-        {
-        "events": [
-          {
-            "event": "CREATED",
-            "description": "Subscription was created.",
-            "createdAt": "2024-11-04T18:38:28.573Z"
-          }
-        ],
-        }
-        ```
-        `events` : <u> array. </u> <br />
-        Lista de eventos relacionados à assinatura, como criação, ativação, cancelamento, etc.
-    </Accordion>
-    <Accordion title="createdAt:">
-        ```json json {2}
-        {
-        "createdAt": "2024-11-04T18:38:28.573Z",
-        }
-        ```
-        `createdAt` : <u> string. </u> <br />
-        Data e hora de criação da assinatura.
-    </Accordion>
-    <Accordion title="updatedAt:">
-        ```json json {2}
-        {
-        "updatedAt": "2024-11-04T18:38:28.573Z",
-        }
-        ```
-        `updatedAt` : <u> string. </u> <br />
-        Data e hora da última atualização da assinatura.
-    </Accordion>
-</AccordionGroup>
