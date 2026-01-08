@@ -735,6 +735,279 @@ paths:
                     type: string
                     description: Mensagem de erro indicando que o cupom não foi encontrado.
                     example: 'Cupom não encontrado.'
+  /products/create:
+    post:
+      summary: Criar um novo produto
+      description: |
+        Permite que você crie um novo produto que pode ser usado em cobranças.
+        
+        **Alternativa**: Você também pode criar e gerenciar seus produtos pelo [Dashboard da AbacatePay](https://www.abacatepay.com/app/produtos).
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Dados necessários para criar um produto.
+              required: ['externalId', 'name', 'price', 'currency']
+              additionalProperties: false
+              example:
+                externalId: 'prod-123'
+                name: 'Produto Exemplo'
+                price: 10000
+                currency: 'BRL'
+              properties:
+                externalId:
+                  type: string
+                  description: Identificador único do produto no seu sistema.
+                  example: 'prod-123'
+                name:
+                  type: string
+                  description: Nome do produto.
+                  example: 'Produto Exemplo'
+                price:
+                  type: number
+                  description: Preço do produto em centavos.
+                  minimum: 1
+                  example: 10000
+                currency:
+                  type: string
+                  description: Moeda do produto.
+                  default: 'BRL'
+                  example: 'BRL'
+                description:
+                  type: string
+                  description: Descrição opcional do produto.
+                  example: 'Descrição do produto'
+                  x-mint:
+                    hidden: true
+      responses:
+        '200':
+          description: Produto criado com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Product'
+                  error:
+                    type: 'string'
+                    nullable: true
+                    example: null
+        '401':
+          description: Não autorizado. Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
+                    example: 'Token de autenticação inválido ou ausente.'
+  /products/list:
+    get:
+      summary: Listar produtos
+      description: |
+        Retorna todos os produtos que você criou com suporte a paginação.
+        
+        Você pode usar essa rota para visualizar todos os seus produtos, incluindo seus status, preços e informações relacionadas.
+        
+        **Alternativa**: Você também pode visualizar e gerenciar seus produtos pelo [Dashboard da AbacatePay](https://www.abacatepay.com/app/produtos).
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          description: Número da página (começa em 1)
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+            example: 1
+        - name: limit
+          in: query
+          description: Quantidade de itens por página
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+            example: 20
+      responses:
+        '200':
+          description: Lista de produtos retornada com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    description: Lista de produtos.
+                    items:
+                      $ref: '#/components/schemas/Product'
+                  pagination:
+                    type: object
+                    description: Informações de paginação
+                    properties:
+                      page:
+                        type: integer
+                        description: Página atual
+                        example: 1
+                      limit:
+                        type: integer
+                        description: Quantidade de itens por página
+                        example: 20
+                      total:
+                        type: integer
+                        description: Total de itens
+                        example: 150
+                      totalPages:
+                        type: integer
+                        description: Total de páginas
+                        example: 8
+                    required: ['page', 'limit', 'total', 'totalPages']
+                    additionalProperties: false
+                  error:
+                    type: 'string'
+                    nullable: true
+                    example: null
+        '401':
+          description: Não autorizado. Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
+                    example: 'Token de autenticação inválido ou ausente.'
+  /products/get:
+    get:
+      summary: Buscar um produto
+      description: |
+        Retorna os dados de um produto específico baseado em filtros.
+        
+        Você pode usar essa rota para buscar um produto por ID ou externalId.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: query
+          description: Identificador único público do produto
+          required: false
+          schema:
+            type: string
+            example: 'prod_abc123xyz'
+        - name: externalId
+          in: query
+          description: Identificador único do produto no seu sistema
+          required: false
+          schema:
+            type: string
+            example: 'prod-123'
+      responses:
+        '200':
+          description: Produto encontrado com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Product'
+                  error:
+                    type: 'string'
+                    nullable: true
+                    example: null
+        '401':
+          description: Não autorizado. Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
+                    example: 'Token de autenticação inválido ou ausente.'
+        '404':
+          description: Produto não encontrado.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Mensagem de erro indicando que o produto não foi encontrado.
+                    example: 'Produto não encontrado.'
+  /products/delete:
+    delete:
+      summary: Deletar um produto
+      description: |
+        Remove um produto da sua loja.
+        
+        Esta operação é irreversível. Use com cuidado.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Dados para identificar o produto a ser deletado.
+              required: ['id']
+              additionalProperties: false
+              properties:
+                id:
+                  type: string
+                  description: Identificador único público do produto a ser deletado
+                  example: 'prod_abc123xyz'
+      responses:
+        '200':
+          description: Produto deletado com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Product'
+                  error:
+                    type: 'string'
+                    nullable: true
+                    example: null
+        '401':
+          description: Não autorizado. Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
+                    example: 'Token de autenticação inválido ou ausente.'
+        '404':
+          description: Produto não encontrado.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Mensagem de erro indicando que o produto não foi encontrado.
+                    example: 'Produto não encontrado.'
   /checkouts/create:
     post:
       summary: Criar uma cobrança com nosso Checkout
@@ -1991,6 +2264,57 @@ components:
           type: object
           description: Objeto chave valor para metadados do cupom
           default: {}
+
+    Product:
+      type: object
+      description: Os dados do seu produto.
+      required: ['id', 'externalId', 'name', 'price', 'currency', 'status', 'devMode', 'createdAt', 'updatedAt']
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          description: Identificador único público do produto
+          example: 'prod_abc123xyz'
+        externalId:
+          type: string
+          description: Identificador único do produto no seu sistema
+          example: 'prod-123'
+        name:
+          type: string
+          description: Nome do produto
+          example: 'Produto Exemplo'
+        description:
+          type: string
+          nullable: true
+          description: Descrição do produto
+          example: 'Descrição do produto'
+        price:
+          type: number
+          description: Preço do produto em centavos
+          example: 10000
+        currency:
+          type: string
+          description: Moeda do produto
+          example: 'BRL'
+        status:
+          type: string
+          description: Status atual do produto
+          enum: ['ACTIVE', 'INACTIVE']
+          example: 'ACTIVE'
+        devMode:
+          type: boolean
+          description: Indica se o produto foi criado em ambiente de testes
+          example: false
+        createdAt:
+          type: string
+          format: date-time
+          description: Data de criação do produto
+          example: '2024-11-04T18:38:28.573Z'
+        updatedAt:
+          type: string
+          format: date-time
+          description: Data de atualização do produto
+          example: '2024-11-04T18:38:28.573Z'
 
     Billing:
       type: object

@@ -70,6 +70,10 @@
             "pages": ["pages/coupon/reference", "pages/coupon/create", "pages/coupon/list", "pages/coupon/get", "pages/coupon/delete", "pages/coupon/toggle"]
           },
           {
+            "group": "Produtos",
+            "pages": ["pages/products/reference", "pages/products/create", "pages/products/list", "pages/products/get", "pages/products/delete"]
+          },
+          {
             "group": "Assinaturas",
             "pages": ["pages/items/reference", "pages/items/create", "pages/items/list"]
           },
