@@ -10,25 +10,72 @@ icon: 'book-open-cover'
 
 Esta rota permite criar um **checkout transparente** via PIX. Ao criar uma cobrança, a API retorna um código **Base64** para você gerar o QRCode e um código **copia-e-cola PIX** que pode ser enviado ao seu cliente.
 
-Uma cobrança via QRCode Pix é representada em nossa API pela seguinte estrutura:
+<div style={{ 
+    position: "relative", 
+    paddingBottom: "56.25%", 
+    height: 0, 
+    overflow: "hidden",
+    maxWidth: "800px",
+    margin: "32px auto",
+    borderRadius: "8px"
+}}>
+<iframe
+    src="https://www.youtube.com/embed/SEU_VIDEO_ID"
+    title="Criar Cobrança com Checkout - AbacatePay"
+    frameBorder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    allowFullScreen
+    style={{ 
+        position: "absolute", 
+        top: 0, 
+        left: 0, 
+        width: "100%", 
+        height: "100%" 
+    }}
+/>
+</div>
 
-```json json
+## Criar uma cobrança com checkout transparente
+
+Use `/transparents/create` para criar um QRCode PIX. A API retorna um código Base64 para gerar o QRCode e um código copia-e-cola PIX que pode ser enviado ao seu cliente.
+
+<Card title="Campos obrigatórios" icon="info" horizontal>
+  Apenas `amount` é obrigatório. O valor deve ser informado em centavos.
+</Card>
+
+**Exemplo:**
+```json
+POST /transparents/create
 {
-    "data": {
-        "id": "pix_abc123xyz",
-        "amount": 10000,
-        "status": "PENDING",
-        "devMode": false,
-        "brCode": "00020160014BR.GOV.BCB.PIX070503***6304ABCD",
-        "brCodeBase64": "data:image/png;base64,iVBORw0KG...",
-        "platformFee": 100,
-        "createdAt": "2024-11-04T18:38:28.573Z",
-        "updatedAt": "2024-11-04T18:38:28.573Z",
-        "expiresAt": "2024-11-04T19:38:28.573Z"
-    },
-    "error": null
+  "amount": 10000,                              // obrigatório - valor em centavos
 }
 ```
+<Tip title="Apenas o amount é obrigatório" icon="info" horizontal>
+   Apenas `amount` é obrigatório. O valor deve ser informado em centavos.
+</Tip>
+
+**Resposta:**
+```json
+{
+  "data": {
+    "id": "pix_abc123xyz",
+    "amount": 10000,
+    "status": "PENDING",
+    "devMode": false,
+    "brCode": "00020160014BR.GOV.BCB.PIX070503***6304ABCD",
+    "brCodeBase64": "data:image/png;base64,iVBORw0KG...",
+    "platformFee": 100,
+    "createdAt": "2024-11-04T18:38:28.573Z",
+    "updatedAt": "2024-11-04T18:38:28.573Z",
+    "expiresAt": "2024-11-04T19:38:28.573Z"
+  },
+  "error": null
+}
+```
+
+<Tip title="Use o QRCode retornado" icon="book" horizontal>
+Use o `brCodeBase64` para gerar a imagem do QRCode ou o `brCode` (código copia-e-cola) para enviar ao seu cliente via WhatsApp, Telegram ou integrar no seu checkout.
+</Tip>
 
 ## 💡 Dicas e Ideias de Uso
 
@@ -37,140 +84,6 @@ Esta rota de checkout transparente oferece diversas possibilidades de integraç�
 - **Venda via WhatsApp e Telegram**: Você pode gerar o QRCode e o código copia-e-cola e enviar diretamente ao seu cliente através de mensagens no WhatsApp ou Telegram, facilitando o processo de pagamento.
 
 - **Checkout próprio na sua aplicação**: Crie uma experiência de checkout totalmente personalizada e integrada ao design da sua aplicação. Isso permite maior controle sobre a interface, melhor experiência do usuário e a possibilidade de manter seu cliente dentro do seu ambiente, aumentando a conversão e fortalecendo sua marca.
-
-## Atributos:
-
-<AccordionGroup>
-    <Accordion title="id:">
-        ```json json {2}
-        {
-        "id": "abc123uA0M0xwg5R4mSyr0n2PjHQXY"
-        } 
-        ```
-        `id` : <u> string. </u> <br />
-        Identificador único da cobrança.
-    </Accordion>
-
-    <Accordion title="amount:">
-        ```json json {2}
-        {
-        "amount": 4000
-        }
-        ```
-        `amount` : <u> number. </u> <br />
-        Valor da cobrança em centavos (ex: 4000 = R$ 40,00)
-    </Accordion>
-
-    <Accordion title="status:">
-        ```json json {2}
-        {
-        "status": "PAID"
-        }
-        ```
-        `status` : <u> string. </u> <br />
-        Status da cobrança. Pode ser `PENDING`, `EXPIRED`, `CANCELLED`, `PAID`, `REFUNDED`.
-        <Info>
-            | Status       | Descrição |
-            | ----------- | ------------------------------------- |
-            | `PENDING`  | **A cobrança está com o pagamento pendente** |
-            | `EXPIRED`  | **O tempo limite de pagamento foi excedido** |
-            | `CANCELLED`| **A cobrança foi cancelada por você** |
-            | `PAID`     | **A cobrança foi paga com sucesso pelo cliente** |
-            | `REFUNDED` | **O valor foi devolvido ao cliente** |
-        </Info>
-    </Accordion>
-
-    <Accordion title="devMode:">
-        ```json json {2}
-        {
-        "devMode": true
-        }
-        ```
-        `devMode` : <u> boolean. </u> <br />
-        Indica se a cobrança está em ambiente de testes (`true`) ou produção (`false`).
-    </Accordion>
-
-    <Accordion title="method:">
-        ```json json {2}
-        {
-        "method": "PIX"
-        }
-        ```
-        `method` : <u> string. </u> <br />
-        Método de pagamento.
-    </Accordion>
-
-    <Accordion title="brCode:">
-        ```json json {2}
-        {
-        "brCode": "..."
-        }
-        ```
-        `brCode` : <u> string. </u> <br />
-        Código PIX (copia-e-cola) que pode ser enviado ao seu cliente para realizar o pagamento.
-    </Accordion>
-
-    <Accordion title="brCodeBase64:">
-        ```json json {2}
-        {
-        "brCodeBase64": "..."
-        }
-        ```
-        `brCodeBase64` : <u> string. </u> <br />
-        Código PIX no formato Base64 que você pode usar para gerar e exibir o QRCode visual para o seu cliente.
-    </Accordion>
-
-    <Accordion title="platformFee:">
-        ```json json {2}
-        {
-        "platformFee": 80
-        }
-        ```
-        `platformFee` : <u> number. </u> <br />
-        Taxa da plataforma em centavos. Exemplo: `80` significa R$ 0,80.
-    </Accordion>
-
-    <Accordion title="description:">
-        ```json json {2}
-        {
-        "description": "Pagamento PIX com AbacatePay"
-        }
-        ```
-        `description` : <u> string. </u> <br />
-        Descrição da cobrança.
-    </Accordion>
-
-    <Accordion title="createdAt:">
-        ```json json {2}
-        {
-        "createdAt": "2024-12-06T18:56:15.538Z"
-        }
-        ```
-        `createdAt` : <u> date-time. </u> <br />
-        Data e hora da criação da cobrança.
-    </Accordion>
-
-    <Accordion title="updatedAt:">
-        ```json json {2}
-        {
-        "updatedAt": "2024-12-06T18:56:15.538Z"
-        }
-        ```
-        `updatedAt` : <u> date-time. </u> <br />
-        Última atualização da cobrança.
-    </Accordion>
-
-    <Accordion title="expiresAt:">
-        ```json json {2}
-        {
-        "expiresAt": "2024-12-06T18:56:15.538Z"
-        }
-        ```
-        `expiresAt` : <u> date-time. </u> <br />
-        Data e hora de expiração do QRCode.
-    </Accordion>
-
-</AccordionGroup>
 
 <Info>
 Por enquanto, esta rota aceita apenas o método de pagamento **PIX**.
