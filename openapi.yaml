@@ -4,7 +4,7 @@ info:
   description: API para gerenciamento de cobranças e pagamentos usando o AbacatePay.
   version: 1.0.0
 servers:
-  - url: https://api.abacatepay.com/v1
+  - url: https://api.abacatepay.com/v2
     description: Único servidor para os ambientes de produção e sandbox.
 paths:
   /customers/create:

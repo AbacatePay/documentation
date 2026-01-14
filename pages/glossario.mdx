@@ -1,0 +1,163 @@
+---
+title: 'Glossário'
+description: 'Conceitos e termos técnicos da AbacatePay explicados de forma simples'
+icon: 'book-open-cover'
+---
+
+<Card title="Bem-vindo ao Glossário" icon="book" horizontal>
+  Encontrou um termo que não conhece? Este glossário explica os principais conceitos e termos técnicos usados na documentação da AbacatePay de forma simples e direta.
+</Card>
+
+## 🔐 Autenticação e Segurança
+
+### Bearer Token
+Também chamado de **chave de API**, é o método de autenticação usado para autorizar suas requisições à API da AbacatePay. A chave é enviada no header HTTP `Authorization: Bearer sua_chave_api`. Sem uma chave válida, nenhuma requisição será aceita.
+
+### Webhook Secret
+Uma string única e secreta que garante que os webhooks recebidos realmente vieram da AbacatePay. É enviado na URL do webhook como parâmetro de query string e deve ser validado no seu servidor para evitar requisições maliciosas.
+
+## 🏗️ Ambientes e Modos
+
+### Dev Mode (Modo de Desenvolvimento)
+Ambiente de testes onde todas as transações são **simuladas**. Nada é cobrado de verdade e você pode testar quantas vezes quiser sem riscos. Ideal para desenvolver e validar sua integração antes de ir para produção.
+
+### Sandbox
+Outro termo para ambiente de testes/desenvolvimento. Na AbacatePay, o ambiente é determinado pela chave de API utilizada (chave de Dev mode = sandbox, chave de Produção = ambiente real).
+
+### Produção
+Ambiente real onde as transações são processadas de verdade e valores reais são movimentados. Requer conta verificada e aprovação da AbacatePay.
+
+## 💳 Pagamentos e Cobranças
+
+### Checkout
+Página segura fornecida pela AbacatePay onde seus clientes finalizam o pagamento. Existem dois tipos:
+
+- **Checkout Integrado**: Você cria uma cobrança e a AbacatePay gera uma URL onde o cliente completa o pagamento em uma página gerenciada por nós.
+- **Checkout Transparente**: Você recebe um QRCode PIX ou código copia-e-cola e gerencia toda a experiência de pagamento na sua própria aplicação.
+
+### Gateway de Pagamento
+Plataforma intermediária que processa pagamentos entre o cliente e o vendedor. A AbacatePay é um gateway de pagamento que facilita transações PIX e cartão de crédito.
+
+### Fintech
+Empresa que usa tecnologia para oferecer serviços financeiros. A AbacatePay é uma fintech focada em simplificar pagamentos.
+
+### Payout
+Transferência de dinheiro da sua conta AbacatePay para outra conta (seja sua ou de terceiros). Também chamado de saque ou transferência externa.
+
+## 📝 Estrutura de Dados
+
+### External ID
+Identificador único criado por você para relacionar transações da AbacatePay com registros do seu sistema. Útil para buscar pagamentos usando seus próprios códigos de pedido.
+
+**Exemplo:** Se você tem um pedido #12345 no seu sistema, pode usar `externalId: "pedido-12345"` ao criar a cobrança.
+
+### Metadata
+Campo opcional que permite armazenar informações adicionais personalizadas junto com os recursos da API (cobranças, clientes, etc.). Aceita qualquer objeto JSON e é útil para integrar com seus próprios sistemas.
+
+**Exemplo:**
+```json
+{
+  "metadata": {
+    "campaign": "black-friday",
+    "source": "website",
+    "customField": "qualquer valor"
+  }
+}
+```
+
+## 🔄 Assinaturas e Recorrência
+
+### Subscription (Assinatura)
+Também chamada de **Item** na API, é um plano de cobrança recorrente onde o cliente é cobrado automaticamente em intervalos definidos (mensal, anual, etc.).
+
+### Cycle (Ciclo)
+Frequência de cobrança de uma assinatura:
+- **DAILY**: Diária
+- **WEEKLY**: Semanal  
+- **MONTHLY**: Mensal
+- **YEARLY**: Anual
+
+### Retry Policy (Política de Retentativa)
+Configuração que define quantas vezes o sistema deve tentar cobrar uma assinatura quando o pagamento falha:
+- **maxRetry**: Número máximo de tentativas (1-10)
+- **retryEvery**: Intervalo em dias entre tentativas (1-30)
+
+## 🎫 Cupons e Descontos
+
+### Discount Kind (Tipo de Desconto)
+Forma como o desconto é aplicado:
+- **PERCENTAGE**: Desconto percentual (ex: 10% de desconto)
+- **FIXED**: Desconto em valor fixo (ex: R$ 5,00 de desconto)
+
+### Max Redeems
+Número máximo de vezes que um cupom pode ser usado. Quando definido como `-1`, o cupom pode ser usado infinitamente.
+
+## 📊 Status
+
+### Status da Cobrança
+- **PENDING**: Aguardando pagamento
+- **PAID**: Pago e confirmado
+- **CANCELLED**: Cancelada
+- **EXPIRED**: Expirada
+
+### Status da Assinatura
+- **PENDING**: Criada e aguardando ativação
+- **ACTIVE**: Ativa e processando cobranças recorrentes
+- **CANCELLED**: Cancelada
+- **EXPIRED**: Expirada
+- **FAILED**: Falhou após todas as tentativas de cobrança
+
+## 💰 PIX
+
+### QRCode PIX
+Código QR gerado pela AbacatePay que o cliente escaneia para realizar um pagamento PIX. Pode ser retornado como imagem Base64 (`brCodeBase64`) ou código copia-e-cola (`brCode`).
+
+### BR Code (Código Copia-e-Cola PIX)
+String alfanumérica do padrão PIX que pode ser copiada e colada diretamente no aplicativo do banco do cliente para realizar o pagamento. Retornado no campo `brCode`.
+
+### Base64
+Formato de codificação que converte dados binários (como imagens) em texto ASCII. O QRCode PIX é retornado como string Base64 no campo `brCodeBase64` para facilitar o uso em imagens HTML.
+
+## 🔔 Webhooks
+
+### Webhook
+Mecanismo onde a AbacatePay **envia notificações** para o seu servidor sempre que algo importante acontece (como um pagamento confirmado), sem você precisar ficar consultando a API constantemente.
+
+### Evento
+Ação que dispara um webhook (ex: `billing.paid`, `billing.cancelled`). Cada evento contém informações sobre o que aconteceu.
+
+## 🌐 URLs e Endpoints
+
+### Return URL
+URL para onde o cliente é redirecionado após clicar em "voltar" no checkout, antes de completar o pagamento.
+
+### Completion URL
+URL para onde o cliente é redirecionado **após completar** o pagamento com sucesso.
+
+### Receipt URL
+URL gerada automaticamente pela AbacatePay que contém o comprovante de pagamento. Disponível após a confirmação do pagamento.
+
+## 🛠️ Processos
+
+### Homologação
+Processo de validação e aprovação necessário para ir de desenvolvimento para produção. Na AbacatePay, envolve verificação da conta e aprovação para processar transações reais.
+
+## 📦 Estrutura de Resposta
+
+Todas as respostas da API seguem o padrão:
+```json
+{
+  "data": { /* dados da operação */ },
+  "error": null
+}
+```
+
+- Se `error` for `null`, a operação foi bem-sucedida e os dados estarão em `data`
+- Se `error` contiver dados, a operação falhou e você deve verificar a mensagem de erro
+
+---
+
+<Card title="Não encontrou o termo que procura?" icon="question-circle" color="#25c2a0">
+  Entre em contato com nosso suporte e ajude-nos a melhorar este glossário:  
+  <Icon icon="envelope" type="solid"/> ajuda@abacatepay.com
+</Card>
