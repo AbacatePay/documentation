@@ -17,7 +17,7 @@
   "favicon": "/favicon.ico",
   "api": {
     "mdx": {
-      "server": "https://api.abacatepay.com/v1",
+      "server": "https://api.abacatepay.com/v2",
       "auth": {
         "method": "bearer"
       }
