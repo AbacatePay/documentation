@@ -81,49 +81,7 @@ paths:
                 type: object
                 properties:
                   data:
-                    type: object
-                    description: Dados do cliente criado.
-                    properties:
-                      id:
-                        type: string
-                        description: Identificador único público do cliente
-                        example: 'cust_abc123xyz'
-                      devMode:
-                        type: boolean
-                        description: Indica se o cliente foi criado em ambiente de testes.
-                        example: false
-                      email:
-                        type: string
-                        description: E-mail do cliente
-                        example: 'customer@example.com'
-                        required: true
-                      taxId:
-                        type: string
-                        description: CPF ou CNPJ do cliente
-                        example: '12345678900'
-                      country:
-                        type: string
-                        description: País do cliente
-                        example: 'BR'
-                      name:
-                        type: string
-                        description: Nome completo do cliente
-                        example: 'João Silva'
-                      cellphone:
-                        type: string
-                        description: Celular do cliente
-                        example: '+5511999999999'
-                      zipCode:
-                        type: string
-                        description: CEP do cliente
-                        example: '01310-100'
-                      metadata:
-                        type: object
-                        description: Metadados adicionais do cliente
-                        additionalProperties: true
-                        example:
-                          customField: 'value'
-                    additionalProperties: false
+                    $ref: '#/components/schemas/Customer'
                   error:
                     type: string
                     nullable: true
@@ -182,48 +140,7 @@ paths:
                     type: array
                     description: Lista de clientes.
                     items:
-                      type: object
-                      description: Dados do cliente.
-                    properties:
-                      id:
-                        type: string
-                        description: Identificador único público do cliente
-                        example: 'cust_aebxkhDZNaMmJeKsy0AHS0FQ'
-                      devMode:
-                        type: boolean
-                        description: Indica se o cliente foi criado em ambiente de testes.
-                        example: true
-                      name:
-                        type: string
-                        description: Nome completo do cliente
-                        example: Daniel Lima
-                      cellphone:
-                        type: string
-                        description: Celular do cliente
-                        example: '(11) 4002-8922'
-                      email:
-                        type: string
-                        description: E-mail do cliente
-                        example: daniel_lima@abacatepay.com
-                      taxId:
-                        type: string
-                        description: CPF ou CNPJ do cliente
-                        example: '123.456.789-01'
-                      metadata:
-                        type: object
-                        description: Metadados adicionais do cliente
-                        additionalProperties: true
-                        example:
-                          source: 'landing-page'
-                          campaign: 'black-friday-2025'
-                      required:
-                        - id
-                        - devMode
-                        - name
-                        - cellphone
-                        - email
-                        - taxId
-                      additionalProperties: false
+                      $ref: '#/components/schemas/Customer'
                   pagination:
                     type: object
                     description: Informações de paginação
@@ -287,42 +204,7 @@ paths:
                 type: object
                 properties:
                   data:
-                      type: object
-                      description: Dados do cliente.
-                      properties:
-                        id:
-                          type: string
-                          description: Identificador único público do cliente
-                          example: 'cust_aebxkhDZNaMmJeKsy0AHS0FQ'
-                        devMode:
-                          type: boolean
-                          description: Indica se o cliente foi criado em ambiente de testes.
-                          example: true
-                        name:
-                          type: string
-                          description: Nome completo do cliente
-                          example: Daniel Lima
-                        cellphone:
-                          type: string
-                          description: Celular do cliente
-                          example: '(11) 4002-8922'
-                        email:
-                          type: string
-                          description: E-mail do cliente
-                          example: daniel_lima@abacatepay.com
-                        taxId:
-                          type: string
-                          description: CPF ou CNPJ do cliente
-                          example: '123.456.789-01'
-                        metadata:
-                          type: object
-                          description: Metadados adicionais do cliente
-                          additionalProperties: true
-                          example:
-                            source: 'landing-page'
-                            campaign: 'black-friday-2025'
-                      required: ['id', 'devMode', 'name', 'cellphone', 'email', 'taxId']
-                      additionalProperties: false
+                    $ref: '#/components/schemas/Customer'
                   error:
                     type: 'string'
                     example: null
@@ -381,42 +263,7 @@ paths:
                 type: object
                 properties:
                   data:
-                    type: object
-                    description: Dados do cliente deletado.
-                    properties:
-                      id:
-                        type: string
-                        description: Identificador único público do cliente
-                        example: 'cust_aebxkhDZNaMmJeKsy0AHS0FQ'
-                      devMode:
-                        type: boolean
-                        description: Indica se o cliente foi criado em ambiente de testes.
-                        example: true
-                      name:
-                        type: string
-                        description: Nome completo do cliente
-                        example: Daniel Lima
-                      cellphone:
-                        type: string
-                        description: Celular do cliente
-                        example: '(11) 4002-8922'
-                      email:
-                        type: string
-                        description: E-mail do cliente
-                        example: daniel_lima@abacatepay.com
-                      taxId:
-                        type: string
-                        description: CPF ou CNPJ do cliente
-                        example: '123.456.789-01'
-                      metadata:
-                        type: object
-                        description: Metadados adicionais do cliente
-                        additionalProperties: true
-                        example:
-                          source: 'landing-page'
-                          campaign: 'black-friday-2025'
-                    required: ['id', 'devMode', 'name', 'cellphone', 'email', 'taxId']
-                    additionalProperties: false
+                    $ref: '#/components/schemas/Customer'
                   error:
                     type: 'string'
                     example: null
@@ -2172,6 +2019,14 @@ components:
           type: string
           description: CPF ou CNPJ do cliente
           example: '123.456.789-01'
+        country:
+          type: string
+          description: País do cliente
+          example: 'BR'
+        zipCode:
+          type: string
+          description: CEP do cliente
+          example: '01310-100'
         metadata:
           type: object
           description: Metadados adicionais do cliente
