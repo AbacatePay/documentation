@@ -371,7 +371,7 @@ paths:
                 description:
                   type: string
                   maxLength: 37
-                  description: Mensagem que aparecerá na hora do pagamento do PIX.
+                  description: Mensagem que aparecerá na hora do pagamento do PIX. Caracteres além de 37 serão ignorados no registro.
                 customer:
                   type: object
                   description: |
