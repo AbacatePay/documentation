@@ -103,6 +103,15 @@
         ]
       },
       {
+        "tab": "Ecossistema",
+        "groups": [
+          {
+            "group": "Ecossistema",
+            "pages": ["pages/ecosystem/ecosystem"]
+          }
+        ]
+      },
+      {
         "tab": "ChangeLog",
         "pages": ["pages/changelog/index"]
       }
