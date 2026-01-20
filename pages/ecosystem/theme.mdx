@@ -1,0 +1,168 @@
+---
+title: 'Tema'
+description: 'Tema oficial green-first da AbacatePay para VS Code, IntelliJ e Neovim.'
+icon: 'palette'
+---
+
+## O que é o AbacatePay Theme?
+
+O **AbacatePay Theme** é o **tema oficial da AbacatePay**, projetado para oferecer uma experiência visual consistente, confortável e produtiva em **ambientes de desenvolvimento modernos**.
+
+Ele segue uma abordagem **green-first**, alinhada à identidade visual da AbacatePay, com foco em:
+
+- Leitura prolongada sem fadiga
+- Contraste equilibrado
+- Destaque semântico de código
+- Consistência entre editores
+
+<Card title="Quando usar o AbacatePay Theme?" icon="help-circle" horizontal>
+  * Você quer **consistência visual** entre ferramentas
+  * Trabalha longas horas no editor
+  * Valoriza **identidade visual forte** no setup
+  * Prefere temas limpos, modernos e sem excesso de cor
+</Card>
+
+---
+
+## Editores suportados
+
+O tema é mantido oficialmente para os seguintes editores:
+
+<CardGroup cols={3}>
+  <Card title="VS Code" icon="code">
+    Tema oficial publicado no Marketplace.
+  </Card>
+  <Card title="IntelliJ / JetBrains" icon="terminal">
+    Schemes nativos sem necessidade de plugin.
+  </Card>
+  <Card title="Neovim" icon="moon-star">
+    Suporte completo com variações e Lualine.
+  </Card>
+</CardGroup>
+
+---
+
+## Instalação
+
+### VS Code
+
+Instale diretamente pelo Marketplace:
+
+```bash
+code --install-extension abacatepay.abacatepay-theme
+```
+
+Ou acesse:
+
+https://marketplace.visualstudio.com/items?itemName=abacatepay.abacatepay-theme
+
+Temas disponíveis:
+
+- AbacatePay Dark Theme
+- AbacatePay Light Theme
+- AbacatePay Soft Theme
+
+#### Sincronizar com o sistema
+
+```jsonc
+{
+    "window.autoDetectColorScheme": true,
+    "workbench.preferredDarkColorTheme": "AbacatePay Dark Theme",
+    "workbench.preferredLightColorTheme": "AbacatePay Light Theme"
+}
+```
+
+### IntelliJ / JetBrains IDEs
+
+O tema é distribuído como Color Scheme nativo.
+
+#### Como instalar
+
+1. Abra sua IDE JetBrains
+2. Vá em Settings / Preferences → Editor → Color Scheme
+3. Clique no ⚙️ → Import Scheme
+4. Selecione um dos arquivos:
+
+```
+intellij/abacatepay-theme-dark.json
+intellij/abacatepay-theme-light.json
+intellij/abacatepay-theme-soft.json
+```
+
+5. Aplique o tema
+
+<Card title="Sem plugins" icon="check-circle"> Funciona nativamente em IDEs JetBrains, sem dependências externas. </Card>
+
+### Neovim
+
+Tema oficial com suporte a múltiplas variações.
+
+**lazy.nvim**
+
+```nvim
+{
+    "AbacatePay/vscode-theme",
+    lazy = false,
+    priority = 1000,
+    config = function()
+        vim.cmd.colorscheme("abacatepay-theme")
+    end,
+}
+```
+
+**packer.nvim**
+
+```nvim
+use({
+    "AbacatePay/vscode-theme",
+        config = function()
+        vim.cmd.colorscheme("abacatepay-theme")
+    end,
+})
+```
+
+**Variações**
+
+```lua
+vim.cmd("colorscheme abacatepay-theme")       -- Dark (default)
+vim.cmd("colorscheme abacatepay-theme-light") -- Light
+vim.cmd("colorscheme abacatepay-theme-soft")  -- Soft
+```
+
+**Lualine**
+
+```lua
+require("lualine").setup {
+    options = {
+        theme = "abacatepay-theme"
+    }
+}
+```
+
+## Design & Filosofia
+
+O AbacatePay Theme foi projetado para ser:
+
+- Consistente entre editores
+- Confortável para longas sessões
+- Semântico (cores com significado)
+- Livre de distrações
+
+<CardGroup cols={2}> <Card title="Identidade forte" icon="sparkles"> Visual alinhado ao ecossistema AbacatePay. </Card> <Card title="Produtividade" icon="zap"> Menos ruído visual, mais foco no código. </Card> </CardGroup>
+### Próximos Passos
+
+<CardGroup cols={2}> 
+<Card title="Repositório Open Source" icon="github" href="https://github.com/abacatepay/vscode-theme" > Código-fonte, issues e contribuições. </Card>
+
+<Card
+    title="Ecossistema AbacatePay"
+    icon="boxes-stacked"
+    href="../ecosystem"
+    >
+    Veja o ecossistema completo da AbacatePay.
+</Card> 
+</CardGroup>
+
+<Card
+title="Open source de verdade"
+icon="heart"> O AbacatePay Theme é mantido pela equipe AbacatePay e pela comunidade. </Card>
