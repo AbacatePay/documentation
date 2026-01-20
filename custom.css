@@ -11,14 +11,14 @@ button[data-testid="try-it-button"],
 .mintlify-code-block button[class*="try"],
 pre button[class*="try"],
 .mintlify-code button {
-  background-color: #9EEA6C !important;
-  color: #0A1B39 !important;
+	background-color: #9eea6c !important;
+	color: #0a1b39 !important;
 }
 
 /* Estilo para hover */
 button[class*="try-it"]:hover,
 button[aria-label*="Try it"]:hover {
-  background-color: #8DD95B !important;
+	background-color: #8dd95b !important;
 }
 
 /* Tentativa com seletores mais genéricos do Mintlify */
@@ -28,4 +28,3 @@ button:contains("Try it") {
   background-color: #9EEA6C !important;
   color: #0A1B39 !important;
 }
-
