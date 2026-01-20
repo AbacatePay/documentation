@@ -1,188 +1,195 @@
 {
-	"$schema": "https://mintlify.com/docs.json",
-	"theme": "mint",
-	"name": "AbacatePay",
-	"colors": {
-		"primary": "#9EEA6C",
-		"light": "#9EEA6C",
-		"dark": "#9EEA6C"
-	},
-	"appearance": {
-		"default": "dark",
-		"strict": true
-	},
-	"fonts": {
-		"family": "Fustat"
-	},
-	"favicon": "/favicon.ico",
-	"api": {
-		"mdx": {
-			"server": "https://api.abacatepay.com/v2",
-			"auth": {
-				"method": "bearer"
-			}
-		}
-	},
-	"navigation": {
-		"tabs": [
-			{
-				"tab": "Bem-vindo",
-				"pages": ["pages/start/welcome"]
-			},
-			{
-				"tab": "Comece aqui",
-				"groups": [
-					{
-						"group": "Comece aqui",
-						"pages": [
-							"pages/start/introduction",
-							"pages/start/quickstart",
-							"pages/devmode",
-							"pages/authentication",
-							"pages/webhooks",
-							"pages/nocode",
-							"pages/glossario",
-							"pages/production"
-						]
-					}
-				]
-			},
-			{
-				"tab": "Documentação",
-				"groups": [
-					{
-						"group": "Cobrar com Checkout",
-						"pages": [
-							"pages/payment/reference",
-							"pages/payment/create",
-							"pages/payment/list",
-							"pages/payment/one"
-						]
-					},
-					{
-						"group": "Crie seus clientes",
-						"pages": [
-							"pages/client/reference",
-							"pages/client/create",
-							"pages/client/list",
-							"pages/client/get",
-							"pages/client/delete"
-						]
-					},
-					{
-						"group": "Transparente",
-						"pages": [
-							"pages/pix-qrcode/reference",
-							"pages/pix-qrcode/create",
-							"pages/pix-qrcode/simulate-payment",
-							"pages/pix-qrcode/check"
-						]
-					},
-					{
-						"group": "Crie seus cupons",
-						"pages": [
-							"pages/coupon/reference",
-							"pages/coupon/create",
-							"pages/coupon/list",
-							"pages/coupon/get",
-							"pages/coupon/delete",
-							"pages/coupon/toggle"
-						]
-					},
-					{
-						"group": "Produtos",
-						"pages": [
-							"pages/products/reference",
-							"pages/products/create",
-							"pages/products/list",
-							"pages/products/get",
-							"pages/products/delete"
-						]
-					},
-					{
-						"group": "Assinaturas",
-						"pages": [
-							"pages/items/reference",
-							"pages/items/create",
-							"pages/items/list"
-						]
-					},
-					{
-						"group": "Saques / Transferências externas",
-						"pages": [
-							"pages/withdraw/reference",
-							"pages/withdraw/create",
-							"pages/withdraw/get",
-							"pages/withdraw/list"
-						]
-					},
-					{
-						"group": "Loja",
-						"pages": ["pages/store/reference", "pages/store/get"]
-					},
-					{
-						"group": "Trust MRR",
-						"pages": [
-							"pages/trustMRR/reference",
-							"pages/trustMRR/mrr",
-							"pages/trustMRR/get",
-							"pages/trustMRR/list"
-						]
-					}
-				]
-			},
-			{
-				"tab": "SDKs",
-				"groups": [
-					{
-						"group": "SDKs",
-						"pages": [
-							"pages/sdks/sdks",
-							"pages/sdks/nodejs",
-							"pages/sdks/python",
-							"pages/sdks/java",
-							"pages/sdks/php",
-							"pages/sdks/ruby",
-							"pages/sdks/go",
-							"pages/sdks/rust",
-							"pages/sdks/kotlin",
-							"pages/sdks/swift"
-						]
-					}
-				]
-			},
-			{
-				"tab": "ChangeLog",
-				"pages": ["pages/changelog/index"]
-			}
-		]
-	},
-	"logo": {
-		"light": "/images/logo_abkt.svg",
-		"dark": "/images/logo_abkt.svg"
-	},
-	"navbar": {
-		"links": [
-			{
-				"label": "llms.txt",
-				"href": "https://www.abacatepay.com/llms.txt"
-			},
-			{
-				"label": "Repositorio",
-				"href": "https://github.com/AbacatePay/documentation"
-			}
-		],
-		"primary": {
-			"type": "button",
-			"label": "Dashboard",
-			"href": "https://www.abacatepay.com/app"
-		}
-	},
-	"footer": {
-		"socials": {
-			"x": "https://x.com/abacatepay",
-			"github": "https://github.com/AbacatePay",
-			"linkedin": "https://br.linkedin.com/company/abacatepay?trk=public_post_feed-actor-name"
-		}
-	}
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "AbacatePay",
+  "colors": {
+    "primary": "#9EEA6C",
+    "light": "#9EEA6C",
+    "dark": "#9EEA6C"
+  },
+  "appearance": {
+    "default": "dark",
+    "strict": true
+  },
+  "fonts": {
+    "family": "Fustat"
+  },
+  "favicon": "/favicon.ico",
+  "api": {
+    "mdx": {
+      "server": "https://api.abacatepay.com/v2",
+      "auth": {
+        "method": "bearer"
+      }
+    }
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Bem-vindo",
+        "pages": [
+          "pages/start/welcome"
+        ]
+      },
+      {
+        "tab": "Comece aqui",
+        "groups": [
+          {
+            "group": "Comece aqui",
+            "pages": [
+              "pages/start/introduction",
+              "pages/start/quickstart",
+              "pages/devmode",
+              "pages/authentication",
+              "pages/webhooks",
+              "pages/nocode",
+              "pages/glossario",
+              "pages/production"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Documentação",
+        "groups": [
+          {
+            "group": "Cobrar com Checkout",
+            "pages": [
+              "pages/payment/reference",
+              "pages/payment/create",
+              "pages/payment/list",
+              "pages/payment/one"
+            ]
+          },
+          {
+            "group": "Crie seus clientes",
+            "pages": [
+              "pages/client/reference",
+              "pages/client/create",
+              "pages/client/list",
+              "pages/client/get",
+              "pages/client/delete"
+            ]
+          },
+          {
+            "group": "Transparente",
+            "pages": [
+              "pages/pix-qrcode/reference",
+              "pages/pix-qrcode/create",
+              "pages/pix-qrcode/simulate-payment",
+              "pages/pix-qrcode/check"
+            ]
+          },
+          {
+            "group": "Crie seus cupons",
+            "pages": [
+              "pages/coupon/reference",
+              "pages/coupon/create",
+              "pages/coupon/list",
+              "pages/coupon/get",
+              "pages/coupon/delete",
+              "pages/coupon/toggle"
+            ]
+          },
+          {
+            "group": "Produtos",
+            "pages": [
+              "pages/products/reference",
+              "pages/products/create",
+              "pages/products/list",
+              "pages/products/get",
+              "pages/products/delete"
+            ]
+          },
+          {
+            "group": "Assinaturas",
+            "pages": [
+              "pages/items/reference",
+              "pages/items/create",
+              "pages/items/list"
+            ]
+          },
+          {
+            "group": "Saques / Transferências externas",
+            "pages": [
+              "pages/withdraw/reference",
+              "pages/withdraw/create",
+              "pages/withdraw/get",
+              "pages/withdraw/list"
+            ]
+          },
+          {
+            "group": "Loja",
+            "pages": [
+              "pages/store/reference",
+              "pages/store/get"
+            ]
+          },
+          {
+            "group": "Trust MRR",
+            "pages": [
+              "pages/trustMRR/reference",
+              "pages/trustMRR/mrr",
+              "pages/trustMRR/get",
+              "pages/trustMRR/list"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "SDKs",
+        "groups": [
+          {
+            "group": "SDKs",
+            "pages": [
+              "pages/sdks/sdks",
+              "pages/sdks/nodejs",
+              "pages/sdks/python",
+              "pages/sdks/java",
+              "pages/sdks/php",
+              "pages/sdks/ruby",
+              "pages/sdks/go",
+              "pages/sdks/rust",
+              "pages/sdks/kotlin",
+              "pages/sdks/swift"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "ChangeLog",
+        "pages": [
+          "pages/changelog/index"
+        ]
+      }
+    ]
+  },
+  "logo": {
+    "light": "/images/logo_abkt.svg",
+    "dark": "/images/logo_abkt.svg"
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "llms.txt",
+        "href": "https://www.abacatepay.com/llms.txt"
+      },
+      {
+        "label": "Repositório",
+        "href": "https://github.com/AbacatePay/documentation"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Dashboard",
+      "href": "https://www.abacatepay.com/app"
+    }
+  },
+  "footer": {
+    "socials": {
+      "x": "https://x.com/abacatepay",
+      "github": "https://github.com/AbacatePay",
+      "linkedin": "https://br.linkedin.com/company/abacatepay?trk=public_post_feed-actor-name"
+    }
+  }
 }

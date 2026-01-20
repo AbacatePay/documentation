@@ -5,9 +5,7 @@ icon: 'key'
 ---
 
 <Tip>
-  A **chave de API** é sua credencial de acesso à AbacatePay.  
-  Ela identifica sua conta e autoriza cada requisição enviada para a nossa API.  
-  **Sem uma chave válida, nenhum pedido será aceito.**
+  A **chave de API** é sua credencial de acesso à AbacatePay. Ela identifica sua conta e autoriza cada requisição enviada para a nossa API. **Sem uma chave válida, nenhum pedido será aceito.**
 </Tip>
 
 {/* <div style={{ 
@@ -35,7 +33,7 @@ icon: 'key'
   />
 </div> */}
 
-## <Icon icon="lock" type="solid" /> O que você pode fazer com suas chaves
+## O que você pode fazer com suas chaves
 
 As chaves de API são gerenciadas diretamente pelo dashboard.  
 Com elas, você pode:
@@ -44,7 +42,7 @@ Com elas, você pode:
 - Criar novas chaves para diferentes projetos  
 - Revogar chaves comprometidas ou que não são mais usadas  
 
-<Card title="Dev mode x Produção" icon="book" horizontal>
+<Card title="Dev mode x Produção" horizontal>
   Todas as requisições usam o mesmo endpoint (`https://api.abacatepay.com`).  
   O ambiente é definido **pela chave utilizada**:
   - Chaves criadas em **Dev mode** → transações simuladas  
@@ -53,16 +51,16 @@ Com elas, você pode:
   Saiba mais sobre o ambiente de testes <a href="./devmode">aqui</a>.
 </Card>
 
-<Card title="Erro de Autenticação (401)" icon="warning" horizontal>
+<Card title="Erro de Autenticação (401)" horizontal>
   Você receberá um **HTTP 401** quando:
   - A chave não for enviada no header  
   - A chave estiver incorreta  
   - A chave tiver sido revogada  
 </Card>
 
-## <Icon icon="key" type="solid" /> Boas práticas de segurança
+## Boas práticas de segurança
 
-<Card icon="light-emergency-on" horizontal>
+<Card horizontal>
   * Armazene suas chaves em variáveis de ambiente  
   * Nunca publique sua chave em repositórios ou grupos  
   * A AbacatePay **nunca** solicitará sua chave  
@@ -122,6 +120,6 @@ curl -X POST https://api.abacatepay.com/transparent/create \
   -d '{"amount": 1000}'
 ```
 
-<Card title="Nota Importante" icon="info" horizontal>
+<Card title="Nota Importante" horizontal>
   O mesmo endpoint (`https://api.abacatepay.com`) é usado tanto para o ambiente de desenvolvimento quanto para produção. O ambiente é determinado automaticamente pela chave de API utilizada na requisição.
 </Card>
