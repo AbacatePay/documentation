@@ -1,0 +1,140 @@
+---
+title: 'TypeBox'
+description: 'Schemas oficiais da API da AbacatePay com TypeBox para validação runtime, contratos tipados e OpenAPI.'
+icon: 'code'
+---
+
+## O que é o @abacatepay/typebox?
+
+O [@abacatepay/typebox](https://www.npmjs.com/package/@abacatepay/typebox) expõe **todos os schemas públicos da API da AbacatePay** usando **TypeBox**, servindo como **fonte única de verdade** para contratos de dados, validação runtime e geração de OpenAPI.
+
+Não há abstrações extras nem “tipos inventados”: os schemas refletem **exatamente** a API documentada.
+
+Projetado para **TypeScript-first**, com integração direta em frameworks modernos como **Elysia**, **Fastify**, **Hono**, além de compatibilidade total com **Node.js** e **Bun**.
+
+<Card title="Quando usar o TypeBox?" icon="help-circle" horizontal>
+  * Você quer **contratos tipados + validação runtime**
+  * Precisa garantir **compatibilidade entre versões da API**
+  * Quer gerar **OpenAPI 3.1** automaticamente
+  * Está construindo SDKs, gateways ou backends tipados
+</Card>
+
+---
+
+## Instalação
+
+Use o *package manager* da sua preferência:
+
+```bash
+bun add @abacatepay/typebox
+# ou
+pnpm add @abacatepay/typebox
+# ou
+npm install @abacatepay/typebox
+```
+
+## Estrutura e Versionamento
+
+Assim como em outros pacotes da AbacatePay, os schemas são versionados por API.
+
+Importe sempre a versão correspondente à API que você está usando:
+
+```ts
+import { APICustomer } from '@abacatepay/typebox/v1';
+import { APISubscription } from '@abacatepay/typebox/v2';
+```
+
+Schemas globais (ex: version, utilitários e helpers) são exportados sem versionamento:
+
+```ts
+import { version } from '@abacatepay/typebox';
+```
+
+<Card title="Por que versionar schemas?" icon="ellipsis"> Isso permite detectar breaking changes, manter compatibilidade e evoluir a API sem quebrar integrações existentes. </Card>
+
+### <Icon icon="zap" type="solid"/> Integração com Elysia
+
+O TypeBox se encaixa diretamente no Elysia, sem camadas extras.
+
+```ts
+import { Elysia } from 'elysia';
+import {
+    APIResponse,
+    APICheckout,
+    RESTPostCreateNewCheckoutBody,
+} from '@abacatepay/typebox/v2';
+
+new Elysia().post(
+    '/checkouts/create',
+    () => {
+        ...
+    },
+    {
+        body: RESTPostCreateNewCheckoutBody,
+        response: APIResponse(APICheckout),
+        detail: {
+            tags: ['Checkouts'],
+            summary: 'Create a new checkout',
+        },
+    },
+);
+```
+
+Isso garante:
+
+- Validação automática de input
+- Tipagem forte de output
+- OpenAPI gerado corretamente
+
+## Uso Básico (Validação Runtime)
+
+Você pode validar facilmente dados retornados pela API em runtime:
+
+```ts
+import { Value } from '@sinclair/typebox/value';
+import { APICheckout } from '@abacatepay/typebox/v2';
+
+const data = await fetchCheckout();
+
+if (!Value.Check(APICheckout, data)) {
+    throw new Error('Invalid checkout payload');
+}
+```
+
+<Card title="Por que validar em runtime?" icon="shield"> Tipos TypeScript não existem em produção. A validação runtime evita bugs silenciosos e payloads inválidos. </Card>
+
+## OpenAPI & JSON Schema
+
+Todos os schemas são **100% compatíveis com OpenAPI 3.1** via JSON Schema.
+
+Isso permite:
+
+- Geração automática de documentação
+- Criação de SDKs tipados
+- Validação de breaking changes entre versões
+- Integração com ferramentas do ecossistema OpenAPI
+
+## Convenções de Nomenclatura
+
+Para manter consistência e previsibilidade, os schemas seguem convenções claras:
+
+**Prefixo `API*`**
+- Estruturas gerais da API
+- Objetos retornados
+- Modelos públicos
+
+**Prefixo `REST<HTTPMethod>*`**
+- Schemas usados em endpoints REST
+    - Body → corpo da requisição
+    - QueryParams → parâmetros de query
+    - Data → dados retornados
+
+**Prefixo `Webhook*`**
+- Payloads de eventos de webhook
+
+## Integração com o Ecossistema
+
+<CardGroup cols={2}> <Card title="@abacatepay/rest" icon="repeat" href="./rest"> Cliente REST oficial que consome esses schemas. </Card> <Card title="SDKs Oficiais" icon="boxes-stacked" href="../sdks"> SDKs de alto nível baseados nos contratos da API. </Card> </CardGroup>
+<Icon icon="heart" type="solid"/> **Open Source, de Verdade**
+
+<Card title="Feito para desenvolvedores" icon="heart"> O <code>@abacatepay/typebox</code> é open source e mantido pela equipe AbacatePay. Schemas estáveis, versionados e alinhados à documentação oficial. </Card> <CardGroup cols={1}> <Card title="Documentação Completa" icon="book" href="./typebox"> Veja todos os schemas, versões e exemplos de uso. </Card> </CardGroup>
