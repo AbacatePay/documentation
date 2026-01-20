@@ -103,6 +103,15 @@
         ]
       },
       {
+        "tab": "CLI",
+        "groups": [
+          {
+            "group": "CLI",
+            "pages": ["pages/cli/cli"]
+          }
+        ]
+      },
+      {
         "tab": "Ecossistema",
         "groups": [
           {
