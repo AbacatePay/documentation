@@ -86,6 +86,8 @@ paths:
                     type: string
                     nullable: true
                     example: null
+                  success:
+                    $ref: '#/components/schemas/Success'
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -167,6 +169,8 @@ paths:
                     type: 'string'
                     example: null
                     nullable: true
+                  success:
+                    $ref: '#/components/schemas/Success'
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -209,6 +213,8 @@ paths:
                     type: 'string'
                     example: null
                     nullable: true
+                  success:
+                    $ref: '#/components/schemas/Success'
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -268,6 +274,8 @@ paths:
                     type: 'string'
                     example: null
                     nullable: true
+                  success:
+                    $ref: '#/components/schemas/Success'
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -319,6 +327,8 @@ paths:
                     type: 'string'
                     nullable: true
                     example: null
+                  success:
+                    $ref: '#/components/schemas/Success'
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -400,6 +410,8 @@ paths:
                     type: 'string'
                     nullable: true
                     example: null
+                  success:
+                    $ref: '#/components/schemas/Success'
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -442,6 +454,8 @@ paths:
                     type: 'string'
                     nullable: true
                     example: null
+                  success:
+                    $ref: '#/components/schemas/Success'
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -501,6 +515,8 @@ paths:
                     type: 'string'
                     nullable: true
                     example: null
+                  success:
+                    $ref: '#/components/schemas/Success'
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -560,6 +576,8 @@ paths:
                     type: 'string'
                     nullable: true
                     example: null
+                  success:
+                    $ref: '#/components/schemas/Success'
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -644,6 +662,8 @@ paths:
                     type: 'string'
                     nullable: true
                     example: null
+                  success:
+                    $ref: '#/components/schemas/Success'
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -725,6 +745,8 @@ paths:
                     type: 'string'
                     nullable: true
                     example: null
+                  success:
+                    $ref: '#/components/schemas/Success'
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -774,6 +796,8 @@ paths:
                     type: 'string'
                     nullable: true
                     example: null
+                  success:
+                    $ref: '#/components/schemas/Success'
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -833,6 +857,8 @@ paths:
                     type: 'string'
                     nullable: true
                     example: null
+                  success:
+                    $ref: '#/components/schemas/Success'
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -1008,6 +1034,8 @@ paths:
                     type: "string"
                     nullable: true
                     example: null
+                  success:
+                    $ref: '#/components/schemas/Success'
         "401":
           description: Não autorizado. Falha na autenticação.
           content:
@@ -1050,6 +1078,8 @@ paths:
                     type: string
                     nullable: true
                     example: null
+                  success:
+                    $ref: '#/components/schemas/Success'
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -1096,6 +1126,8 @@ paths:
                       $ref: '#/components/schemas/Billing'
                   error:
                     type: 'null'
+                  success:
+                    $ref: '#/components/schemas/Success'
         '401':
           description: Falha na autenticação.
           content:
@@ -1183,6 +1215,8 @@ paths:
                     type: 'string'
                     example: null
                     nullable: true
+                  success:
+                    $ref: '#/components/schemas/Success'
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -1223,7 +1257,9 @@ paths:
                   error:
                     type: 'string'
                     example: null
-                    nullable: true  
+                    nullable: true
+                  success:
+                    $ref: '#/components/schemas/Success'
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -1273,6 +1309,8 @@ paths:
                     type: 'string'
                     example: null
                     nullable: true
+                  success:
+                    $ref: '#/components/schemas/Success'
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -1391,6 +1429,8 @@ paths:
                     type: string
                     nullable: true
                     example: null
+                  success:
+                    $ref: '#/components/schemas/Success'
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -1473,6 +1513,8 @@ paths:
                     type: string
                     nullable: true
                     example: null
+                  success:
+                    $ref: '#/components/schemas/Success'
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -1565,6 +1607,8 @@ paths:
                     type: string
                     nullable: true
                     example: null
+                  success:
+                    $ref: '#/components/schemas/Success'
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -1687,6 +1731,8 @@ paths:
                     type: string
                     nullable: true
                     example: null
+                  success:
+                    $ref: '#/components/schemas/Success'
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -1763,6 +1809,8 @@ paths:
                     type: string
                     nullable: true
                     example: null
+                  success:
+                    $ref: '#/components/schemas/Success'
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -1794,6 +1842,8 @@ paths:
                     type: string
                     nullable: true
                     example: null
+                  success:
+                    $ref: '#/components/schemas/Success'
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -1841,6 +1891,8 @@ paths:
                     type: string
                     nullable: true
                     example: null
+                  success:
+                    $ref: '#/components/schemas/Success'
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -1883,6 +1935,8 @@ paths:
                     type: string
                     nullable: true
                     example: null
+                  success:
+                    $ref: '#/components/schemas/Success'
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -1965,6 +2019,8 @@ paths:
                     type: string
                     nullable: true
                     example: null
+                  success:
+                    $ref: '#/components/schemas/Success'
         '400':
           description: Erro de validação. Parâmetros inválidos ou ausentes.
           content:
@@ -1989,6 +2045,10 @@ paths:
                     example: 'Token de autenticação inválido ou ausente.'
 components:
   schemas:
+    Success:
+      type: boolean
+      description: Se a requisição obteve sucesso ou não.
+      example: true
     Customer:
       type: object
       description: Os dados do seu cliente.
