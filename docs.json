@@ -116,7 +116,7 @@
         "groups": [
           {
             "group": "Ecossistema",
-            "pages": ["pages/ecosystem/ecosystem", "pages/ecosystem/theme", "pages/ecosystem/rest", "pages/ecosystem/types", "pages/ecosystem/eslint", "pages/ecosystem/typebox", "pages/ecosystem/zod"]
+            "pages": ["pages/ecosystem/ecosystem", "pages/ecosystem/theme", "pages/ecosystem/rest", "pages/ecosystem/types", "pages/ecosystem/types-go", "pages/ecosystem/eslint", "pages/ecosystem/typebox", "pages/ecosystem/zod"]
           }
         ]
       },
