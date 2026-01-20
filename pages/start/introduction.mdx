@@ -15,11 +15,11 @@ A AbacatePay é um gateway de pagamento que surgiu da nossa própria necessidade
 
 Nossa solução? Uma plataforma que transforma a complexidade das Fintechs em uma API simples e intuitiva. Veja como é fácil:
 
-```javascript
-// Exemplo de criação de cobrança
-abacatePay.checkout.create({
-   items: [{ id: 'pro', quantity: 1 }]
-})
+```ts
+// Exemplo de criação de uma cobrança
+abacatepay.checkouts.create({
+   items: [{ id: 'pro', quantity: 1 }],
+});
 ```
 
 ## <Icon icon="laptop" type="solid"/>  API descomplicada
@@ -28,8 +28,8 @@ Nossa API foi construída com três princípios fundamentais:
 
 1. **Baseada em intenção**: Cada endpoint representa exatamente o que você lê
    ```
-   POST /billing/create    // Cria um pagamento
-   GET /billing/get       // Busca um pagamento específico
+   POST /checkouts/create    // Cria um pagamento
+   GET /checkouts/get       // Busca um pagamento específico
    ```
 
 2. **Consistente**: Nossa API retorna sempre um option contendo o erro ou os dados de retorno, o que facilita a implementação em linguagens de tipagem forte e consistência em todas as operações.
