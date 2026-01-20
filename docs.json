@@ -107,7 +107,7 @@
         "groups": [
           {
             "group": "Ecossistema",
-            "pages": ["pages/ecosystem/ecosystem"]
+            "pages": ["pages/ecosystem/ecosystem", "pages/ecosystem/rest"]
           }
         ]
       },

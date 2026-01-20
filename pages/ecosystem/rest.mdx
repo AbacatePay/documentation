@@ -1,0 +1,152 @@
+---
+title: 'REST'
+description: 'REST client ergonômico, rápido e totalmente tipado para a API da AbacatePay.'
+icon: 'repeat'
+---
+
+## O que é o @abacatepay/rest?
+
+O [@abacatepay/rest](https://www.npmjs.com/package/@abacatepay/rest) é um **cliente REST leve, rápido e totalmente tipado** para consumir a API da AbacatePay diretamente, sem abstrações pesadas.
+
+Ele foi projetado para **Node.js, Bun e runtimes modernos**, oferecendo controle total sobre as requisições, com **retries inteligentes**, **backoff automático**, **timeouts configuráveis** e **tratamento de erros consistente**.
+
+<Card title="Quando usar o REST Client?" icon="help-circle" horizontal>
+  * Você quer **controle total** sobre endpoints e payloads
+  * Está criando **SDKs, CLIs ou ferramentas internas**
+  * Prefere uma camada fina sobre HTTP em vez de abstrações de alto nível
+  * Precisa de **performance e previsibilidade**
+</Card>
+
+---
+
+## Instalação
+
+Use o *package manager* da sua preferência:
+
+```bash
+bun add @abacatepay/rest
+# ou
+pnpm add @abacatepay/rest
+# ou
+npm install @abacatepay/rest
+```
+
+## Uso Básico
+
+Exemplo simulando um pagamento Pix via QR Code:
+
+```ts
+import { REST } from '@abacatepay/rest';
+
+const client = new REST({
+    secret: process.env.ABACATEPAY_API_KEY!,
+});
+
+const pix = await client.post('/transparents/simulate-payment', {
+    query: {
+        id: 'pix_char_123456'
+    },
+});
+
+console.log(pix);
+```
+
+## Versionando para usar a API v1
+
+```ts
+import { REST } from '@abacatepay/rest';
+
+const client = new REST({
+    version: 1,
+});
+
+const { status, expiresAt } = await client.get('/pixQrCode/check', {
+    query: {
+        id,
+    },
+});
+
+console.log(status, expiresAt);
+```
+
+Você não precisa fornecer um secret caso não queira, o @abacatepay/rest tenta pegar automáticamente do env `ABACATEPAY_SECRET` ou `ABACATEPAY_API_KEY`.
+
+## Performance & Design
+
+O `@abacatepay/rest` foi desenhado para ser:
+
+- Zero dependências
+- Compatível com fetch nativo
+- Rápido por padrão
+- Seguro por padrão
+
+<CardGroup cols={2}> <Card title="Tipagem forte" icon="lasso"> Tipos completos para respostas, erros e configurações. </Card> <Card title="Runtimes modernos" icon="boxes"> Funciona perfeitamente em Node.js, Bun e ambientes modernos. </Card> </CardGroup>
+
+## Retry & Backoff
+
+Por padrão, o REST Client faz 3 tentativas automáticas para erros retryable, como:
+
+- Rate limit (`429`)
+- Erros `5xx`
+- Falhas de rede
+
+```ts
+const client = new REST({
+    retry: {
+        max: 5,
+        onRetry({ options, attempt, response }) {
+            console.log(`Retrying ${response.url} (${options.method})...`);
+        },
+    },
+});
+```
+
+### Backoff customizado
+
+```ts
+const client = new REST({
+    retry: {
+        max: 7,
+        backoff(attempt) {
+            return Math.min(10_000, 500 * 2 ** attempt);
+        },
+    },
+});
+```
+
+Se nenhum backoff for definido, o client usa **backoff exponencial com jitter** automaticamente.
+
+### Rate Limit
+
+Você também pode controlar **completamente** quando um rate-limit acontece:
+
+```ts
+const client = new REST({
+    async onRateLimit(response) {
+        const data = await response.text();
+
+        console.log(data);
+    },
+});
+```
+
+## Configurações Avançadas
+
+Você pode customizar completamente o comportamento do client:
+
+- Timeout por request
+- Headers globais
+- Retry e backoff
+- Versionamento automático
+- Base URL (sandbox / production)
+- Hooks internos (request / response)
+
+<Card title="Flexível por design" icon="sliders"> O REST Client não impõe padrões — ele se adapta à sua arquitetura. </Card>
+
+<Icon icon="boxes-stacked" type="solid"/> REST Client vs SDKs
+
+<CardGroup cols={2}> <Card title="REST Client" icon="sparkles"> Camada fina, controle total, ideal para libs, CLIs e integrações avançadas. </Card> <Card title="SDKs" icon="boxes-stacked" href="../sdks"> Abstrações de alto nível para integração rápida com menos código. </Card> </CardGroup>
+
+<Icon icon="book" type="solid"/> Próximos Passos
+
+<CardGroup cols={2}> <Card title="Documentação Completa" icon="book-open" href="../payment/reference"> Veja todos os endpoints, opções e exemplos avançados. </Card> <Card title="NPM Package" icon="box" href="https://www.npmjs.com/package/@abacatepay/rest"> Acesse o pacote no NPM e histórico de versões. </Card> </CardGroup> <Card title="Open Source de verdade" icon="heart" href="https://github.com/almeidazs/ecosystem"> O <code>@abacatepay/rest</code> é open source e mantido pela equipe AbacatePay. Contribuições são bem-vindas. </Card>
