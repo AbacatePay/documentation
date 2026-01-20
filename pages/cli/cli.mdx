@@ -87,7 +87,7 @@ abacatepay login
 
 Após a autenticação (*OAuth Device Flow*), você deve informar a URL do seu servidor local, então a CLI encaminhará todos os webhooks para você.
 
-<Card title="Seguro por padrão" icon="shield-check"> Nenhuma credencial é enviada para terceiros ou armazenada sem consentimento explícito. </Card>
+<Card title="Seguro por padrão" icon="shield-check">Nenhuma credencial é enviada para terceiros ou armazenada sem consentimento explícito. </Card>
 
 O token da sua conta é armazenado com segurança no keyring nativo do seu sistema operacional.
 
@@ -105,7 +105,35 @@ sudo apt install gnome-keyring
 # Fedora
 sudo dnf install gnome-keyring
 ```
+
+E então tentar usar novamente o comando:
+
+```bash
+abacatepay login
+```
 </Accordion>
+
+### Ambientes
+
+Atualmente você pode usar dois ambientes na CLI, o de produção (Padrão) e o de teste.
+
+#### Produção (Padrão)
+
+```bash
+abacatepay login
+```
+
+Sem diferenças na execução do comando, automáticamente conectado com <br/> `wss://ws.abacatepay.com/ws`.
+
+#### Servidor de Teste
+
+Um ambiente controlado para usar eventos simulados e dados falsos.
+
+```bash
+abacatepay login -l
+```
+
+Apenas use a flag `-l` e você será automáticamente conectado com `ws://191.252.202.128:8080/ws`.
 
 ## Design & Filosofia
 
