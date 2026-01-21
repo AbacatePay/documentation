@@ -1,0 +1,334 @@
+---
+title: 'Webhooks & Eventos'
+icon: 'webhook'
+description: 'Comandos para escutar, simular e depurar webhooks e eventos na AbacatePay CLI.'
+---
+
+## Eventos & Webhooks
+
+Comandos para escutar, simular e depurar webhooks durante o desenvolvimento.
+
+---
+
+### `abacatepay listen`
+
+Escuta webhooks em tempo real e os encaminha para sua aplicação local.
+
+```bash
+abacatepay listen [flags]
+```
+
+| Flag | Alias | Descrição | Padrão |
+|------|-------|-----------|--------|
+| `--forward-to` | - | URL para onde os eventos serão encaminhados | `http://localhost:3000/api/webhooks` |
+| `--mock` | - | Simula webhooks sem conectar à API | `false` |
+
+<Info>
+O comando `listen` mantém uma conexão WebSocket ativa com a AbacatePay para receber eventos em tempo real. Todos os eventos recebidos são salvos no log local.
+
+Se você não especificar `--forward-to`, a CLI perguntará via prompt qual URL usar, com `http://localhost:3000/webhooks/abacatepay` como padrão.
+</Info>
+
+**Exemplos:**
+
+```bash
+# Escutar e encaminhar para o endpoint padrão
+abacatepay listen
+
+# Encaminhar para URL personalizada
+abacatepay listen --forward-to http://localhost:8080/webhook
+
+# Modo simulação (sem conexão com a API)
+abacatepay listen --mock
+```
+
+<Tip>
+Use `Ctrl+C` para interromper. Todos os eventos ficam salvos e podem ser consultados com `abacatepay logs list`.
+</Tip>
+
+---
+
+### `abacatepay trigger`
+
+Dispara eventos de teste para simular webhooks durante o desenvolvimento.
+
+```bash
+abacatepay trigger <event>
+```
+
+**Eventos disponíveis:**
+
+| Evento | Descrição |
+|--------|-----------|
+| `billing.paid` | Simula o pagamento de uma cobrança Pix |
+| `payout.done` | Simula um saque concluído com sucesso |
+| `payout.failed` | Simula uma falha em saque |
+
+<Warning>
+O evento `billing.paid` cria uma cobrança Pix real na API (em modo teste) e simula seu pagamento. Os eventos `payout.*` geram apenas payloads mock locais.
+</Warning>
+
+```bash
+abacatepay trigger billing.paid
+```
+
+<CodeGroup>
+```text text
+╭────────────────────────╮
+│                        │
+│  🥑 Billing.paid Triggered │
+│                        │
+│  Charge ID: pix_abc123xyz│
+│  Status:    Simulated  │
+│  Note:      Check your 'listen' terminal for the webhook event│
+│                        │
+╰────────────────────────╯
+```
+
+```json json
+{
+  "event": "billing.paid",
+  "chargeId": "pix_abc123xyz"
+}
+```
+</CodeGroup>
+
+<Tip>
+Execute `abacatepay listen` em outro terminal antes de usar `trigger` para receber os webhooks.
+</Tip>
+
+---
+
+### `abacatepay events sample`
+
+Gera um payload JSON de exemplo para um tipo de evento específico.
+
+```bash
+abacatepay events sample <event>
+```
+
+**Eventos:** `billing.paid`, `payout.done`, `payout.failed`
+
+```bash
+# Gerar sample de billing.paid
+abacatepay events sample billing.paid
+
+# Salvar em arquivo
+abacatepay events sample billing.paid > payload.json
+```
+
+<CodeGroup>
+```json billing.paid
+{
+  "id": "evt_abc123",
+  "event": "billing.paid",
+  "data": {
+    "billing": {
+      "id": "bill_xyz789",
+      "amount": 1000,
+      "status": "paid",
+      "paidAt": "2026-01-21T10:30:00Z"
+    }
+  }
+}
+```
+
+```json payout.done
+{
+  "id": "evt_def456",
+  "event": "payout.done",
+  "data": {
+    "transaction": {
+      "id": "txn_abc123",
+      "status": "done",
+      "amount": 5000
+    }
+  }
+}
+```
+
+```json payout.failed
+{
+  "id": "evt_ghi789",
+  "event": "payout.failed",
+  "data": {
+    "transaction": {
+      "id": "txn_xyz456",
+      "status": "failed",
+      "amount": 3000,
+      "error": {
+        "code": "INSUFFICIENT_FUNDS",
+        "message": "Saldo insuficiente para saque"
+      }
+    }
+  }
+}
+```
+</CodeGroup>
+
+<Info>
+Use este comando para entender a estrutura dos payloads e configurar corretamente o parsing na sua aplicação.
+</Info>
+
+---
+
+### `abacatepay events resend`
+
+Reenvia um evento passado para seu endpoint de webhook local.
+
+```bash
+abacatepay events resend <event-id> [flags]
+```
+
+| Flag | Alias | Descrição | Padrão |
+|------|-------|-----------|--------|
+| `--forward-to` | - | URL para onde o evento será reenviado | URL original ou `http://localhost:3000/api/webhooks` |
+
+<Info>
+O evento é buscado no arquivo de log local. O ID pode ser obtido através de `abacatepay logs list`.
+</Info>
+
+```bash
+abacatepay events resend evt_abc123xyz
+```
+
+<CodeGroup>
+```text text
+Webhook signing secret: whsec_abacate_local_dev_secret
+Resending event evt_abc123xyz to http://localhost:3000/api/webhooks...
+
+→ [200 OK] billing.paid
+
+╭──────────────────────────╮
+│                          │
+│  🥑 Event resent successfully│
+│                          │
+│  ID:       evt_abc123xyz │
+│  Status:   200 OK        │
+│  Duration: 45ms          │
+│                          │
+╰──────────────────────────╯
+```
+
+```json json
+{
+  "id": "evt_abc123xyz",
+  "status": 200,
+  "statusText": "OK",
+  "duration": "45ms"
+}
+```
+</CodeGroup>
+
+<Tip>
+O header `X-Abacate-Signature` é gerado automaticamente com assinatura válida para ambiente de desenvolvimento.
+</Tip>
+
+---
+
+### `abacatepay logs list`
+
+Lista o histórico de eventos de webhook gravados localmente.
+
+```bash
+abacatepay logs list [flags]
+```
+
+| Flag | Alias | Descrição | Padrão |
+|------|-------|-----------|--------|
+| `--limit` | `-n` | Número de entradas a exibir | `50` |
+| `--type` | `-t` | Filtrar por tipo de log | - |
+
+**Tipos de log disponíveis:**
+
+| Tipo | Descrição |
+|------|-----------|
+| `webhook_received` | Webhook recebido da API |
+| `webhook_forwarded` | Webhook encaminhado com sucesso |
+| `webhook_forward_failed` | Falha ao encaminhar (erro HTTP) |
+| `webhook_forward_error` | Erro de conexão ao encaminhar |
+
+```bash
+# Listar últimos 50 logs
+abacatepay logs list
+
+# Listar últimos 10 logs
+abacatepay logs list -n 10
+
+# Filtrar apenas webhooks recebidos
+abacatepay logs list -t webhook_received
+```
+
+<CodeGroup>
+```text table
+┌─────────────────────────┬─────────────────────────┬───────────────┬────────────────────────────────────┐
+│ Timestamp               │ Type                    │ ID            │ URL                                │
+├─────────────────────────┼─────────────────────────┼───────────────┼────────────────────────────────────┤
+│ 2026-01-21T10:30:00Z    │ webhook_forwarded [200] │ evt_abc123    │ http://localhost:3000/api/webhooks │
+│ 2026-01-21T10:29:55Z    │ webhook_received        │ evt_abc123    │ http://localhost:3000/api/webhooks │
+└─────────────────────────┴─────────────────────────┴───────────────┴────────────────────────────────────┘
+```
+
+```json json
+{
+  "logs": [
+    {
+      "timestamp": "2026-01-21T10:30:00Z",
+      "msg": "webhook_forwarded",
+      "id": "evt_abc123",
+      "url": "http://localhost:3000/api/webhooks",
+      "statusCode": 200,
+      "size_bytes": 1024,
+      "raw_message": "{\"id\":\"evt_abc123\",\"event\":\"billing.paid\",...}",
+      "event": "billing.paid",
+      "level": "INFO"
+    }
+  ],
+  "count": 1
+}
+```
+</CodeGroup>
+
+---
+
+### `abacatepay logs tail`
+
+Exibe eventos de webhook em tempo real via streaming.
+
+```bash
+abacatepay logs tail
+```
+
+<Info>
+Este comando conecta ao WebSocket e exibe os eventos conforme chegam, sem encaminhá-los para nenhum endpoint.
+</Info>
+
+```text
+Streaming webhook events...
+
+Press Ctrl+C to stop
+
+[2026-01-21T10:30:00Z] billing.paid - evt_abc123xyz
+  Amount: R$ 10,00
+  Status: paid
+
+^C
+Listener stopped
+```
+
+<Tip>
+Use `logs tail` para monitorar eventos sem processá-los. Para receber e encaminhar webhooks, use `abacatepay listen`.
+</Tip>
+
+---
+
+## Navegação
+
+<CardGroup cols={2}>
+  <Card title="← Pagamentos" icon="arrow-left" href="./payments">
+    Criação e consulta de pagamentos.
+  </Card>
+  <Card title="Utilitários →" icon="wrench" href="./utils">
+    Verificação de webhooks e atualização.
+  </Card>
+</CardGroup>

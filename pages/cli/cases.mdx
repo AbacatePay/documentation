@@ -1,0 +1,110 @@
+---
+title: 'Casos de Uso'
+icon: 'gear'
+description: 'Cenários práticos de uso da AbacatePay CLI em desenvolvimento, testes e automação.'
+---
+
+## Casos de Uso
+
+Cenários práticos demonstrando o uso da AbacatePay CLI em diferentes situações.
+
+---
+
+### Teste rápido de integração local
+
+Teste sua integração localmente antes de ir para produção.
+
+```bash
+# 1. Autentique em modo teste
+abacatepay -l login
+
+# 2. Inicie o listener
+abacatepay -l listen --forward-to http://localhost:3000/webhooks
+
+# 3. Em outro terminal, crie uma cobrança e simule o pagamento
+abacatepay -l payments create pix
+abacatepay -l payments simulate pix_xxx
+```
+
+---
+
+### Debug de webhooks
+
+Diagnostique problemas com webhooks usando verificação local e modo verbose.
+
+```bash
+# Capture com verbose para ver detalhes
+abacatepay -v listen --forward-to http://localhost:3000/webhooks
+
+# Verifique a assinatura manualmente se falhar
+abacatepay verify \
+  --secret "whsec_seu_secret" \
+  --payload '{"id":"evt_123",...}' \
+  --signature "t=123456,v1=abc..."
+```
+
+---
+
+### Automação em CI/CD
+
+Integre a CLI em pipelines de CI/CD usando output JSON e variáveis de ambiente.
+
+```bash
+# Output JSON para scripts
+PAYMENT_ID=$(abacatepay -o json payments create pix | jq -r '.data.id')
+
+# Simular e verificar
+abacatepay payments simulate $PAYMENT_ID
+STATUS=$(abacatepay -o json payments check $PAYMENT_ID | jq -r '.data.status')
+
+if [ "$STATUS" = "PAID" ]; then
+  echo "Pagamento confirmado!"
+fi
+```
+
+<Tip>
+Em CI/CD, sempre use `-o json` para output estruturado e parseável. Evite depender de formatação de texto que pode mudar entre versões.
+</Tip>
+
+---
+
+### Múltiplas contas/ambientes
+
+Alterne entre contas e ambientes (produção, sandbox, desenvolvimento).
+
+```bash
+# Criar perfis diferentes
+abacatepay login --name producao --key "sk_live_xxx"
+abacatepay login --name sandbox --key "sk_test_xxx"
+
+# Alternar entre perfis
+abacatepay switch producao
+abacatepay whoami
+
+abacatepay switch sandbox
+abacatepay -l listen
+```
+
+<Info>
+Você pode usar variáveis de ambiente para sobrescrever o perfil temporariamente:
+```bash
+ABACATEPAY_PROFILE=sandbox abacatepay billing list
+```
+</Info>
+
+<Warning>
+Sempre verifique o perfil ativo antes de executar comandos destrutivos ou criar cobranças reais. Use `abacatepay status` para confirmar.
+</Warning>
+
+---
+
+## Navegação
+
+<CardGroup cols={2}>
+  <Card title="← Utilitários" icon="arrow-left" href="./utils">
+    Verificação de webhooks e atualização.
+  </Card>
+  <Card title="Configuração →" icon="settings" href="./flags">
+    Flags globais e ambientes.
+  </Card>
+</CardGroup>

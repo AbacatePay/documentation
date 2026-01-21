@@ -1,0 +1,170 @@
+---
+title: 'Pagamentos'
+icon: 'wallet'
+description: 'Comandos para criação, consulta e simulação de pagamentos PIX na AbacatePay CLI.'
+---
+
+## Pagamentos
+
+Os comandos de pagamentos permitem criar, verificar e simular cobranças diretamente pela linha de comando.
+
+---
+
+### `abacatepay payments create`
+
+Cria uma nova cobrança de pagamento. Suporta PIX QR Code e Checkout.
+
+Por padrão, cria um pagamento com dados fictícios (mock). Use o modo interativo para especificar os detalhes manualmente.
+
+```bash
+abacatepay payments create [pix|checkout] [flags]
+```
+
+| Flag | Alias | Descrição | Padrão |
+|------|-------|-----------|--------|
+| `--interactive` | `-i` | Ativa o modo interativo para inserir dados | `false` |
+
+<Tip>
+Se você não especificar o método (`pix` ou `checkout`), a CLI exibirá um menu interativo para seleção.
+</Tip>
+
+**Exemplos:**
+
+```bash
+# Criar PIX com dados mock
+abacatepay payments create pix
+
+# Criar checkout no modo interativo
+abacatepay payments create checkout -i
+
+# Selecionar método interativamente
+abacatepay payments create
+```
+
+<CodeGroup>
+```text text
+╭──────────────────────╮
+│                      │
+│  🥑 PIX Payment Created│
+│                      │
+│  ID:      pix_abc123xyz│
+│  Status:  PENDING    │
+│                      │
+╰──────────────────────╯
+```
+
+```json json
+{
+  "data": {
+    "id": "pix_abc123xyz",
+    "brCode": "00020126580014br.gov.bcb.pix0136...",
+    "status": "PENDING"
+  }
+}
+```
+
+```text table
+┌────────────────┬──────────┐
+│ ID             │ Status   │
+├────────────────┼──────────┤
+│ pix_abc123xyz  │ PENDING  │
+└────────────────┴──────────┘
+```
+</CodeGroup>
+
+---
+
+### `abacatepay payments check`
+
+Consulta o status atual de um pagamento PIX pelo ID.
+
+```bash
+abacatepay payments check <payment-id>
+```
+
+```bash
+abacatepay payments check pix_abc123xyz
+```
+
+<CodeGroup>
+```text text
+╭─────────────────╮
+│                 │
+│  🥑 PIX Status Check │
+│                 │
+│  ID:      pix_abc123xyz │
+│  Status:  PAID │
+│                 │
+╰─────────────────╯
+```
+
+```json json
+{
+  "data": {
+    "id": "pix_abc123xyz",
+    "status": "PAID"
+  }
+}
+```
+</CodeGroup>
+
+<Info>
+Status possíveis: `PENDING` (aguardando), `PAID` (pago), `EXPIRED` (expirado).
+</Info>
+
+---
+
+### `abacatepay payments simulate`
+
+Simula o pagamento de uma cobrança PIX em ambiente de sandbox.
+
+```bash
+abacatepay payments simulate <payment-id>
+```
+
+```bash
+abacatepay payments simulate pix_abc123xyz
+```
+
+<CodeGroup>
+```text text
+╭─────────────────────╮
+│                     │
+│  🥑 PIX Payment Simulated│
+│                     │
+│  ID:      pix_abc123xyz│
+│  Status:  PAID      │
+│                     │
+╰─────────────────────╯
+```
+
+```json json
+{
+  "data": {
+    "id": "pix_abc123xyz",
+    "status": "PAID"
+  }
+}
+```
+</CodeGroup>
+
+<Info>
+Após a simulação, o status do pagamento será alterado para `PAID` e os webhooks configurados serão disparados normalmente.
+</Info>
+
+<Warning>
+Este comando só funciona em ambiente de sandbox. Em produção, os pagamentos devem ser realizados pelo fluxo real do PIX.
+</Warning>
+
+---
+
+## Navegação
+
+<CardGroup cols={2}>
+  <Card title="← Autenticação" icon="arrow-left" href="./auth">
+    Login, logout e gerenciamento de perfis.
+  </Card>
+  <Card title="Webhooks →" icon="webhook" href="./webhooks">
+    Comandos de eventos e webhooks.
+  </Card>
+</CardGroup>

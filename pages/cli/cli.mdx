@@ -4,21 +4,92 @@ icon: 'terminal'
 description: 'Ferramenta oficial de linha de comando da AbacatePay para desenvolvimento, testes e automações.'
 ---
 
-## O que é a AbacatePay CLI?
+# AbacatePay CLI
 
-A **AbacatePay CLI** é a ferramenta oficial de linha de comando para interagir com a plataforma AbacatePay diretamente do terminal.
-
-Projetada para **desenvolvedores**, permite criar cobranças, escutar webhooks, simular pagamentos e automatizar fluxos — tudo sem sair do terminal.
-
----
+Ferramenta oficial de linha de comando para desenvolvimento, testes e automação com a plataforma AbacatePay.
 
 ## Principais Capacidades
 
-<CardGroup cols={2}>
-  <Card title="Autenticação" icon="key" href="#autenticação">
+<CardGroup cols={3}>
+  <Card title="Autenticação" icon="key" href="./auth">
     Login via OAuth, múltiplos perfis e gerenciamento de sessões.
   </Card>
 
+  <Card title="Webhooks" icon="webhook" href="./webhooks">
+    Escute, encaminhe e depure webhooks em tempo real.
+  </Card>
+
+  <Card title="Pagamentos" icon="wallet" href="./payments">
+    Crie, consulte e simule cobranças pelo terminal.
+  </Card>
+
+  <Card title="Automação" icon="gear" href="./cases">
+    Output em JSON, não-interativo e scriptável.
+  </Card>
+
+  <Card title="Configuração" icon="settings" href="./flags">
+    Flags globais, formatos de output e ambientes.
+  </Card>
+
+  <Card title="Utilitários" icon="wrench" href="./utils">
+    Verificação de webhooks e atualização.
+  </Card>
+</CardGroup>
+
+## Início Rápido
+
+<Steps>
+  <Step title="Autentique-se">
+    ```bash
+    abacatepay login
+    ```
+    O navegador abrirá para autenticação OAuth.
+  </Step>
+
+  <Step title="Inicie o listener">
+    ```bash
+    abacatepay listen --forward-to http://localhost:3000/api/webhooks
+    ```
+  </Step>
+
+  <Step title="Crie uma cobrança de teste">
+    Em outro terminal:
+    ```bash
+    abacatepay payments create pix
+    ```
+  </Step>
+</Steps>
+
+## Instalação
+
+```bash
+# Go (recomendado)
+go install github.com/AbacatePay/abacatepay-cli@latest
+
+# Homebrew (macOS / Linux)
+brew install --build-from-source github.com/AbacatePay/abacatepay-cli
+
+# Verificar instalação
+abacatepay --version
+```
+
+Explore os diferentes aspectos da CLI através das seções organizadas:
+
+- **[Visão Geral](./overview)** - Introdução e instalação
+- **[Configuração](./flags)** - Flags globais, formatos de output e ambientes
+- **[Autenticação](./auth)** - Login, logout e gerenciamento de perfis
+- **[Pagamentos](./payments)** - Criação, consulta e simulação de pagamentos
+- **[Webhooks](./webhooks)** - Escuta, eventos e logs de webhooks
+- **[Utilitários](./utils)** - Verificação de webhooks e atualização
+- **[Casos de Uso](./cases)** - Cenários práticos e automação
+
+---
+
+<Card title="Open source de verdade" icon="heart">
+A AbacatePay CLI é mantida pela equipe AbacatePay e pela comunidade.
+</Card>
+
+<CardGroup cols={3}>
   <Card title="Webhooks" icon="webhook" href="#eventos--webhooks">
     Escute, encaminhe e depure webhooks em tempo real.
   </Card>
@@ -33,8 +104,6 @@ Projetada para **desenvolvedores**, permite criar cobranças, escutar webhooks, 
 </CardGroup>
 
 ---
-
-## Instalação
 
 ### Go (recomendado)
 
@@ -57,8 +126,6 @@ abacatepay --version
 ```
 
 ---
-
-## Início Rápido
 
 <Steps>
   <Step title="Autentique-se">
@@ -84,8 +151,6 @@ abacatepay --version
 
 ---
 
-## Global Flags
-
 Flags disponíveis em todos os comandos:
 
 | Flag | Alias | Tipo | Padrão | Descrição |
@@ -100,8 +165,6 @@ abacatepay -v -l -o json payments create pix
 ```
 
 ---
-
-## Formatos de Output
 
 A CLI suporta três formatos de saída, configuráveis via `--output` ou `-o`.
 
@@ -205,10 +268,15 @@ abacatepay login --name producao --key "sk_live_xxxxx"
 
 <CodeGroup>
 ```text text
-✓ Signed in successfully
-  Profile: default
-  User: João Silva
-  Email: joao@empresa.com
+╭────────────────────────────╮
+│                            │
+│  🥑 Signed in successfully │
+│                            │
+│  Profile: default          │
+│  User: João Silva          │
+│  Email: joao@empresa.com   │
+│                            │
+╰────────────────────────────╯
 ```
 
 ```json json
@@ -242,8 +310,13 @@ abacatepay logout
 
 <CodeGroup>
 ```text text
-✓ Signed out successfully
-  Profile: default
+╭────────────────────────────╮
+│                            │
+│  🥑 Signed out successfully│
+│                            │
+│  Profile: default          │
+│                            │
+╰────────────────────────────╯
 ```
 
 ```json json
@@ -270,27 +343,33 @@ abacatepay whoami
 
 <CodeGroup>
 ```text text
-✓ User Information
-  Profile: producao
-  User: João Silva
-  Email: joao@empresa.com
-  Status: Authenticated
+╭───────────────────────────╮
+│                           │
+│  🥑 User Information      │
+│                           │
+│  Status: Authenticated    │
+│  Profile: salve3          │
+│  User: Mock User          │
+│  Email: mock@example.com  │
+│                           │
+│                           │
+╰───────────────────────────╯
 ```
 
 ```json json
 {
-  "profile": "producao",
-  "user": "João Silva",
-  "email": "joao@empresa.com",
+  "profile": "salve3",
+  "user": "Mock User",
+  "email": "mock@example.com",
   "status": "authenticated"
 }
 ```
 
 ```text table
 ┌─────────┬──────────────────┐
-│ Profile │ producao         │
-│ User    │ João Silva       │
-│ Email   │ joao@empresa.com │
+│ Profile │ salve3           │
+│ User    │ Mock User        │
+│ Email   │ mock@example.com │
 │ Status  │ Authenticated    │
 └─────────┴──────────────────┘
 ```
@@ -312,9 +391,14 @@ Use `abacatepay status` como diagnóstico rápido quando encontrar problemas de 
 
 <CodeGroup>
 ```text text
-✓ Connected successfully
-  Profile: default
-  Status: Online
+╭────────────────────────────╮
+│                            │
+│  🥑 Connected successfully │
+│                            │
+│  Profile: default          │
+│  Status: Online            │
+│                            │
+╰────────────────────────────╯
 ```
 
 ```json json
@@ -464,9 +548,14 @@ abacatepay payments create
 
 <CodeGroup>
 ```text text
-✓ PIX Payment Created
-  ID:      pix_abc123xyz
-  Status:  PENDING
+╭──────────────────────╮
+│                      │
+│  🥑 PIX Payment Created│
+│                      │
+│  ID:      pix_abc123xyz│
+│  Status:  PENDING    │
+│                      │
+╰──────────────────────╯
 ```
 
 ```json json
@@ -504,9 +593,14 @@ abacatepay payments check pix_abc123xyz
 
 <CodeGroup>
 ```text text
-✓ PIX Status Check
-  ID:      pix_abc123xyz
-  Status:  PAID
+╭─────────────────╮
+│                 │
+│  🥑 PIX Status Check │
+│                 │
+│  ID:      pix_abc123xyz │
+│  Status:  PAID │
+│                 │
+╰─────────────────╯
 ```
 
 ```json json
@@ -539,9 +633,14 @@ abacatepay payments simulate pix_abc123xyz
 
 <CodeGroup>
 ```text text
-✓ PIX Payment Simulated
-  ID:      pix_abc123xyz
-  Status:  PAID
+╭─────────────────────╮
+│                     │
+│  🥑 PIX Payment Simulated│
+│                     │
+│  ID:      pix_abc123xyz│
+│  Status:  PAID      │
+│                     │
+╰─────────────────────╯
 ```
 
 ```json json
@@ -585,6 +684,8 @@ abacatepay listen [flags]
 
 <Info>
 O comando `listen` mantém uma conexão WebSocket ativa com a AbacatePay para receber eventos em tempo real. Todos os eventos recebidos são salvos no log local.
+
+Se você não especificar `--forward-to`, a CLI perguntará via prompt qual URL usar, com `http://localhost:3000/webhooks/abacatepay` como padrão.
 </Info>
 
 **Exemplos:**
@@ -628,10 +729,15 @@ abacatepay trigger billing.paid
 
 <CodeGroup>
 ```text text
-✓ Billing.paid Triggered
-  Charge ID: pix_abc123xyz
-  Status:    Simulated
-  Note:      Check your 'listen' terminal for the webhook event
+╭────────────────────────╮
+│                        │
+│  🥑 Billing.paid Triggered │
+│                        │
+│  Charge ID: pix_abc123xyz│
+│  Status:    Simulated  │
+│  Note:      Check your 'listen' terminal for the webhook event│
+│                        │
+╰────────────────────────╯
 ```
 
 ```json json
@@ -730,10 +836,15 @@ Resending event evt_abc123xyz to http://localhost:3000/api/webhooks...
 
 → [200 OK] billing.paid
 
-✓ Event resent successfully
-  ID:       evt_abc123xyz
-  Status:   200 OK
-  Duration: 45ms
+╭──────────────────────────╮
+│                          │
+│  🥑 Event resent successfully│
+│                          │
+│  ID:       evt_abc123xyz │
+│  Status:   200 OK        │
+│  Duration: 45ms          │
+│                          │
+╰──────────────────────────╯
 ```
 
 ```json json
@@ -803,7 +914,11 @@ abacatepay logs list -t webhook_received
       "msg": "webhook_forwarded",
       "id": "evt_abc123",
       "url": "http://localhost:3000/api/webhooks",
-      "statusCode": 200
+      "statusCode": 200,
+      "size_bytes": 1024,
+      "raw_message": "{\"id\":\"evt_abc123\",\"event\":\"billing.paid\",...}",
+      "event": "billing.paid",
+      "level": "INFO"
     }
   ],
   "count": 1
@@ -877,10 +992,15 @@ abacatepay verify \
 
 <CodeGroup>
 ```text Sucesso
-✓ Signature Verified
-  Timestamp: 1705849200
-  Secret:    whsec_...x789
-  Status:    VALID
+╭───────────────────╮
+│                   │
+│  🥑 Signature Verified│
+│                   │
+│  Timestamp: 1705849200│
+│  Secret:    whsec_...x789│
+│  Status:    VALID  │
+│                   │
+╰───────────────────╯
 ```
 
 ```text Erro

@@ -27,7 +27,9 @@
     "tabs": [
       {
         "tab": "Bem-vindo",
-        "pages": ["pages/start/welcome"]
+        "pages": [
+          "pages/start/welcome"
+        ]
       },
       {
         "tab": "Comece aqui",
@@ -52,11 +54,22 @@
         "groups": [
           {
             "group": "Cobrar com Checkout",
-            "pages": ["pages/payment/reference", "pages/payment/create","pages/payment/list", "pages/payment/one" ]
+            "pages": [
+              "pages/payment/reference",
+              "pages/payment/create",
+              "pages/payment/list",
+              "pages/payment/one"
+            ]
           },
           {
             "group": "Crie seus clientes",
-            "pages": ["pages/client/reference", "pages/client/create", "pages/client/list", "pages/client/get", "pages/client/delete"]
+            "pages": [
+              "pages/client/reference",
+              "pages/client/create",
+              "pages/client/list",
+              "pages/client/get",
+              "pages/client/delete"
+            ]
           },
           {
             "group": "Transparente",
@@ -69,27 +82,57 @@
           },
           {
             "group": "Crie seus cupons",
-            "pages": ["pages/coupon/reference", "pages/coupon/create", "pages/coupon/list", "pages/coupon/get", "pages/coupon/delete", "pages/coupon/toggle"]
+            "pages": [
+              "pages/coupon/reference",
+              "pages/coupon/create",
+              "pages/coupon/list",
+              "pages/coupon/get",
+              "pages/coupon/delete",
+              "pages/coupon/toggle"
+            ]
           },
           {
             "group": "Produtos",
-            "pages": ["pages/products/reference", "pages/products/create", "pages/products/list", "pages/products/get", "pages/products/delete"]
+            "pages": [
+              "pages/products/reference",
+              "pages/products/create",
+              "pages/products/list",
+              "pages/products/get",
+              "pages/products/delete"
+            ]
           },
           {
             "group": "Assinaturas",
-            "pages": ["pages/items/reference", "pages/items/create", "pages/items/list"]
+            "pages": [
+              "pages/items/reference",
+              "pages/items/create",
+              "pages/items/list"
+            ]
           },
           {
             "group": "Saques / Transferências externas",
-            "pages": ["pages/withdraw/reference", "pages/withdraw/create", "pages/withdraw/get", "pages/withdraw/list"]
+            "pages": [
+              "pages/withdraw/reference",
+              "pages/withdraw/create",
+              "pages/withdraw/get",
+              "pages/withdraw/list"
+            ]
           },
           {
             "group": "Loja",
-            "pages": ["pages/store/reference", "pages/store/get"]
+            "pages": [
+              "pages/store/reference",
+              "pages/store/get"
+            ]
           },
           {
             "group": "Trust MRR",
-            "pages": ["pages/trustMRR/reference", "pages/trustMRR/mrr", "pages/trustMRR/get", "pages/trustMRR/list"]
+            "pages": [
+              "pages/trustMRR/reference",
+              "pages/trustMRR/mrr",
+              "pages/trustMRR/get",
+              "pages/trustMRR/list"
+            ]
           }
         ]
       },
@@ -98,7 +141,18 @@
         "groups": [
           {
             "group": "SDKs",
-            "pages": ["pages/sdks/sdks", "pages/sdks/nodejs", "pages/sdks/python", "pages/sdks/java", "pages/sdks/php", "pages/sdks/ruby", "pages/sdks/go", "pages/sdks/rust", "pages/sdks/kotlin", "pages/sdks/swift"]
+            "pages": [
+              "pages/sdks/sdks",
+              "pages/sdks/nodejs",
+              "pages/sdks/python",
+              "pages/sdks/java",
+              "pages/sdks/php",
+              "pages/sdks/ruby",
+              "pages/sdks/go",
+              "pages/sdks/rust",
+              "pages/sdks/kotlin",
+              "pages/sdks/swift"
+            ]
           }
         ]
       },
@@ -107,7 +161,15 @@
         "groups": [
           {
             "group": "CLI",
-            "pages": ["pages/cli/cli"]
+            "pages": [
+              "pages/cli/overview",
+              "pages/cli/flags",
+              "pages/cli/auth",
+              "pages/cli/payments",
+              "pages/cli/webhooks",
+              "pages/cli/utils",
+              "pages/cli/cases"
+            ]
           }
         ]
       },
@@ -116,13 +178,24 @@
         "groups": [
           {
             "group": "Ecossistema",
-            "pages": ["pages/ecosystem/ecosystem", "pages/ecosystem/theme", "pages/ecosystem/rest", "pages/ecosystem/types", "pages/ecosystem/types-go", "pages/ecosystem/eslint", "pages/ecosystem/typebox", "pages/ecosystem/zod"]
+            "pages": [
+              "pages/ecosystem/ecosystem",
+              "pages/ecosystem/theme",
+              "pages/ecosystem/rest",
+              "pages/ecosystem/types",
+              "pages/ecosystem/types-go",
+              "pages/ecosystem/eslint",
+              "pages/ecosystem/typebox",
+              "pages/ecosystem/zod"
+            ]
           }
         ]
       },
       {
         "tab": "ChangeLog",
-        "pages": ["pages/changelog/index"]
+        "pages": [
+          "pages/changelog/index"
+        ]
       }
     ]
   },
