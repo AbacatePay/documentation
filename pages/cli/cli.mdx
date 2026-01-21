@@ -220,8 +220,8 @@ abacatepay -o table profile list
 ┌───────────┬────────────┬────────┐
 │ Name      │ API Key    │ Active │
 ├───────────┼────────────┼────────┤
-│ default   │ sk_live... │ 🥑     │
-│ staging   │ sk_test... │        │
+│ default   │ abc_prod... │ 🥑     │
+│ staging   │ abc_dev... │        │
 └───────────┴────────────┴────────┘
 ```
 
@@ -260,10 +260,10 @@ Use `--name` para criar múltiplos perfis e alternar entre diferentes contas ou 
 abacatepay login
 
 # Login com API key específica
-abacatepay login --key "sk_live_xxxxx"
+abacatepay login --key "abc_prod_xxxxx"
 
 # Login criando um perfil nomeado
-abacatepay login --name producao --key "sk_live_xxxxx"
+abacatepay login --name producao --key "abc_prod_xxxxx"
 ```
 
 <CodeGroup>
@@ -444,9 +444,9 @@ abacatepay profile list
 ```json json
 {
   "profiles": [
-    {"name": "default", "key": "sk_live..."},
-    {"name": "producao", "key": "sk_live..."},
-    {"name": "staging", "key": "sk_test..."}
+    {"name": "default", "key": "abc_prod..."},
+    {"name": "producao", "key": "abc_prod..."},
+    {"name": "staging", "key": "abc_dev..."}
   ],
   "active": "default"
 }
@@ -456,9 +456,9 @@ abacatepay profile list
 ┌───────────┬────────────┬────────┐
 │ Name      │ API Key    │ Active │
 ├───────────┼────────────┼────────┤
-│ default   │ sk_live... │ 🥑     │
-│ producao  │ sk_live... │        │
-│ staging   │ sk_test... │        │
+│ default   │ abc_prod... │ 🥑     │
+│ producao  │ abc_prod... │        │
+│ staging   │ abc_dev... │        │
 └───────────┴────────────┴────────┘
 ```
 </CodeGroup>
@@ -1100,8 +1100,8 @@ fi
 
 ```bash
 # Criar perfis diferentes
-abacatepay login --name producao --key "sk_live_xxx"
-abacatepay login --name sandbox --key "sk_test_xxx"
+abacatepay login --name producao --key "abc_prod_xxx"
+abacatepay login --name sandbox --key "abc_dev_xxx"
 
 # Alternar entre perfis
 abacatepay switch producao
