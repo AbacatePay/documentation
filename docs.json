@@ -88,7 +88,7 @@
     "primary": {
       "type": "button",
       "label": "Dashboard",
-      "href": "https://www.abacatepay.com/app"
+      "href": "https://www.abacatepay.com/dashboard"
     }
   },
   "footer": {
