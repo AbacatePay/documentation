@@ -51,10 +51,9 @@ go install github.com/AbacatePay/abacatepay-cli@latest
 ### Homebrew (macOS / Linux)
 
 ```bash
-brew install --build-from-source github.com/AbacatePay/abacatepay-cli
+brew tap abacatepay/tap
+brew install abacatepay-cli
 ```
-
-O binário será instalado como `abacatepay` com alias `abkt`.
 
 **Verificar instalação:**
 
@@ -74,7 +73,7 @@ abacatepay --version
 
   <Step title="Inicie o listener">
     ```bash
-    abacatepay listen --forward-to http://localhost:3000/api/webhooks
+    abacatepay listen --forward-to http://localhost:3000/webhooks/abacatepay
     ```
     Você também pode rodar apenas `abacatepay listen` para configurar o encaminhamento via menu interativo.
   </Step>
@@ -84,7 +83,7 @@ abacatepay --version
     ```bash
     abacatepay payments create pix
     ```
-    Você também pode usar `card`, rodar apenas `abacatepay payments create` para escolher via menu, ou usar a flag `-i` para preencher os dados manualmente.
+    Você também pode rodar apenas `abacatepay payments create` para escolher via menu, ou usar a flag `-i` para preencher os dados manualmente.
   </Step>
 </Steps>
 

@@ -41,14 +41,14 @@ abacatepay payments create
 
 <CodeGroup>
 ```text text
-╭──────────────────────╮
-│                      │
-│  🥑 PIX Payment Created│
-│                      │
+╭────────────────────────╮
+│                        │
+│ 🥑 PIX Payment Created │
+│                        │
 │  ID:      pix_abc123xyz│
-│  Status:  PENDING    │
-│                      │
-╰──────────────────────╯
+│  Status:  PENDING      │
+│                        │
+╰────────────────────────╯
 ```
 
 ```json json
@@ -86,14 +86,14 @@ abacatepay payments check pix_abc123xyz
 
 <CodeGroup>
 ```text text
-╭─────────────────╮
-│                 │
-│  🥑 PIX Status Check │
-│                 │
+╭─────────────────────────╮
+│                         │
+│  🥑 PIX Status Check    │
+│                         │
 │  ID:      pix_abc123xyz │
-│  Status:  PAID │
-│                 │
-╰─────────────────╯
+│  Status:  PAID          │
+│                         │
+╰─────────────────────────╯
 ```
 
 ```json json
@@ -126,14 +126,14 @@ abacatepay payments simulate pix_abc123xyz
 
 <CodeGroup>
 ```text text
-╭─────────────────────╮
-│                     │
-│  🥑 PIX Payment Simulated│
-│                     │
-│  ID:      pix_abc123xyz│
-│  Status:  PAID      │
-│                     │
-╰─────────────────────╯
+╭──────────────────────────╮
+│                          │
+│ 🥑 PIX Payment Simulated │
+│                          │
+│  ID:      pix_abc123xyz  │
+│  Status:  PAID           │
+│                          │
+╰──────────────────────────╯
 ```
 
 ```json json
@@ -155,14 +155,3 @@ Este comando só funciona em ambiente de sandbox. Em produção, os pagamentos d
 </Warning>
 
 ---
-
-## Navegação
-
-<CardGroup cols={2}>
-  <Card title="← Autenticação" icon="key" href="./auth">
-    Login, logout e gerenciamento de perfis.
-  </Card>
-  <Card title="Webhooks →" icon="webhook" href="./webhooks">
-    Comandos de eventos e webhooks.
-  </Card>
-</CardGroup>

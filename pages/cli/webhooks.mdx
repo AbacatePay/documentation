@@ -18,13 +18,13 @@ abacatepay listen [flags]
 
 | Flag | Alias | Descrição | Padrão |
 |------|-------|-----------|--------|
-| `--forward-to` | - | URL para onde os eventos serão encaminhados | `http://localhost:3000/api/webhooks` |
+| `--forward-to` | - | URL para onde os eventos serão encaminhados | `http://localhost:3000/webhooks/abacatepay` |
 | `--mock` | - | Simula webhooks sem conectar à API | `false` |
 
 <Info>
 O comando `listen` mantém uma conexão WebSocket ativa com a AbacatePay para receber eventos em tempo real. Todos os eventos recebidos são salvos no log local.
 
-Se você não especificar `--forward-to`, a CLI perguntará via prompt qual URL usar, com `http://localhost:3000/webhooks/abacatepay` como padrão.
+Se você não especificar `--forward-to`, a CLI perguntará via prompt qual URL usar.
 </Info>
 
 **Exemplos:**
@@ -120,12 +120,19 @@ abacatepay events sample billing.paid > payload.json
 {
   "id": "evt_abc123",
   "event": "billing.paid",
+  "devMode": true,
   "data": {
+    "payment": {
+      "amount": 1000,
+      "fee": 0,
+      "method": "PIX"
+    },
     "billing": {
       "id": "bill_xyz789",
+      "externalId": "uuid-v4-example",
+      "url": "https://abacatepay.com/pay/...",
       "amount": 1000,
-      "status": "paid",
-      "paidAt": "2026-01-21T10:30:00Z"
+      "status": "PAID"
     }
   }
 }
@@ -135,11 +142,19 @@ abacatepay events sample billing.paid > payload.json
 {
   "id": "evt_def456",
   "event": "payout.done",
+  "devMode": true,
   "data": {
     "transaction": {
       "id": "txn_abc123",
-      "status": "done",
-      "amount": 5000
+      "status": "COMPLETE",
+      "devMode": true,
+      "receiptUrl": "https://abacatepay.com/receipt/...",
+      "kind": "WITHDRAW",
+      "amount": 5000,
+      "platformFee": 0,
+      "externalId": "uuid-v4-example",
+      "createdAt": "2026-01-21T10:30:00Z",
+      "updatedAt": "2026-01-21T10:30:00Z"
     }
   }
 }
@@ -149,11 +164,15 @@ abacatepay events sample billing.paid > payload.json
 {
   "id": "evt_ghi789",
   "event": "payout.failed",
+  "devMode": true,
   "data": {
     "transaction": {
       "id": "txn_xyz456",
-      "status": "failed",
+      "status": "CANCELLED",
+      "devMode": true,
+      "kind": "WITHDRAW",
       "amount": 3000,
+      "platformFee": 0,
       "error": {
         "code": "INSUFFICIENT_FUNDS",
         "message": "Saldo insuficiente para saque"
@@ -180,7 +199,7 @@ abacatepay events resend <event-id> [flags]
 
 | Flag | Alias | Descrição | Padrão |
 |------|-------|-----------|--------|
-| `--forward-to` | - | URL para onde o evento será reenviado | URL original ou `http://localhost:3000/api/webhooks` |
+| `--forward-to` | - | URL para onde o evento será reenviado | URL original ou `http://localhost:3000/webhooks/abacatepay` |
 
 <Info>
 O evento é buscado no arquivo de log local. O ID pode ser obtido através de `abacatepay logs list`.
@@ -193,7 +212,7 @@ abacatepay events resend evt_abc123xyz
 <CodeGroup>
 ```text text
 Webhook signing secret: whsec_abacate_local_dev_secret
-Resending event evt_abc123xyz to http://localhost:3000/api/webhooks...
+Resending event evt_abc123xyz to http://localhost:3000/webhooks/abacatepay...
 
 → [200 OK] billing.paid
 
@@ -262,8 +281,8 @@ abacatepay logs list -t webhook_received
 ┌─────────────────────────┬─────────────────────────┬───────────────┬────────────────────────────────────┐
 │ Timestamp               │ Type                    │ ID            │ URL                                │
 ├─────────────────────────┼─────────────────────────┼───────────────┼────────────────────────────────────┤
-│ 2026-01-21T10:30:00Z    │ webhook_forwarded [200] │ evt_abc123    │ http://localhost:3000/api/webhooks │
-│ 2026-01-21T10:29:55Z    │ webhook_received        │ evt_abc123    │ http://localhost:3000/api/webhooks │
+│ 2026-01-21T10:30:00Z    │ webhook_forwarded [200] │ evt_abc123    │ http://localhost:3000/webhooks/abacatepay │
+│ 2026-01-21T10:29:55Z    │ webhook_received        │ evt_abc123    │ http://localhost:3000/webhooks/abacatepay │
 └─────────────────────────┴─────────────────────────┴───────────────┴────────────────────────────────────┘
 ```
 
@@ -274,7 +293,7 @@ abacatepay logs list -t webhook_received
       "timestamp": "2026-01-21T10:30:00Z",
       "msg": "webhook_forwarded",
       "id": "evt_abc123",
-      "url": "http://localhost:3000/api/webhooks",
+      "url": "http://localhost:3000/webhooks/abacatepay",
       "statusCode": 200,
       "size_bytes": 1024,
       "raw_message": "{\"id\":\"evt_abc123\",\"event\":\"billing.paid\",...}",
@@ -319,14 +338,3 @@ Use `logs tail` para monitorar eventos sem processá-los. Para receber e encamin
 </Tip>
 
 ---
-
-## Navegação
-
-<CardGroup cols={2}>
-  <Card title="← Pagamentos" icon="wallet" href="./payments">
-    Criação e consulta de pagamentos.
-  </Card>
-  <Card title="Utilitários →" icon="wrench" href="./utils">
-    Verificação de webhooks e atualização.
-  </Card>
-</CardGroup>

@@ -20,7 +20,7 @@ abacatepay login [flags]
 |------|-------|-----------|--------|
 | `--name` | - | Nome do perfil a ser criado | `""` |
 | `--key` | - | Sua API key da AbacatePay | `""` |
-| `-l` | `--local` | Usa servidor de teste | `false` |
+| `--local` | `-l` | Usa servidor de teste | `false` |
 
 <Tip>
 Use `--name` para criar múltiplos perfis e alternar entre diferentes contas ou ambientes.
@@ -191,6 +191,8 @@ Use `abacatepay status` como diagnóstico rápido quando encontrar problemas de 
 
 ---
 
+## Perfis
+
 Comandos para gerenciar múltiplos perfis de autenticação.
 
 ---
@@ -267,7 +269,7 @@ abacatepay switch <name>
 ```
 
 <Tip>
-Requer conexão com a internet para validar o perfil.
+Requer conexão com a internet para verificar o status online.
 </Tip>
 
 ```bash
@@ -279,14 +281,3 @@ Now using profile: producao
 ```
 
 ---
-
-## Navegação
-
-<CardGroup cols={2}>
-  <Card title="← Configuração" icon="tools" href="./flags">
-    Flags globais e formatos de output.
-  </Card>
-  <Card title="Pagamentos →" icon="wallet" href="./payments">
-    Comandos de criação e consulta de pagamentos.
-  </Card>
-</CardGroup>
