@@ -6,15 +6,7 @@ description: 'Ferramenta oficial de linha de comando da AbacatePay para desenvol
 
 A **AbacatePay CLI** é a ferramenta oficial de linha de comando para interagir com a plataforma AbacatePay diretamente do terminal.
 
-Projetada para **desenvolvedores** e **infra**, permite criar cobranças, escutar webhooks, simular pagamentos e automatizar fluxos — tudo sem sair do terminal.
-
-```bash
-abacatepay <command> [args] [flags]
-```
-
-<Tip>
-Use `-h` em qualquer comando para ver a ajuda detalhada: `abacatepay payments -h`
-</Tip>
+Projetada para **desenvolvedores**, permite criar cobranças, escutar webhooks, simular pagamentos e automatizar fluxos — tudo sem sair do terminal.
 
 ---
 
@@ -37,7 +29,7 @@ Use `-h` em qualquer comando para ver a ajuda detalhada: `abacatepay payments -h
     Output em JSON, não-interativo e scriptável.
   </Card>
 
-  <Card title="Configuração" icon="settings" href="./flags">
+  <Card title="Configuração" icon="sliders" href="./flags">
     Flags globais, formatos de output e ambientes.
   </Card>
 
@@ -84,6 +76,7 @@ abacatepay --version
     ```bash
     abacatepay listen --forward-to http://localhost:3000/api/webhooks
     ```
+    Você também pode rodar apenas `abacatepay listen` para configurar o encaminhamento via menu interativo.
   </Step>
 
   <Step title="Crie uma cobrança de teste">
