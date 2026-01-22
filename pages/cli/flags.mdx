@@ -60,12 +60,11 @@ abacatepay -o json whoami
 }
 ```
 
-<Tip>
 Combine com `jq` para filtrar dados:
+
 ```bash
 abacatepay -o json logs list | jq '.logs[] | select(.msg=="webhook_forwarded")'
 ```
-</Tip>
 
 ### table
 
