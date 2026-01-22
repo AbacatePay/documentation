@@ -220,7 +220,7 @@ abacatepay -o table profile list
 ┌───────────┬────────────┬────────┐
 │ Name      │ API Key    │ Active │
 ├───────────┼────────────┼────────┤
-│ default   │ abc_prod... │ 🥑     │
+│ default   │ abc_prod...│ 🥑     │
 │ staging   │ abc_dev... │        │
 └───────────┴────────────┴────────┘
 ```
@@ -312,7 +312,7 @@ abacatepay logout
 ```text text
 ╭────────────────────────────╮
 │                            │
-│  🥑 Signed out successfully│
+│ 🥑 Signed out successfully │
 │                            │
 │  Profile: default          │
 │                            │
@@ -456,8 +456,8 @@ abacatepay profile list
 ┌───────────┬────────────┬────────┐
 │ Name      │ API Key    │ Active │
 ├───────────┼────────────┼────────┤
-│ default   │ abc_prod... │ 🥑     │
-│ producao  │ abc_prod... │        │
+│ default   │ abc_prod...│ 🥑     │
+│ producao  │ abc_prod...│        │
 │ staging   │ abc_dev... │        │
 └───────────┴────────────┴────────┘
 ```
@@ -548,14 +548,14 @@ abacatepay payments create
 
 <CodeGroup>
 ```text text
-╭──────────────────────╮
-│                      │
-│  🥑 PIX Payment Created│
-│                      │
-│  ID:      pix_abc123xyz│
-│  Status:  PENDING    │
-│                      │
-╰──────────────────────╯
+╭──────────────────────────╮
+│                          │
+│  🥑 PIX Payment Created  │
+│                          │
+│  ID:      pix_abc123xyz  │
+│  Status:  PENDING        │
+│                          │
+╰──────────────────────────╯
 ```
 
 ```json json
@@ -593,14 +593,14 @@ abacatepay payments check pix_abc123xyz
 
 <CodeGroup>
 ```text text
-╭─────────────────╮
-│                 │
-│  🥑 PIX Status Check │
-│                 │
-│  ID:      pix_abc123xyz │
-│  Status:  PAID │
-│                 │
-╰─────────────────╯
+╭──────────────────────────╮
+│                          │
+│  🥑 PIX Status Check     │
+│                          │
+│  ID:      pix_abc123xyz  │
+│  Status:  PAID           │
+│                          │
+╰──────────────────────────╯
 ```
 
 ```json json
@@ -633,14 +633,14 @@ abacatepay payments simulate pix_abc123xyz
 
 <CodeGroup>
 ```text text
-╭─────────────────────╮
-│                     │
-│  🥑 PIX Payment Simulated│
-│                     │
-│  ID:      pix_abc123xyz│
-│  Status:  PAID      │
-│                     │
-╰─────────────────────╯
+╭──────────────────────────╮
+│                          │
+│ 🥑 PIX Payment Simulated │
+│                          │
+│  ID:      pix_abc123xyz  │
+│  Status:  PAID           │
+│                          │
+╰──────────────────────────╯
 ```
 
 ```json json
@@ -729,15 +729,16 @@ abacatepay trigger billing.paid
 
 <CodeGroup>
 ```text text
-╭────────────────────────╮
-│                        │
-│  🥑 Billing.paid Triggered │
-│                        │
-│  Charge ID: pix_abc123xyz│
-│  Status:    Simulated  │
-│  Note:      Check your 'listen' terminal for the webhook event│
-│                        │
-╰────────────────────────╯
+╭──────────────────────────────────╮
+│                                  │
+│  🥑 Billing.paid Triggered       │
+│                                  │
+│  Charge ID: pix_abc123xyz        │
+│  Status:    Simulated            │
+│  Note:      Check your 'listen'  │
+│ terminal for the webhook event   │
+│                                  │
+╰──────────────────────────────────╯
 ```
 
 ```json json
@@ -836,15 +837,15 @@ Resending event evt_abc123xyz to http://localhost:3000/api/webhooks...
 
 → [200 OK] billing.paid
 
-╭──────────────────────────╮
-│                          │
-│  🥑 Event resent successfully│
-│                          │
-│  ID:       evt_abc123xyz │
-│  Status:   200 OK        │
-│  Duration: 45ms          │
-│                          │
-╰──────────────────────────╯
+╭──────────────────────────────╮
+│                              │
+│ 🥑 Event resent successfully │
+│                              │
+│  ID:       evt_abc123xyz     │
+│  Status:   200 OK            │
+│  Duration: 45ms              │
+│                              │
+╰──────────────────────────────╯
 ```
 
 ```json json
@@ -992,15 +993,15 @@ abacatepay verify \
 
 <CodeGroup>
 ```text Sucesso
-╭───────────────────╮
-│                   │
-│  🥑 Signature Verified│
-│                   │
-│  Timestamp: 1705849200│
-│  Secret:    whsec_...x789│
-│  Status:    VALID  │
-│                   │
-╰───────────────────╯
+╭───────────────────────────╮
+│                           │
+│  🥑 Signature Verified    │
+│                           │
+│  Timestamp: 1705849200    │
+│  Secret:    whsec_...x789 │
+│  Status:    VALID         │
+│                           │
+╰───────────────────────────╯
 ```
 
 ```text Erro
