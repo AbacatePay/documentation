@@ -137,9 +137,9 @@ func CreateCoupon(body types.RESTPostCreateCouponBody) (*types.RESTPostCreateCou
 }
 ```
 
+- Todas as structs e types contêm o seu respectivo `json` tag com o seu nome e propriedades, então você pode usar `json.Marshal` sem medo.
+
 ## Integração com o Ecossistema
-<CardGroup cols={2}> <Card title="REST Client (Go)" icon="repeat"> Cliente HTTP oficial em Go que consome esses contratos diretamente. </Card> <Card title="SDKs & Ferramentas" icon="boxes-stacked"> SDKs, CLIs e ferramentas que reutilizam os mesmos tipos versionados. </Card> </CardGroup>
+<CardGroup cols={2}> <Card title="REST Client (Go)" icon="repeat" href="./rest-go"> Cliente HTTP oficial em Go que consome esses contratos diretamente. </Card> <Card title="SDKs & Ferramentas" icon="boxes-stacked" href="../sdks"> SDKs, CLIs e ferramentas que reutilizam os mesmos tipos versionados. </Card> </CardGroup>
 
-### Open Source, de Verdade
-
-<Card title="Feito para Go" icon="heart"> O <code>abacatepay/go-types</code> é open source e mantido pela equipe AbacatePay. Structs estáveis, versionadas e 100% alinhadas à documentação oficial da API. </Card>
+<Card title="Open Source, de verdade" icon="heart"> O [abacatepay/go-types](https://github.com/AbacatePay/go-types) é open source e mantido pela equipe AbacatePay. Structs estáveis, versionadas e 100% alinhadas à documentação oficial da API. </Card>
