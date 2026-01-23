@@ -69,7 +69,18 @@ const { status, expiresAt } = await client.get('/pixQrCode/check', {
 console.log(status, expiresAt);
 ```
 
-Você não precisa fornecer um secret caso não queira, o @abacatepay/rest tenta pegar automáticamente do env `ABACATEPAY_SECRET` ou `ABACATEPAY_API_KEY`.
+Ou você pode configurar a versão em rotas específicas via `version`
+
+```ts
+await client.delete('/coupons/delete', {
+    body: {
+        id,
+    },
+    version: 2,
+});
+```
+
+Sem abstrações, sem plugins, sem boilerplate, apenas **REST**.
 
 ## Performance & Design
 
@@ -80,7 +91,23 @@ O `@abacatepay/rest` foi desenhado para ser:
 - Rápido por padrão
 - Seguro por padrão
 
-<CardGroup cols={2}> <Card title="Tipagem forte" icon="lasso"> Tipos completos para respostas, erros e configurações. </Card> <Card title="Runtimes modernos" icon="boxes"> Funciona perfeitamente em Node.js, Bun e ambientes modernos. </Card> </CardGroup>
+<CardGroup cols={2}> <Card title="Tipagem forte" icon="lasso"> Tipos completos para respostas, erros e configurações. </Card> <Card title="Runtimes modernos" icon="boxes"> Funciona perfeitamente em **Node.js**, **Bun** e ambientes modernos. </Card> </CardGroup>
+
+## Custom-Fetch
+
+Você também pode configurar o seu próprio `fetch` para requisições:
+
+```ts
+const client = new REST({
+    async fetch(route, options) {
+        // ...
+
+        return new Response(...);
+    },
+});
+```
+
+O valor retornado deve ser **sempre** um objeto **Response**, caso o contrário, um erro será lançado.
 
 ## Retry & Backoff
 
@@ -118,14 +145,12 @@ Se nenhum backoff for definido, o client usa **backoff exponencial com jitter** 
 
 ### Rate Limit
 
-Você também pode controlar **completamente** quando um rate-limit acontece:
+Você também pode controlar **completamente** com o hook `onRateLimit` quando um rate-limit ocorre:
 
 ```ts
 const client = new REST({
     async onRateLimit(response) {
-        const data = await response.text();
-
-        console.log(data);
+        ...
     },
 });
 ```
@@ -143,10 +168,10 @@ Você pode customizar completamente o comportamento do client:
 
 <Card title="Flexível por design" icon="sliders"> O REST Client não impõe padrões — ele se adapta à sua arquitetura. </Card>
 
-<Icon icon="boxes-stacked" type="solid"/> REST Client vs SDKs
+### REST Client vs SDKs
 
-<CardGroup cols={2}> <Card title="REST Client" icon="sparkles"> Camada fina, controle total, ideal para libs, CLIs e integrações avançadas. </Card> <Card title="SDKs" icon="boxes-stacked" href="../sdks"> Abstrações de alto nível para integração rápida com menos código. </Card> </CardGroup>
+<CardGroup cols={2}> <Card title="REST Client" icon="sparkles" href="#"> Camada fina, controle total, ideal para libs, CLIs e integrações avançadas. </Card> <Card title="SDKs" icon="boxes-stacked" href="../sdks"> Abstrações de alto nível para integração rápida com menos código. </Card> </CardGroup>
 
-<Icon icon="book" type="solid"/> Próximos Passos
+### Próximos Passos
 
 <CardGroup cols={2}> <Card title="Documentação Completa" icon="book-open" href="../payment/reference"> Veja todos os endpoints, opções e exemplos avançados. </Card> <Card title="NPM Package" icon="box" href="https://www.npmjs.com/package/@abacatepay/rest"> Acesse o pacote no NPM e histórico de versões. </Card> </CardGroup> <Card title="Open Source de verdade" icon="heart" href="https://github.com/almeidazs/ecosystem"> O <code>@abacatepay/rest</code> é open source e mantido pela equipe AbacatePay. Contribuições são bem-vindas. </Card>
