@@ -217,7 +217,7 @@
     "primary": {
       "type": "button",
       "label": "Dashboard",
-      "href": "https://www.abacatepay.com/app"
+      "href": "https://app.abacatepay.com/"
     }
   },
   "footer": {

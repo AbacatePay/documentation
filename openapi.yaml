@@ -107,7 +107,7 @@ paths:
         
         Você pode usar essa rota para visualizar todos os seus clientes e suas informações.
         
-        **Alternativa**: Você também pode visualizar e gerenciar seus clientes pelo [Dashboard da AbacatePay](https://www.abacatepay.com/app/clientes).
+        **Alternativa**: Você também pode visualizar e gerenciar seus clientes pelo [Dashboard da AbacatePay](https://app.abacatepay.com/clientes).
       security:
         - bearerAuth: []
       parameters:
@@ -304,7 +304,7 @@ paths:
       description: |
         Permite que você crie um novo cupom que pode ser usado por seus clientes para aplicar descontos.
         
-        **Alternativa**: Você também pode criar e gerenciar seus cupons pelo [Dashboard da AbacatePay](https://www.abacatepay.com/app/cupons).
+        **Alternativa**: Você também pode criar e gerenciar seus cupons pelo [Dashboard da AbacatePay](https://app.abacatepay.com/cupons).
       security:
         - bearerAuth: []
       requestBody:
@@ -348,7 +348,7 @@ paths:
         
         Você pode usar essa rota para visualizar todos os seus cupons, incluindo seus status (ativos, inativos ou expirados), descontos aplicados e quantas vezes foram utilizados.
         
-        **Alternativa**: Você também pode visualizar e gerenciar seus cupons pelo [Dashboard da AbacatePay](https://www.abacatepay.com/app/cupons).
+        **Alternativa**: Você também pode visualizar e gerenciar seus cupons pelo [Dashboard da AbacatePay](https://app.abacatepay.com/cupons).
       security:
         - bearerAuth: []
       parameters:
@@ -606,7 +606,7 @@ paths:
       description: |
         Permite que você crie um novo produto que pode ser usado em cobranças.
         
-        **Alternativa**: Você também pode criar e gerenciar seus produtos pelo [Dashboard da AbacatePay](https://www.abacatepay.com/app/produtos).
+        **Alternativa**: Você também pode criar e gerenciar seus produtos pelo [Dashboard da AbacatePay](https://app.abacatepay.com/produtos).
       security:
         - bearerAuth: []
       requestBody:
@@ -683,7 +683,7 @@ paths:
         
         Você pode usar essa rota para visualizar todos os seus produtos, incluindo seus status, preços e informações relacionadas.
         
-        **Alternativa**: Você também pode visualizar e gerenciar seus produtos pelo [Dashboard da AbacatePay](https://www.abacatepay.com/app/produtos).
+        **Alternativa**: Você também pode visualizar e gerenciar seus produtos pelo [Dashboard da AbacatePay](https://app.abacatepay.com/produtos).
       security:
         - bearerAuth: []
       parameters:
