@@ -184,6 +184,7 @@ Use `abacatepay status` como diagnóstico rápido quando encontrar problemas de 
 ```text table
 ┌─────────┬─────────┐
 │ Profile │ default │
+|─────────|─────────|
 │ Status  │ Online  │
 └─────────┴─────────┘
 ```
@@ -217,9 +218,18 @@ abacatepay profile list
 ```json json
 {
   "profiles": [
-    {"name": "default", "key": "abc_prod..."},
-    {"name": "producao", "key": "abc_prod..."},
-    {"name": "staging", "key": "abc_dev..."}
+    {
+      "name": "default",
+      "key": "abc_prod..."
+    },
+    {
+      "name": "producao",
+      "key": "abc_prod..."
+    },
+    {
+      "name": "staging",
+      "key": "abc_dev..."
+    }
   ],
   "active": "default"
 }
@@ -229,8 +239,8 @@ abacatepay profile list
 ┌───────────┬────────────┬────────┐
 │ Name      │ API Key    │ Active │
 ├───────────┼────────────┼────────┤
-│ default   │ abc_prod... │ 🥑     │
-│ producao  │ abc_prod... │        │
+│ default   │ abc_prod...│ 🥑     │
+│ producao  │ abc_prod...│        │
 │ staging   │ abc_dev... │        │
 └───────────┴────────────┴────────┘
 ```

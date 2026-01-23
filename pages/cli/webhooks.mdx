@@ -72,15 +72,15 @@ abacatepay trigger billing.paid
 
 <CodeGroup>
 ```text text
-╭────────────────────────╮
-│                        │
-│  🥑 Billing.paid Triggered │
-│                        │
-│  Charge ID: pix_abc123xyz│
-│  Status:    Simulated  │
-│  Note:      Check your 'listen' terminal for the webhook event│
-│                        │
-╰────────────────────────╯
+╭────────────────────────────────────────────────────────────────╮
+│                                                                │
+│  🥑 Billing.paid Triggered                                     │
+│                                                                │
+│  Charge ID: pix_abc123xyz                                      │
+│  Status:    Simulated                                          │
+│  Note:      Check your 'listen' terminal for the webhook event │
+│                                                                │
+╰────────────────────────────────────────────────────────────────╯
 ```
 
 ```json json
@@ -169,14 +169,9 @@ abacatepay events sample billing.paid > payload.json
     "transaction": {
       "id": "txn_xyz456",
       "status": "CANCELLED",
-      "devMode": true,
       "kind": "WITHDRAW",
       "amount": 3000,
       "platformFee": 0,
-      "error": {
-        "code": "INSUFFICIENT_FUNDS",
-        "message": "Saldo insuficiente para saque"
-      }
     }
   }
 }
@@ -216,15 +211,15 @@ Resending event evt_abc123xyz to http://localhost:3000/webhooks/abacatepay...
 
 → [200 OK] billing.paid
 
-╭──────────────────────────╮
-│                          │
-│  🥑 Event resent successfully│
-│                          │
-│  ID:       evt_abc123xyz │
-│  Status:   200 OK        │
-│  Duration: 45ms          │
-│                          │
-╰──────────────────────────╯
+╭───────────────────────────────╮
+│                               │
+│  🥑 Event resent successfully │
+│                               │
+│  ID:       evt_abc123xyz      │
+│  Status:   200 OK             │
+│  Duration: 45ms               │
+│                               │
+╰───────────────────────────────╯
 ```
 
 ```json json
