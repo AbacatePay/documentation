@@ -1,0 +1,158 @@
+---
+title: 'Configuração'
+icon: 'sliders'
+description: 'Flags globais, formatos de output e configuração da AbacatePay CLI.'
+---
+
+## Global Flags
+
+Flags disponíveis em todos os comandos:
+
+| Flag | Alias | Tipo | Padrão | Descrição |
+|------|-------|------|--------|-----------|
+| `--verbose` | `-v` | bool | `false` | Habilita logging detalhado (nível debug) |
+| `--local` | `-l` | bool | `false` | Usa servidor de teste |
+| `--output` | `-o` | string | `text` | Formato de saída: `text`, `json`, `table` |
+
+```bash
+# Exemplo combinando flags
+abacatepay -v -l -o json payments create pix
+```
+
+A CLI suporta três formatos de saída, configuráveis via `--output` ou `-o`.
+
+### text (padrão)
+
+Formato legível para uso interativo no terminal.
+
+```bash
+abacatepay whoami
+```
+
+```text
+╭───────────────────────────╮
+│                           │
+│  🥑 User Information      │
+│                           │
+│  Status: Authenticated    │
+│  Profile: salve3          │
+│  User: Mock User          │
+│  Email: mock@example.com  │
+│                           │
+│                           │
+╰───────────────────────────╯
+```
+
+### json
+
+Formato estruturado para scripts, pipelines e CI/CD.
+
+```bash
+abacatepay -o json whoami
+```
+
+```json
+{
+  "profile": "salve3",
+  "user": "Mock User",
+  "email": "mock@example.com",
+  "status": "authenticated"
+}
+```
+
+Combine com `jq` para filtrar dados:
+
+```bash
+abacatepay -o json logs list | jq '.logs[] | select(.msg=="webhook_forwarded")'
+```
+
+### table
+
+Formato tabular para visualização de listas.
+
+```bash
+abacatepay -o table profile list
+```
+
+```text
+┌───────────┬────────────┬────────┐
+│ Name      │ API Key    │ Active │
+├───────────┼────────────┼────────┤
+│ default   │ abc_prod...│ 🥑     │
+│ staging   │ abc_dev... │        │
+└───────────┴────────────┴────────┘
+```
+
+---
+
+A CLI suporta dois ambientes: **produção** (padrão) e **teste**.
+
+### Produção (padrão)
+
+```bash
+abacatepay login
+```
+
+Conecta automaticamente com `wss://ws.abacatepay.com/ws`.
+
+### Servidor de Teste
+
+```bash
+abacatepay login -l
+```
+
+Conecta com o servidor de teste em `ws://191.252.202.128:8080/ws`.
+
+<Warning>
+O ambiente de teste usa dados fictícios. Nunca use credenciais reais no modo `-l`.
+</Warning>
+
+---
+
+O token da sua conta é armazenado no keyring nativo do sistema:
+
+- **macOS**: Keychain
+- **Windows**: Credential Manager
+- **Linux**: gnome-keyring ou kwallet
+
+<Accordion title="Problema ao salvar token no Linux?">
+Instale o keyring no seu sistema:
+
+```bash
+# Debian/Ubuntu
+sudo apt install gnome-keyring
+
+# Fedora
+sudo dnf install gnome-keyring
+```
+
+Então tente novamente:
+
+```bash
+abacatepay login
+```
+</Accordion>
+
+---
+
+Os logs são salvos em `~/.abacatepay/logs/`:
+
+- **abacatepay.log** - Log geral (JSON)
+- **transactions.log** - Webhooks recebidos e encaminhados
+
+Rotação automática: 10MB por arquivo, 5 backups, 30 dias de retenção.
+
+```bash
+# Ver erros
+cat ~/.abacatepay/logs/abacatepay.log | jq 'select(.level=="ERROR")'
+
+# Ver webhooks recebidos
+cat ~/.abacatepay/logs/transactions.log | jq 'select(.msg=="webhook_received")'
+
+# Tempo médio de encaminhamento
+cat ~/.abacatepay/logs/transactions.log | jq 'select(.msg=="webhook_forwarded") | .duration_ms' | jq -s 'add/length'
+```
+
+---
+
+
