@@ -29,13 +29,13 @@ Ele segue uma abordagem **green-first**, alinhada à identidade visual da Abacat
 O tema é mantido oficialmente para os seguintes editores:
 
 <CardGroup cols={3}>
-  <Card title="VS Code" icon="code">
+  <Card title="VS Code" icon="code" href="#vs-code">
     Tema oficial publicado no Marketplace.
   </Card>
-  <Card title="IntelliJ / JetBrains" icon="terminal">
+  <Card title="IntelliJ / JetBrains" icon="terminal" href="#intellij-%2F-jetbrains-ides">
     Schemes nativos sem necessidade de plugin.
   </Card>
-  <Card title="Neovim" icon="moon-star">
+  <Card title="Neovim" icon="moon-star" href="#neovim">
     Suporte completo com variações e Lualine.
   </Card>
 </CardGroup>
@@ -54,15 +54,23 @@ code --install-extension abacatepay.abacatepay-theme
 
 Ou acesse:
 
-https://marketplace.visualstudio.com/items?itemName=abacatepay.abacatepay-theme
+[marketplace.visualstudio.com/items?itemName=abacatepay.abacatepay-theme](https://marketplace.visualstudio.com/items?itemName=abacatepay.abacatepay-theme)
 
-Temas disponíveis:
+**Temas disponíveis**
 
 - AbacatePay Dark Theme
 - AbacatePay Light Theme
 - AbacatePay Soft Theme
 
+E também temos suporte para temas tem *itálico*
+
+- AbacatePay Dark *Italic* Theme
+- AbacatePay Soft *Italic* Theme
+- AbacatePay Light *Italic* Theme**
+
 #### Sincronizar com o sistema
+
+Você pode sincronizar facilmente entre seus temas preferidos dark / light mode dentro do VS Code.
 
 ```jsonc
 {
@@ -72,24 +80,31 @@ Temas disponíveis:
 }
 ```
 
+O JSON acima deve ficar no arquivo `settings.json` do seu VS Code.
+
 ### IntelliJ / JetBrains IDEs
 
 O tema é distribuído como Color Scheme nativo.
 
 #### Como instalar
 
-1. Abra sua IDE JetBrains
-2. Vá em Settings / Preferences → Editor → Color Scheme
-3. Clique no ⚙️ → Import Scheme
-4. Selecione um dos arquivos:
+<Steps>
+    <Step title="Intellij">
+        Entre na sua IDE JetBrains que você deseja configurar o tema
+    </Step>
+    <Step title="Configurações">
+        Vá em Settings / Preferences → Editor → Color Scheme → Clique no ⚙️ → Import Scheme
+    </Step>
+    <Step title="Escolhendo o tema">
+        Selecione um dos arquivos abaixo que deseja e aplique-o
+    </Step>
+</Steps>
 
 ```
 intellij/abacatepay-theme-dark.json
 intellij/abacatepay-theme-light.json
 intellij/abacatepay-theme-soft.json
 ```
-
-5. Aplique o tema
 
 <Card title="Sem plugins" icon="check-circle"> Funciona nativamente em IDEs JetBrains, sem dependências externas. </Card>
 
