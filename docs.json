@@ -157,6 +157,41 @@
         ]
       },
       {
+        "tab": "CLI",
+        "groups": [
+          {
+            "group": "CLI",
+            "pages": [
+              "pages/cli/overview",
+              "pages/cli/flags",
+              "pages/cli/auth",
+              "pages/cli/payments",
+              "pages/cli/webhooks",
+              "pages/cli/utils",
+              "pages/cli/cases"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Ecossistema",
+        "groups": [
+          {
+            "group": "Ecossistema",
+            "pages": [
+              "pages/ecosystem/ecosystem",
+              "pages/ecosystem/theme",
+              "pages/ecosystem/rest",
+              "pages/ecosystem/types",
+              "pages/ecosystem/types-go",
+              "pages/ecosystem/eslint",
+              "pages/ecosystem/typebox",
+              "pages/ecosystem/zod"
+            ]
+          }
+        ]
+      },
+      {
         "tab": "ChangeLog",
         "pages": [
           "pages/changelog/index"
@@ -182,14 +217,17 @@
     "primary": {
       "type": "button",
       "label": "Dashboard",
-      "href": "https://www.abacatepay.com/app"
+      "href": "https://app.abacatepay.com/"
     }
   },
   "footer": {
     "socials": {
       "x": "https://x.com/abacatepay",
       "github": "https://github.com/AbacatePay",
-      "linkedin": "https://br.linkedin.com/company/abacatepay?trk=public_post_feed-actor-name"
+      "discord": "https://discord.com/invite/CP57mm7EFk",
+      "linkedin": "https://br.linkedin.com/company/abacatepay?trk=public_post_feed-actor-name",
+      "youtube": "https://www.youtube.com/@abacatepay",
+      "instagram": "https://www.instagram.com/abacatepay/"
     }
   }
 }

@@ -17,8 +17,12 @@ Antes de começar, você precisa de:
 - Uma chave de API (criada no dashboard)
 - Conhecimento básico de HTTP e JSON
 
-<Card title="Novo na AbacatePay?" horizontal>
-    Se você ainda não tem uma conta, acesse o <a href="https://www.abacatepay.com/app" target="_blank">dashboard</a> e crie sua conta gratuitamente.
+<Card title="Novo na AbacatePay?" icon="user-plus" horizontal>
+    Se você ainda não tem uma conta, acesse o{" "}
+    <a href="https://app.abacatepay.com" target="_blank">
+    dashboard
+  </a>{" "}
+  e crie sua conta gratuitamente.
 </Card>
 
 ## Passo 1: Obter sua Chave de API
@@ -27,7 +31,10 @@ Primeiro, você precisa criar uma chave de API no dashboard da AbacatePay:
 
 <Steps>
   <Step title="Acesse o Dashboard">
-    Faça login no <a href="https://www.abacatepay.com/app" target="_blank">dashboard da AbacatePay</a>
+    Faça login no{" "}
+    <a href="https://app.abacatepay.com" target="_blank">
+      dashboard da AbacatePay
+    </a>
   </Step>
   <Step title="Crie uma Chave de API">
     Navegue até a seção de integração e clique em "Criar Chave"
@@ -60,7 +67,7 @@ Agora vamos criar sua primeira cobrança usando a API. Todas as requisições de
 
 ```bash
 curl --request POST \
-  --url https://api.abacatepay.com/v2/pixQrCode/create \
+  --url https://api.abacatepay.com/v2/transparents/create \
   --header 'Authorization: Bearer (Sua chave de API aqui)' \
   --header 'Content-Type: application/json' \
   --data '{
@@ -93,7 +100,7 @@ curl --request POST \
 
 <Card title="Visualizar sua Cobrança" horizontal>
   Após criar sua cobrança, você pode visualizá-la no dashboard da AbacatePay. Acesse o{" "}
-  <a href="https://www.abacatepay.com/app" target="_blank">dashboard</a>{" "}
+  <a href="https://app.abacatepay.com" target="_blank">dashboard</a>{" "}
   e navegue até a seção de **Cobranças** para ver todos os detalhes da cobrança criada, incluindo status, valores e histórico de pagamentos.
 </Card>
 

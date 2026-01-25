@@ -1,0 +1,117 @@
+---
+title: 'API Types'
+description: 'Tipagens oficiais e helpers modernos para integrar com a API da AbacatePay.'
+icon: 'hammer'
+---
+
+## O que é o @abacatepay/types?
+
+O [@abacatepay/types](https://www.npmjs.com/package/@abacatepay/types) fornece **tipagens oficiais e helpers modernos** para trabalhar com a API da AbacatePay de forma segura, previsível e alinhada à documentação oficial.
+
+O pacote é **TypeScript-first** e serve como base para integrações diretas via `fetch`, SDKs internos, CLIs e validações em aplicações backend.
+
+> O pacote **não adiciona tipos além do que existe na documentação oficial**.  
+> Cada tipo reflete fielmente a API pública da AbacatePay.
+
+<Card title="Quando usar API Types?" icon="help-circle" horizontal>
+  * Você quer **tipagem forte** sem abstrações
+  * Usa `fetch` ou clientes HTTP próprios
+  * Precisa de **contratos estáveis** entre versões da API
+  * Quer tipar webhooks, rotas e payloads com precisão
+</Card>
+
+---
+
+## Instalação
+
+Use o *package manager* da sua preferência:
+
+```bash
+bun add @abacatepay/types
+# ou
+pnpm add @abacatepay/types
+# ou
+npm install @abacatepay/types
+```
+
+## Versionamento dos Tipos
+
+Antes de tudo, você deve especificar a versão da API que deseja usar, adicionando **/v*** na importação:
+
+```ts
+import { APICustomer } from '@abacatepay/types/v2';
+```
+
+**Tipos Globais**
+
+Tipos e constantes globais não são versionados e devem ser importados diretamente:
+
+```ts
+import { version, API_BASE_URL, API_VERSION } from '@abacatepay/types';
+```
+
+<Card title="Por que versionar tipos?" icon="ellipsis"> Isso garante compatibilidade entre versões da API e evita que breaking changes afetem integrações existentes. </Card>
+
+## Convenções de Nomenclatura
+
+Os tipos seguem convenções claras e previsíveis:
+
+**Prefixo `API*`**
+- Estruturas gerais da API
+- Objetos retornados
+- Modelos públicos
+
+**Prefixo `REST<HTTPMethod>*`**
+
+Tipos usados em requisições diretas à API:
+
+- Body → corpo enviado na requisição
+    - Ex.: RESTPostCreateNewChargeBody
+- QueryParams → parâmetros de query
+    - Ex.: RESTGetCheckQRCodePixStatusQueryParams
+- Data → dados retornados
+    - Ex.: RESTGetListCouponsData
+
+**Prefixo `Webhook*`**
+
+- Payloads de eventos de webhook
+
+### Campos @unstable
+
+Campos marcados com **@unstable**:
+
+- Ainda não possuem definição formal na documentação
+- Foram inferidos a partir de exemplos oficiais
+- Podem mudar sem aviso prévio
+
+Exemplo:
+
+```ts
+WebhookWithdrawDoneEvent.billing.kind // @unstable
+```
+
+## Quickstart
+
+**Crie um novo cupom**
+
+```ts
+import {
+    Routes,
+    type APICoupon,
+    type RESTPostCreateCouponBody,
+} from '@abacatepay/types/v2';
+import { REST } from '@abacatepay/rest';
+
+const client = new REST({ secret });
+
+async function createCoupon(body: RESTPostCreateCouponBody) {
+    const data = await client.post<APICoupon>(Routes.coupons.create, { body });
+
+    return data;
+}
+```
+
+## Integração com o Ecossistema
+<CardGroup cols={2}> <Card title="@abacatepay/typebox" icon="code" href="./typebox"> Schemas runtime e OpenAPI baseados nesses tipos. </Card> <Card title="@abacatepay/rest" icon="repeat" href="./rest"> Cliente REST oficial que consome esses contratos. </Card> </CardGroup>
+
+<Card title="Open Source, de Verdade" icon="heart"> O [@abacatepay/types](https://www.npmjs.com/package/@abacatepay/types) é open source e mantido pela equipe AbacatePay. Tipos estáveis, versionados e 100% alinhados à documentação oficial. </Card>
