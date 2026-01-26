@@ -4,11 +4,11 @@ description: 'Conceitos e termos técnicos da AbacatePay explicados de forma sim
 icon: 'book-open-cover'
 ---
 
-<Card title="Bem-vindo ao Glossário" icon="book" horizontal>
+<Card title="Bem-vindo ao Glossário" horizontal>
   Encontrou um termo que não conhece? Este glossário explica os principais conceitos e termos técnicos usados na documentação da AbacatePay de forma simples e direta.
 </Card>
 
-## 🔐 Autenticação e Segurança
+## Autenticação e Segurança
 
 ### Bearer Token
 Também chamado de **chave de API**, é o método de autenticação usado para autorizar suas requisições à API da AbacatePay. A chave é enviada no header HTTP `Authorization: Bearer sua_chave_api`. Sem uma chave válida, nenhuma requisição será aceita.
@@ -16,7 +16,7 @@ Também chamado de **chave de API**, é o método de autenticação usado para a
 ### Webhook Secret
 Uma string única e secreta que garante que os webhooks recebidos realmente vieram da AbacatePay. É enviado na URL do webhook como parâmetro de query string e deve ser validado no seu servidor para evitar requisições maliciosas.
 
-## 🏗️ Ambientes e Modos
+## Ambientes e Modos
 
 ### Dev Mode (Modo de Desenvolvimento)
 Ambiente de testes onde todas as transações são **simuladas**. Nada é cobrado de verdade e você pode testar quantas vezes quiser sem riscos. Ideal para desenvolver e validar sua integração antes de ir para produção.
@@ -27,7 +27,7 @@ Outro termo para ambiente de testes/desenvolvimento. Na AbacatePay, o ambiente �
 ### Produção
 Ambiente real onde as transações são processadas de verdade e valores reais são movimentados. Requer conta verificada e aprovação da AbacatePay.
 
-## 💳 Pagamentos e Cobranças
+## Pagamentos e Cobranças
 
 ### Checkout
 Página segura fornecida pela AbacatePay onde seus clientes finalizam o pagamento. Existem dois tipos:
@@ -44,7 +44,7 @@ Empresa que usa tecnologia para oferecer serviços financeiros. A AbacatePay é 
 ### Payout
 Transferência de dinheiro da sua conta AbacatePay para outra conta (seja sua ou de terceiros). Também chamado de saque ou transferência externa.
 
-## 📝 Estrutura de Dados
+## Estrutura de Dados
 
 ### External ID
 Identificador único criado por você para relacionar transações da AbacatePay com registros do seu sistema. Útil para buscar pagamentos usando seus próprios códigos de pedido.
@@ -65,7 +65,7 @@ Campo opcional que permite armazenar informações adicionais personalizadas jun
 }
 ```
 
-## 🔄 Assinaturas e Recorrência
+## Assinaturas e Recorrência
 
 ### Subscription (Assinatura)
 Também chamada de **Item** na API, é um plano de cobrança recorrente onde o cliente é cobrado automaticamente em intervalos definidos (mensal, anual, etc.).
@@ -82,7 +82,7 @@ Configuração que define quantas vezes o sistema deve tentar cobrar uma assinat
 - **maxRetry**: Número máximo de tentativas (1-10)
 - **retryEvery**: Intervalo em dias entre tentativas (1-30)
 
-## 🎫 Cupons e Descontos
+## Cupons e Descontos
 
 ### Discount Kind (Tipo de Desconto)
 Forma como o desconto é aplicado:
@@ -92,7 +92,7 @@ Forma como o desconto é aplicado:
 ### Max Redeems
 Número máximo de vezes que um cupom pode ser usado. Quando definido como `-1`, o cupom pode ser usado infinitamente.
 
-## 📊 Status
+## Status
 
 ### Status da Cobrança
 - **PENDING**: Aguardando pagamento
@@ -107,7 +107,7 @@ Número máximo de vezes que um cupom pode ser usado. Quando definido como `-1`,
 - **EXPIRED**: Expirada
 - **FAILED**: Falhou após todas as tentativas de cobrança
 
-## 💰 PIX
+## PIX
 
 ### QRCode PIX
 Código QR gerado pela AbacatePay que o cliente escaneia para realizar um pagamento PIX. Pode ser retornado como imagem Base64 (`brCodeBase64`) ou código copia-e-cola (`brCode`).
@@ -118,7 +118,7 @@ String alfanumérica do padrão PIX que pode ser copiada e colada diretamente no
 ### Base64
 Formato de codificação que converte dados binários (como imagens) em texto ASCII. O QRCode PIX é retornado como string Base64 no campo `brCodeBase64` para facilitar o uso em imagens HTML.
 
-## 🔔 Webhooks
+## Webhooks
 
 ### Webhook
 Mecanismo onde a AbacatePay **envia notificações** para o seu servidor sempre que algo importante acontece (como um pagamento confirmado), sem você precisar ficar consultando a API constantemente.
@@ -126,7 +126,7 @@ Mecanismo onde a AbacatePay **envia notificações** para o seu servidor sempre 
 ### Evento
 Ação que dispara um webhook (ex: `billing.paid`, `billing.cancelled`). Cada evento contém informações sobre o que aconteceu.
 
-## 🌐 URLs e Endpoints
+## URLs e Endpoints
 
 ### Return URL
 URL para onde o cliente é redirecionado após clicar em "voltar" no checkout, antes de completar o pagamento.
@@ -137,12 +137,12 @@ URL para onde o cliente é redirecionado **após completar** o pagamento com suc
 ### Receipt URL
 URL gerada automaticamente pela AbacatePay que contém o comprovante de pagamento. Disponível após a confirmação do pagamento.
 
-## 🛠️ Processos
+## Processos
 
 ### Homologação
 Processo de validação e aprovação necessário para ir de desenvolvimento para produção. Na AbacatePay, envolve verificação da conta e aprovação para processar transações reais.
 
-## 📦 Estrutura de Resposta
+## Estrutura de Resposta
 
 Todas as respostas da API seguem o padrão:
 ```json
@@ -158,6 +158,5 @@ Todas as respostas da API seguem o padrão:
 ---
 
 <Card title="Não encontrou o termo que procura?" icon="question-circle" color="#25c2a0">
-  Entre em contato com nosso suporte e ajude-nos a melhorar este glossário:  
-  <Icon icon="envelope" type="solid"/> ajuda@abacatepay.com
+  Entre em contato com nosso suporte: <Icon icon="envelope" type="solid"/> ajuda@abacatepay.com
 </Card>
