@@ -33,7 +33,7 @@ Pense nos webhooks como **“mensagens enviadas pela AbacatePay para o seu siste
 
 ---
 
-## <Icon icon="mobile" type="solid"/> Por que usar webhooks?
+## Por que usar webhooks?
 
 Sem webhooks, sua aplicação teria que **perguntar para a API a cada segundo**:
 
@@ -56,7 +56,7 @@ Tudo isso sem precisar fazer nada manualmente, e sem fazer seu cliente esperar.
 
 ---
 
-## <Icon icon="satellite-dish" type="solid"/> Como funciona na prática?
+## Como funciona na prática?
 
 1. **Você cria um endpoint no seu sistema**  
    Ex.: `https://meusite.com/webhooks/abacatepay`
@@ -72,9 +72,9 @@ Tudo isso sem precisar fazer nada manualmente, e sem fazer seu cliente esperar.
 
 ---
 
-## <Icon icon="book" type="solid"/> Ambientes (Dev mode vs Produção)
+## Ambientes (Dev mode vs Produção)
 
-<Card title="Ambientes da AbacatePay" icon="book" horizontal>
+<Card title="Ambientes da AbacatePay" horizontal>
   - Webhooks criados em **Dev mode** recebem eventos simulados  
   - Webhooks criados em **Produção** recebem eventos reais  
 
@@ -83,7 +83,7 @@ Tudo isso sem precisar fazer nada manualmente, e sem fazer seu cliente esperar.
 
 ---
 
-## <Icon icon="key" type="solid"/> Segurança dos webhooks
+## Segurança dos webhooks
 
 Webhooks precisam ser seguros — afinal, qualquer pessoa poderia tentar enviar requisições falsas para sua aplicação.
 
@@ -91,7 +91,7 @@ Por isso, recomendamos duas camadas de proteção:
 
 ---
 
-### 🔐 **1) Secret na URL**  
+### 🔐 1. Secret na URL  
 Cada webhook tem um secret único, que vai na query string.
 
 Ex.: https://meusite.com/webhook/abacatepay?webhookSecret=SEU_SECRET
@@ -105,7 +105,7 @@ if (req.query.webhookSecret !== process.env.WEBHOOK_SECRET) {
 }
 ```
 
-### 🛡️ 2) Assinatura HMAC (verificação do corpo)
+### 🛡️ 2. Assinatura HMAC (verificação do corpo)
 
 Mesmo que alguém descubra sua URL e seu secret, ainda não consegue falsificar o evento.
 
@@ -137,7 +137,7 @@ import crypto from "node:crypto";
 
 // Chave pública de verificação fornecida pela AbacatePay
 const ABACATEPAY_PUBLIC_KEY =
-  "t9dXRhHHo3yDEj5pVDYz0frf7q6bMKyMRmxxCPIPp3RCplBfXRxqlC6ZpiWmOqj4L63qEaeUOtrCI8P0VMUgo6iIga2ri9ogaHFs0WIIywSMg0q7RmBfybe1E5XJcfC4IW3alNqym0tXoAKkzvfEjZxV6bE0oG2zJrNNYmUCKZyV0KZ3JS8Votf9EAWWYdiDkMkpbMdPggfh1EqHlVkMiTady6jOR3hyzGEHrIz2Ret0xHKMbiqkr9HS1JhNHDX9";
+  "t9dXRhHHo3yDEj5pVDYz0frf7q6bMK...";
 
 /**
  * Verifica se a assinatura do webhook é válida
@@ -162,7 +162,7 @@ export function verifyAbacateSignature(rawBody: string, signature: string): bool
 
 ---
 
-## <Icon icon="diagram-project" type="solid" /> Criando um webhook no dashboard
+## Criando um webhook no dashboard
 
 <Steps>
   <Step title="Acesse a seção de Webhooks">
@@ -196,7 +196,7 @@ export function verifyAbacateSignature(rawBody: string, signature: string): bool
 
 ---
 
-## <Icon icon="bell" type="solid" /> Eventos suportados
+## Eventos suportados
 
 A AbacatePay envia diferentes eventos conforme o que acontece na sua conta.
 
@@ -307,9 +307,9 @@ Saque que falhou.
 
 ---
 
-## <Icon icon="triangle-exclamation" type="solid" /> Boas práticas
+## Boas práticas
 
-<Card title="Recomendações importantes" icon="info" horizontal>
+<Card title="Recomendações importantes" horizontal>
   * Use **HTTPS** em todos os webhooks  
   * Valide o **secret** e a **assinatura HMAC**  
   * Registre cada evento recebido — processe cada um **uma única vez**  
@@ -320,6 +320,5 @@ Saque que falhou.
 ---
 
 <Card title="Precisa de ajuda?" icon="headset" color="#25c2a0">
-  Nossa equipe pode te ajudar a configurar, testar e validar seus webhooks:<br/>
-  <Icon icon="envelope" type="solid" /> ajuda@abacatepay.com
+  Nossa equipe pode te ajudar. Contate-nos: <Icon icon="envelope" type="solid" /> ajuda@abacatepay.com
 </Card>

@@ -83,12 +83,12 @@
           {
             "group": "Crie seus cupons",
             "pages": [
-              "pages/coupon/reference",
-              "pages/coupon/create",
-              "pages/coupon/list",
-              "pages/coupon/get",
-              "pages/coupon/delete",
-              "pages/coupon/toggle"
+              "pages/coupons/reference",
+              "pages/coupons/create",
+              "pages/coupons/list",
+              "pages/coupons/get",
+              "pages/coupons/delete",
+              "pages/coupons/toggle"
             ]
           },
           {
@@ -104,18 +104,18 @@
           {
             "group": "Assinaturas",
             "pages": [
-              "pages/items/reference",
-              "pages/items/create",
-              "pages/items/list"
+              "pages/subscriptions/reference",
+              "pages/subscriptions/create",
+              "pages/subscriptions/list"
             ]
           },
           {
             "group": "Saques / Transferências externas",
             "pages": [
-              "pages/withdraw/reference",
-              "pages/withdraw/create",
-              "pages/withdraw/get",
-              "pages/withdraw/list"
+              "pages/payouts/reference",
+              "pages/payouts/create",
+              "pages/payouts/get",
+              "pages/payouts/list"
             ]
           },
           {
@@ -223,7 +223,7 @@
         "href": "https://www.abacatepay.com/llms.txt"
       },
       {
-        "label": "Repositorio",
+        "label": "Repositório",
         "href": "https://github.com/AbacatePay/documentation"
       }
     ],

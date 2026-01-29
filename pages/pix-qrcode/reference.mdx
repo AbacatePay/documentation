@@ -6,7 +6,7 @@ icon: 'book-open-cover'
 
 
 
-## <Icon icon="folder-tree" type="solid"/> Estrutura
+## Estrutura
 
 Esta rota permite criar um **checkout transparente** via PIX. Ao criar uma cobrança, a API retorna um código **Base64** para você gerar o QRCode e um código **copia-e-cola PIX** que pode ser enviado ao seu cliente.
 
@@ -39,7 +39,7 @@ Esta rota permite criar um **checkout transparente** via PIX. Ao criar uma cobra
 
 Use `/transparents/create` para criar um QRCode PIX. A API retorna um código Base64 para gerar o QRCode e um código copia-e-cola PIX que pode ser enviado ao seu cliente.
 
-<Card title="Campos obrigatórios" icon="info" horizontal>
+<Card title="Campos obrigatórios" horizontal>
   Apenas `amount` é obrigatório. O valor deve ser informado em centavos.
 </Card>
 
@@ -73,11 +73,11 @@ POST /transparents/create
 }
 ```
 
-<Tip title="Use o QRCode retornado" icon="book" horizontal>
+<Tip title="Use o QRCode retornado" horizontal>
 Use o `brCodeBase64` para gerar a imagem do QRCode ou o `brCode` (código copia-e-cola) para enviar ao seu cliente via WhatsApp, Telegram ou integrar no seu checkout.
 </Tip>
 
-## 💡 Dicas e Ideias de Uso
+## Dicas e Ideias de Uso
 
 Esta rota de checkout transparente oferece diversas possibilidades de integração:
 
