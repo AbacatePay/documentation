@@ -42,16 +42,17 @@ As chaves de API são gerenciadas diretamente pelo dashboard. Com elas, você po
 - Revogar chaves comprometidas ou que não são mais usadas  
 
 <Card title="Dev mode x Produção" horizontal>
-  Todas as requisições usam o mesmo endpoint (`https://api.abacatepay.com`).  
+  Todas as requisições usam o mesmo endpoint [api.abacatepay.com](https://api.abacatepay.com).  
   O ambiente é definido **pela chave utilizada**:
   - Chaves criadas em **Dev mode** → transações simuladas  
   - Chaves criadas em **Produção** → transações reais  
-  <br />
+
   Saiba mais sobre o ambiente de testes <a href="./devmode">aqui</a>.
 </Card>
 
 <Card title="Erro de Autenticação (401)" horizontal>
   Você receberá um **HTTP 401** quando:
+
   - A chave não for enviada no header  
   - A chave estiver incorreta  
   - A chave tiver sido revogada  
