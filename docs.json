@@ -192,6 +192,19 @@
         ]
       },
       {
+        "tab": "HTTP",
+        "groups": [
+          {
+            "group": "HTTP",
+            "pages": [
+              "pages/http/overview",
+              "pages/http/postman",
+              "pages/http/bruno"
+            ]
+          }
+        ]
+      },
+      {
         "tab": "ChangeLog",
         "pages": [
           "pages/changelog/index"
