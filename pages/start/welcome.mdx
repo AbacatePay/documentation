@@ -132,13 +132,19 @@ mode: "custom"
       </Card>
     </div>
 
+    <div id="card-19" style={{ display: "none" }}>
+      <Card icon="command" title="AI" href="/pages/ai">
+        Integre com as nossas ferramentes de IA facilmente, sem magia.
+      </Card>
+    </div>
+
   </div>
   
   <div style={{ textAlign: "center", marginTop: "32px" }}>
     <button
       id="load-more-btn"
       onClick={() => {
-        const cards = ['card-11', 'card-12', 'card-13', 'card-14', 'card-15', 'card-16', 'card-17', 'card-18'];
+        const cards = ['card-11', 'card-12', 'card-13', 'card-14', 'card-15', 'card-16', 'card-17', 'card-18', 'card-19'];
         const btn = document.getElementById('load-more-btn');
         const firstCard = document.getElementById('card-11');
         const isHidden = firstCard && firstCard.style.display === 'none';
