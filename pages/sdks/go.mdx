@@ -30,91 +30,67 @@ import (
 )
 
 func main() {
-	// Initialize the SDK with your API key
+	// Inicialize o client com a sua API key
 	client, err := abacatepay.New(&abacatepay.ClientConfig{
-		ApiKey:  "your_api_key",
+		ApiKey:  "YOUR_API_KEY",
 		Timeout: 10 * time.Second,
 	})
+
 	if err != nil {
 		panic(err)
 	}
 	
-	// Use the client...
+	// Use o cliente...
 }
 ```
 
-## Criando uma Cobrança
+## Criando uma Cobrança PIX
 
 ```go
 package main
 
 import (
 	"context"
-	"github.com/AbacatePay/abacatepay-go-sdk/abacatepay"
-	"github.com/AbacatePay/abacatepay-go-sdk/v1/billing"
-	"log"
 	"time"
+	"log"
+
+	"github.com/AbacatePay/abacatepay-go-sdk/v1"
+	"github.com/AbacatePay/abacatepay-go-sdk/v1/pix"
 )
 
 func main() {
-	client, err := abacatepay.New(&abacatepay.ClientConfig{
-		ApiKey:  "your_api_key",
-		Timeout: 10 * time.Second,
-	})
+	// ...
+	ctx, cancel := context.WithTimeout(context.Background(), 15 * time.Second)
+
+	defer cancel()
+
+	body := &pix.CreateQrCodePIXBody{
+		Amount: 100,
+	}
+
+	response, err := client.Pix.Create(ctx, body)
+	
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
-	// Criando uma Cobrança Única
-	body := &billing.CreateBillingBody{
-		Frequency:     billing.OneTime,
-		Methods:       []billing.Method{billing.PIX},
-		CompletionUrl: "https://yoursite.com/payment/success",
-		ReturnUrl:     "https://yoursite.com/app",
-		Products: []*billing.BillingProduct{
-			{
-				ExternalId:  "PRO-PLAN",
-				Name:        "Pro plan",
-				Description: "Pro plan subscription",
-				Quantity:    1,
-				Price:       1000, // Preço em centavos
-			},
-		},
-		Customer: &billing.BillingCustomer{
-			Email: "customer@example.com",
-		},
-	}
-
-	ctx := context.Background()
-	createResponse, err := client.Billing.Create(ctx, body)
-	if err != nil {
-		panic(err)
-	}
-
-	log.Println(createResponse.Data.Url) // URL de pagamento para seu cliente
+	log.Printf("PIX criado: %s\n", response.Data.ID)
 }
 ```
 
 ## Response
 
-```go
+```json
 {
-    "id": "bill_12345667",
-    "url": "https://abacatepay.com/pay/bill_12345667",  // URL de pagamento para seu cliente
-    "amount": 1000,
+    "id": "pix_char_123456",
+    "amount": 100,
     "status": "PENDING",
     "devMode": true,
-    "methods": ["PIX"],
-    "frequency": "ONE_TIME",
-    "nextBilling": null,
-    "customer": {
-        "id": "cust_12345",
-        "metadata": {
-            "email": "customer@example.com"
-        }
-    },
-    "createdAt": "2024-11-04T18:38:28.573",
-    "updatedAt": "2024-11-04T18:38:28.573"
+    "brCode": "00020101021226950014br.gov.bcb.pix",
+    "brCodeBase64": "data:image/png;base64,iVBORw0KGgoAAA",
+    "platformFee": 80,
+    "createdAt": "2025-03-24T21:50:20.772Z",
+    "updatedAt": "2025-03-24T21:50:20.772Z",
+    "expiresAt": "2025-03-25T21:50:20.772Z"
 }
 ```
-
