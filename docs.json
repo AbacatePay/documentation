@@ -197,7 +197,8 @@
           {
             "group": "HTTP",
             "pages": [
-              "pages/http/overview"
+              "pages/http/overview",
+              "pages/http/postman"
             ]
           }
         ]
