@@ -192,6 +192,17 @@
         ]
       },
       {
+        "tab": "HTTP",
+        "groups": [
+          {
+            "group": "HTTP",
+            "pages": [
+              "pages/http/overview"
+            ]
+          }
+        ]
+      },
+      {
         "tab": "ChangeLog",
         "pages": [
           "pages/changelog/index"
