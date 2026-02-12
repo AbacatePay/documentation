@@ -35,11 +35,19 @@
           },
           {
             "group": "Cliente",
-            "pages": ["pages/client/reference", "pages/client/create", "pages/client/list"]
+            "pages": [
+              "pages/client/reference",
+              "pages/client/create",
+              "pages/client/list"
+            ]
           },
           {
             "group": "Cobrança",
-            "pages": ["pages/payment/reference", "pages/payment/create", "pages/payment/list"]
+            "pages": [
+              "pages/payment/reference",
+              "pages/payment/create",
+              "pages/payment/list"
+            ]
           },
           {
             "group": "Pix QRCode",
@@ -52,19 +60,36 @@
           },
           {
             "group": "Cupom",
-            "pages": ["pages/coupon/reference", "pages/coupon/create", "pages/coupon/list"]
+            "pages": [
+              "pages/coupon/reference",
+              "pages/coupon/create",
+              "pages/coupon/list"
+            ]
           },
           {
             "group": "Saque",
-            "pages": ["pages/withdraw/reference", "pages/withdraw/create", "pages/withdraw/get", "pages/withdraw/list"]
+            "pages": [
+              "pages/withdraw/reference",
+              "pages/withdraw/create",
+              "pages/withdraw/get",
+              "pages/withdraw/list"
+            ]
           },
           {
             "group": "Loja",
-            "pages": ["pages/store/reference", "pages/store/get"]
+            "pages": [
+              "pages/store/reference",
+              "pages/store/get"
+            ]
           },
           {
             "group": "Trust MRR",
-            "pages": ["pages/trustMRR/reference", "pages/trustMRR/mrr", "pages/trustMRR/get", "pages/trustMRR/list"]
+            "pages": [
+              "pages/trustMRR/reference",
+              "pages/trustMRR/mrr",
+              "pages/trustMRR/get",
+              "pages/trustMRR/list"
+            ]
           }
         ]
       },
@@ -88,7 +113,7 @@
     "primary": {
       "type": "button",
       "label": "Dashboard",
-      "href": "https://www.abacatepay.com/app"
+      "href": "https://app.abacatepay.com/"
     }
   },
   "footer": {
