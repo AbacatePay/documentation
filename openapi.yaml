@@ -51,6 +51,7 @@ paths:
                     $ref: '#/components/schemas/Customer'
                   error:
                     type: 'null'
+                    example: null
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -83,6 +84,7 @@ paths:
                       $ref: '#/components/schemas/Customer'
                   error:
                     type: 'null'
+                    example: null
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -111,6 +113,7 @@ paths:
                   $ref: '#/components/schemas/Coupon'
                 error:
                   type: 'null'
+                  example: null
       responses:
         '200':
           description: Cliente criado com sucesso.
@@ -123,6 +126,7 @@ paths:
                     $ref: '#/components/schemas/CouponResponse'
                   error:
                     type: 'null'
+                    example: null
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -155,6 +159,7 @@ paths:
                       $ref: '#/components/schemas/CouponResponse'
                   error:
                     type: 'null'
+                    example: null
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -306,6 +311,7 @@ paths:
                     $ref: '#/components/schemas/Billing'
                   error:
                     type: 'null'
+                    example: null
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -338,6 +344,7 @@ paths:
                       $ref: '#/components/schemas/Billing'
                   error:
                     type: 'null'
+                    example: null
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -416,6 +423,7 @@ paths:
                     $ref: '#/components/schemas/PixQRCode'
                   error:
                     type: 'null'
+                    example: null
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -455,6 +463,7 @@ paths:
                         example: '2025-03-25T21:50:20.772Z'
                   error:
                     type: 'null'
+                    example: null
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -502,6 +511,7 @@ paths:
                     $ref: '#/components/schemas/PixQRCode'
                   error:
                     type: 'null'
+                    example: null
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -581,6 +591,7 @@ paths:
                     $ref: '#/components/schemas/Transaction'
                   error:
                     type: 'null'
+                    example: null
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -618,6 +629,7 @@ paths:
                     $ref: '#/components/schemas/Transaction'
                   error:
                     type: 'null'
+                    example: null
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -638,6 +650,7 @@ paths:
                 properties:
                   data:
                     type: 'null'
+                    example: null
                   error:
                     type: string
                     description: Mensagem de erro indicando que o saque não foi encontrado.
@@ -663,6 +676,7 @@ paths:
                       $ref: '#/components/schemas/Transaction'
                   error:
                     type: 'null'
+                    example: null
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -695,11 +709,13 @@ paths:
                         example: 'Erro ao recuperar dados da loja.'
                       data:
                         type: 'null'
+                        example: null
                     required: ['error']
                   - type: object
                     properties:
                       error:
                         type: 'null'
+                        example: null
                       data:
                         $ref: '#/components/schemas/Store'
                     required: ['error', 'data']
@@ -752,6 +768,7 @@ paths:
                     additionalProperties: false
                   error:
                     type: 'null'
+                    example: null
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -792,6 +809,7 @@ paths:
                     additionalProperties: false
                   error:
                     type: 'null'
+                    example: null
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -872,6 +890,7 @@ paths:
                     additionalProperties: false
                   error:
                     type: 'null'
+                    example: null
         '400':
           description: Erro de validação. Parâmetros inválidos ou ausentes.
           content:
