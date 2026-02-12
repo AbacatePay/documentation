@@ -15,6 +15,7 @@ Informações básicas da loja retornadas pela rota `/public-mrr/merchant-info`:
 ```json
 {
   "data": {
+    "id": "store_123456",
     "name": "Example Tech",
     "website": "https://www.example.com",
     "createdAt": "2024-12-06T18:53:31.756Z"
@@ -64,6 +65,16 @@ Dados de receita por período retornados pela rota `/public-mrr/revenue`:
 ## Atributos:
 
 <AccordionGroup>
+  <Accordion title="id:">
+        ```json {2}
+        {
+          "id": "store_123456",
+        } 
+        ```
+
+        `id` : <u> string. </u> <br />
+        Identificador único da loja
+    </Accordion>
     <Accordion title="name:">
         ```json {3}
         {
@@ -95,7 +106,7 @@ Dados de receita por período retornados pela rota `/public-mrr/revenue`:
         Data de criação da loja
     </Accordion>
     <Accordion title="mrr:">
-        ```json {3}
+        ```json {4}
         {
           "mrr": 0,
         } 
@@ -105,7 +116,7 @@ Dados de receita por período retornados pela rota `/public-mrr/revenue`:
         Receita recorrente mensal em centavos. Valor 0 indica que não há receita recorrente no momento.
     </Accordion>
     <Accordion title="totalActiveSubscriptions:">
-        ```json {4}
+        ```json {5}
         {
           "totalActiveSubscriptions": 0,
         } 

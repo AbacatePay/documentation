@@ -731,6 +731,10 @@ paths:
                   data:
                     type: object
                     properties:
+                      id:
+                        type: string
+                        description: Identificador único da loja no formato store_123456
+                        example: 'store_123456'
                       name:
                         type: string
                         description: Nome da loja
@@ -744,7 +748,7 @@ paths:
                         format: date-time
                         description: Data de criação da loja
                         example: '2024-12-06T18:53:31.756Z'
-                    required: ['name', 'website', 'createdAt']
+                    required: ['id', 'name', 'website', 'createdAt']
                     additionalProperties: false
                   error:
                     type: 'null'
