@@ -24,7 +24,7 @@ Uma cobrança é representada em nossa API pela seguinte estrutura:
   
   "status": "PAID",
   "devMode": true,
-  "methods": ["PIX"],
+  "methods": ["PIX", "CARD"],
   "products": [
     {
       "id": "prod_dNFbdDjfpaegmzBWWdNM2Huw",
@@ -121,10 +121,10 @@ Uma cobrança é representada em nossa API pela seguinte estrutura:
         }
         ```
         `methods` : <u> array </u> <br />
-        Tipos de pagamento suportados: `PIX` e `CARD` (beta).
+        Métodos de pagamento aceitos para a cobrança. Pode incluir um ou mais: `PIX` e `CARD`.
 
-        <Card title="Cartão de crédito (beta)" icon="info" horizontal>
-          Pagamentos por cartão estão em beta. Para habilitar, entre em contato com o suporte: ajuda@abacatepay.com
+        <Card title="Método CARD (beta)" icon="info" horizontal>
+          O método CARD (cartão de crédito) está em beta. Para habilitar, entre em contato com o suporte: ajuda@abacatepay.com
         </Card>
     </Accordion>
     <Accordion title="products:">

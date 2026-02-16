@@ -77,11 +77,11 @@ import AbacatePay from 'abacatepay-nodejs-sdk';
 // Inicialize o cliente com sua chave de API
 const abacate = AbacatePay('your_api_key');
 
-// Crie um pagamento PIX
-async function createPixPayment() {
+// Crie uma cobrança aceitando PIX e cartão (método CARD em beta)
+async function createBilling() {
   const billing = await abacate.billing.create({
     frequency: "ONE_TIME",
-    methods: ["PIX"],
+    methods: ["PIX", "CARD"],  // aceita um ou mais métodos
     products: [
       {
         externalId: "PRO-PLAN",
@@ -100,7 +100,7 @@ async function createPixPayment() {
   return billing
 }
 
-createPixPayment();
+createBilling();
 ```
 
 ```python Python
@@ -132,9 +132,10 @@ products = [
     }
 ]
 
-# Crie uma cobrança
+# Crie uma cobrança (aceita PIX e/ou CARD; método CARD em beta)
 billing = client.billing.create(
     products=products,
+    methods=["PIX", "CARD"],  # aceita um ou mais métodos
     return_url="https://yourwebsite.com/return",
     completion_url="https://yourwebsite.com/complete"
 )
