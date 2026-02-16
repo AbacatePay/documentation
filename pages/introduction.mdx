@@ -39,7 +39,7 @@ Nossa API foi construída com três princípios fundamentais:
    await abacatePay.billing.create({...});
    ```
 
-3. **Consistente**: Nossa API retorna sempre um option contendo o erro ou os dados de retorno, o que facilita a implementação em linguagens de tipagem forte e consistência em todas as operações.
+3. **Consistente**: Nossa API retorna sempre um option contendo o erro ou os dados de retorno, o que facilita a implementação em linguagens de tipagem forte e consistência em todas as operações. O campo `methods` aceita um ou mais métodos de pagamento (`PIX` e/ou `CARD`);
    ```json
    {
      "data": {

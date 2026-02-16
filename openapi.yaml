@@ -192,7 +192,7 @@ paths:
                   example: 'ONE_TIME'
                 methods:
                   type: array
-                  description: Métodos de pagamento que serão utilizados. Atualmente, apenas PIX é suportado, CARD encontra-se em beta.
+                  description: "Métodos de pagamento que serão utilizados. Aceita um ou mais: `PIX` e `CARD`"
                   items:
                     type: string
                     enum: ['PIX', 'CARD']
@@ -200,7 +200,7 @@ paths:
                   maxItems: 2
                   uniqueItems: true
                   default: ['PIX']
-                  example: ['PIX']
+                  example: ['PIX', 'CARD']
                 products:
                   type: array
                   description: Lista de produtos que seu cliente está pagando.
@@ -1063,7 +1063,7 @@ components:
           items:
             type: string
             enum: ['PIX', 'CARD']
-          example: ['PIX']
+          example: ['PIX', 'CARD']
         products:
           type: array
           description: Lista de produtos na cobrança.

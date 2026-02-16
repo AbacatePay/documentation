@@ -38,6 +38,30 @@ Para começar a testar:
   * Confirme a integração com seu sistema
 </Card>
 
+## <Icon icon="credit-card" type="solid"/>  Testando pagamentos com cartão
+
+No Dev mode, você pode simular pagamentos no cartão de crédito. As regras de cartões de teste são:
+
+### Cartão aceito
+
+Use o seguinte cartão para simular um pagamento **aprovado**:
+
+| Campo | Valor |
+| ----- | ----- |
+| **Número** | `4242 4242 4242 4242` |
+| **Validade** | Qualquer data futura (ex.: 12/30) |
+| **CVV** | Qualquer número com 3 ou 4 dígitos (ex.: 123 ou 1234) |
+
+### Cartões rejeitados
+
+Os números abaixo são sempre **rejeitados** no Dev mode, para você testar o fluxo de falha:
+
+- `4000000000000002`
+- `4000000000009995`
+- `4000000000000127`
+- `4000000000000069`
+- `4000000000000101`
+
 ## <Icon icon="arrow-right" type="solid"/>  Próximos Passos
 
 Quando estiver confiante com sua integração:
