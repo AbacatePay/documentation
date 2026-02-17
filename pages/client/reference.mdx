@@ -69,13 +69,12 @@ POST /customers/create
       "customField": "value"
     }
   },
+  "success": true,
   "error": null
 }
 ```
 
-O `customerId` retornado pode ser usado ao criar cobranças, pré-preenchendo os dados do checkout.
-
-**Alternativa**: O cliente também pode ser criado automaticamente ao criar uma cobrança via `/checkouts/create` ou quando o cliente preenche os dados no checkout.
+O `id` do cliente retornado pode ser usado ao criar cobranças, pré-preenchendo os dados do checkout.
 
 <Tip title="Clientes são únicos por CPF/CNPJ" icon="book" horizontal>
  Não é possível criar um cliente com CPF/CNPJ inválido e caso já exista um cliente com esse CPF/CNPJ, a API não criará o cliente novo mas retornará o cliente já existente
