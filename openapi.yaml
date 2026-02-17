@@ -300,7 +300,7 @@ paths:
                     example: 'Cliente não encontrado.'
   /coupons/create:
     post:
-      summary: Criar um novo cupom
+      summary: Criar um cupom
       description: |
         Permite que você crie um novo cupom que pode ser usado por seus clientes para aplicar descontos.
         
@@ -602,7 +602,7 @@ paths:
                     example: 'Cupom não encontrado.'
   /products/create:
     post:
-      summary: Criar um novo produto
+      summary: Criar um produto
       description: |
         Permite que você crie um novo produto que pode ser usado em cobranças.
         
@@ -1329,9 +1329,46 @@ paths:
           required: true
           schema:
             type: string
+  /transparents/list:
+    get:
+      summary: Listar Checkouts Transparentes
+      description: |
+        Retorna todos os Checkouts Transparentes (QRCodes PIX) que você criou.
+
+        Você pode usar essa rota para listar todos os seus checkouts transparentes e visualizar seus status, valores e informações relacionadas.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Checkouts transparentes listados com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    description: Lista de Checkouts Transparentes (QRCodes PIX).
+                    items:
+                      $ref: '#/components/schemas/PixQRCode'
+                  error:
+                    type: 'null'
+                  success:
+                    $ref: '#/components/schemas/Success'
+        '401':
+          description: Não autorizado. Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
+                    example: 'Token de autenticação inválido ou ausente.'
   /payouts/create:
     post:
-      summary: Criar um novo payout
+      summary: Criar um payout
       description: |
         Permite que você crie um novo payout para transferir valores da sua conta AbacatePay.
         
