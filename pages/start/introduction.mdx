@@ -58,15 +58,17 @@ Nossa API foi construída com três princípios fundamentais:
          "createdAt": "2024-11-04T18:38:28.573Z",
          "updatedAt": "2024-11-04T18:38:28.573Z"
       },
+      "success": true,
       "error": null
    }
    ```
 
    <Card title="Estrutura de Resposta" horizontal>
-      Todas as respostas da API seguem o padrão `{(data, error)}`. Se `error` for
-      `null`, a operação foi bem-sucedida e os dados estarão em `data`.
+      Todas as respostas da API seguem o padrão `{data, error, success}`. Se `success` for
+      `true`, a operação foi bem-sucedida e os dados estarão em `data`.
+      Os endpoints respondem com `status code` de erro ou sucesso.
    </Card>
 
-Para facilitar ainda mais, oferecemos SDKs oficiais e suporte a modo de desenvolvimento com chaves de API dedicadas.
+Para facilitar ainda mais, nossa API oferecemos SDKs oficiais e suporte a modo de desenvolvimento com chaves de API dedicadas.
 
 

@@ -56,17 +56,18 @@ Para mais detalhes sobre autenticação, consulte a <a href="./authentication">d
 
 ## Passo 2: Fazer sua Primeira Requisição
 
-Agora vamos criar sua primeira cobrança usando a API. Todas as requisições devem incluir sua chave de API no header `Authorization`.
+Agora vamos criar sua primeira cobrança de Checkout Transparente via API.
 
 ### Exemplo com cURL
 
 ```bash
 curl --request POST \
   --url https://api.abacatepay.com/v2/transparents/create \
-  --header 'Authorization: Bearer (Sua chave de API aqui)' \
+  --header 'Authorization: Bearer {{API_KEY}}' \
   --header 'Content-Type: application/json' \
   --data '{
-    "amount": 1000
+    "amount": 1000,
+    "method": "PIX_QRCODE"
   }'
 ```
 
@@ -74,26 +75,26 @@ curl --request POST \
 
 ```json
   {
-    "error":null,
-    "data":{
-      "amount":1000,
-      "status":"PENDING",
-      "devMode":true,
-      "method":"PIX",
-      "brCode":"0002010121126580014BR.GOV.BCB...",
-      "brCodeBase64":"data:image/png;base64...",
-      "platformFee":80,
-      "createdAt":"2025-12-08T17:01:48.857Z",
-      "updatedAt":"2025-12-08T17:01:48.857Z",
-      "expiresAt":"2025-12-09T17:01:48.857Z",
-      "id":"pix_char_cY2F1nwmknGfg2jdRxrkgmgN"
+    "error": null,
+    "data": {
+      "id":" pix_char_cY2F1nwmknGfg2jdRxrkgmgN",
+      "amount": 1000,
+      "status": "PENDING",
+      "devMode": true,
+      "method": "PIX_QRCODE",
+      "brCode": "0002010121126580014BR.GOV.BCB...",
+      "brCodeBase64 ":"data:image/png;base64...",
+      "platformFee": 80,
+      "createdAt": "2025-12-08T17:01:48.857Z",
+      "updatedAt": "2025-12-08T17:01:48.857Z",
+      "expiresAt": "2025-12-09T17:01:48.857Z",
     }
   }
 ```
 
 
 
-<Card title="Visualizar sua Cobrança" horizontal>
+<Card title="Visualizar sua Checkout Transparente" horizontal>
   Após criar sua cobrança, você pode visualizá-la no dashboard da AbacatePay. Acesse o{" "}
   <a href="https://app.abacatepay.com" target="_blank">dashboard</a>{" "}
   e navegue até a seção de **Cobranças** para ver todos os detalhes da cobrança criada, incluindo status, valores e histórico de pagamentos.
