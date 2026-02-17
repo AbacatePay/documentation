@@ -1,6 +1,6 @@
 ---
 title: 'Referência'
-description: 'Crie um checkout transparente e receba um QRCode em Base64 e código copia-e-cola PIX'
+description: 'Crie um checkout transparente'
 icon: 'book-open-cover'
 ---
 
@@ -8,7 +8,7 @@ icon: 'book-open-cover'
 
 ## Estrutura
 
-Esta rota permite criar um **checkout transparente** via PIX. Ao criar uma cobrança, a API retorna um código **Base64** para você gerar o QRCode e um código **copia-e-cola PIX** que pode ser enviado ao seu cliente.
+Um **checkout transparente** permite seu cliente pagar sem precisar sair do seu sistema.
 
 {/* <div style={{ 
     position: "relative", 
@@ -35,9 +35,9 @@ Esta rota permite criar um **checkout transparente** via PIX. Ao criar uma cobra
 />
 </div> */}
 
-## Criar uma cobrança com checkout transparente
+## Receber via Checkout Transparente
 
-Use `/transparents/create` para criar um QRCode PIX. A API retorna um código Base64 para gerar o QRCode e um código copia-e-cola PIX que pode ser enviado ao seu cliente.
+Use `/transparents/create` para criar um QRCode PIX. A API retorna o QRCode junto com o copia e cola.
 
 <Card title="Campos obrigatórios" horizontal>
   Apenas `amount` é obrigatório. O valor deve ser informado em centavos.
@@ -47,7 +47,7 @@ Use `/transparents/create` para criar um QRCode PIX. A API retorna um código Ba
 ```json
 POST /transparents/create
 {
-  "amount": 10000,                              // obrigatório - valor em centavos
+  "amount": 10000,  // obrigatório - valor em centavos
 }
 ```
 <Tip title="Apenas o amount é obrigatório" icon="info" horizontal>
@@ -58,7 +58,7 @@ POST /transparents/create
 ```json
 {
   "data": {
-    "id": "pix_abc123xyz",
+    "id": "pix_char_abc123xyz",
     "amount": 10000,
     "status": "PENDING",
     "devMode": false,
@@ -69,6 +69,7 @@ POST /transparents/create
     "updatedAt": "2024-11-04T18:38:28.573Z",
     "expiresAt": "2024-11-04T19:38:28.573Z"
   },
+  "success": true,
   "error": null
 }
 ```

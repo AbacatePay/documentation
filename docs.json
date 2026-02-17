@@ -62,7 +62,7 @@
             ]
           },
           {
-            "group": "Crie seus clientes",
+            "group": "Clientes",
             "pages": [
               "pages/client/reference",
               "pages/client/create",
@@ -72,16 +72,17 @@
             ]
           },
           {
-            "group": "Transparente",
+            "group": "Checkout Transparente",
             "pages": [
               "pages/pix-qrcode/reference",
               "pages/pix-qrcode/create",
+              "pages/pix-qrcode/list",
               "pages/pix-qrcode/simulate-payment",
               "pages/pix-qrcode/check"
             ]
           },
           {
-            "group": "Crie seus cupons",
+            "group": "Cupons",
             "pages": [
               "pages/coupons/reference",
               "pages/coupons/create",
@@ -110,7 +111,7 @@
             ]
           },
           {
-            "group": "Saques / Transferências externas",
+            "group": "Saques",
             "pages": [
               "pages/payouts/reference",
               "pages/payouts/create",
@@ -216,7 +217,7 @@
         ]
       },
       {
-        "tab": "ChangeLog",
+        "tab": "Changelog",
         "pages": [
           "pages/changelog/index"
         ]

@@ -1,44 +1,10 @@
 ---
 title: "Referência"
-description: "Crie uma cobrança com checkout integrado"
+description: "Crie um checkout"
 icon: "book-open-cover"
 ---
 
-O **Checkout da AbacatePay** é uma página segura onde seus clientes finalizam o pagamento. Você cria a cobrança com os itens que deseja vender, e nós geramos automaticamente uma URL onde o cliente:
-
-{/* <div style={{ 
-    position: "relative", 
-    paddingBottom: "56.25%", 
-    height: 0, 
-    overflow: "hidden",
-    maxWidth: "800px",
-    margin: "32px auto",
-    borderRadius: "8px"
-}}>
-<iframe
-    src="https://www.youtube.com/embed/SEU_VIDEO_ID"
-    title="Criar Cobrança com Checkout - AbacatePay"
-    frameBorder="0"
-    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-    allowFullScreen
-    style={{ 
-        position: "absolute", 
-        top: 0, 
-        left: 0, 
-        width: "100%", 
-        height: "100%" 
-    }}
-/>
-</div> */}
-
-- insere seus dados (se você não os fornecer)
-- escolhe a forma de pagamento (`PIX`, `CARD`)
-- conclui o pagamento
-
-> ✔ Ideal para produtos, serviços, planos ou cobranças avulsas  
-> ✔ Processo 100% gerenciado pela AbacatePay  
-> ✔ Você recebe notificações via webhook quando o pagamento é confirmado
-
+O **Checkout da AbacatePay** é uma página segura onde seus clientes finalizam o pagamento.
 <img
   src="/images/payment-checkout-placeholder.png"
   alt="Fluxo de cobrança - Checkout AbacatePay"
@@ -51,9 +17,9 @@ O **Checkout da AbacatePay** é uma página segura onde seus clientes finalizam 
 />
 
 
-## Criar cobrança
+## Criar Checkout
 
-Use `/checkouts/create` para criar uma cobrança com checkout integrado. Você fornece os itens que deseja vender, e nós geramos automaticamente uma URL onde o cliente concluirá o pagamento.
+Use `/checkouts/create` para criar um checkout. Você fornece os itens que deseja vender, e nós geramos automaticamente uma URL onde o cliente concluirá o pagamento.
 
 <Card title="Campos obrigatórios" horizontal>
   Apenas `items` é obrigatório. O valor total é calculado automaticamente a partir dos itens fornecidos.
@@ -65,17 +31,11 @@ POST /checkouts/create
 {
   "items": [                                    // obrigatório
     {
-      "id": "prod_456",                         // ID do produto na sua loja
-      "quantity": 2                             // quantidade
+      "id": "prod_pro",                         // ID do produto na sua loja
+      "quantity": 1                             // quantidade
     }
   ],
   "customerId": "cust_abc123xyz",              // opcional - ID do cliente já cadastrado
-  "customer": {                                 // opcional - dados do cliente (todos obrigatórios se usar)
-    "name": "João Silva",
-    "email": "customer@example.com",
-    "cellphone": "+5511999999999",
-    "taxId": "12345678900"
-  },
   "externalId": "pedido-123",                  // opcional - ID no seu sistema
   "returnUrl": "https://seusite.com/voltar",   // opcional - URL de retorno
   "completionUrl": "https://seusite.com/sucesso", // opcional - URL após pagamento
@@ -111,6 +71,7 @@ POST /checkouts/create
     "createdAt": "2024-11-04T18:38:28.573Z",
     "updatedAt": "2024-11-04T18:38:28.573Z"
   },
+  "success": true,
   "error": null
 }
 ```

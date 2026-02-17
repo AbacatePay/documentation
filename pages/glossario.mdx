@@ -11,7 +11,7 @@ icon: 'book-open-cover'
 ## Autenticação e Segurança
 
 ### Bearer Token
-Também chamado de **chave de API**, é o método de autenticação usado para autorizar suas requisições à API da AbacatePay. A chave é enviada no header HTTP `Authorization: Bearer sua_chave_api`. Sem uma chave válida, nenhuma requisição será aceita.
+Também chamado de **chave de API**, é o método de autenticação usado para autorizar suas requisições à API da AbacatePay. A chave é enviada no header HTTP `Authorization: Bearer {{API_KEY}}`. Sem uma chave válida, nenhuma requisição será aceita.
 
 ### Webhook Secret
 Uma string única e secreta que garante que os webhooks recebidos realmente vieram da AbacatePay. É enviado na URL do webhook como parâmetro de query string e deve ser validado no seu servidor para evitar requisições maliciosas.
@@ -148,12 +148,13 @@ Todas as respostas da API seguem o padrão:
 ```json
 {
   "data": { /* dados da operação */ },
-  "error": null
+  "error": null,
+  "success": true
 }
 ```
 
-- Se `error` for `null`, a operação foi bem-sucedida e os dados estarão em `data`
-- Se `error` contiver dados, a operação falhou e você deve verificar a mensagem de erro
+- Se `success` for `true`, a operação foi bem-sucedida e os dados estarão em `data`
+- Se `success` for `false`, a operação falhou e você deve verificar a mensagem de erro no campo `error`
 
 ---
 

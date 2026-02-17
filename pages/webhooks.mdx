@@ -135,18 +135,18 @@ Esse é o mesmo método usado por **Stripe, PayPal, Shopify, GitHub**, etc.
 ```typescript
 import crypto from "node:crypto";
 
-// Chave pública de verificação fornecida pela AbacatePay
+// Public HMAC key
 const ABACATEPAY_PUBLIC_KEY =
-  "t9dXRhHHo3yDEj5pVDYz0frf7q6bMK...";
+  "t9dXRhHHo3yDEj5pVDYz0frf7q6bMKyMRmxxCPIPp3RCplBfXRxqlC6ZpiWmOqj4L63qEaeUOtrCI8P0VMUgo6iIga2ri9ogaHFs0WIIywSMg0q7RmBfybe1E5XJcfC4IW3alNqym0tXoAKkzvfEjZxV6bE0oG2zJrNNYmUCKZyV0KZ3JS8Votf9EAWWYdiDkMkpbMdPggfh1EqHlVkMiTady6jOR3hyzGEHrIz2Ret0xHKMbiqkr9HS1JhNHDX9";
 
 /**
- * Verifica se a assinatura do webhook é válida
- * @param rawBody Corpo bruto da requisição (string)
- * @param signature Header recebido em `X-Webhook-Signature`
- * @returns Verdadeiro se a assinatura for válida, falso caso contrário.
+ * Verifies if the webhook signature matches the expected HMAC.
+ * @param rawBody Raw request body string.
+ * @param signatureFromHeader The signature received from `X-Webhook-Signature`.
+ * @returns true if the signature is valid, false otherwise.
  */
-export function verifyAbacateSignature(rawBody: string, signature: string): boolean {
-  const bodyBuffer = Buffer.from(rawBody, "utf8");
+export function verifyAbacateSignature(rawBody: string, signatureFromHeader: string) {
+  const bodyBuffer = Buffer.from(rawBody, "utf8")
 
   const expectedSig = crypto
     .createHmac("sha256", ABACATEPAY_PUBLIC_KEY)
@@ -154,7 +154,7 @@ export function verifyAbacateSignature(rawBody: string, signature: string): bool
     .digest("base64");
 
   const A = Buffer.from(expectedSig);
-  const B = Buffer.from(signature);
+  const B = Buffer.from(signatureFromHeader);
 
   return A.length === B.length && crypto.timingSafeEqual(A, B);
 }
