@@ -1748,17 +1748,31 @@ paths:
   /pix/get:
     get:
       summary: Buscar PIX
-      description: Permite que você recupere os detalhes de uma transação PIX específica usando o ID.
+      description: |
+        Permite que você recupere os detalhes de uma transação PIX específica usando o ID ou externalId.
+        
+        Você pode buscar usando:
+        - `id`: Identificador único da transação PIX na AbacatePay
+        - `externalId`: Identificador único do PIX em seu sistema
+        
+        **Importante**: Você deve fornecer pelo menos um dos parâmetros (`id` ou `externalId`).
       security:
         - bearerAuth: []
       parameters:
         - name: id
           in: query
-          description: Identificador único da transação PIX.
-          required: true
+          description: Identificador único da transação PIX na AbacatePay.
+          required: false
           schema:
             type: string
             example: 'txn_abc123xyz'
+        - name: externalId
+          in: query
+          description: Identificador único do PIX em seu sistema.
+          required: false
+          schema:
+            type: string
+            example: 'pix-123'
       responses:
         '200':
           description: Detalhes do PIX retornados com sucesso.
@@ -1800,22 +1814,33 @@ paths:
                   error:
                     type: string
                     description: Mensagem de erro indicando que o PIX não foi encontrado.
-                    example: 'PIX não encontrado com o ID fornecido.'
+                    example: 'PIX não encontrado com o ID ou externalId fornecido.'
   /pix/list:
     get:
       summary: Listar PIX
       description: |
         Permite que você recupere uma lista de transações PIX criadas.
+        
+        Você pode filtrar usando:
+        - `id`: Identificador único da transação PIX na AbacatePay
+        - `externalId`: Identificador único do PIX em seu sistema
       security:
         - bearerAuth: []
       parameters:
         - name: id
           in: query
-          description: Identificador único da transação PIX para filtrar.
+          description: Identificador único da transação PIX na AbacatePay para filtrar.
           required: false
           schema:
             type: string
             example: 'txn_abc123xyz'
+        - name: externalId
+          in: query
+          description: Identificador único do PIX em seu sistema para filtrar.
+          required: false
+          schema:
+            type: string
+            example: 'pix-123'
       responses:
         '200':
           description: Lista de PIX retornada com sucesso.
