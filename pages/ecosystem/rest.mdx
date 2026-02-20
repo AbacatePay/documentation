@@ -72,8 +72,8 @@ console.log(status, expiresAt);
 Ou você pode configurar a versão em rotas específicas via `version`
 
 ```ts
-await client.delete('/coupons/delete', {
-    body: {
+await client.post('/coupons/delete', {
+    query: {
         id,
     },
     version: 2,
