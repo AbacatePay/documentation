@@ -4,15 +4,9 @@ description: "Realize saques e envie dinheiro para terceiros"
 icon: "book-open-cover"
 ---
 
-O módulo de **payouts** permite que você transfira valores da sua conta AbacatePay. É uma funcionalidade essencial para gerenciar seus fundos e realizar transferências.
+O módulo de **payouts** permite que você realize saques do seu saldo de forma automatizada.
 
-Você pode usar esta rota para:
-- **Realizar saques** da sua conta para sua própria chave PIX
-- **Enviar dinheiro** para outras contas
-- **Realizar pagamentos** diretamente pela API
-- **Efetuar transferências** para fornecedores, parceiros ou terceiros
-
-**Importante**: A chave PIX de destino não precisa ter a mesma titularidade do CNPJ da sua conta. Você pode realizar payouts para qualquer chave PIX válida.
+Você pode usar esta recurso para enviar valores para uma conta de sua titularidade.
 
 {/* <div style={{ 
     position: "relative", 
@@ -56,6 +50,7 @@ Um payout é representado em nossa API pela seguinte estrutura de transação:
     "createdAt": "2024-11-04T18:38:28.573Z",
     "updatedAt": "2024-11-04T18:38:28.573Z"
   },
+  "success": true,
   "error": null
 }
 ```

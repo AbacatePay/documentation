@@ -120,6 +120,15 @@
             ]
           },
           {
+            "group": "PIX",
+            "pages": [
+              "pages/pix/reference",
+              "pages/pix/create",
+              "pages/pix/get",
+              "pages/pix/list"
+            ]
+          },
+          {
             "group": "Loja",
             "pages": [
               "pages/store/reference",

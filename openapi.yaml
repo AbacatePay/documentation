@@ -1657,6 +1657,195 @@ paths:
                     type: string
                     description: Mensagem de erro descrevendo o motivo da falha na autenticação.
                     example: 'Token de autenticação inválido ou ausente.'
+  /pix/send:
+    post:
+      summary: Enviar PIX
+      description: |
+        Permite que você envie dinheiro via PIX para qualquer chave PIX que não seja do titular da conta.
+        
+        Você pode usar esta rota para:
+        - **Enviar pagamentos** para fornecedores, parceiros ou terceiros
+        - **Realizar transferências** para contas de outras pessoas ou empresas
+        - **Efetuar pagamentos** diretamente pela API
+        
+        **Importante**: Esta funcionalidade é diferente dos payouts, pois permite enviar dinheiro para chaves PIX que não pertencem ao titular da conta. Use payouts quando quiser enviar para sua própria chave PIX.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Dados necessários para enviar um PIX.
+              required: ['amount', 'externalId', 'pix']
+              additionalProperties: false
+              example:
+                amount: 10000
+                externalId: 'pix-123'
+                description: 'Pagamento para fornecedor'
+                pix:
+                  key: '11987654321'
+                  type: 'PHONE'
+              properties:
+                amount:
+                  type: number
+                  description: Valor do PIX em centavos.
+                  minimum: 1
+                  example: 10000
+                externalId:
+                  type: string
+                  description: Identificador único do PIX em seu sistema.
+                  example: 'pix-123'
+                description:
+                  type: string
+                  description: Descrição opcional do PIX.
+                  example: 'Pagamento para fornecedor'
+                  x-mint:
+                    hidden: true
+                pix:
+                  type: object
+                  description: Dados da chave PIX de destino.
+                  required: ['key', 'type']
+                  additionalProperties: false
+                  properties:
+                    key:
+                      type: string
+                      description: Chave PIX de destino.
+                      example: '11987654321'
+                    type:
+                      type: string
+                      description: Tipo da chave PIX.
+                      enum: ['CPF', 'CNPJ', 'PHONE', 'EMAIL', 'RANDOM', 'BR_CODE']
+                      example: 'PHONE'
+      responses:
+        '200':
+          description: PIX enviado com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/PixTransaction'
+                  error:
+                    type: string
+                    nullable: true
+                    example: null
+                  success:
+                    $ref: '#/components/schemas/Success'
+        '401':
+          description: Não autorizado. Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
+                    example: 'Token de autenticação inválido ou ausente.'
+  /pix/get:
+    get:
+      summary: Buscar PIX
+      description: Permite que você recupere os detalhes de uma transação PIX específica usando o ID.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: query
+          description: Identificador único da transação PIX.
+          required: true
+          schema:
+            type: string
+            example: 'txn_abc123xyz'
+      responses:
+        '200':
+          description: Detalhes do PIX retornados com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/PixTransaction'
+                  error:
+                    type: string
+                    nullable: true
+                    example: null
+                  success:
+                    $ref: '#/components/schemas/Success'
+        '401':
+          description: Não autorizado. Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
+                    example: 'Token de autenticação inválido ou ausente.'
+        '404':
+          description: PIX não encontrado.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: string
+                    nullable: true
+                    example: null
+                  error:
+                    type: string
+                    description: Mensagem de erro indicando que o PIX não foi encontrado.
+                    example: 'PIX não encontrado com o ID fornecido.'
+  /pix/list:
+    get:
+      summary: Listar PIX
+      description: |
+        Permite que você recupere uma lista de transações PIX criadas.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: query
+          description: Identificador único da transação PIX para filtrar.
+          required: false
+          schema:
+            type: string
+            example: 'txn_abc123xyz'
+      responses:
+        '200':
+          description: Lista de PIX retornada com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    description: Lista de transações PIX criadas.
+                    items:
+                      $ref: '#/components/schemas/PixTransaction'
+                  error:
+                    type: string
+                    nullable: true
+                    example: null
+                  success:
+                    $ref: '#/components/schemas/Success'
+        '401':
+          description: Não autorizado. Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
+                    example: 'Token de autenticação inválido ou ausente.'
   /subscriptions/create:
     post:
       summary: Criar uma nova assinatura
@@ -2457,6 +2646,53 @@ components:
           example: '2025-03-24T21:50:20.772Z'
       required:
         ['id', 'status', 'devMode', 'receiptUrl', 'kind', 'amount', 'platformFee', 'createdAt', 'updatedAt']
+    PixTransaction:
+      type: object
+      description: Dados de uma transação PIX.
+      properties:
+        id:
+          type: string
+          description: Identificador único da transação PIX.
+          example: 'txn_abc123xyz'
+        status:
+          type: string
+          description: Status atual da transação.
+          enum: ['PENDING', 'EXPIRED', 'CANCELLED', 'COMPLETE', 'REFUNDED']
+          example: 'PENDING'
+        devMode:
+          type: boolean
+          description: Indica se a transação foi criada em ambiente de testes.
+          example: false
+        receiptUrl:
+          type: string
+          format: uri
+          description: URL do comprovante da transação.
+          example: 'https://app.abacatepay.com/receipt/txn_abc123xyz'
+        amount:
+          type: number
+          description: Valor da transação em centavos.
+          example: 10000
+        platformFee:
+          type: number
+          description: Taxa da plataforma em centavos.
+          example: 100
+        externalId:
+          type: string
+          nullable: true
+          description: Identificador externo da transação.
+          example: 'pix-123'
+        createdAt:
+          type: string
+          format: date-time
+          description: Data de criação da transação.
+          example: '2024-11-04T18:38:28.573Z'
+        updatedAt:
+          type: string
+          format: date-time
+          description: Data de atualização da transação.
+          example: '2024-11-04T18:38:28.573Z'
+      required:
+        ['id', 'status', 'devMode', 'receiptUrl', 'amount', 'platformFee', 'createdAt', 'updatedAt']
     Store:
       type: object
       description: Dados da loja/conta do usuário.
