@@ -136,7 +136,7 @@
             ]
           },
           {
-            "group": "Trust MRR",
+            "group": "Public MRR",
             "pages": [
               "pages/trustMRR/reference",
               "pages/trustMRR/mrr",
