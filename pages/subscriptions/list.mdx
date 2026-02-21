@@ -1,4 +1,6 @@
 ---
-title: 'Listar assinaturas'
+title: 'Listar Checkouts de assinatura'
 openapi: "GET /subscriptions/list"
 ---
+
+Retorna os Checkouts de assinatura criados. Cada item em `data` segue o mesmo payload do Checkout: `id`, `url`, `amount`, `items`, `status`, etc. Use os parâmetros `limit` e `cursor` para paginação.

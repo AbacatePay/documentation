@@ -4,18 +4,24 @@ info:
   description: API para gerenciamento de cobranças e pagamentos usando o AbacatePay.
   version: 1.0.0
 servers:
-  - url: https://api.abacatepay.com/v2
+  - url: 'https://api.abacatepay.com/v2'
     description: Único servidor para os ambientes de produção e sandbox.
 paths:
   /customers/create:
     post:
       summary: Criar um cliente
-      description: |
+      description: >
         Permite que você crie um cliente para a sua loja.
-        
-        **Campo obrigatório**: Apenas o `email` é obrigatório para criar um cliente.
-        
-        **Recomendado**: Embora os demais campos sejam opcionais, é altamente recomendado fornecer `name`, `cellphone`, `taxId` e `zipCode` quando disponíveis, pois essas informações melhoram a experiência do cliente no checkout e facilitam a identificação.
+
+
+        **Campo obrigatório**: Apenas o `email` é obrigatório para criar um
+        cliente.
+
+
+        **Recomendado**: Embora os demais campos sejam opcionais, é altamente
+        recomendado fornecer `name`, `cellphone`, `taxId` e `zipCode` quando
+        disponíveis, pois essas informações melhoram a experiência do cliente no
+        checkout e facilitam a identificação.
       security:
         - bearerAuth: []
       requestBody:
@@ -24,13 +30,18 @@ paths:
           application/json:
             schema:
               type: object
-              description: |
+              description: >
                 Os dados do seu cliente.
-                
+
+
                 **Obrigatório**: Apenas `email` é obrigatório.
-                
-                **Opcional mas recomendado**: `name`, `cellphone`, `taxId`, `zipCode` e `metadata` são opcionais, mas recomendados para melhor experiência do cliente.
-              required: ['email']
+
+
+                **Opcional mas recomendado**: `name`, `cellphone`, `taxId`,
+                `zipCode` e `metadata` são opcionais, mas recomendados para
+                melhor experiência do cliente.
+              required:
+                - email
               additionalProperties: false
               example:
                 email: daniel_lima@abacatepay.com
@@ -60,16 +71,18 @@ paths:
                 zipCode:
                   type: string
                   description: CEP do cliente (opcional)
-                  example: '01310-100'
+                  example: 01310-100
                   x-mint:
                     hidden: true
                 metadata:
                   type: object
-                  description: Metadados adicionais do cliente. Campo livre para a sua aplicação (opcional)
+                  description: >-
+                    Metadados adicionais do cliente. Campo livre para a sua
+                    aplicação (opcional)
                   additionalProperties: true
                   example:
-                    source: 'landing-page'
-                    campaign: 'black-friday-2025'
+                    source: landing-page
+                    campaign: black-friday-2025
                   x-mint:
                     hidden: true
       responses:
@@ -97,17 +110,23 @@ paths:
                 properties:
                   error:
                     type: string
-                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
-                    example: 'Token de autenticação inválido ou ausente.'
+                    description: >-
+                      Mensagem de erro descrevendo o motivo da falha na
+                      autenticação.
+                    example: Token de autenticação inválido ou ausente.
   /customers/list:
     get:
       summary: Listar clientes
-      description: |
+      description: >
         Retorna todos os clientes que você cadastrou com suporte a paginação.
-        
-        Você pode usar essa rota para visualizar todos os seus clientes e suas informações.
-        
-        **Alternativa**: Você também pode visualizar e gerenciar seus clientes pelo [Dashboard da AbacatePay](https://app.abacatepay.com/clientes).
+
+
+        Você pode usar essa rota para visualizar todos os seus clientes e suas
+        informações.
+
+
+        **Alternativa**: Você também pode visualizar e gerenciar seus clientes
+        pelo [Dashboard da AbacatePay](https://app.abacatepay.com/clientes).
       security:
         - bearerAuth: []
       parameters:
@@ -163,10 +182,14 @@ paths:
                         type: integer
                         description: Total de páginas
                         example: 8
-                    required: ['page', 'limit', 'total', 'totalPages']
+                    required:
+                      - page
+                      - limit
+                      - total
+                      - totalPages
                     additionalProperties: false
                   error:
-                    type: 'string'
+                    type: string
                     example: null
                     nullable: true
                   success:
@@ -180,15 +203,19 @@ paths:
                 properties:
                   error:
                     type: string
-                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
-                    example: 'Token de autenticação inválido ou ausente.'
+                    description: >-
+                      Mensagem de erro descrevendo o motivo da falha na
+                      autenticação.
+                    example: Token de autenticação inválido ou ausente.
   /customers/get:
     get:
       summary: Buscar um cliente
-      description: |
+      description: >
         Retorna os dados de um cliente específico baseado em filtros.
-        
-        Você pode usar essa rota para buscar um cliente por ID ou outros critérios.
+
+
+        Você pode usar essa rota para buscar um cliente por ID ou outros
+        critérios.
       security:
         - bearerAuth: []
       parameters:
@@ -198,7 +225,7 @@ paths:
           required: false
           schema:
             type: string
-            example: 'cust_aebxkhDZNaMmJeKsy0AHS0FQ'
+            example: cust_aebxkhDZNaMmJeKsy0AHS0FQ
       responses:
         '200':
           description: Cliente encontrado com sucesso.
@@ -210,7 +237,7 @@ paths:
                   data:
                     $ref: '#/components/schemas/Customer'
                   error:
-                    type: 'string'
+                    type: string
                     example: null
                     nullable: true
                   success:
@@ -224,8 +251,10 @@ paths:
                 properties:
                   error:
                     type: string
-                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
-                    example: 'Token de autenticação inválido ou ausente.'
+                    description: >-
+                      Mensagem de erro descrevendo o motivo da falha na
+                      autenticação.
+                    example: Token de autenticação inválido ou ausente.
         '404':
           description: Cliente não encontrado.
           content:
@@ -235,14 +264,16 @@ paths:
                 properties:
                   error:
                     type: string
-                    description: Mensagem de erro indicando que o cliente não foi encontrado.
-                    example: 'Cliente não encontrado.'
+                    description: >-
+                      Mensagem de erro indicando que o cliente não foi
+                      encontrado.
+                    example: Cliente não encontrado.
   /customers/delete:
     post:
       summary: Deletar um cliente
       description: |
         Remove um cliente da sua loja.
-        
+
         Esta operação é irreversível. Use com cuidado.
       security:
         - bearerAuth: []
@@ -253,7 +284,7 @@ paths:
           description: Identificador único público do cliente a ser deletado
           schema:
             type: string
-            example: 'cust_aebxkhDZNaMmJeKsy0AHS0FQ'
+            example: cust_aebxkhDZNaMmJeKsy0AHS0FQ
       responses:
         '200':
           description: Cliente deletado com sucesso.
@@ -265,7 +296,7 @@ paths:
                   data:
                     $ref: '#/components/schemas/Customer'
                   error:
-                    type: 'string'
+                    type: string
                     example: null
                     nullable: true
                   success:
@@ -279,8 +310,10 @@ paths:
                 properties:
                   error:
                     type: string
-                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
-                    example: 'Token de autenticação inválido ou ausente.'
+                    description: >-
+                      Mensagem de erro descrevendo o motivo da falha na
+                      autenticação.
+                    example: Token de autenticação inválido ou ausente.
         '404':
           description: Cliente não encontrado.
           content:
@@ -290,15 +323,20 @@ paths:
                 properties:
                   error:
                     type: string
-                    description: Mensagem de erro indicando que o cliente não foi encontrado.
-                    example: 'Cliente não encontrado.'
+                    description: >-
+                      Mensagem de erro indicando que o cliente não foi
+                      encontrado.
+                    example: Cliente não encontrado.
   /coupons/create:
     post:
       summary: Criar um cupom
-      description: |
-        Permite que você crie um novo cupom que pode ser usado por seus clientes para aplicar descontos.
-        
-        **Alternativa**: Você também pode criar e gerenciar seus cupons pelo [Dashboard da AbacatePay](https://app.abacatepay.com/cupons).
+      description: >
+        Permite que você crie um novo cupom que pode ser usado por seus clientes
+        para aplicar descontos.
+
+
+        **Alternativa**: Você também pode criar e gerenciar seus cupons pelo
+        [Dashboard da AbacatePay](https://app.abacatepay.com/cupons).
       security:
         - bearerAuth: []
       requestBody:
@@ -306,7 +344,7 @@ paths:
         content:
           application/json:
             schema:
-                  $ref: '#/components/schemas/Coupon'
+              $ref: '#/components/schemas/Coupon'
       responses:
         '200':
           description: Cupom criado com sucesso.
@@ -318,7 +356,7 @@ paths:
                   data:
                     $ref: '#/components/schemas/CouponResponse'
                   error:
-                    type: 'string'
+                    type: string
                     nullable: true
                     example: null
                   success:
@@ -332,17 +370,24 @@ paths:
                 properties:
                   error:
                     type: string
-                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
-                    example: 'Token de autenticação inválido ou ausente.'
+                    description: >-
+                      Mensagem de erro descrevendo o motivo da falha na
+                      autenticação.
+                    example: Token de autenticação inválido ou ausente.
   /coupons/list:
     get:
       summary: Listar cupons
-      description: |
+      description: >
         Retorna todos os cupons que você criou com suporte a paginação.
-        
-        Você pode usar essa rota para visualizar todos os seus cupons, incluindo seus status (ativos, inativos ou expirados), descontos aplicados e quantas vezes foram utilizados.
-        
-        **Alternativa**: Você também pode visualizar e gerenciar seus cupons pelo [Dashboard da AbacatePay](https://app.abacatepay.com/cupons).
+
+
+        Você pode usar essa rota para visualizar todos os seus cupons, incluindo
+        seus status (ativos, inativos ou expirados), descontos aplicados e
+        quantas vezes foram utilizados.
+
+
+        **Alternativa**: Você também pode visualizar e gerenciar seus cupons
+        pelo [Dashboard da AbacatePay](https://app.abacatepay.com/cupons).
       security:
         - bearerAuth: []
       parameters:
@@ -398,10 +443,14 @@ paths:
                         type: integer
                         description: Total de páginas
                         example: 8
-                    required: ['page', 'limit', 'total', 'totalPages']
+                    required:
+                      - page
+                      - limit
+                      - total
+                      - totalPages
                     additionalProperties: false
                   error:
-                    type: 'string'
+                    type: string
                     nullable: true
                     example: null
                   success:
@@ -415,15 +464,19 @@ paths:
                 properties:
                   error:
                     type: string
-                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
-                    example: 'Token de autenticação inválido ou ausente.'
+                    description: >-
+                      Mensagem de erro descrevendo o motivo da falha na
+                      autenticação.
+                    example: Token de autenticação inválido ou ausente.
   /coupons/get:
     get:
       summary: Buscar um cupom
-      description: |
+      description: >
         Retorna os dados de um cupom específico baseado em filtros.
-        
-        Você pode usar essa rota para buscar um cupom por ID ou outros critérios.
+
+
+        Você pode usar essa rota para buscar um cupom por ID ou outros
+        critérios.
       security:
         - bearerAuth: []
       parameters:
@@ -433,7 +486,7 @@ paths:
           required: false
           schema:
             type: string
-            example: 'MY_COUPON'
+            example: MY_COUPON
       responses:
         '200':
           description: Cupom encontrado com sucesso.
@@ -445,7 +498,7 @@ paths:
                   data:
                     $ref: '#/components/schemas/CouponResponse'
                   error:
-                    type: 'string'
+                    type: string
                     nullable: true
                     example: null
                   success:
@@ -459,8 +512,10 @@ paths:
                 properties:
                   error:
                     type: string
-                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
-                    example: 'Token de autenticação inválido ou ausente.'
+                    description: >-
+                      Mensagem de erro descrevendo o motivo da falha na
+                      autenticação.
+                    example: Token de autenticação inválido ou ausente.
         '404':
           description: Cupom não encontrado.
           content:
@@ -471,13 +526,13 @@ paths:
                   error:
                     type: string
                     description: Mensagem de erro indicando que o cupom não foi encontrado.
-                    example: 'Cupom não encontrado.'
+                    example: Cupom não encontrado.
   /coupons/delete:
     post:
       summary: Deletar um cupom
       description: |
         Remove um cupom da sua loja.
-        
+
         Esta operação é irreversível. Use com cuidado.
       security:
         - bearerAuth: []
@@ -488,7 +543,7 @@ paths:
           description: Identificador único do cupom a ser deletado
           schema:
             type: string
-            example: 'MY_COUPON'
+            example: MY_COUPON
       responses:
         '200':
           description: Cupom deletado com sucesso.
@@ -500,7 +555,7 @@ paths:
                   data:
                     $ref: '#/components/schemas/CouponResponse'
                   error:
-                    type: 'string'
+                    type: string
                     nullable: true
                     example: null
                   success:
@@ -514,8 +569,10 @@ paths:
                 properties:
                   error:
                     type: string
-                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
-                    example: 'Token de autenticação inválido ou ausente.'
+                    description: >-
+                      Mensagem de erro descrevendo o motivo da falha na
+                      autenticação.
+                    example: Token de autenticação inválido ou ausente.
         '404':
           description: Cupom não encontrado.
           content:
@@ -526,13 +583,13 @@ paths:
                   error:
                     type: string
                     description: Mensagem de erro indicando que o cupom não foi encontrado.
-                    example: 'Cupom não encontrado.'
+                    example: Cupom não encontrado.
   /coupons/toggle:
     post:
       summary: Alternar status de um cupom
       description: |
         Alterna o status de um cupom entre ativo e inativo.
-        
+
         Use essa rota para ativar ou desativar um cupom sem precisar deletá-lo.
       security:
         - bearerAuth: []
@@ -543,7 +600,7 @@ paths:
           description: Identificador único do cupom
           schema:
             type: string
-            example: 'MY_COUPON'
+            example: MY_COUPON
       responses:
         '200':
           description: Status do cupom alternado com sucesso.
@@ -555,7 +612,7 @@ paths:
                   data:
                     $ref: '#/components/schemas/CouponResponse'
                   error:
-                    type: 'string'
+                    type: string
                     nullable: true
                     example: null
                   success:
@@ -569,8 +626,10 @@ paths:
                 properties:
                   error:
                     type: string
-                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
-                    example: 'Token de autenticação inválido ou ausente.'
+                    description: >-
+                      Mensagem de erro descrevendo o motivo da falha na
+                      autenticação.
+                    example: Token de autenticação inválido ou ausente.
         '404':
           description: Cupom não encontrado.
           content:
@@ -581,14 +640,21 @@ paths:
                   error:
                     type: string
                     description: Mensagem de erro indicando que o cupom não foi encontrado.
-                    example: 'Cupom não encontrado.'
+                    example: Cupom não encontrado.
   /products/create:
     post:
       summary: Criar um produto
-      description: |
+      description: >
         Permite que você crie um novo produto que pode ser usado em cobranças.
-        
-        **Alternativa**: Você também pode criar e gerenciar seus produtos pelo [Dashboard da AbacatePay](https://app.abacatepay.com/produtos).
+
+        Produtos podem ser avulsos (pagamento único) ou de assinatura; use o
+        campo opcional `cycle` para definir a recorrência (`WEEKLY`, `MONTHLY`,
+        `SEMIANNUALLY`, `ANNUALLY`). Quando `cycle` é omitido ou `null`, o
+        produto é avulso.
+
+
+        **Alternativa**: Você também pode criar e gerenciar seus produtos pelo
+        [Dashboard da AbacatePay](https://app.abacatepay.com/produtos).
       security:
         - bearerAuth: []
       requestBody:
@@ -598,22 +664,26 @@ paths:
             schema:
               type: object
               description: Dados necessários para criar um produto.
-              required: ['externalId', 'name', 'price', 'currency']
+              required:
+                - externalId
+                - name
+                - price
+                - currency
               additionalProperties: false
               example:
-                externalId: 'prod-123'
-                name: 'Produto Exemplo'
+                externalId: prod-123
+                name: Produto Exemplo
                 price: 10000
-                currency: 'BRL'
+                currency: BRL
               properties:
                 externalId:
                   type: string
                   description: Identificador único do produto no seu sistema.
-                  example: 'prod-123'
+                  example: prod-123
                 name:
                   type: string
                   description: Nome do produto.
-                  example: 'Produto Exemplo'
+                  example: Produto Exemplo
                 price:
                   type: number
                   description: Preço do produto em centavos.
@@ -622,14 +692,35 @@ paths:
                 currency:
                   type: string
                   description: Moeda do produto.
-                  default: 'BRL'
-                  example: 'BRL'
+                  default: BRL
+                  example: BRL
                 description:
                   type: string
                   description: Descrição opcional do produto.
-                  example: 'Descrição do produto'
+                  example: Descrição do produto
                   x-mint:
                     hidden: true
+                imageUrl:
+                  type: string
+                  format: uri
+                  nullable: true
+                  description: URL da imagem do produto. Opcional.
+                  example: null
+                cycle:
+                  type: string
+                  nullable: true
+                  description: >
+                    Opcional. Indica se o produto é uma assinatura. Quando omitido
+                    ou `null`, o produto é avulso (pagamento único).
+
+                    Valores possíveis: `WEEKLY`, `MONTHLY`, `SEMIANNUALLY`,
+                    `ANNUALLY`.
+                  enum:
+                    - WEEKLY
+                    - MONTHLY
+                    - SEMIANNUALLY
+                    - ANNUALLY
+                  example: null
       responses:
         '200':
           description: Produto criado com sucesso.
@@ -641,7 +732,7 @@ paths:
                   data:
                     $ref: '#/components/schemas/Product'
                   error:
-                    type: 'string'
+                    type: string
                     nullable: true
                     example: null
                   success:
@@ -655,17 +746,24 @@ paths:
                 properties:
                   error:
                     type: string
-                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
-                    example: 'Token de autenticação inválido ou ausente.'
+                    description: >-
+                      Mensagem de erro descrevendo o motivo da falha na
+                      autenticação.
+                    example: Token de autenticação inválido ou ausente.
   /products/list:
     get:
       summary: Listar produtos
-      description: |
+      description: >
         Retorna todos os produtos que você criou com suporte a paginação.
-        
-        Você pode usar essa rota para visualizar todos os seus produtos, incluindo seus status, preços e informações relacionadas.
-        
-        **Alternativa**: Você também pode visualizar e gerenciar seus produtos pelo [Dashboard da AbacatePay](https://app.abacatepay.com/produtos).
+
+
+        Você pode usar essa rota para visualizar todos os seus produtos,
+        incluindo status, preços, ciclo de assinatura (quando aplicável) e
+        demais informações.
+
+
+        **Alternativa**: Você também pode visualizar e gerenciar seus produtos
+        pelo [Dashboard da AbacatePay](https://app.abacatepay.com/produtos).
       security:
         - bearerAuth: []
       parameters:
@@ -721,10 +819,14 @@ paths:
                         type: integer
                         description: Total de páginas
                         example: 8
-                    required: ['page', 'limit', 'total', 'totalPages']
+                    required:
+                      - page
+                      - limit
+                      - total
+                      - totalPages
                     additionalProperties: false
                   error:
-                    type: 'string'
+                    type: string
                     nullable: true
                     example: null
                   success:
@@ -738,14 +840,18 @@ paths:
                 properties:
                   error:
                     type: string
-                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
-                    example: 'Token de autenticação inválido ou ausente.'
+                    description: >-
+                      Mensagem de erro descrevendo o motivo da falha na
+                      autenticação.
+                    example: Token de autenticação inválido ou ausente.
   /products/get:
     get:
       summary: Buscar um produto
-      description: |
-        Retorna os dados de um produto específico baseado em filtros.
-        
+      description: >
+        Retorna os dados de um produto específico baseado em filtros, incluindo
+        o campo `cycle` (assinatura ou avulso).
+
+
         Você pode usar essa rota para buscar um produto por ID ou externalId.
       security:
         - bearerAuth: []
@@ -756,14 +862,14 @@ paths:
           required: false
           schema:
             type: string
-            example: 'prod_abc123xyz'
+            example: prod_abc123xyz
         - name: externalId
           in: query
           description: Identificador único do produto no seu sistema
           required: false
           schema:
             type: string
-            example: 'prod-123'
+            example: prod-123
       responses:
         '200':
           description: Produto encontrado com sucesso.
@@ -775,7 +881,7 @@ paths:
                   data:
                     $ref: '#/components/schemas/Product'
                   error:
-                    type: 'string'
+                    type: string
                     nullable: true
                     example: null
                   success:
@@ -789,8 +895,10 @@ paths:
                 properties:
                   error:
                     type: string
-                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
-                    example: 'Token de autenticação inválido ou ausente.'
+                    description: >-
+                      Mensagem de erro descrevendo o motivo da falha na
+                      autenticação.
+                    example: Token de autenticação inválido ou ausente.
         '404':
           description: Produto não encontrado.
           content:
@@ -800,14 +908,16 @@ paths:
                 properties:
                   error:
                     type: string
-                    description: Mensagem de erro indicando que o produto não foi encontrado.
-                    example: 'Produto não encontrado.'
+                    description: >-
+                      Mensagem de erro indicando que o produto não foi
+                      encontrado.
+                    example: Produto não encontrado.
   /products/delete:
     post:
       summary: Deletar um produto
       description: |
-        Remove um produto da sua loja.
-        
+        Remove um produto da sua loja (avulso ou de assinatura).
+
         Esta operação é irreversível. Use com cuidado.
       security:
         - bearerAuth: []
@@ -818,7 +928,7 @@ paths:
           description: Identificador único público do produto a ser deletado
           schema:
             type: string
-            example: 'prod_abc123xyz'
+            example: prod_abc123xyz
       responses:
         '200':
           description: Produto deletado com sucesso.
@@ -830,7 +940,7 @@ paths:
                   data:
                     $ref: '#/components/schemas/Product'
                   error:
-                    type: 'string'
+                    type: string
                     nullable: true
                     example: null
                   success:
@@ -844,8 +954,10 @@ paths:
                 properties:
                   error:
                     type: string
-                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
-                    example: 'Token de autenticação inválido ou ausente.'
+                    description: >-
+                      Mensagem de erro descrevendo o motivo da falha na
+                      autenticação.
+                    example: Token de autenticação inválido ou ausente.
         '404':
           description: Produto não encontrado.
           content:
@@ -855,8 +967,10 @@ paths:
                 properties:
                   error:
                     type: string
-                    description: Mensagem de erro indicando que o produto não foi encontrado.
-                    example: 'Produto não encontrado.'
+                    description: >-
+                      Mensagem de erro indicando que o produto não foi
+                      encontrado.
+                    example: Produto não encontrado.
   /checkouts/create:
     post:
       summary: Criar um Checkout
@@ -879,14 +993,18 @@ paths:
               properties:
                 items:
                   type: array
-                  description: |
+                  description: >
                     Lista de itens incluídos na cobrança.
-                    Este é o único campo obrigatório — o valor total é calculado a partir destes itens.
+
+                    Este é o único campo obrigatório — o valor total é calculado
+                    a partir destes itens.
                   minItems: 1
                   items:
                     type: object
                     additionalProperties: false
-                    required: [id, quantity]
+                    required:
+                      - id
+                      - quantity
                     properties:
                       id:
                         type: string
@@ -900,27 +1018,36 @@ paths:
                 method:
                   type: string
                   description: Método de pagamento disponível.
-                  enum: ['PIX', 'CARD']
+                  enum:
+                    - PIX
+                    - CARD
                   x-mint:
                     hidden: true
                 returnUrl:
                   type: string
                   format: uri
-                  description: URL para onde o cliente será redirecionado ao clicar em "Voltar" no checkout.
+                  description: >-
+                    URL para onde o cliente será redirecionado ao clicar em
+                    "Voltar" no checkout.
                   x-mint:
                     hidden: true
                 completionUrl:
                   type: string
                   format: uri
-                  description: URL para onde o cliente será redirecionado após o pagamento ser concluído.
+                  description: >-
+                    URL para onde o cliente será redirecionado após o pagamento
+                    ser concluído.
                   x-mint:
                     hidden: true
                 customerId:
                   type: string
-                  description: |
+                  description: >
                     ID de um cliente já cadastrado na sua loja.
-                    Se informado, o checkout será pré-preenchido com os dados deste cliente.
-                    
+
+                    Se informado, o checkout será pré-preenchido com os dados
+                    deste cliente.
+
+
                     **Exemplo**: `"cust_abcdefghij"`
                   x-mint:
                     hidden: true
@@ -928,40 +1055,45 @@ paths:
                   type: array
                   description: |
                     Lista de cupons que podem ser utilizados nesta cobrança.
-                    
+
                     **Exemplo**: `["ABKT10", "ABKT5", "PROMO10"]`
                   items:
                     type: string
                   maxItems: 50
                   x-mint:
                     hidden: true
-
                 externalId:
                   type: string
-                  description: |
-                    ID da cobrança no seu sistema, caso queira manter uma referência própria.
-                    
+                  description: >
+                    ID da cobrança no seu sistema, caso queira manter uma
+                    referência própria.
+
+
                     **Exemplo**: `"seu_id_123"`
                   x-mint:
                     hidden: true
-
                 metadata:
                   type: object
-                  description: |
-                    Metadados adicionais da cobrança. Campo livre para a sua aplicação.
-                    
+                  description: >
+                    Metadados adicionais da cobrança. Campo livre para a sua
+                    aplicação.
+
+
                     **Exemplo**:
+
                     ```json
+
                     {
                       "source": "landing-page-black-friday",
                       "campaign": "BF-2025"
                     }
+
                     ```
                   additionalProperties: true
                   x-mint:
                     hidden: true
       responses:
-        "200":
+        '200':
           description: Cobrança criada com sucesso.
           content:
             application/json:
@@ -969,14 +1101,14 @@ paths:
                 type: object
                 properties:
                   data:
-                    $ref: "#/components/schemas/Billing"
+                    $ref: '#/components/schemas/Billing'
                   error:
-                    type: "string"
+                    type: string
                     nullable: true
                     example: null
                   success:
                     $ref: '#/components/schemas/Success'
-        "401":
+        '401':
           description: Não autorizado. Falha na autenticação.
           content:
             application/json:
@@ -990,10 +1122,12 @@ paths:
   /checkouts/get:
     get:
       summary: Buscar um Checkout
-      description: |
+      description: >
         Retorna os dados de um Checkout específico usando o ID.
-        
-        Você pode usar essa rota para buscar um Checkout por ID e visualizar seus detalhes, status e informações relacionadas.
+
+
+        Você pode usar essa rota para buscar um Checkout por ID e visualizar
+        seus detalhes, status e informações relacionadas.
       security:
         - bearerAuth: []
       parameters:
@@ -1003,7 +1137,7 @@ paths:
           required: true
           schema:
             type: string
-            example: 'bill_abc123xyz'
+            example: bill_abc123xyz
       responses:
         '200':
           description: Cobrança encontrada com sucesso.
@@ -1029,8 +1163,10 @@ paths:
                 properties:
                   error:
                     type: string
-                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
-                    example: 'Token de autenticação inválido ou ausente.'
+                    description: >-
+                      Mensagem de erro descrevendo o motivo da falha na
+                      autenticação.
+                    example: Token de autenticação inválido ou ausente.
         '404':
           description: Cobrança não encontrada.
           content:
@@ -1040,15 +1176,19 @@ paths:
                 properties:
                   error:
                     type: string
-                    description: Mensagem de erro indicando que a cobrança não foi encontrada.
-                    example: 'Cobrança não encontrada.'
+                    description: >-
+                      Mensagem de erro indicando que a cobrança não foi
+                      encontrada.
+                    example: Cobrança não encontrada.
   /checkouts/list:
     get:
       summary: Listar Checkouts
-      description: |
+      description: >
         Retorna todos os Checkouts que você criou.
-        
-        Você pode usar essa rota para listar todos seus Checkouts e visualizar seus status, valores e informações relacionadas.
+
+
+        Você pode usar essa rota para listar todos seus Checkouts e visualizar
+        seus status, valores e informações relacionadas.
       security:
         - bearerAuth: []
       responses:
@@ -1077,11 +1217,13 @@ paths:
                 properties:
                   error:
                     type: string
-                    example: 'Token de autenticação inválido ou ausente.'
+                    example: Token de autenticação inválido ou ausente.
   /transparents/create:
     post:
-      summary: 'Criar QRCode PIX'
-      description: Permite que você crie um código copia-e-cola e um QRCode Pix para seu cliente fazer o pagamento.
+      summary: Criar QRCode PIX
+      description: >-
+        Permite que você crie um código copia-e-cola e um QRCode Pix para seu
+        cliente fazer o pagamento.
       security:
         - bearerAuth: []
       requestBody:
@@ -1109,10 +1251,17 @@ paths:
                     hidden: true
                 customer:
                   type: object
-                  description: |
+                  description: >
                     Os dados do seu cliente para criá-lo.
-                    O objeto de customer não é obrigatório, mas ao informar qualquer informação do `customer` todos os campos `name`, `cellphone`, `email` e `taxId` são obrigatórios.
-                  required: ['name', 'cellphone', 'email', 'taxId']
+
+                    O objeto de customer não é obrigatório, mas ao informar
+                    qualquer informação do `customer` todos os campos `name`,
+                    `cellphone`, `email` e `taxId` são obrigatórios.
+                  required:
+                    - name
+                    - cellphone
+                    - email
+                    - taxId
                   additionalProperties: false
                   x-mint:
                     hidden: true
@@ -1139,7 +1288,8 @@ paths:
                   additionalProperties: true
                   x-mint:
                     hidden: true
-              required: ['amount']
+              required:
+                - amount
               additionalProperties: false
       responses:
         '200':
@@ -1152,7 +1302,7 @@ paths:
                   data:
                     $ref: '#/components/schemas/PixQRCode'
                   error:
-                    type: 'string'
+                    type: string
                     example: null
                     nullable: true
                   success:
@@ -1166,11 +1316,13 @@ paths:
                 properties:
                   error:
                     type: string
-                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
-                    example: 'Token de autenticação inválido ou ausente.'
+                    description: >-
+                      Mensagem de erro descrevendo o motivo da falha na
+                      autenticação.
+                    example: Token de autenticação inválido ou ausente.
   /transparents/check:
     get:
-      summary: 'Checar Status'
+      summary: Checar Status
       description: Checar status do pagamento do QRCode Pix.
       security:
         - bearerAuth: []
@@ -1188,14 +1340,19 @@ paths:
                       status:
                         type: string
                         description: Informação sobre o andamento do QRCode Pix.
-                        enum: ['PENDING', 'EXPIRED', 'CANCELLED', 'PAID', 'REFUNDED']
-                        example: 'PENDING'
+                        enum:
+                          - PENDING
+                          - EXPIRED
+                          - CANCELLED
+                          - PAID
+                          - REFUNDED
+                        example: PENDING
                       expiresAt:
                         type: string
                         description: Data de expiração do QRCode Pix
                         example: '2025-03-25T21:50:20.772Z'
                   error:
-                    type: 'string'
+                    type: string
                     example: null
                     nullable: true
                   success:
@@ -1209,8 +1366,10 @@ paths:
                 properties:
                   error:
                     type: string
-                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
-                    example: 'Token de autenticação inválido ou ausente.'
+                    description: >-
+                      Mensagem de erro descrevendo o motivo da falha na
+                      autenticação.
+                    example: Token de autenticação inválido ou ausente.
       parameters:
         - name: id
           in: query
@@ -1220,7 +1379,7 @@ paths:
             type: string
   /transparents/simulate-payment:
     post:
-      summary: 'Simular Pagamento'
+      summary: Simular Pagamento
       description: Simula o pagamento de um QRCode Pix criado no modo de desenvolvimento.
       security:
         - bearerAuth: []
@@ -1246,7 +1405,7 @@ paths:
                   data:
                     $ref: '#/components/schemas/PixQRCode'
                   error:
-                    type: 'string'
+                    type: string
                     example: null
                     nullable: true
                   success:
@@ -1260,8 +1419,10 @@ paths:
                 properties:
                   error:
                     type: string
-                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
-                    example: 'Token de autenticação inválido ou ausente.'
+                    description: >-
+                      Mensagem de erro descrevendo o motivo da falha na
+                      autenticação.
+                    example: Token de autenticação inválido ou ausente.
       parameters:
         - name: id
           in: query
@@ -1272,10 +1433,13 @@ paths:
   /transparents/list:
     get:
       summary: Listar Checkouts Transparentes
-      description: |
+      description: >
         Retorna todos os Checkouts Transparentes (QRCodes PIX) que você criou.
 
-        Você pode usar essa rota para listar todos os seus checkouts transparentes e visualizar seus status, valores e informações relacionadas.
+
+        Você pode usar essa rota para listar todos os seus checkouts
+        transparentes e visualizar seus status, valores e informações
+        relacionadas.
       security:
         - bearerAuth: []
       responses:
@@ -1304,21 +1468,32 @@ paths:
                 properties:
                   error:
                     type: string
-                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
-                    example: 'Token de autenticação inválido ou ausente.'
+                    description: >-
+                      Mensagem de erro descrevendo o motivo da falha na
+                      autenticação.
+                    example: Token de autenticação inválido ou ausente.
   /payouts/create:
     post:
       summary: Criar um payout
-      description: |
-        Permite que você crie um novo payout para transferir valores da sua conta AbacatePay.
-        
+      description: >
+        Permite que você crie um novo payout para transferir valores da sua
+        conta AbacatePay.
+
+
         Você pode usar esta rota para:
+
         - **Realizar saques** da sua conta para sua própria chave PIX
+
         - **Enviar dinheiro** para outras contas
+
         - **Realizar pagamentos** diretamente pela API
+
         - **Efetuar transferências** para fornecedores, parceiros ou terceiros
-        
-        **Importante**: A chave PIX de destino não precisa ter a mesma titularidade do CNPJ da sua conta. Você pode realizar payouts para qualquer chave PIX válida.
+
+
+        **Importante**: A chave PIX de destino não precisa ter a mesma
+        titularidade do CNPJ da sua conta. Você pode realizar payouts para
+        qualquer chave PIX válida.
       security:
         - bearerAuth: []
       requestBody:
@@ -1328,11 +1503,13 @@ paths:
             schema:
               type: object
               description: Dados necessários para criar um payout.
-              required: ['amount', 'externalId']
+              required:
+                - amount
+                - externalId
               additionalProperties: false
               example:
                 amount: 10000
-                externalId: 'saque-123'
+                externalId: saque-123
               properties:
                 amount:
                   type: number
@@ -1342,13 +1519,13 @@ paths:
                 description:
                   type: string
                   description: Descrição opcional do payout.
-                  example: 'Saque para conta bancária'
+                  example: Saque para conta bancária
                   x-mint:
                     hidden: true
                 externalId:
                   type: string
                   description: Identificador único do payout em seu sistema.
-                  example: 'saque-123'
+                  example: saque-123
       responses:
         '200':
           description: Payout criado com sucesso.
@@ -1364,15 +1541,22 @@ paths:
                       id:
                         type: string
                         description: Identificador único da transação.
-                        example: 'txn_abc123xyz'
+                        example: txn_abc123xyz
                       status:
                         type: string
                         description: Status atual da transação.
-                        enum: ['PENDING', 'EXPIRED', 'CANCELLED', 'COMPLETE', 'REFUNDED']
-                        example: 'PENDING'
+                        enum:
+                          - PENDING
+                          - EXPIRED
+                          - CANCELLED
+                          - COMPLETE
+                          - REFUNDED
+                        example: PENDING
                       devMode:
                         type: boolean
-                        description: Indica se a transação foi criada em ambiente de testes.
+                        description: >-
+                          Indica se a transação foi criada em ambiente de
+                          testes.
                         example: false
                       receiptUrl:
                         type: string
@@ -1391,7 +1575,7 @@ paths:
                       externalId:
                         type: string
                         description: Identificador externo da transação.
-                        example: 'saque-123'
+                        example: saque-123
                       createdAt:
                         type: string
                         format: date-time
@@ -1417,12 +1601,16 @@ paths:
                 properties:
                   error:
                     type: string
-                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
-                    example: 'Token de autenticação inválido ou ausente.'
+                    description: >-
+                      Mensagem de erro descrevendo o motivo da falha na
+                      autenticação.
+                    example: Token de autenticação inválido ou ausente.
   /payouts/get:
     get:
       summary: Buscar payout
-      description: Permite que você recupere os detalhes de um payout específico usando o externalId.
+      description: >-
+        Permite que você recupere os detalhes de um payout específico usando o
+        externalId.
       security:
         - bearerAuth: []
       parameters:
@@ -1432,7 +1620,7 @@ paths:
           required: true
           schema:
             type: string
-            example: 'saque-123'
+            example: saque-123
       responses:
         '200':
           description: Detalhes do payout retornados com sucesso.
@@ -1448,15 +1636,22 @@ paths:
                       id:
                         type: string
                         description: Identificador único da transação.
-                        example: 'txn_abc123xyz'
+                        example: txn_abc123xyz
                       status:
                         type: string
                         description: Status atual da transação.
-                        enum: ['PENDING', 'EXPIRED', 'CANCELLED', 'COMPLETE', 'REFUNDED']
-                        example: 'COMPLETE'
+                        enum:
+                          - PENDING
+                          - EXPIRED
+                          - CANCELLED
+                          - COMPLETE
+                          - REFUNDED
+                        example: COMPLETE
                       devMode:
                         type: boolean
-                        description: Indica se a transação foi criada em ambiente de testes.
+                        description: >-
+                          Indica se a transação foi criada em ambiente de
+                          testes.
                         example: false
                       receiptUrl:
                         type: string
@@ -1475,7 +1670,7 @@ paths:
                       externalId:
                         type: string
                         description: Identificador externo da transação.
-                        example: 'saque-123'
+                        example: saque-123
                       createdAt:
                         type: string
                         format: date-time
@@ -1501,8 +1696,10 @@ paths:
                 properties:
                   error:
                     type: string
-                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
-                    example: 'Token de autenticação inválido ou ausente.'
+                    description: >-
+                      Mensagem de erro descrevendo o motivo da falha na
+                      autenticação.
+                    example: Token de autenticação inválido ou ausente.
         '404':
           description: Saque não encontrado.
           content:
@@ -1517,12 +1714,13 @@ paths:
                   error:
                     type: string
                     description: Mensagem de erro indicando que o saque não foi encontrado.
-                    example: 'Saque não encontrado com o externalId fornecido.'
+                    example: Saque não encontrado com o externalId fornecido.
   /payouts/list:
     get:
       summary: Listar payouts
-      description: |
-        Permite que você recupere uma lista de todos os payouts criados com suporte a paginação.
+      description: >
+        Permite que você recupere uma lista de todos os payouts criados com
+        suporte a paginação.
       security:
         - bearerAuth: []
       parameters:
@@ -1578,7 +1776,11 @@ paths:
                         type: integer
                         description: Total de páginas
                         example: 8
-                    required: ['page', 'limit', 'total', 'totalPages']
+                    required:
+                      - page
+                      - limit
+                      - total
+                      - totalPages
                     additionalProperties: false
                   error:
                     type: string
@@ -1595,20 +1797,30 @@ paths:
                 properties:
                   error:
                     type: string
-                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
-                    example: 'Token de autenticação inválido ou ausente.'
+                    description: >-
+                      Mensagem de erro descrevendo o motivo da falha na
+                      autenticação.
+                    example: Token de autenticação inválido ou ausente.
   /pix/send:
     post:
       summary: Enviar PIX
-      description: |
-        Permite que você envie dinheiro via PIX para qualquer chave PIX que não seja do titular da conta.
-        
+      description: >
+        Permite que você envie dinheiro via PIX para qualquer chave PIX que não
+        seja do titular da conta.
+
+
         Você pode usar esta rota para:
+
         - **Enviar pagamentos** para fornecedores, parceiros ou terceiros
+
         - **Realizar transferências** para contas de outras pessoas ou empresas
+
         - **Efetuar pagamentos** diretamente pela API
-        
-        **Importante**: Esta funcionalidade é diferente dos payouts, pois permite enviar dinheiro para chaves PIX que não pertencem ao titular da conta. Use payouts quando quiser enviar para sua própria chave PIX.
+
+
+        **Importante**: Esta funcionalidade é diferente dos payouts, pois
+        permite enviar dinheiro para chaves PIX que não pertencem ao titular da
+        conta. Use payouts quando quiser enviar para sua própria chave PIX.
       security:
         - bearerAuth: []
       requestBody:
@@ -1618,15 +1830,18 @@ paths:
             schema:
               type: object
               description: Dados necessários para enviar um PIX.
-              required: ['amount', 'externalId', 'pix']
+              required:
+                - amount
+                - externalId
+                - pix
               additionalProperties: false
               example:
                 amount: 10000
-                externalId: 'pix-123'
-                description: 'Pagamento para fornecedor'
+                externalId: pix-123
+                description: Pagamento para fornecedor
                 pix:
                   key: '11987654321'
-                  type: 'PHONE'
+                  type: PHONE
               properties:
                 amount:
                   type: number
@@ -1636,17 +1851,19 @@ paths:
                 externalId:
                   type: string
                   description: Identificador único do PIX em seu sistema.
-                  example: 'pix-123'
+                  example: pix-123
                 description:
                   type: string
                   description: Descrição opcional do PIX.
-                  example: 'Pagamento para fornecedor'
+                  example: Pagamento para fornecedor
                   x-mint:
                     hidden: true
                 pix:
                   type: object
                   description: Dados da chave PIX de destino.
-                  required: ['key', 'type']
+                  required:
+                    - key
+                    - type
                   additionalProperties: false
                   properties:
                     key:
@@ -1656,8 +1873,14 @@ paths:
                     type:
                       type: string
                       description: Tipo da chave PIX.
-                      enum: ['CPF', 'CNPJ', 'PHONE', 'EMAIL', 'RANDOM', 'BR_CODE']
-                      example: 'PHONE'
+                      enum:
+                        - CPF
+                        - CNPJ
+                        - PHONE
+                        - EMAIL
+                        - RANDOM
+                        - BR_CODE
+                      example: PHONE
       responses:
         '200':
           description: PIX enviado com sucesso.
@@ -1683,19 +1906,27 @@ paths:
                 properties:
                   error:
                     type: string
-                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
-                    example: 'Token de autenticação inválido ou ausente.'
+                    description: >-
+                      Mensagem de erro descrevendo o motivo da falha na
+                      autenticação.
+                    example: Token de autenticação inválido ou ausente.
   /pix/get:
     get:
       summary: Buscar PIX
-      description: |
-        Permite que você recupere os detalhes de uma transação PIX específica usando o ID ou externalId.
-        
+      description: >
+        Permite que você recupere os detalhes de uma transação PIX específica
+        usando o ID ou externalId.
+
+
         Você pode buscar usando:
+
         - `id`: Identificador único da transação PIX na AbacatePay
+
         - `externalId`: Identificador único do PIX em seu sistema
-        
-        **Importante**: Você deve fornecer pelo menos um dos parâmetros (`id` ou `externalId`).
+
+
+        **Importante**: Você deve fornecer pelo menos um dos parâmetros (`id` ou
+        `externalId`).
       security:
         - bearerAuth: []
       parameters:
@@ -1705,14 +1936,14 @@ paths:
           required: false
           schema:
             type: string
-            example: 'txn_abc123xyz'
+            example: txn_abc123xyz
         - name: externalId
           in: query
           description: Identificador único do PIX em seu sistema.
           required: false
           schema:
             type: string
-            example: 'pix-123'
+            example: pix-123
       responses:
         '200':
           description: Detalhes do PIX retornados com sucesso.
@@ -1738,8 +1969,10 @@ paths:
                 properties:
                   error:
                     type: string
-                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
-                    example: 'Token de autenticação inválido ou ausente.'
+                    description: >-
+                      Mensagem de erro descrevendo o motivo da falha na
+                      autenticação.
+                    example: Token de autenticação inválido ou ausente.
         '404':
           description: PIX não encontrado.
           content:
@@ -1754,13 +1987,13 @@ paths:
                   error:
                     type: string
                     description: Mensagem de erro indicando que o PIX não foi encontrado.
-                    example: 'PIX não encontrado com o ID ou externalId fornecido.'
+                    example: PIX não encontrado com o ID ou externalId fornecido.
   /pix/list:
     get:
       summary: Listar PIX
       description: |
         Permite que você recupere uma lista de transações PIX criadas.
-        
+
         Você pode filtrar usando:
         - `id`: Identificador único da transação PIX na AbacatePay
         - `externalId`: Identificador único do PIX em seu sistema
@@ -1773,14 +2006,14 @@ paths:
           required: false
           schema:
             type: string
-            example: 'txn_abc123xyz'
+            example: txn_abc123xyz
         - name: externalId
           in: query
           description: Identificador único do PIX em seu sistema para filtrar.
           required: false
           schema:
             type: string
-            example: 'pix-123'
+            example: pix-123
       responses:
         '200':
           description: Lista de PIX retornada com sucesso.
@@ -1809,15 +2042,23 @@ paths:
                 properties:
                   error:
                     type: string
-                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
-                    example: 'Token de autenticação inválido ou ausente.'
+                    description: >-
+                      Mensagem de erro descrevendo o motivo da falha na
+                      autenticação.
+                    example: Token de autenticação inválido ou ausente.
   /subscriptions/create:
     post:
-      summary: Criar uma nova assinatura
-      description: |
-        Permite que você crie uma nova assinatura para cobranças recorrentes automáticas.
-        
-        Esta rota é ideal para criar planos de assinatura com cobranças periódicas, como planos mensais, anuais ou personalizados. As assinaturas são processadas automaticamente de acordo com a frequência configurada.
+      summary: Criar uma nova assinatura (Checkout de assinatura)
+      description: >
+        Cria um Checkout de assinatura — uma página de pagamento igual ao
+        Checkout comum, mas para cobrança recorrente.
+
+
+        Aceita os mesmos parâmetros do Checkout (`returnUrl`, `completionUrl`,
+        `customerId`, `externalId`, `metadata`, `coupons`, `method`). O Checkout
+        de assinatura aceita **apenas um produto**; o ciclo (frequência) já deve
+        estar definido no produto ao criá-lo na loja — não é enviado no
+        checkout.
       security:
         - bearerAuth: []
       requestBody:
@@ -1826,98 +2067,105 @@ paths:
           application/json:
             schema:
               type: object
-              description: Dados necessários para criar uma assinatura.
-              required: ['amount', 'name', 'externalId', 'method', 'frequency', 'customerId']
+              description: >
+                Mesmos parâmetros do Checkout, com `items` contendo exatamente
+                um item (`id` e `quantity`).
+
+                O produto referenciado deve ter sido criado com ciclo de
+                assinatura (frequency) na loja.
+              required:
+                - items
               additionalProperties: false
               example:
-                amount: 10000
-                name: 'Plano Premium Mensal'
-                externalId: 'subs-123'
-                description: 'Assinatura mensal do plano premium'
-                method: 'PIX'
-                frequency:
-                  cycle: 'MONTHLY'
-                  dayOfProcessing: 5
-                retryPolicy:
-                  maxRetry: 3
-                  retryEvery: 2
-                customerId: 'cust_abc123xyz'
+                items:
+                  - id: prod-1234
+                    quantity: 1
+                customerId: cust_abc123xyz
+                externalId: subs-123
+                returnUrl: 'https://seusite.com/voltar'
+                completionUrl: 'https://seusite.com/sucesso'
+                metadata:
+                  plan: premium
               properties:
-                amount:
-                  type: number
-                  description: Valor da assinatura em centavos.
-                  minimum: 1
-                  example: 10000
-                name:
-                  type: string
-                  description: Nome da assinatura.
-                  example: 'Plano Premium Mensal'
-                externalId:
-                  type: string
-                  description: Identificador único da assinatura em seu sistema.
-                  example: 'subs-123'
-                description:
-                  type: string
-                  description: Descrição opcional da assinatura.
-                  example: 'Assinatura mensal do plano premium'
-                  x-mint:
-                    hidden: true
+                items:
+                  type: array
+                  description: >
+                    Lista com **exatamente um** item. O produto deve ter sido
+                    criado com ciclo de assinatura (frequency).
+
+                    O valor total é calculado a partir do produto.
+                  minItems: 1
+                  maxItems: 1
+                  items:
+                    type: object
+                    required:
+                      - id
+                      - quantity
+                    additionalProperties: false
+                    properties:
+                      id:
+                        type: string
+                        description: >-
+                          ID público do produto na sua loja (produto criado com
+                          ciclo de assinatura).
+                        example: prod-1234
+                      quantity:
+                        type: integer
+                        description: Quantidade (geralmente 1 para assinatura).
+                        minimum: 1
+                        example: 1
                 method:
                   type: string
-                  description: Método de pagamento da assinatura.
-                  enum: ['PIX', 'CARD']
-                  example: 'PIX'
-                frequency:
-                  type: object
-                  description: Configuração da frequência de cobrança.
-                  required: ['cycle', 'dayOfProcessing']
-                  additionalProperties: false
-                  properties:
-                    cycle:
-                      type: string
-                      description: Ciclo de cobrança da assinatura.
-                      enum: ['MONTHLY', 'YEARLY', 'WEEKLY', 'DAILY']
-                      example: 'MONTHLY'
-                    dayOfProcessing:
-                      type: integer
-                      description: Dia do mês em que a cobrança será processada (1-31).
-                      minimum: 1
-                      maximum: 31
-                      example: 5
-                retryPolicy:
-                  type: object
-                  description: Política de retentativa em caso de falha no pagamento.
-                  required: ['maxRetry', 'retryEvery']
-                  additionalProperties: false
-                  properties:
-                    maxRetry:
-                      type: integer
-                      description: Número máximo de tentativas de cobrança.
-                      minimum: 1
-                      maximum: 10
-                      example: 3
-                    retryEvery:
-                      type: integer
-                      description: Intervalo em dias entre tentativas de cobrança.
-                      minimum: 1
-                      maximum: 30
-                      example: 2
-                  x-mint:
-                    hidden: true
+                  description: Método de pagamento disponível.
+                  enum:
+                    - PIX
+                    - CARD
+                returnUrl:
+                  type: string
+                  format: uri
+                  description: >-
+                    URL para onde o cliente será redirecionado ao clicar em
+                    "Voltar" no checkout.
+                completionUrl:
+                  type: string
+                  format: uri
+                  description: >-
+                    URL para onde o cliente será redirecionado após o pagamento
+                    ser concluído.
                 customerId:
                   type: string
-                  description: Identificador do cliente que terá a assinatura.
-                  example: 'cust_abc123xyz'
+                  description: >
+                    ID de um cliente já cadastrado na sua loja.
+
+                    Se informado, o checkout será pré-preenchido com os dados
+                    deste cliente.
+                coupons:
+                  type: array
+                  description: Lista de cupons que podem ser utilizados nesta cobrança.
+                  items:
+                    type: string
+                  maxItems: 50
+                externalId:
+                  type: string
+                  description: >-
+                    ID da assinatura no seu sistema, caso queira manter uma
+                    referência própria.
+                metadata:
+                  type: object
+                  description: Metadados adicionais. Campo livre para a sua aplicação.
+                  additionalProperties: true
       responses:
         '200':
-          description: Assinatura criada com sucesso.
+          description: >-
+            Checkout de assinatura criado com sucesso. Use a `url` retornada
+            para redirecionar o cliente.
           content:
             application/json:
               schema:
                 type: object
                 properties:
                   data:
-                    $ref: '#/components/schemas/Subscription'
+                    $ref: '#/components/schemas/Billing'
                   error:
                     type: string
                     nullable: true
@@ -1933,13 +2181,19 @@ paths:
                 properties:
                   error:
                     type: string
-                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
-                    example: 'Token de autenticação inválido ou ausente.'
+                    description: >-
+                      Mensagem de erro descrevendo o motivo da falha na
+                      autenticação.
+                    example: Token de autenticação inválido ou ausente.
   /subscriptions/list:
     get:
-      summary: Listar assinaturas
-      description: |
-        Permite que você recupere uma lista de todas as assinaturas criadas com suporte a paginação baseada em cursor.
+      summary: Listar assinaturas (Checkouts de assinatura)
+      description: >
+        Retorna todos os Checkouts de assinatura que você criou, com suporte a
+        paginação baseada em cursor.
+
+        Cada item possui o mesmo formato de um Checkout: `id`, `url`,
+        `amount`, `items`, `status`, etc.
       security:
         - bearerAuth: []
       parameters:
@@ -1959,10 +2213,10 @@ paths:
           required: false
           schema:
             type: string
-            example: '507f1f77bcf86cd799439011'
+            example: bill_abc123xyz
       responses:
         '200':
-          description: Lista de assinaturas retornada com sucesso.
+          description: Lista de Checkouts de assinatura retornada com sucesso.
           content:
             application/json:
               schema:
@@ -1970,13 +2224,18 @@ paths:
                 properties:
                   data:
                     type: array
-                    description: Lista de assinaturas.
+                    description: >-
+                      Lista de Checkouts de assinatura (mesmo payload de
+                      Checkout).
                     items:
-                      $ref: '#/components/schemas/Subscription'
+                      $ref: '#/components/schemas/Billing'
                   pagination:
                     type: object
                     description: Informações de paginação baseada em cursor.
-                    required: ['limit', 'hasNext', 'hasPrevious']
+                    required:
+                      - limit
+                      - hasNext
+                      - hasPrevious
                     additionalProperties: false
                     properties:
                       limit:
@@ -1987,7 +2246,7 @@ paths:
                         type: string
                         nullable: true
                         description: Cursor para próxima página.
-                        example: '507f1f77bcf86cd799439011'
+                        example: bill_abc123xyz
                       hasNext:
                         type: boolean
                         description: Indica se existe próxima página.
@@ -2011,12 +2270,16 @@ paths:
                 properties:
                   error:
                     type: string
-                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
-                    example: 'Token de autenticação inválido ou ausente.'
+                    description: >-
+                      Mensagem de erro descrevendo o motivo da falha na
+                      autenticação.
+                    example: Token de autenticação inválido ou ausente.
   /store/get:
     get:
       summary: Obter detalhes da loja
-      description: Permite que você recupere os detalhes da sua conta/loja, incluindo informações de saldo.
+      description: >-
+        Permite que você recupere os detalhes da sua conta/loja, incluindo
+        informações de saldo.
       security:
         - bearerAuth: []
       responses:
@@ -2044,12 +2307,16 @@ paths:
                 properties:
                   error:
                     type: string
-                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
-                    example: 'Token de autenticação inválido ou ausente.'
+                    description: >-
+                      Mensagem de erro descrevendo o motivo da falha na
+                      autenticação.
+                    example: Token de autenticação inválido ou ausente.
   /public-mrr/merchant-info:
     get:
       summary: Obter informações do merchant
-      description: Retorna informações básicas da loja (ID, nome, website e data de criação).
+      description: >-
+        Retorna informações básicas da loja (ID, nome, website e data de
+        criação).
       security:
         - bearerAuth: []
       responses:
@@ -2066,11 +2333,11 @@ paths:
                       id:
                         type: string
                         description: Identificador único da loja
-                        example: 'store_abc123xyz'
+                        example: store_abc123xyz
                       name:
                         type: string
                         description: Nome da loja
-                        example: 'Example Tech'
+                        example: Example Tech
                       website:
                         type: string
                         description: Website da loja
@@ -2080,7 +2347,11 @@ paths:
                         format: date-time
                         description: Data de criação da loja
                         example: '2024-12-06T18:53:31.756Z'
-                    required: ['id', 'name', 'website', 'createdAt']
+                    required:
+                      - id
+                      - name
+                      - website
+                      - createdAt
                     additionalProperties: false
                   error:
                     type: string
@@ -2097,12 +2368,16 @@ paths:
                 properties:
                   error:
                     type: string
-                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
-                    example: 'Token de autenticação inválido ou ausente.'
+                    description: >-
+                      Mensagem de erro descrevendo o motivo da falha na
+                      autenticação.
+                    example: Token de autenticação inválido ou ausente.
   /public-mrr/mrr:
     get:
       summary: Obter MRR (Monthly Recurring Revenue)
-      description: Retorna o MRR (receita recorrente mensal) e o total de assinaturas ativas da loja.
+      description: >-
+        Retorna o MRR (receita recorrente mensal) e o total de assinaturas
+        ativas da loja.
       security:
         - bearerAuth: []
       responses:
@@ -2118,13 +2393,19 @@ paths:
                     properties:
                       mrr:
                         type: number
-                        description: Receita recorrente mensal em centavos. Valor 0 indica que não há receita recorrente no momento.
+                        description: >-
+                          Receita recorrente mensal em centavos. Valor 0 indica
+                          que não há receita recorrente no momento.
                         example: 0
                       totalActiveSubscriptions:
                         type: integer
-                        description: Total de assinaturas ativas. Valor 0 indica que não há assinaturas ativas no momento.
+                        description: >-
+                          Total de assinaturas ativas. Valor 0 indica que não há
+                          assinaturas ativas no momento.
                         example: 0
-                    required: ['mrr', 'totalActiveSubscriptions']
+                    required:
+                      - mrr
+                      - totalActiveSubscriptions
                     additionalProperties: false
                   error:
                     type: string
@@ -2141,12 +2422,18 @@ paths:
                 properties:
                   error:
                     type: string
-                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
-                    example: 'Token de autenticação inválido ou ausente.'
+                    description: >-
+                      Mensagem de erro descrevendo o motivo da falha na
+                      autenticação.
+                    example: Token de autenticação inválido ou ausente.
   /public-mrr/revenue:
     get:
       summary: Obter receita por período
-      description: Retorna a receita total, total de transações e transações por dia em um período específico. Os dados são cacheados por 1 hora (3600 segundos) para melhor performance. A data de fim deve ser posterior à data de início.
+      description: >-
+        Retorna a receita total, total de transações e transações por dia em um
+        período específico. Os dados são cacheados por 1 hora (3600 segundos)
+        para melhor performance. A data de fim deve ser posterior à data de
+        início.
       security:
         - bearerAuth: []
       parameters:
@@ -2187,7 +2474,9 @@ paths:
                         example: 45
                       transactionsPerDay:
                         type: object
-                        description: Objeto com transações agrupadas por dia (chave é a data no formato YYYY-MM-DD)
+                        description: >-
+                          Objeto com transações agrupadas por dia (chave é a
+                          data no formato YYYY-MM-DD)
                         additionalProperties:
                           type: object
                           properties:
@@ -2199,7 +2488,9 @@ paths:
                               type: integer
                               description: Quantidade de transações do dia
                               example: 3
-                          required: ['amount', 'count']
+                          required:
+                            - amount
+                            - count
                           additionalProperties: false
                         example:
                           '2024-01-15':
@@ -2208,7 +2499,10 @@ paths:
                           '2024-01-16':
                             amount: 3000
                             count: 2
-                    required: ['totalRevenue', 'totalTransactions', 'transactionsPerDay']
+                    required:
+                      - totalRevenue
+                      - totalTransactions
+                      - transactionsPerDay
                     additionalProperties: false
                   error:
                     type: string
@@ -2226,7 +2520,7 @@ paths:
                   error:
                     type: string
                     description: Mensagem de erro descrevendo o problema de validação.
-                    example: 'Start date and end date are required'
+                    example: Start date and end date are required
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -2236,8 +2530,10 @@ paths:
                 properties:
                   error:
                     type: string
-                    description: Mensagem de erro descrevendo o motivo da falha na autenticação.
-                    example: 'Token de autenticação inválido ou ausente.'
+                    description: >-
+                      Mensagem de erro descrevendo o motivo da falha na
+                      autenticação.
+                    example: Token de autenticação inválido ou ausente.
 components:
   schemas:
     Success:
@@ -2247,13 +2543,19 @@ components:
     Customer:
       type: object
       description: Os dados do seu cliente.
-      required: ['id', 'devMode', 'name', 'cellphone', 'email', 'taxId']
+      required:
+        - id
+        - devMode
+        - name
+        - cellphone
+        - email
+        - taxId
       additionalProperties: false
       properties:
         id:
           type: string
           description: Identificador único público do cliente
-          example: 'cust_aebxkhDZNaMmJeKsy0AHS0FQ'
+          example: cust_aebxkhDZNaMmJeKsy0AHS0FQ
         devMode:
           type: boolean
           description: Indica se o cliente foi criado em ambiente de testes.
@@ -2265,7 +2567,7 @@ components:
         cellphone:
           type: string
           description: Celular do cliente
-          example: '(11) 4002-8922'
+          example: (11) 4002-8922
         email:
           type: string
           description: E-mail do cliente
@@ -2273,26 +2575,29 @@ components:
         taxId:
           type: string
           description: CPF ou CNPJ do cliente
-          example: '123.456.789-01'
+          example: 123.456.789-01
         country:
           type: string
           description: País do cliente
-          example: 'BR'
+          example: BR
         zipCode:
           type: string
           description: CEP do cliente
-          example: '01310-100'
+          example: 01310-100
         metadata:
           type: object
           description: Metadados adicionais do cliente
           additionalProperties: true
           example:
-            source: 'landing-page'
-            campaign: 'black-friday-2025'
+            source: landing-page
+            campaign: black-friday-2025
     Coupon:
       type: object
       description: Os dados do seu cupom.
-      required: ['code', 'discount', 'discountKind']
+      required:
+        - code
+        - discount
+        - discountKind
       additionalProperties: false
       properties:
         code:
@@ -2305,13 +2610,17 @@ components:
           example: Cupom de desconto pro meu público
         maxRedeems:
           type: number
-          description: Quantidade de vezes em que o cupom pode ser resgatado. -1 Significa que esse cupom pode ser resgatado sem limites
+          description: >-
+            Quantidade de vezes em que o cupom pode ser resgatado. -1 Significa
+            que esse cupom pode ser resgatado sem limites
           example: 10
           default: -1
         discountKind:
           type: string
-          description: Tipo de desconto aplicado, porcentagem ou fixo
-          enum: ['PERCENTAGE', 'FIXED']
+          description: 'Tipo de desconto aplicado, porcentagem ou fixo'
+          enum:
+            - PERCENTAGE
+            - FIXED
         discount:
           type: number
           description: Valor de desconto a ser aplicado
@@ -2322,7 +2631,13 @@ components:
     CouponResponse:
       type: object
       description: Os dados do seu cupom.
-      required: ['id', 'discount', 'discountKind', 'status', 'createdAt', 'updatedAt']
+      required:
+        - id
+        - discount
+        - discountKind
+        - status
+        - createdAt
+        - updatedAt
       additionalProperties: false
       properties:
         id:
@@ -2335,7 +2650,9 @@ components:
           example: Cupom de desconto pro meu público
         maxRedeems:
           type: integer
-          description: Quantidade de vezes em que o cupom pode ser resgatado. -1 significa ilimitado.
+          description: >-
+            Quantidade de vezes em que o cupom pode ser resgatado. -1 significa
+            ilimitado.
           example: -1
           default: 10
         redeemsCount:
@@ -2344,8 +2661,10 @@ components:
           example: 0
         discountKind:
           type: string
-          description: Tipo de desconto aplicado, porcentagem ou fixo
-          enum: ['PERCENTAGE', 'FIXED']
+          description: 'Tipo de desconto aplicado, porcentagem ou fixo'
+          enum:
+            - PERCENTAGE
+            - FIXED
           example: PERCENTAGE
         discount:
           type: number
@@ -2358,7 +2677,10 @@ components:
         status:
           type: string
           description: Status atual do cupom.
-          enum: ['ACTIVE', 'INACTIVE', 'EXPIRED']
+          enum:
+            - ACTIVE
+            - INACTIVE
+            - EXPIRED
           example: ACTIVE
         createdAt:
           type: string
@@ -2374,47 +2696,61 @@ components:
           type: object
           description: Objeto chave valor para metadados do cupom
           default: {}
-
     Product:
       type: object
-      description: Os dados do seu produto.
-      required: ['id', 'externalId', 'name', 'price', 'currency', 'status', 'devMode', 'createdAt', 'updatedAt']
+      description: >
+        Os dados do seu produto.
+
+        O campo `cycle` indica se o produto é uma assinatura (subscription).
+        Quando `null`, o produto é avulso (pagamento único). Valores possíveis
+        definem a recorrência da assinatura.
+
+        A moeda (`currency`) é sempre `BRL`.
+      required:
+        - externalId
+        - name
+        - description
+        - price
+        - devMode
+        - currency
+        - createdAt
+        - updatedAt
+        - status
+        - id
       additionalProperties: false
       properties:
-        id:
-          type: string
-          description: Identificador único público do produto
-          example: 'prod_abc123xyz'
         externalId:
           type: string
           description: Identificador único do produto no seu sistema
-          example: 'prod-123'
+          example: prod-123
         name:
           type: string
           description: Nome do produto
-          example: 'Produto Exemplo'
+          example: Produto Exemplo
         description:
           type: string
-          nullable: true
           description: Descrição do produto
-          example: 'Descrição do produto'
+          example: Descrição do produto
+        imageUrl:
+          type: string
+          format: uri
+          nullable: true
+          description: URL da imagem do produto
+          example: null
         price:
           type: number
           description: Preço do produto em centavos
           example: 10000
-        currency:
-          type: string
-          description: Moeda do produto
-          example: 'BRL'
-        status:
-          type: string
-          description: Status atual do produto
-          enum: ['ACTIVE', 'INACTIVE']
-          example: 'ACTIVE'
         devMode:
           type: boolean
           description: Indica se o produto foi criado em ambiente de testes
           example: false
+        currency:
+          type: string
+          description: Moeda do produto (sempre BRL)
+          enum:
+            - BRL
+          example: BRL
         createdAt:
           type: string
           format: date-time
@@ -2425,19 +2761,43 @@ components:
           format: date-time
           description: Data de atualização do produto
           example: '2024-11-04T18:38:28.573Z'
+        status:
+          type: string
+          description: Status atual do produto (ProductStatus)
+          enum:
+            - ACTIVE
+            - INACTIVE
+          example: ACTIVE
+        id:
+          type: string
+          description: Identificador único público do produto
+          example: prod_abc123xyz
+        cycle:
+          type: string
+          nullable: true
+          description: >
+            Indica se o produto é uma assinatura (ProductCycle). Quando `null`,
+            o produto é avulso (pagamento único).
 
+            Valores possíveis definem a recorrência da assinatura.
+          enum:
+            - WEEKLY
+            - MONTHLY
+            - SEMIANNUALLY
+            - ANNUALLY
+          example: null
     Billing:
       type: object
       properties:
         id:
           type: string
           description: Identificador único do Checkout.
-          example: 'bill_abc123xyz'
+          example: bill_abc123xyz
         externalId:
           type: string
           nullable: true
           description: ID do Checkout no seu sistema.
-          example: 'pedido-123'
+          example: pedido-123
         url:
           type: string
           format: uri
@@ -2461,7 +2821,7 @@ components:
               id:
                 type: string
                 description: ID do produto.
-                example: 'prod_456'
+                example: prod_456
               quantity:
                 type: integer
                 description: Quantidade do item.
@@ -2469,9 +2829,14 @@ components:
         status:
           type: string
           description: Status atual do Checkout.
-          enum: ['PENDING', 'EXPIRED', 'CANCELLED', 'PAID', 'REFUNDED']
-          example: 'PENDING'
-        coupons: 
+          enum:
+            - PENDING
+            - EXPIRED
+            - CANCELLED
+            - PAID
+            - REFUNDED
+          example: PENDING
+        coupons:
           type: array
           description: Lista de cupons aplicados no Checkout.
           items:
@@ -2525,7 +2890,7 @@ components:
         id:
           type: string
           description: Identificador único do QRCode Pix.
-          example: 'pix_char_123456'
+          example: pix_char_123456
         amount:
           type: number
           description: Valor a ser pago.
@@ -2533,8 +2898,13 @@ components:
         status:
           type: string
           description: Informação sobre o andamento do QRCode Pix.
-          enum: ['PENDING', 'EXPIRED', 'CANCELLED', 'PAID', 'REFUNDED']
-          example: 'PENDING'
+          enum:
+            - PENDING
+            - EXPIRED
+            - CANCELLED
+            - PAID
+            - REFUNDED
+          example: PENDING
         devMode:
           type: boolean
           description: Ambiente no qual o QRCode Pix foi criado.
@@ -2542,7 +2912,7 @@ components:
         brCode:
           type: string
           description: Código copia-e-cola do QRCode Pix.
-          example: '00020101021226950014br.gov.bcb.pix'
+          example: 00020101021226950014br.gov.bcb.pix
         brCodeBase64:
           type: string
           description: Imagem em Base64 do QRCode Pix.
@@ -2570,12 +2940,17 @@ components:
         id:
           type: string
           description: Identificador único da transação.
-          example: 'tran_123456'
+          example: tran_123456
         status:
           type: string
           description: Status atual da transação.
-          enum: ['PENDING', 'EXPIRED', 'CANCELLED', 'COMPLETE', 'REFUNDED']
-          example: 'PENDING'
+          enum:
+            - PENDING
+            - EXPIRED
+            - CANCELLED
+            - COMPLETE
+            - REFUNDED
+          example: PENDING
         devMode:
           type: boolean
           description: Indica se a transação foi criada em ambiente de testes.
@@ -2588,9 +2963,11 @@ components:
         kind:
           type: string
           description: Tipo da transação.
-          enum: ['PAYMENT', 'WITHDRAW']
-          example: 'WITHDRAW'
-          default: 'WITHDRAW'
+          enum:
+            - PAYMENT
+            - WITHDRAW
+          example: WITHDRAW
+          default: WITHDRAW
         amount:
           type: number
           description: Valor da transação em centavos.
@@ -2602,7 +2979,7 @@ components:
         externalId:
           type: string
           description: Identificador externo da transação.
-          example: 'withdraw-1234'
+          example: withdraw-1234
         createdAt:
           type: string
           format: date-time
@@ -2614,7 +2991,15 @@ components:
           description: Data de atualização da transação.
           example: '2025-03-24T21:50:20.772Z'
       required:
-        ['id', 'status', 'devMode', 'receiptUrl', 'kind', 'amount', 'platformFee', 'createdAt', 'updatedAt']
+        - id
+        - status
+        - devMode
+        - receiptUrl
+        - kind
+        - amount
+        - platformFee
+        - createdAt
+        - updatedAt
     PixTransaction:
       type: object
       description: Dados de uma transação PIX.
@@ -2622,12 +3007,17 @@ components:
         id:
           type: string
           description: Identificador único da transação PIX.
-          example: 'txn_abc123xyz'
+          example: txn_abc123xyz
         status:
           type: string
           description: Status atual da transação.
-          enum: ['PENDING', 'EXPIRED', 'CANCELLED', 'COMPLETE', 'REFUNDED']
-          example: 'PENDING'
+          enum:
+            - PENDING
+            - EXPIRED
+            - CANCELLED
+            - COMPLETE
+            - REFUNDED
+          example: PENDING
         devMode:
           type: boolean
           description: Indica se a transação foi criada em ambiente de testes.
@@ -2649,7 +3039,7 @@ components:
           type: string
           nullable: true
           description: Identificador externo da transação.
-          example: 'pix-123'
+          example: pix-123
         createdAt:
           type: string
           format: date-time
@@ -2661,25 +3051,38 @@ components:
           description: Data de atualização da transação.
           example: '2024-11-04T18:38:28.573Z'
       required:
-        ['id', 'status', 'devMode', 'receiptUrl', 'amount', 'platformFee', 'createdAt', 'updatedAt']
+        - id
+        - status
+        - devMode
+        - receiptUrl
+        - amount
+        - platformFee
+        - createdAt
+        - updatedAt
     Store:
       type: object
       description: Dados da loja/conta do usuário.
-      required: ['id', 'name', 'balance']
+      required:
+        - id
+        - name
+        - balance
       additionalProperties: false
       properties:
         id:
           type: string
           description: Identificador único da loja.
-          example: 'store_abc123xyz'
+          example: store_abc123xyz
         name:
           type: string
           description: Nome da loja.
-          example: 'Minha Loja'
+          example: Minha Loja
         balance:
           type: object
           description: Informações de saldo da loja.
-          required: ['available', 'pending', 'blocked']
+          required:
+            - available
+            - pending
+            - blocked
           additionalProperties: false
           properties:
             available:
@@ -2696,25 +3099,28 @@ components:
               example: 0
     Frequency:
       type: object
-      description: Configuração da frequência de cobrança da assinatura.
-      required: ['cycle']
+      description: >-
+        Configuração da frequência de cobrança da assinatura (definida no
+        produto).
+      required:
+        - cycle
       additionalProperties: false
       properties:
         cycle:
           type: string
           description: Ciclo de cobrança da assinatura.
-          enum: ['MONTHLY', 'YEARLY', 'WEEKLY', 'DAILY']
-          example: 'MONTHLY'
-        dayOfProcessing:
-          type: integer
-          description: Dia do mês em que a cobrança será processada (1-31).
-          minimum: 1
-          maximum: 31
-          example: 5
+          enum:
+            - MONTHLY
+            - YEARLY
+            - WEEKLY
+            - DAILY
+          example: MONTHLY
     RetryPolicy:
       type: object
       description: Política de retentativa em caso de falha no pagamento.
-      required: ['maxRetry', 'retryEvery']
+      required:
+        - maxRetry
+        - retryEvery
       additionalProperties: false
       properties:
         maxRetry:
@@ -2732,17 +3138,20 @@ components:
     SubscriptionEvent:
       type: object
       description: Evento relacionado à assinatura.
-      required: ['event', 'description', 'createdAt']
+      required:
+        - event
+        - description
+        - createdAt
       additionalProperties: false
       properties:
         event:
           type: string
           description: Tipo do evento.
-          example: 'CREATED'
+          example: CREATED
         description:
           type: string
           description: Descrição do evento.
-          example: 'Subscription was created.'
+          example: Subscription was created.
         createdAt:
           type: string
           format: date-time
@@ -2751,25 +3160,39 @@ components:
     Subscription:
       type: object
       description: Dados de uma assinatura (subscription).
-      required: ['id', 'externalId', 'name', 'description', 'amount', 'currency', 'method', 'status', 'frequency', 'customerId', 'devMode', 'events', 'createdAt', 'updatedAt']
+      required:
+        - id
+        - externalId
+        - name
+        - description
+        - amount
+        - currency
+        - method
+        - status
+        - frequency
+        - customerId
+        - devMode
+        - events
+        - createdAt
+        - updatedAt
       additionalProperties: false
       properties:
         id:
           type: string
           description: Identificador único da assinatura.
-          example: 'subs_abc123xyz'
+          example: subs_abc123xyz
         externalId:
           type: string
           description: Identificador externo da assinatura.
-          example: 'subs-123'
+          example: subs-123
         name:
           type: string
           description: Nome da assinatura.
-          example: 'Plano Premium Mensal'
+          example: Plano Premium Mensal
         description:
           type: string
           description: Descrição da assinatura.
-          example: 'Assinatura mensal do plano premium'
+          example: Assinatura mensal do plano premium
         amount:
           type: number
           description: Valor da assinatura em centavos.
@@ -2777,17 +3200,24 @@ components:
         currency:
           type: string
           description: Moeda da assinatura.
-          example: 'BRL'
+          example: BRL
         method:
           type: string
           description: Método de pagamento da assinatura.
-          enum: ['PIX', 'CARD']
-          example: 'PIX'
+          enum:
+            - PIX
+            - CARD
+          example: PIX
         status:
           type: string
           description: Status atual da assinatura.
-          enum: ['PENDING', 'ACTIVE', 'CANCELLED', 'EXPIRED', 'FAILED']
-          example: 'PENDING'
+          enum:
+            - PENDING
+            - ACTIVE
+            - CANCELLED
+            - EXPIRED
+            - FAILED
+          example: PENDING
         frequency:
           $ref: '#/components/schemas/Frequency'
         retryPolicy:
@@ -2797,7 +3227,7 @@ components:
         customerId:
           type: string
           description: Identificador do cliente que possui a assinatura.
-          example: 'cust_abc123xyz'
+          example: cust_abc123xyz
         devMode:
           type: boolean
           description: Indica se a assinatura foi criada em ambiente de testes.
@@ -2822,7 +3252,11 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
-      description: |
-        Todas as requisições devem incluir sua chave de API no header Authorization usando o formato `Bearer <abacatepay-api-key>`. Sem esse header a requisição será rejeitada.
-        
-        Saiba mais sobre como criar e usar chaves de API na [documentação de autenticação](/pages/authentication).
+      description: >
+        Todas as requisições devem incluir sua chave de API no header
+        Authorization usando o formato `Bearer <abacatepay-api-key>`. Sem esse
+        header a requisição será rejeitada.
+
+
+        Saiba mais sobre como criar e usar chaves de API na [documentação de
+        autenticação](/pages/authentication).

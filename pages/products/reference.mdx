@@ -27,45 +27,62 @@ icon: "book-open-cover"
         }}
       />
     </div> */}
-Os produtos permitem que você crie e gerencie itens que podem ser utilizados nas suas cobranças. Com os produtos, você pode definir preços, descrições e organizar seu catálogo de forma centralizada.
+Os produtos permitem que você crie e gerencie itens que podem ser utilizados nas suas cobranças. Com os produtos, você pode definir preços, descrições e organizar seu catálogo de forma centralizada. Um produto pode ser **avulso** (pagamento único) ou **de assinatura**; isso é definido pelo campo opcional `cycle`. Quando `cycle` é `null` ou omitido, o produto é avulso. Valores possíveis para assinatura: `WEEKLY`, `MONTHLY`, `SEMIANNUALLY`, `ANNUALLY`.
 
 ## Criar produto
 
-Use `/products/create` para criar um novo produto. Você pode definir nome, preço, moeda e descrição opcional do produto.
+Use `/products/create` para criar um novo produto. Você pode definir nome, preço, descrição opcional, `imageUrl` opcional e, se for assinatura, o ciclo (`cycle`). A moeda (`currency`) é sempre `BRL`.
 
 <Card title="Campos obrigatórios" horizontal>
-  Os campos `externalId`, `name`, `price` e `currency` são obrigatórios. O `externalId` deve ser único no seu sistema.
+  Os campos `externalId`, `name`, `price` e `currency` são obrigatórios. O `externalId` deve ser único no seu sistema. `currency` é sempre `BRL`. Opcionais: `description`, `imageUrl`, `cycle` (quando omitido ou `null`, o produto é avulso).
 </Card>
 
-**Exemplo:**
+**Exemplo (produto avulso):**
 ```json
 POST /products/create
 {
   "externalId": "prod-123",              // obrigatório - identificador único do produto no seu sistema
   "name": "Produto Exemplo",             // obrigatório - nome do produto
   "price": 10000,                        // obrigatório - preço em centavos
-  "currency": "BRL",                     // obrigatório - moeda do produto
-  "description": "Descrição do produto"  // opcional - descrição do produto
+  "currency": "BRL",                     // obrigatório - moeda (sempre BRL)
+  "description": "Descrição do produto", // opcional - descrição
+  "imageUrl": null                       // opcional - URL da imagem (string | null)
 }
 ```
 
-**Resposta:**
+**Exemplo (produto de assinatura):**
+```json
+POST /products/create
+{
+  "externalId": "prod-assinatura-1",
+  "name": "Plano Mensal",
+  "price": 4990,
+  "currency": "BRL",
+  "cycle": "MONTHLY"                     // opcional - WEEKLY | MONTHLY | SEMIANNUALLY | ANNUALLY; omitir ou null = avulso
+}
+```
+
+**Resposta (modelo Product):**
 ```json
 {
   "data": {
-    "id": "prod_abc123xyz",
     "externalId": "prod-123",
     "name": "Produto Exemplo",
     "description": "Descrição do produto",
+    "imageUrl": null,
     "price": 10000,
     "devMode": false,
     "currency": "BRL",
     "createdAt": "2024-11-04T18:38:28.573Z",
     "updatedAt": "2024-11-04T18:38:28.573Z",
-    "status": "ACTIVE"
+    "status": "ACTIVE",
+    "id": "prod_abc123xyz",
+    "cycle": null
   },
   "success": true,
   "error": null
 }
 ```
+
+O objeto retornado em `data` segue o modelo Product: `externalId`, `name`, `description`, `imageUrl` (string | null), `price`, `devMode`, `currency` (sempre BRL), `createdAt`, `updatedAt`, `status` (ProductStatus), `id`, `cycle` (ProductCycle | null).
 

@@ -1,119 +1,92 @@
 ---
 title: "Referência"
-description: "Gerencie assinaturas recorrentes para seus clientes"
+description: "Checkout de assinatura — mesma página de pagamento, cobrança recorrente"
 icon: "book-open-cover"
 ---
 
-{/* <div style={{ 
-    position: "relative", 
-    paddingBottom: "56.25%", 
-    height: 0, 
-    overflow: "hidden",
-    maxWidth: "800px",
-    margin: "32px auto",
-    borderRadius: "8px"
-}}>
-<iframe
-    src="https://www.youtube.com/embed/SEU_VIDEO_ID"
-    title="Criar Cobrança com Checkout - AbacatePay"
-    frameBorder="0"
-    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-    allowFullScreen
-    style={{ 
-        position: "absolute", 
-        top: 0, 
-        left: 0, 
-        width: "100%", 
-        height: "100%" 
-    }}
-/>  
-</div> */}
+Uma **assinatura** na AbacatePay é um **Checkout** para cobrança recorrente: a mesma página de pagamento do Checkout comum, com os mesmos parâmetros (`returnUrl`, `completionUrl`, `customerId`, `externalId`, `metadata`, `coupons`, `method`). A diferença é que o Checkout de assinatura aceita **apenas um produto**, e esse produto deve ter sido **criado com ciclo (frequency)** já definido na loja.
+
+## Parâmetros (igual ao Checkout)
+
+O `POST /subscriptions/create` aceita os mesmos parâmetros do [Checkout](/pages/payment/reference):
+
+| Parâmetro       | Obrigatório | Descrição |
+|-----------------|-------------|-----------|
+| `items`         | Sim         | Lista com **exatamente um** item (`id` e `quantity`); o produto deve ter sido criado com ciclo de assinatura |
+| `customerId`    | Não         | ID do cliente já cadastrado |
+| `externalId`    | Não         | ID da assinatura no seu sistema |
+| `returnUrl`     | Não         | URL de retorno ao clicar em "Voltar" |
+| `completionUrl` | Não         | URL após pagamento concluído |
+| `metadata`      | Não         | Metadados livres |
+| `coupons`       | Não         | Lista de cupons |
+| `method`        | Não         | `PIX` ou `CARD` |
+
+Exemplo de body (apenas `id` e `quantity` no item; o ciclo já está no produto):
 
 ```json
 {
-  "externalId": "prod-123",
-  "name": "Produto Exemplo",
-  "price": 10000,
-  "frequency": {
-    "cycle": "MONTHLY",
-  },
-  "currency": "BRL",
-  "description": "Descrição do produto",
-  "image": "https://example.com/image.jpg"
+  "items": [
+    {
+      "id": "prod-1234",
+      "quantity": 1
+    }
+  ],
+  "customerId": "cust_abc123xyz",
+  "externalId": "subs-123",
+  "returnUrl": "https://seusite.com/voltar",
+  "completionUrl": "https://seusite.com/sucesso"
 }
 ```
 
-As assinaturas permitem que você crie planos de cobrança recorrente automática para seus clientes. Com as assinaturas, você pode configurar cobranças periódicas (mensais, anuais, etc.) que são processadas automaticamente de acordo com a frequência definida.
+## Resposta (igual ao Checkout)
 
-## Estrutura
+A resposta do create e os itens do list seguem o mesmo payload do Checkout: `id`, `url`, `amount`, `items`, `status`, `returnUrl`, `completionUrl`, `customerId`, `metadata`, `createdAt`, `updatedAt`, etc.
 
-Uma assinatura é representada em nossa API pela seguinte estrutura:
+**Exemplo de resposta do create:**
 
 ```json
 {
   "data": {
-    "id": "subs_abc123xyz",
+    "id": "bill_abc123xyz",
     "externalId": "subs-123",
-    "name": "Plano Premium Mensal",
-    "description": "Assinatura mensal do plano premium",
+    "url": "https://app.abacatepay.com/pay/bill_abc123xyz",
     "amount": 10000,
-    "currency": "BRL",
-    "method": "PIX",
-    "status": "PENDING",
-    "frequency": {
-      "cycle": "MONTHLY",
-    },
-    "retryPolicy": {
-      "maxRetry": 3,
-      "retryEvery": 2
-    },
-    "customerId": "cust_abc123xyz",
-    "devMode": false,
-    "events": [
+    "paidAmount": null,
+    "items": [
       {
-        "event": "CREATED",
-        "description": "Subscription was created.",
-        "createdAt": "2024-11-04T18:38:28.573Z"
+        "id": "prod_456",
+        "quantity": 1
       }
     ],
+    "status": "PENDING",
+    "coupons": [],
+    "devMode": false,
+    "customerId": "cust_abc123xyz",
+    "returnUrl": "https://seusite.com/voltar",
+    "completionUrl": "https://seusite.com/sucesso",
+    "receiptUrl": null,
+    "metadata": {},
     "createdAt": "2024-11-04T18:38:28.573Z",
     "updatedAt": "2024-11-04T18:38:28.573Z"
   },
+  "success": true,
   "error": null
 }
 ```
 
-## Status da Assinatura
+<Tip title="Use a `url` retornada para redirecionar o cliente ao checkout e finalizar o pagamento." icon="book" horizontal>
+Use a `url` retornada para redirecionar o cliente ao checkout e finalizar o pagamento.
+</Tip>
 
-As assinaturas podem ter os seguintes status:
+## Ciclo de cobrança (frequency)
 
-- **PENDING**: Assinatura criada e aguardando ativação
-- **ACTIVE**: Assinatura ativa e processando cobranças recorrentes
-- **CANCELLED**: Assinatura cancelada pelo cliente ou pela loja
-- **EXPIRED**: Assinatura expirada
-- **FAILED**: Assinatura falhou após todas as tentativas de cobrança configuradas
+O ciclo da assinatura é definido **no produto** ao criá-lo na loja. Valores possíveis: **MONTHLY**, **YEARLY**, **WEEKLY**, **DAILY**.
 
-## Frequência de Cobrança
+## Status do Checkout
 
-Você pode configurar diferentes ciclos de cobrança:
-
-- **MONTHLY**: Cobrança mensal
-- **YEARLY**: Cobrança anual
-- **WEEKLY**: Cobrança semanal
-- **DAILY**: Cobrança diária
-
-O campo `dayOfProcessing` define em qual dia do mês a cobrança será processada (1-31).
-
-## Política de Retentativa
-
-A política de retentativa permite configurar quantas vezes o sistema deve tentar cobrar a assinatura em caso de falha no pagamento:
-
-- **maxRetry**: Número máximo de tentativas (1-10)
-- **retryEvery**: Intervalo em dias entre tentativas (1-30)
+Os mesmos status do Checkout se aplicam: **PENDING**, **EXPIRED**, **CANCELLED**, **PAID**, **REFUNDED**.
 
 ## Segurança
 
-- Todas as assinaturas são autenticadas via Bearer Token
-- Logs detalhados de todas as transações
-- Possibilidade de cancelamento a qualquer momento
+- Todas as requisições são autenticadas via Bearer Token
 - Abusos desta API podem resultar em suspensão da conta conforme descrito em nossos [termos de uso](https://abacatepay.com/termos)
