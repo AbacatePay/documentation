@@ -1,39 +1,13 @@
 ---
 title: 'Referência'
-description: 'Gerencie seus clientes, aqueles que pagam você.'
+description: 'Clientes para pré-preencher checkout e reutilizar em várias cobranças'
 icon: 'book-open-cover'
 ---
 
-{/* <div style={{ 
-    position: "relative", 
-    paddingBottom: "56.25%", 
-    height: 0, 
-    overflow: "hidden",
-    maxWidth: "800px",
-    margin: "32px auto",
-    borderRadius: "8px"
-}}>
-<iframe
-    src="https://www.youtube.com/embed/SEU_VIDEO_ID"
-    title="Criar Cobrança com Checkout - AbacatePay"
-    frameBorder="0"
-    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-    allowFullScreen
-    style={{ 
-        position: "absolute", 
-        top: 0, 
-        left: 0, 
-        width: "100%", 
-        height: "100%" 
-    }}
-/>
-</div> */}
-
- 
-Use `/customers/create` para criar um cliente antes da cobrança. Útil quando você já conhece os dados do cliente ou quer reutilizar o `customerId` em múltiplas cobranças.
+Use `/customers/create` para cadastrar um cliente antes de cobrar. O `customerId` retornado pode ser usado em várias cobranças e pré-preenche o checkout.
 
 <Card title="Campos obrigatórios" horizontal>
-  Apenas `email` é obrigatório. Recomendamos também enviar `name`, `cellphone` e `taxId` quando disponíveis.
+  Só `email` é obrigatório. Recomendado: `name`, `cellphone` e `taxId` quando tiver.
 </Card>
 
 **Exemplo:**
@@ -47,7 +21,7 @@ POST /customers/create
     "cellphone": "+5511999999999",          // opcional
     "zipCode": "01310-100"                  // opcional
   },
-  "metadata": {                             // Aqui você pode adicionar dados adicionais da sua aplicação
+  "metadata": {                             // opcional - dados extras da sua aplicação
     "customField": "value"
   }
 }
@@ -74,8 +48,6 @@ POST /customers/create
 }
 ```
 
-O `id` do cliente retornado pode ser usado ao criar cobranças, pré-preenchendo os dados do checkout.
-
-<Tip title="Clientes são únicos por CPF/CNPJ" icon="book" horizontal>
- Não é possível criar um cliente com CPF/CNPJ inválido e caso já exista um cliente com esse CPF/CNPJ, a API não criará o cliente novo mas retornará o cliente já existente
+<Tip title="CPF/CNPJ único" icon="book" horizontal>
+ Cliente é único por CPF/CNPJ. Se já existir, a API devolve o existente em vez de criar outro. CPF/CNPJ inválido não é aceito.
 </Tip>

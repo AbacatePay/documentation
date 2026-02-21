@@ -4,7 +4,7 @@ description: "Crie um checkout"
 icon: "book-open-cover"
 ---
 
-O **Checkout da AbacatePay** é uma página segura onde seus clientes finalizam o pagamento.
+O **Checkout** é a página segura onde o cliente finaliza o pagamento. Você envia os itens; a API devolve uma URL para redirecionar.
 <img
   src="/images/payment-checkout-placeholder.png"
   alt="Fluxo de cobrança - Checkout AbacatePay"
@@ -16,13 +16,12 @@ O **Checkout da AbacatePay** é uma página segura onde seus clientes finalizam 
   }}
 />
 
+## Criar checkout
 
-## Criar Checkout
-
-Use `/checkouts/create` para criar um checkout. Você fornece os itens que deseja vender, e nós geramos automaticamente uma URL onde o cliente concluirá o pagamento.
+Use `/checkouts/create`. O total é calculado a partir dos itens.
 
 <Card title="Campos obrigatórios" horizontal>
-  Apenas `items` é obrigatório. O valor total é calculado automaticamente a partir dos itens fornecidos.
+  Só `items` é obrigatório (lista com `id` do produto e `quantity`).
 </Card>
 
 **Exemplo:**
@@ -75,6 +74,6 @@ POST /checkouts/create
   "error": null
 }
 ```
-<Tip title="Use a `url` retornada para redirecionar o cliente ao checkout e finalizar o pagamento." icon="book" horizontal>
-Use a `url` retornada para redirecionar o cliente ao checkout e finalizar o pagamento.
+<Tip title="Redirecione o cliente" icon="book" horizontal>
+Use a `url` retornada para levar o cliente ao checkout e concluir o pagamento.
 </Tip>

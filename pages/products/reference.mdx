@@ -27,14 +27,14 @@ icon: "book-open-cover"
         }}
       />
     </div> */}
-Os produtos permitem que você crie e gerencie itens que podem ser utilizados nas suas cobranças. Com os produtos, você pode definir preços, descrições e organizar seu catálogo de forma centralizada. Um produto pode ser **avulso** (pagamento único) ou **de assinatura**; isso é definido pelo campo opcional `cycle`. Quando `cycle` é `null` ou omitido, o produto é avulso. Valores possíveis para assinatura: `WEEKLY`, `MONTHLY`, `SEMIANNUALLY`, `ANNUALLY`.
+Produtos são itens do seu catálogo usados nas cobranças: nome, preço, descrição e opcionalmente ciclo de assinatura. **Avulso** = pagamento único (`cycle` omitido ou `null`). **Assinatura** = `cycle`: `WEEKLY`, `MONTHLY`, `SEMIANNUALLY` ou `ANNUALLY`.
 
 ## Criar produto
 
-Use `/products/create` para criar um novo produto. Você pode definir nome, preço, descrição opcional, `imageUrl` opcional e, se for assinatura, o ciclo (`cycle`). A moeda (`currency`) é sempre `BRL`.
+Use `/products/create`. Moeda é sempre `BRL`.
 
 <Card title="Campos obrigatórios" horizontal>
-  Os campos `externalId`, `name`, `price` e `currency` são obrigatórios. O `externalId` deve ser único no seu sistema. `currency` é sempre `BRL`. Opcionais: `description`, `imageUrl`, `cycle` (quando omitido ou `null`, o produto é avulso).
+  Obrigatórios: `externalId` (único no seu sistema), `name`, `price`, `currency`. Opcionais: `description`, `imageUrl`, `cycle` (null/omitido = avulso).
 </Card>
 
 **Exemplo (produto avulso):**
@@ -84,5 +84,5 @@ POST /products/create
 }
 ```
 
-O objeto retornado em `data` segue o modelo Product: `externalId`, `name`, `description`, `imageUrl` (string | null), `price`, `devMode`, `currency` (sempre BRL), `createdAt`, `updatedAt`, `status` (ProductStatus), `id`, `cycle` (ProductCycle | null).
+O `data` retornado segue o modelo Product: `id`, `externalId`, `name`, `description`, `imageUrl`, `price`, `currency`, `status`, `cycle`, `createdAt`, `updatedAt`, etc.
 

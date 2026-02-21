@@ -29,14 +29,14 @@ icon: 'book-open-cover'
 />  
 </div> */}
 
-Os cupons de desconto permitem que você ofereça reduções de preço aos seus clientes de forma controlada e estratégica. Você pode criar cupons com desconto percentual ou valor fixo, definir limites de uso e acompanhar quantas vezes foram utilizados.
+Cupons oferecem desconto percentual ou valor fixo aos clientes, com limite de uso e contagem de resgates.
 
 ## Criar cupom
 
-Use `/coupons/create` para criar um cupom de desconto. Você pode definir desconto percentual ou valor fixo, limites de uso e acompanhar quantas vezes foi utilizado.
+Use `/coupons/create`.
 
 <Card title="Campos obrigatórios" horizontal>
-  Os campos `code`, `discount` e `discountKind` são obrigatórios. O `code` deve ser único e o `discountKind` pode ser `PERCENTAGE` ou `FIXED`.
+  Obrigatórios: `code` (único), `discount`, `discountKind` (`PERCENTAGE` ou `FIXED`). Opcionais: `maxRedeems`, `notes`, `metadata`.
 </Card>
 
 **Exemplo:**

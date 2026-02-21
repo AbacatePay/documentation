@@ -1,14 +1,12 @@
 ---
 title: 'Referência'
-description: 'Crie um checkout transparente'
+description: 'PIX via QR Code ou copia e cola no seu sistema'
 icon: 'book-open-cover'
 ---
 
+O **checkout transparente** gera um PIX que o cliente paga sem sair do seu site ou app.
 
-
-## Estrutura
-
-Um **checkout transparente** permite seu cliente pagar sem precisar sair do seu sistema.
+## Receber via PIX
 
 {/* <div style={{ 
     position: "relative", 
@@ -35,24 +33,19 @@ Um **checkout transparente** permite seu cliente pagar sem precisar sair do seu 
 />
 </div> */}
 
-## Receber via Checkout Transparente
-
-Use `/transparents/create` para criar um QRCode PIX. A API retorna o QRCode junto com o copia e cola.
+Use `/transparents/create`. A API devolve o QR Code em imagem (`brCodeBase64`) e o código copia e cola (`brCode`).
 
 <Card title="Campos obrigatórios" horizontal>
-  Apenas `amount` é obrigatório. O valor deve ser informado em centavos.
+  Só `amount` é obrigatório (valor em centavos).
 </Card>
 
 **Exemplo:**
 ```json
 POST /transparents/create
 {
-  "amount": 10000,  // obrigatório - valor em centavos
+  "amount": 10000
 }
 ```
-<Tip title="Apenas o amount é obrigatório" icon="info" horizontal>
-   Apenas `amount` é obrigatório. O valor deve ser informado em centavos.
-</Tip>
 
 **Resposta:**
 ```json
@@ -74,18 +67,15 @@ POST /transparents/create
 }
 ```
 
-<Tip title="Use o QRCode retornado" horizontal>
-Use o `brCodeBase64` para gerar a imagem do QRCode ou o `brCode` (código copia-e-cola) para enviar ao seu cliente via WhatsApp, Telegram ou integrar no seu checkout.
+<Tip title="Usando a resposta" horizontal>
+Use `brCodeBase64` para exibir a imagem do QR Code ou `brCode` (copia e cola) para enviar por WhatsApp/Telegram ou integrar no seu checkout.
 </Tip>
 
-## Dicas e Ideias de Uso
+## Ideias de uso
 
-Esta rota de checkout transparente oferece diversas possibilidades de integração:
-
-- **Venda via WhatsApp e Telegram**: Você pode gerar o QRCode e o código copia-e-cola e enviar diretamente ao seu cliente através de mensagens no WhatsApp ou Telegram, facilitando o processo de pagamento.
-
-- **Checkout próprio na sua aplicação**: Crie uma experiência de checkout totalmente personalizada e integrada ao design da sua aplicação. Isso permite maior controle sobre a interface, melhor experiência do usuário e a possibilidade de manter seu cliente dentro do seu ambiente, aumentando a conversão e fortalecendo sua marca.
+- **WhatsApp/Telegram:** envie o QR Code ou o código copia e cola na conversa.
+- **Checkout próprio:** exiba o PIX na sua página e mantenha o cliente no seu site.
 
 <Info>
-Por enquanto, esta rota aceita apenas o método de pagamento **PIX**.
+Hoje só **PIX** é aceito.
 </Info>

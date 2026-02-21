@@ -1,41 +1,14 @@
 ---
 title: "Referência"
-description: "Realize saques e envie dinheiro para terceiros"
+description: "Saques do seu saldo para sua própria chave PIX"
 icon: "book-open-cover"
 ---
 
-O módulo de **payouts** permite que você realize saques do seu saldo de forma automatizada.
-
-Você pode usar esta recurso para enviar valores para uma conta de sua titularidade.
-
-{/* <div style={{ 
-    position: "relative", 
-    paddingBottom: "56.25%", 
-    height: 0, 
-    overflow: "hidden",
-    maxWidth: "800px",
-    margin: "32px auto",
-    borderRadius: "8px"
-}}>
-<iframe
-    src="https://www.youtube.com/embed/SEU_VIDEO_ID"
-    title="Criar Cobrança com Checkout - AbacatePay"
-    frameBorder="0"
-    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-    allowFullScreen
-    style={{ 
-        position: "absolute", 
-        top: 0, 
-        left: 0, 
-        width: "100%", 
-        height: "100%" 
-    }}
-/>  
-</div> */}
+Com **payouts** você saca o saldo da conta de forma automatizada para uma chave PIX de sua titularidade.
 
 ## Estrutura
 
-Um payout é representado em nossa API pela seguinte estrutura de transação:
+Exemplo de resposta de um saque:
 
 ```json
 {
@@ -55,114 +28,38 @@ Um payout é representado em nossa API pela seguinte estrutura de transação:
 }
 ```
 
-## Atributos:
+## Atributos
 
-<AccordionGroup>
-    <Accordion title="id:">
-        ```json json {2}
-        {
-        "id": "txn_abc123xyz",
-        } 
-        ```
+| Atributo     | Tipo    | Descrição |
+| ------------ | ------- | --------- |
+| `id`         | string  | ID único da transação na AbacatePay |
+| `status`     | string  | Status do saque (veja valores abaixo) |
+| `devMode`    | boolean | `true` se criado em sandbox |
+| `receiptUrl` | string \| null | URL do comprovante; disponível quando `status` é `COMPLETE` |
+| `amount`     | number  | Valor em centavos (ex.: 10000 = R$ 100,00) |
+| `platformFee` | number | Taxa da plataforma em centavos |
+| `externalId` | string  | ID no seu sistema |
+| `createdAt`  | string  | Data/hora de criação (ISO 8601) |
+| `updatedAt`  | string  | Data/hora da última atualização |
 
-        `id` : <u> string. </u> <br />
-        Identificador único da transação de payout na AbacatePay
-    </Accordion>
-    <Accordion title="status:">
-        ```json json {2}
-        {
-        "status": "PENDING",
-        }
-        ```
-        `status` : <u> string. </u> <br />
-        Status atual da transação de payout.
+**Valores de `status`:**
 
-        <Info >
-            |                      |                                                                                                      |
-            | ---------------------| ---------------------------------------------------------------------------------------------------- |
-            | `PENDING`            | **Payout criado e aguardando processamento**                                                          |
-            | `EXPIRED`            | **Payout expirado e não pode mais ser processado**                                                    |
-            | `CANCELLED`          | **Payout cancelado**                                                                                 |
-            | `COMPLETE`           | **Payout processado e concluído com sucesso**                                                        |
-            | `REFUNDED`           | **Payout reembolsado**                                                                               |
-        </Info>
-    </Accordion>
-    <Accordion title="devMode:">
-        ```json json {2}
-        {
-        "devMode": false,
-        }
-        ```
-        `devMode` : <u> boolean. </u> <br />
-        Indica se o payout foi criado em ambiente de desenvolvimento (sandbox) ou produção.
-    </Accordion>
-    <Accordion title="receiptUrl:">
-        ```json json {2}
-        {
-        "receiptUrl": null,
-        }
-        ```
-        `receiptUrl` : <u> string (nullable). </u> <br />
-        URL do comprovante da transação de payout. Disponível quando o status for `COMPLETE`.
-    </Accordion>
-    <Accordion title="amount:">
-        ```json json {2}
-        {
-        "amount": 10000,
-        }
-        ```
-        `amount` : <u> number. </u> <br />
-        Valor do payout em centavos. No exemplo, R$ 100,00.
-    </Accordion>
-    <Accordion title="platformFee:">
-        ```json json {2}
-        {
-        "platformFee": 100,
-        }
-        ```
-        `platformFee` : <u> number. </u> <br />
-        Taxa da plataforma cobrada pelo payout em centavos. No exemplo, R$ 1,00.
-    </Accordion>
-    <Accordion title="externalId:">
-        ```json json {2}
-        {
-        "externalId": "saque-123",
-        }
-        ```
-        `externalId` : <u> string. </u> <br />
-        Identificador único do payout em seu sistema.
-    </Accordion>
-    <Accordion title="createdAt:">
-        ```json json {2}
-        {
-        "createdAt": "2024-11-04T18:38:28.573Z",
-        }
-        ```
-        `createdAt` : <u> string. </u> <br />
-        Data e hora de criação do payout.
-    </Accordion>
-    <Accordion title="updatedAt:">
-        ```json json {2}
-        {
-        "updatedAt": "2024-11-04T18:38:28.573Z",
-        }
-        ```
-        `updatedAt` : <u> string. </u> <br />
-        Data e hora da última atualização do payout.
-    </Accordion>
-</AccordionGroup>
+| Valor        | Significado |
+| ------------ | ----------- |
+| `PENDING`    | Criado, aguardando processamento |
+| `EXPIRED`    | Expirado |
+| `CANCELLED`  | Cancelado |
+| `COMPLETE`   | Concluído com sucesso |
+| `REFUNDED`   | Reembolsado |
 
-## Limites e Taxas
+## Limites e taxas
 
-- **Valor mínimo:** R$ 3,50 (350 centavos)
-- **Taxa da plataforma:** R$ 0,80 centavos se estiver dentro dos limites descritos em nossos [termos de uso](https://abacatepay.com/termos)
-- **Processamento:** Instantâneo
-- **Disponibilidade:** 24/7 caso os limites diários e noturnos da sua conta não tenham sido excedidos
-- **Limite de uso:** 1 payout por minuto. Tentativas em excesso resultarão em erro HTTP 429 (Too Many Requests). Para aumentar o limite entre em contato com nosso suporte
+- **Mínimo:** R$ 3,50 (350 centavos)
+- **Taxa:** R$ 0,80 por saque dentro dos limites; ver [termos de uso](https://abacatepay.com/termos)
+- **Processamento:** instantâneo; 24/7 respeitando limites diários e noturnos da conta
+- **Limite:** 1 saque por minuto; excesso retorna HTTP 429. Para aumentar, fale com o suporte
 
 ## Segurança
 
-- Todos os payouts são autenticados via Bearer Token
-- Logs detalhados de todas as transações
-- Possibilidade de cancelamento em caso de erro
-- Abusos desta API podem resultar em suspensão da conta conforme descrito em nossos [termos de uso](https://abacatepay.com/termos)
+- Requisições autenticadas via Bearer Token
+- Abusos podem levar à suspensão da conta conforme os [termos de uso](https://abacatepay.com/termos)

@@ -4,11 +4,11 @@ description: "Checkout de assinatura — mesma página de pagamento, cobrança r
 icon: "book-open-cover"
 ---
 
-Uma **assinatura** na AbacatePay é um **Checkout** para cobrança recorrente: a mesma página de pagamento do Checkout comum, com os mesmos parâmetros (`returnUrl`, `completionUrl`, `customerId`, `externalId`, `metadata`, `coupons`, `method`). A diferença é que o Checkout de assinatura aceita **apenas um produto**, e esse produto deve ter sido **criado com ciclo (frequency)** já definido na loja.
+**Assinatura** é um Checkout para cobrança recorrente: mesma página de pagamento do [Checkout](/pages/payment/reference), mesmos parâmetros. A diferença é que aceita **só um produto**, e esse produto precisa ter **ciclo (frequency)** definido na loja.
 
-## Parâmetros (igual ao Checkout)
+## Parâmetros
 
-O `POST /subscriptions/create` aceita os mesmos parâmetros do [Checkout](/pages/payment/reference):
+O `POST /subscriptions/create` usa os mesmos parâmetros do Checkout:
 
 | Parâmetro       | Obrigatório | Descrição |
 |-----------------|-------------|-----------|
@@ -21,7 +21,7 @@ O `POST /subscriptions/create` aceita os mesmos parâmetros do [Checkout](/pages
 | `coupons`       | Não         | Lista de cupons |
 | `method`        | Não         | `PIX` ou `CARD` |
 
-Exemplo de body (apenas `id` e `quantity` no item; o ciclo já está no produto):
+Exemplo (cada item só precisa de `id` e `quantity`; o ciclo vem do produto):
 
 ```json
 {
@@ -38,11 +38,11 @@ Exemplo de body (apenas `id` e `quantity` no item; o ciclo já está no produto)
 }
 ```
 
-## Resposta (igual ao Checkout)
+## Resposta
 
-A resposta do create e os itens do list seguem o mesmo payload do Checkout: `id`, `url`, `amount`, `items`, `status`, `returnUrl`, `completionUrl`, `customerId`, `metadata`, `createdAt`, `updatedAt`, etc.
+Create e list retornam o mesmo formato do Checkout (`id`, `url`, `amount`, `items`, `status`, etc.).
 
-**Exemplo de resposta do create:**
+**Resposta:**
 
 ```json
 {
@@ -74,19 +74,19 @@ A resposta do create e os itens do list seguem o mesmo payload do Checkout: `id`
 }
 ```
 
-<Tip title="Use a `url` retornada para redirecionar o cliente ao checkout e finalizar o pagamento." icon="book" horizontal>
-Use a `url` retornada para redirecionar o cliente ao checkout e finalizar o pagamento.
+<Tip title="Redirecione o cliente" icon="book" horizontal>
+Use a `url` retornada para levar o cliente ao checkout e concluir o pagamento.
 </Tip>
 
-## Ciclo de cobrança (frequency)
+## Ciclo de cobrança
 
-O ciclo da assinatura é definido **no produto** ao criá-lo na loja. Valores possíveis: **MONTHLY**, **YEARLY**, **WEEKLY**, **DAILY**.
+Definido no produto ao criar na loja. Valores: **MONTHLY**, **YEARLY**, **WEEKLY**, **DAILY**.
 
-## Status do Checkout
+## Status
 
-Os mesmos status do Checkout se aplicam: **PENDING**, **EXPIRED**, **CANCELLED**, **PAID**, **REFUNDED**.
+Mesmos do Checkout: **PENDING**, **EXPIRED**, **CANCELLED**, **PAID**, **REFUNDED**.
 
 ## Segurança
 
-- Todas as requisições são autenticadas via Bearer Token
-- Abusos desta API podem resultar em suspensão da conta conforme descrito em nossos [termos de uso](https://abacatepay.com/termos)
+- Requisições autenticadas via Bearer Token
+- Abusos podem levar à suspensão da conta conforme os [termos de uso](https://abacatepay.com/termos)

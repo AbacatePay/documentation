@@ -3,4 +3,4 @@ title: 'Criar Checkout de assinatura'
 openapi: "POST /subscriptions/create"
 ---
 
-Cria um Checkout de assinatura: mesma página de pagamento do Checkout, com os mesmos parâmetros. Envie **um único item** em `items` (`id` e `quantity`); o produto deve ter sido criado com ciclo de assinatura na loja. A resposta é igual à do Checkout: use o campo `url` para redirecionar o cliente.
+Cria um checkout de assinatura (mesmo fluxo do Checkout). Envie um único item em `items` (`id` e `quantity`); o produto deve ter ciclo definido na loja. Use a `url` da resposta para redirecionar o cliente.

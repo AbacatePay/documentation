@@ -4,17 +4,15 @@ description: "Envie dinheiro via PIX para qualquer chave PIX"
 icon: "book-open-cover"
 ---
 
-O módulo de **PIX** permite que você envie dinheiro via PIX para qualquer chave PIX que não seja do titular da conta.
-
-Você pode usar este recurso para enviar valores para terceiros, fornecedores, parceiros ou qualquer outra pessoa ou empresa através de suas chaves PIX.
+Com o **PIX** você envia dinheiro para qualquer chave PIX que não seja da conta titular — terceiros, fornecedores ou parceiros.
 
 <Note>
-  **Diferença entre PIX e Saques (Payouts)**: Use **PIX** quando quiser enviar dinheiro para chaves PIX que não pertencem ao titular da conta. Use **Saques (Payouts)** quando quiser enviar dinheiro para sua própria chave PIX.
+  **PIX vs Saques:** use **PIX** para enviar a chaves de terceiros; use **Saques** para enviar para sua própria chave.
 </Note>
 
 ## Estrutura
 
-Uma transação PIX é representada em nossa API pela seguinte estrutura:
+Exemplo de resposta de uma transação PIX:
 
 ```json
 {
@@ -34,129 +32,51 @@ Uma transação PIX é representada em nossa API pela seguinte estrutura:
 }
 ```
 
-## Atributos:
+## Atributos
 
-<AccordionGroup>
-    <Accordion title="id:">
-        ```json json {2}
-        {
-        "id": "txn_abc123xyz",
-        } 
-        ```
+| Atributo     | Tipo    | Descrição |
+| ------------ | ------- | --------- |
+| `id`         | string  | ID único da transação na AbacatePay |
+| `status`     | string  | Status da transação (veja valores abaixo) |
+| `devMode`    | boolean | `true` se criado em sandbox |
+| `receiptUrl` | string  | URL do comprovante; disponível quando `status` é `COMPLETE` |
+| `amount`     | number  | Valor em centavos (ex.: 10000 = R$ 100,00) |
+| `platformFee` | number | Taxa da plataforma em centavos |
+| `externalId` | string \| null | ID no seu sistema; pode ser `null` |
+| `createdAt`  | string  | Data/hora de criação (ISO 8601) |
+| `updatedAt`  | string  | Data/hora da última atualização |
 
-        `id` : <u> string. </u> <br />
-        Identificador único da transação PIX na AbacatePay
-    </Accordion>
-    <Accordion title="status:">
-        ```json json {2}
-        {
-        "status": "PENDING",
-        }
-        ```
-        `status` : <u> string. </u> <br />
-        Status atual da transação PIX.
+**Valores de `status`:**
 
-        <Info >
-            |                      |                                                                                                      |
-            | ---------------------| ---------------------------------------------------------------------------------------------------- |
-            | `PENDING`            | **PIX criado e aguardando processamento**                                                          |
-            | `EXPIRED`            | **PIX expirado e não pode mais ser processado**                                                    |
-            | `CANCELLED`          | **PIX cancelado**                                                                                 |
-            | `COMPLETE`           | **PIX processado e concluído com sucesso**                                                        |
-            | `REFUNDED`           | **PIX reembolsado**                                                                               |
-        </Info>
-    </Accordion>
-    <Accordion title="devMode:">
-        ```json json {2}
-        {
-        "devMode": false,
-        }
-        ```
-        `devMode` : <u> boolean. </u> <br />
-        Indica se o PIX foi criado em ambiente de desenvolvimento (sandbox) ou produção.
-    </Accordion>
-    <Accordion title="receiptUrl:">
-        ```json json {2}
-        {
-        "receiptUrl": "https://app.abacatepay.com/receipt/txn_abc123xyz",
-        }
-        ```
-        `receiptUrl` : <u> string. </u> <br />
-        URL do comprovante da transação PIX. Disponível quando o status for `COMPLETE`.
-    </Accordion>
-    <Accordion title="amount:">
-        ```json json {2}
-        {
-        "amount": 10000,
-        }
-        ```
-        `amount` : <u> number. </u> <br />
-        Valor do PIX em centavos. No exemplo, R$ 100,00.
-    </Accordion>
-    <Accordion title="platformFee:">
-        ```json json {2}
-        {
-        "platformFee": 100,
-        }
-        ```
-        `platformFee` : <u> number. </u> <br />
-        Taxa da plataforma cobrada pelo PIX em centavos. No exemplo, R$ 1,00.
-    </Accordion>
-    <Accordion title="externalId:">
-        ```json json {2}
-        {
-        "externalId": "pix-123",
-        }
-        ```
-        `externalId` : <u> string (nullable). </u> <br />
-        Identificador único do PIX em seu sistema. Pode ser `null` se não foi fornecido.
-    </Accordion>
-    <Accordion title="createdAt:">
-        ```json json {2}
-        {
-        "createdAt": "2024-11-04T18:38:28.573Z",
-        }
-        ```
-        `createdAt` : <u> string. </u> <br />
-        Data e hora de criação do PIX.
-    </Accordion>
-    <Accordion title="updatedAt:">
-        ```json json {2}
-        {
-        "updatedAt": "2024-11-04T18:38:28.573Z",
-        }
-        ```
-        `updatedAt` : <u> string. </u> <br />
-        Data e hora da última atualização do PIX.
-    </Accordion>
-</AccordionGroup>
+| Valor        | Significado |
+| ------------ | ----------- |
+| `PENDING`    | Criado, aguardando processamento |
+| `EXPIRED`    | Expirado |
+| `CANCELLED`  | Cancelado |
+| `COMPLETE`   | Concluído com sucesso |
+| `REFUNDED`   | Reembolsado |
 
-## Tipos de Chave PIX
+## Tipos de chave PIX
 
-Ao enviar um PIX, você precisa especificar o tipo da chave PIX de destino:
+Ao criar um PIX, informe o tipo da chave de destino:
 
-<Info>
-| Tipo      | Descrição                                                                 | Exemplo              |
-| --------- | ------------------------------------------------------------------------- | -------------------- |
-| `CPF`     | Chave PIX usando CPF (11 dígitos)                                         | `12345678901`        |
-| `CNPJ`    | Chave PIX usando CNPJ (14 dígitos)                                        | `12345678000190`     |
-| `PHONE`   | Chave PIX usando telefone celular (formato: DDD + número)                 | `11987654321`        |
-| `EMAIL`   | Chave PIX usando e-mail                                                   | `contato@exemplo.com`|
-| `RANDOM`  | Chave PIX aleatória (UUID)                                                | `a1b2c3d4-e5f6-...`  |
-| `BR_CODE` | Chave PIX usando código BR (QR Code)                                      | Código completo do QR|
-</Info>
+| Tipo      | Descrição                    | Exemplo              |
+| --------- | ---------------------------- | -------------------- |
+| `CPF`     | CPF (11 dígitos)             | `12345678901`        |
+| `CNPJ`    | CNPJ (14 dígitos)            | `12345678000190`     |
+| `PHONE`   | Celular (DDD + número)       | `11987654321`        |
+| `EMAIL`   | E-mail                       | `contato@exemplo.com`|
+| `RANDOM`  | Chave aleatória (UUID)       | `a1b2c3d4-e5f6-...`  |
+| `BR_CODE` | Código BR (QR Code)          | Código completo do QR|
 
-## Limites e Taxas
+## Limites e taxas
 
-- **Valor mínimo:** R$ 1,00
-- **Taxa da plataforma:** Consulte nossos [termos de uso](https://abacatepay.com/termos) para informações sobre taxas
-- **Processamento:** Instantâneo
-- **Disponibilidade:** 24/7
-- **Limite de uso:** Consulte os limites da sua conta no dashboard. Tentativas em excesso resultarão em erro HTTP 429 (Too Many Requests)
+- **Mínimo:** R$ 1,00
+- **Taxa:** ver [termos de uso](https://abacatepay.com/termos)
+- **Processamento:** instantâneo; disponível 24/7
+- **Limite:** consulte o dashboard; excesso pode retornar HTTP 429
 
 ## Segurança
 
-- Todos os PIX são autenticados via Bearer Token
-- Logs detalhados de todas as transações
-- Possibilidade de cancelamento em caso de erro
-- Abusos desta API podem resultar em suspensão da conta conforme descrito em nossos [termos de uso](https://abacatepay.com/termos)
+- Requisições autenticadas via Bearer Token
+- Abusos podem levar à suspensão da conta conforme os [termos de uso](https://abacatepay.com/termos)

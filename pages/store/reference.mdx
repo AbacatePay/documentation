@@ -1,14 +1,14 @@
 ---
 title: 'Referência'
-description: 'Gerencie sua loja e visualize informações da sua conta.'
+description: 'Dados da sua loja e saldos da conta'
 icon: 'store'
 ---
 
-A **Loja** representa sua conta na AbacatePay, contendo todas as informações essenciais sobre seu negócio e saldos disponíveis.
+A **Loja** é sua conta na AbacatePay: dados do negócio e saldos.
 
 ## Estrutura
 
-Uma loja é representada em nossa API pela seguinte estrutura:
+Exemplo de resposta da loja:
 
 ```json
 {
@@ -19,56 +19,21 @@ Uma loja é representada em nossa API pela seguinte estrutura:
     "pending": 5000,
     "blocked": 2000
   }
-} 
+}
 ```
 
-## Atributos:
+## Atributos
 
-<AccordionGroup>
-    <Accordion title="id:">
-        ```json {2}
-        {
-          "id": "store_123456",
-        } 
-        ```
+| Atributo  | Tipo   | Descrição |
+| --------- | ------ | --------- |
+| `id`      | string | ID único da loja na AbacatePay |
+| `name`    | string | Nome da loja ou empresa |
+| `balance` | object | Saldos da conta (todos em centavos; divida por 100 para reais) |
 
-        `id` : <u> string. </u> <br />
-        Identificador único da sua loja na AbacatePay
-    </Accordion>
-    <Accordion title="name:">
-        ```json {3}
-        {
-          "name": "Minha Loja Online",
-        } 
-        ```
+**Campos de `balance`:**
 
-        `name` : <u> string. </u> <br />
-        Nome da sua loja/empresa
-    </Accordion>
-    <Accordion title="balance:">
-        ```json {4-8}
-        {
-          "balance": {
-            "available": 15000,
-            "pending": 5000,
-            "blocked": 2000
-          }
-        } 
-        ```
-
-        `balance` : <u> object. </u> <br />
-        Objeto contendo informações sobre os saldos da sua conta
-
-        * `available` : <u> number. </u> <br /> Saldo disponível para saque em centavos
-        * `pending` : <u> number. </u> <br /> Saldo pendente de confirmação em centavos
-        * `blocked` : <u> number. </u> <br /> Saldo bloqueado em disputas em centavos
-
-        <Tip title="Valores em centavos" icon="coins" horizontal>
-         Todos os valores de saldo são retornados em centavos. Para converter para reais, divida por 100. Por exemplo: 15000 centavos = R$ 150,00
-        </Tip>
-
-        <Warning title="Saldo bloqueado" icon="exclamation-triangle" horizontal>
-         O saldo bloqueado representa valores que estão em disputa ou sob análise. Estes valores não estão disponíveis para saque até que a situação seja resolvida.
-        </Warning>
-    </Accordion>
-</AccordionGroup>
+| Campo       | Tipo   | Descrição |
+| ----------- | ------ | --------- |
+| `available` | number | Saldo disponível para saque (centavos) |
+| `pending`   | number | Saldo pendente de confirmação (centavos) |
+| `blocked`   | number | Saldo em disputa ou análise; não disponível para saque até resolução |
