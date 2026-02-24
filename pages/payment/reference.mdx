@@ -24,7 +24,15 @@ Use `/checkouts/create`. O total é calculado a partir dos itens.
   Só `items` é obrigatório (lista com `id` do produto e `quantity`).
 </Card>
 
-**Exemplo:**
+O parâmetro **`frequency`** define o tipo de cobrança:
+
+| Valor | Descrição |
+|-------|-----------|
+| **ONE_TIME** | Pagamento único (padrão). Não é necessário enviar ao criar um checkout. |
+| **MULTIPLE_PAYMENTS** | Link de pagamento com múltiplas parcelas. Veja [Links de pagamento](/payment-links/reference). |
+| **SUBSCRIPTION** | Assinatura recorrente. Veja [Assinaturas](/subscriptions/reference). |
+
+**Exemplo (pagamento único — frequency não precisa ser enviado):**
 ```json
 POST /checkouts/create
 {
@@ -60,6 +68,7 @@ POST /checkouts/create
       }
     ],
     "status": "PENDING",
+    "frequency": "ONE_TIME",
     "coupons": [],
     "devMode": false,
     "customerId": null,

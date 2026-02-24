@@ -62,6 +62,15 @@
             ]
           },
           {
+            "group": "Links de pagamento",
+            "pages": [
+              "pages/payment-links/reference",
+              "pages/payment-links/create",
+              "pages/payment-links/list",
+              "pages/payment-links/one"
+            ]
+          },
+          {
             "group": "Clientes",
             "pages": [
               "pages/client/reference",

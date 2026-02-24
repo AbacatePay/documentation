@@ -1,0 +1,71 @@
+---
+title: "Referência"
+description: "Links de pagamento — checkout com múltiplas parcelas"
+icon: "book-open-cover"
+---
+
+Um **Link de pagamento** é um [Checkout](/pages/payment/reference) que pode ser pago mais de uma vez.
+
+Isso facilita quando existe a necessidade de vários clientes pagarem o mesmo valor mas sem que você crie novos checkouts.
+
+## Criar link de pagamento
+
+**Exemplo:**
+```json
+POST /checkouts/create
+{
+  "frequency": "MULTIPLE_PAYMENTS",
+  "items": [
+    {
+      "id": "prod_pro",
+      "quantity": 1
+    }
+  ],
+  "externalId": "pedido-123",
+  "returnUrl": "https://seusite.com/voltar",
+  "completionUrl": "https://seusite.com/sucesso",
+  "metadata": {
+    "customField": "value"
+  }
+}
+```
+
+**Resposta:**
+```json
+{
+  "data": {
+    "id": "bill_abc123xyz",
+    "externalId": "pedido-123",
+    "url": "https://app.abacatepay.com/pay/bill_abc123xyz",
+    "amount": 10000,
+    "paidAmount": null,
+    "items": [
+      {
+        "id": "prod_456",
+        "quantity": 2
+      }
+    ],
+    "status": "PENDING",
+    "frequency": "MULTIPLE_PAYMENTS",
+    "coupons": [],
+    "devMode": false,
+    "customerId": null,
+    "returnUrl": null,
+    "completionUrl": null,
+    "receiptUrl": null,
+    "metadata": {},
+    "createdAt": "2024-11-04T18:38:28.573Z",
+    "updatedAt": "2024-11-04T18:38:28.573Z"
+  },
+  "success": true,
+  "error": null
+}
+```
+
+<Tip title="Redirecione o cliente" icon="book" horizontal>
+Use a `url` retornada para levar o cliente ao checkout e concluir o pagamento.
+</Tip>
+
+## Buscar e listar
+
+Links de pagamento são cobranças como qualquer outra: use **GET /checkouts/get** (por ID) e **GET /checkouts/list** para buscar e listar.

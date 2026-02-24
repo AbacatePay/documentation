@@ -1,0 +1,10 @@
+---
+title: Criar um link de pagamento
+openapi: 'POST /payment-links/create'
+---
+
+<Card horizontal>
+  Requer a permissão `BILLING:CREATE`.
+</Card>
+
+Para criar um **link de pagamento**, envie `"frequency": "MULTIPLE_PAYMENTS"` no body. O restante dos parâmetros é o mesmo do [Checkout](/pages/payment/reference).

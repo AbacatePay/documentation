@@ -1180,6 +1180,154 @@ paths:
                       Mensagem de erro indicando que a cobrança não foi
                       encontrada.
                     example: Cobrança não encontrada.
+  /payment-links/create:
+    post:
+      summary: Criar um link de pagamento
+      description: >
+        Cria um link de pagamento (checkout com frequency MULTIPLE_PAYMENTS).
+        Vários clientes podem pagar o mesmo link; não suporta customerId.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - items
+              additionalProperties: false
+              example:
+                frequency: MULTIPLE_PAYMENTS
+                items:
+                  - id: prod-1234
+                    quantity: 2
+              properties:
+                frequency:
+                  type: string
+                  description: Tipo de cobrança fixo para links de pagamento.
+                  enum:
+                    - MULTIPLE_PAYMENTS
+                  default: MULTIPLE_PAYMENTS
+                  example: MULTIPLE_PAYMENTS
+                items:
+                  type: array
+                  description: >
+                    Lista de itens incluídos na cobrança.
+
+                    Este é o único campo obrigatório — o valor total é calculado
+                    a partir destes itens.
+                  minItems: 1
+                  items:
+                    type: object
+                    additionalProperties: false
+                    required:
+                      - id
+                      - quantity
+                    properties:
+                      id:
+                        type: string
+                        description: ID público do produto na sua loja.
+                        example: prod-1234
+                      quantity:
+                        type: integer
+                        description: Quantidade deste item.
+                        minimum: 1
+                        example: 2
+                method:
+                  type: string
+                  description: Método de pagamento disponível.
+                  enum:
+                    - PIX
+                    - CARD
+                  x-mint:
+                    hidden: true
+                returnUrl:
+                  type: string
+                  format: uri
+                  description: >-
+                    URL para onde o cliente será redirecionado ao clicar em
+                    "Voltar" no checkout.
+                  x-mint:
+                    hidden: true
+                completionUrl:
+                  type: string
+                  format: uri
+                  description: >-
+                    URL para onde o cliente será redirecionado após o pagamento
+                    ser concluído.
+                  x-mint:
+                    hidden: true
+                coupons:
+                  type: array
+                  description: |
+                    Lista de cupons que podem ser utilizados nesta cobrança.
+
+                    **Exemplo**: `["ABKT10", "ABKT5", "PROMO10"]`
+                  items:
+                    type: string
+                  maxItems: 50
+                  x-mint:
+                    hidden: true
+                externalId:
+                  type: string
+                  description: >
+                    ID da cobrança no seu sistema, caso queira manter uma
+                    referência própria.
+
+
+                    **Exemplo**: `"seu_id_123"`
+                  x-mint:
+                    hidden: true
+                metadata:
+                  type: object
+                  description: >
+                    Metadados adicionais da cobrança. Campo livre para a sua
+                    aplicação.
+
+
+                    **Exemplo**:
+
+                    ```json
+
+                    {
+                      "source": "landing-page-black-friday",
+                      "campaign": "BF-2025"
+                    }
+
+                    ```
+                  additionalProperties: true
+                  x-mint:
+                    hidden: true
+      responses:
+        '200':
+          description: Link de pagamento criado com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Billing'
+                  error:
+                    type: string
+                    nullable: true
+                    example: null
+                  success:
+                    $ref: '#/components/schemas/Success'
+        '401':
+          description: Não autorizado. Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: >-
+                      Mensagem de erro descrevendo o motivo da falha na
+                      autenticação.
+                    example: Token de autenticação inválido ou ausente.
   /checkouts/list:
     get:
       summary: Listar Checkouts
@@ -1218,6 +1366,98 @@ paths:
                   error:
                     type: string
                     example: Token de autenticação inválido ou ausente.
+  /payment-links/list:
+    get:
+      summary: Listar links de pagamento
+      description: >
+        Lista apenas links de pagamento (checkouts com frequency MULTIPLE_PAYMENTS).
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Links de pagamento listados com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    description: Lista de links de pagamento.
+                    items:
+                      $ref: '#/components/schemas/Billing'
+                  error:
+                    type: 'null'
+                  success:
+                    $ref: '#/components/schemas/Success'
+        '401':
+          description: Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Token de autenticação inválido ou ausente.
+  /payment-links/get:
+    get:
+      summary: Buscar um link de pagamento
+      description: >
+        Retorna os dados de um link de pagamento específico (checkout com
+        frequency MULTIPLE_PAYMENTS) usando o ID.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: query
+          description: Identificador único do link de pagamento
+          required: true
+          schema:
+            type: string
+            example: bill_abc123xyz
+      responses:
+        '200':
+          description: Link de pagamento encontrado com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Billing'
+                  error:
+                    type: string
+                    nullable: true
+                    example: null
+                  success:
+                    $ref: '#/components/schemas/Success'
+        '401':
+          description: Não autorizado. Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: >-
+                      Mensagem de erro descrevendo o motivo da falha na
+                      autenticação.
+                    example: Token de autenticação inválido ou ausente.
+        '404':
+          description: Link de pagamento não encontrado.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: >-
+                      Mensagem de erro indicando que o link de pagamento não foi
+                      encontrado.
+                    example: Link de pagamento não encontrado.
   /transparents/create:
     post:
       summary: Criar QRCode PIX
@@ -3097,79 +3337,17 @@ components:
               type: number
               description: Saldo bloqueado em disputas em centavos.
               example: 0
-    Frequency:
-      type: object
-      description: >-
-        Configuração da frequência de cobrança da assinatura (definida no
-        produto).
-      required:
-        - cycle
-      additionalProperties: false
-      properties:
-        cycle:
-          type: string
-          description: Ciclo de cobrança da assinatura.
-          enum:
-            - MONTHLY
-            - YEARLY
-            - WEEKLY
-            - DAILY
-          example: MONTHLY
-    RetryPolicy:
-      type: object
-      description: Política de retentativa em caso de falha no pagamento.
-      required:
-        - maxRetry
-        - retryEvery
-      additionalProperties: false
-      properties:
-        maxRetry:
-          type: integer
-          description: Número máximo de tentativas de cobrança.
-          minimum: 1
-          maximum: 10
-          example: 3
-        retryEvery:
-          type: integer
-          description: Intervalo em dias entre tentativas de cobrança.
-          minimum: 1
-          maximum: 30
-          example: 2
-    SubscriptionEvent:
-      type: object
-      description: Evento relacionado à assinatura.
-      required:
-        - event
-        - description
-        - createdAt
-      additionalProperties: false
-      properties:
-        event:
-          type: string
-          description: Tipo do evento.
-          example: CREATED
-        description:
-          type: string
-          description: Descrição do evento.
-          example: Subscription was created.
-        createdAt:
-          type: string
-          format: date-time
-          description: Data de criação do evento.
-          example: '2024-11-04T18:38:28.573Z'
     Subscription:
       type: object
       description: Dados de uma assinatura (subscription).
       required:
         - id
-        - externalId
         - name
         - description
         - amount
         - currency
         - method
         - status
-        - frequency
         - customerId
         - devMode
         - events
@@ -3181,10 +3359,6 @@ components:
           type: string
           description: Identificador único da assinatura.
           example: subs_abc123xyz
-        externalId:
-          type: string
-          description: Identificador externo da assinatura.
-          example: subs-123
         name:
           type: string
           description: Nome da assinatura.
@@ -3218,12 +3392,6 @@ components:
             - EXPIRED
             - FAILED
           example: PENDING
-        frequency:
-          $ref: '#/components/schemas/Frequency'
-        retryPolicy:
-          oneOf:
-            - $ref: '#/components/schemas/RetryPolicy'
-            - type: 'null'
         customerId:
           type: string
           description: Identificador do cliente que possui a assinatura.
@@ -3232,11 +3400,6 @@ components:
           type: boolean
           description: Indica se a assinatura foi criada em ambiente de testes.
           example: false
-        events:
-          type: array
-          description: Lista de eventos relacionados à assinatura.
-          items:
-            $ref: '#/components/schemas/SubscriptionEvent'
         createdAt:
           type: string
           format: date-time
