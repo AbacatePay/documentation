@@ -107,13 +107,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                data:
-                  $ref: '#/components/schemas/Coupon'
-                error:
-                  type: 'null'
-                  example: null
+              $ref: '#/components/schemas/Coupon'
       responses:
         '200':
           description: Cliente criado com sucesso.
@@ -948,7 +942,7 @@ components:
     Coupon:
       type: object
       description: Os dados do seu cupom.
-      required: ['code', 'discount', 'discountKind']
+      required: ['code', 'discount', 'discountKind', 'notes']
       additionalProperties: false
       properties:
         code:
