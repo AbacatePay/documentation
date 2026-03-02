@@ -65,7 +65,7 @@ Tudo isso sem precisar fazer nada manualmente, e sem fazer seu cliente esperar.
 
 3. **Sempre que algo importante acontece**, como um pagamento aprovado:
    - A AbacatePay envia um POST para a sua URL
-   - O POST contém o evento (ex: `billing.paid`)
+   - O POST contém o evento (ex: `checkout.completed`, `payment.completed`)
    - Seu sistema processa esse evento
 
 É como receber uma notificação push — só que para servidores.
@@ -198,112 +198,595 @@ export function verifyAbacateSignature(rawBody: string, signatureFromHeader: str
 
 ## Eventos suportados
 
-A AbacatePay envia diferentes eventos conforme o que acontece na sua conta.
+| Evento | Quando é disparado |
+|--------|---------------------|
+| `checkout.completed` | Pagamento de um checkout foi confirmado |
+| `checkout.refunded` | Reembolso de um checkout foi concluído |
+| `checkout.disputed` | Disputa/chargeback aberta em um checkout |
+| `payment.completed` | Pagamento confirmado (checkout ou transparente) |
+| `payment.refunded` | Reembolso de um pagamento foi concluído |
+| `payment.disputed` | Disputa/chargeback aberta em um pagamento |
+| `subscription.completed` | Assinatura criada e ativada |
+| `subscription.cancelled` | Assinatura cancelada |
+| `subscription.renewed` | Cobrança recorrente da assinatura foi paga |
+
+Todos os webhooks v2 compartilham o mesmo formato de payload:
+
+```json
+{
+  "event": "checkout.completed",
+  "apiVersion": 2,
+  "devMode": false,
+  "data": { ... }
+}
+```
+
+<Info>
+  **Dados sensíveis:** O campo `taxId` (CPF/CNPJ) é mascarado nos payloads (ex: `123.***.***-**`). Para pagamentos com cartão, apenas os últimos 4 dígitos e a bandeira são enviados.
+</Info>
+
+---
+
+## Eventos de Checkout
 
 <Tabs>
-  <Tab title="Checkout">
-    ### **Evento: `billing.paid`**  
-    Disparado quando um pagamento é confirmado.
+  <Tab title="checkout.completed">
+    Disparado quando um pagamento via checkout é realizado. O `payerInformation` varia conforme o método.
 
     ```json
     {
-      "id": "log_12345abcdef",
+      "event": "checkout.completed",
+      "apiVersion": 2,
+      "devMode": false,
       "data": {
-        "payment": {
-          "amount": 1000,
-          "fee": 80,
-          "method": "PIX"
-        },
-        "billing": {
+        "checkout": {
           "id": "bill_abc123xyz",
           "externalId": "pedido-123",
           "url": "https://app.abacatepay.com/pay/bill_abc123xyz",
           "amount": 10000,
-          "status": "PAID"
+          "paidAmount": 10000,
+          "platformFee": 80,
+          "frequency": "ONE_TIME",
+          "items": [{ "id": "prod_xyz", "quantity": 1 }],
+          "status": "PAID",
+          "methods": ["PIX"],
+          "customerId": "cust_abc123",
+          "receiptUrl": "https://app.abacatepay.com/receipt/...",
+          "createdAt": "2024-12-06T18:56:15.538Z",
+          "updatedAt": "2024-12-06T18:56:20.000Z"
+        },
+        "customer": {
+          "id": "cust_abc123",
+          "name": "João Silva",
+          "email": "joao@exemplo.com",
+          "taxId": "123.***.***-**"
+        },
+        "payerInformation": {
+          "method": "PIX",
+          "PIX": {
+            "name": "João Silva",
+            "taxId": "123.***.***-**",
+            "isSameAsCustomer": true
+          }
         }
-      },
-      "devMode": false,
-      "event": "billing.paid"
+      }
     }
     ```
   </Tab>
 
-  <Tab title="Transparente">
-    ### **Evento: `billing.paid`**  
-    Disparado quando um pagamento é confirmado.
+  <Tab title="checkout.disputed">
+    Disparado quando um pagamento via checkout sofre uma disputa. O `payerInformation` varia conforme o método.
 
     ```json
     {
-      "id": "log_12345abcdef",
-      "data": {
-        "payment": {
-          "amount": 1000,
-          "fee": 80,
-          "method": "PIX"
-        },
-        "pixQrCode": {
-          "amount": 1000,
-          "id": "pix_char_mXTWdj6sABWnc4uL2Rh1r6tb",
-          "kind": "PIX",
-          "status": "PAID"
-        }
-      },
+      "event": "checkout.disputed",
+      "apiVersion": 2,
       "devMode": false,
-      "event": "billing.paid"
+      "data": {
+        "checkout": {
+          "id": "bill_abc123xyz",
+          "externalId": "pedido-123",
+          "url": "https://app.abacatepay.com/pay/bill_abc123xyz",
+          "amount": 10000,
+          "paidAmount": 10000,
+          "platformFee": 80,
+          "frequency": "ONE_TIME",
+          "items": [{ "id": "prod_xyz", "quantity": 1 }],
+          "status": "PAID",
+          "methods": ["PIX"],
+          "customerId": "cust_abc123",
+          "receiptUrl": "https://app.abacatepay.com/receipt/...",
+          "createdAt": "2024-12-06T18:56:15.538Z",
+          "updatedAt": "2024-12-06T18:56:20.000Z"
+        },
+        "customer": {
+          "id": "cust_abc123",
+          "name": "João Silva",
+          "email": "joao@exemplo.com",
+          "taxId": "123.***.***-**"
+        },
+        "payerInformation": {
+          "method": "PIX",
+          "PIX": {
+            "name": "João Silva",
+            "taxId": "123.***.***-**",
+            "isSameAsCustomer": true
+          }
+        },
+        "reason": "requested_by_customer"
+      }
+    }
+    ```
+  </Tab>
+
+  <Tab title="checkout.refunded">
+    Disparado quando um pagamento via checkout é reembolsado. O `payerInformation` varia conforme o método.
+
+    ```json
+    {
+      "event": "checkout.refunded",
+      "apiVersion": 2,
+      "devMode": false,
+      "data": {
+        "checkout": {
+          "id": "bill_abc123xyz",
+          "externalId": "pedido-123",
+          "url": "https://app.abacatepay.com/pay/bill_abc123xyz",
+          "amount": 10000,
+          "paidAmount": 10000,
+          "platformFee": 80,
+          "frequency": "ONE_TIME",
+          "items": [{ "id": "prod_xyz", "quantity": 1 }],
+          "status": "PAID",
+          "methods": ["PIX"],
+          "customerId": "cust_abc123",
+          "receiptUrl": "https://app.abacatepay.com/receipt/...",
+          "createdAt": "2024-12-06T18:56:15.538Z",
+          "updatedAt": "2024-12-06T18:56:20.000Z"
+        },
+        "customer": {
+          "id": "cust_abc123",
+          "name": "João Silva",
+          "email": "joao@exemplo.com",
+          "taxId": "123.***.***-**"
+        },
+        "payerInformation": {
+          "method": "PIX",
+          "PIX": {
+            "name": "João Silva",
+            "taxId": "123.***.***-**",
+            "isSameAsCustomer": true
+          }
+        },
+        "reason": "requested_by_customer"
+      }
     }
     ```
   </Tab>
 </Tabs>
 
-### **Evento: `payout.done`**  
-Saque concluído com sucesso.
+---
 
-```json
-{
-  "id": "log_67890ghijkl",
-  "data": {
-    "transaction": {
-      "id": "tran_1234567890abcdef",
-      "status": "COMPLETE",
+## Eventos de Pagamento
+
+<Tabs>
+  <Tab title="payment.completed">
+    Disparado quando um pagamento é confirmado independente se foi realizado via checkout ou via checkout transparente. O `payerInformation` varia conforme o método.
+
+    <Tabs>
+      <Tab title="PIX">
+        ```json
+        {
+          "event": "payment.completed",
+          "apiVersion": 2,
+          "devMode": false,
+          "data": {
+            "payment": {
+              "id": "char_xyz789",
+              "externalId": "pedido-456",
+              "amount": 5000,
+              "paidAmount": 5000,
+              "platformFee": 50,
+              "status": "PAID",
+              "methods": ["PIX"],
+              "receiptUrl": "https://app.abacatepay.com/receipt/...",
+              "createdAt": "2024-12-06T19:00:00.000Z",
+              "updatedAt": "2024-12-06T19:00:05.000Z"
+            },
+            "customer": {
+              "id": "cust_def456",
+              "name": "Maria Santos",
+              "email": "maria@exemplo.com",
+              "taxId": "12.***.***/0001-**"
+            },
+            "payerInformation": {
+              "method": "PIX",
+              "PIX": {
+                "name": "Maria Santos",
+                "taxId": "12.***.***/0001-**",
+                "isSameAsCustomer": true
+              }
+            }
+          }
+        }
+        ```
+      </Tab>
+
+      <Tab title="Cartão">
+        ```json
+        {
+          "event": "payment.completed",
+          "apiVersion": 2,
+          "devMode": false,
+          "data": {
+            "payment": {
+              "id": "char_xyz789",
+              "externalId": "pedido-456",
+              "amount": 5000,
+              "paidAmount": 5000,
+              "platformFee": 78,
+              "status": "PAID",
+              "methods": ["CARD"],
+              "receiptUrl": "https://app.abacatepay.com/receipt/...",
+              "createdAt": "2024-12-06T19:00:00.000Z",
+              "updatedAt": "2024-12-06T19:00:05.000Z"
+            },
+            "customer": {
+              "id": "cust_def456",
+              "name": "Maria Santos",
+              "email": "maria@exemplo.com",
+              "taxId": "12.***.***/0001-**"
+            },
+            "payerInformation": {
+              "method": "CARD",
+              "CARD": {
+                "number": "1234",
+                "brand": "VISA"
+              }
+            }
+          }
+        }
+        ```
+      </Tab>
+    </Tabs>
+  </Tab>
+
+  <Tab title="payment.disputed">
+    Disparado quando um pagamento sofre alguma disputa (checkout ou transparente). O `payerInformation` varia conforme o método.
+
+    <Tabs>
+      <Tab title="PIX">
+        ```json
+        {
+          "event": "payment.disputed",
+          "apiVersion": 2,
+          "devMode": false,
+          "data": {
+            "payment": {
+              "id": "char_xyz789",
+              "externalId": "pedido-456",
+              "amount": 5000,
+              "paidAmount": 5000,
+              "platformFee": 50,
+              "status": "PAID",
+              "methods": ["PIX"],
+              "receiptUrl": "https://app.abacatepay.com/receipt/...",
+              "createdAt": "2024-12-06T19:00:00.000Z",
+              "updatedAt": "2024-12-06T19:00:05.000Z"
+            },
+            "customer": {
+              "id": "cust_def456",
+              "name": "Maria Santos",
+              "email": "maria@exemplo.com",
+              "taxId": "12.***.***/0001-**"
+            },
+            "payerInformation": {
+              "method": "PIX",
+              "PIX": {
+                "name": "Maria Santos",
+                "taxId": "12.***.***/0001-**",
+                "isSameAsCustomer": true
+              }
+            },
+            "reason": "requested_by_customer"
+          }
+        }
+        ```
+      </Tab>
+
+      <Tab title="Cartão">
+        ```json
+        {
+          "event": "payment.disputed",
+          "apiVersion": 2,
+          "devMode": false,
+          "data": {
+            "payment": {
+              "id": "char_xyz789",
+              "externalId": "pedido-456",
+              "amount": 5000,
+              "paidAmount": 5000,
+              "platformFee": 78,
+              "status": "PAID",
+              "methods": ["CARD"],
+              "receiptUrl": "https://app.abacatepay.com/receipt/...",
+              "createdAt": "2024-12-06T19:00:00.000Z",
+              "updatedAt": "2024-12-06T19:00:05.000Z"
+            },
+            "customer": {
+              "id": "cust_def456",
+              "name": "Maria Santos",
+              "email": "maria@exemplo.com",
+              "taxId": "12.***.***/0001-**"
+            },
+            "payerInformation": {
+              "method": "CARD",
+              "CARD": {
+                "number": "1234",
+                "brand": "VISA"
+              }
+            },
+            "reason": "requested_by_customer"
+          }
+        }
+        ```
+      </Tab>
+    </Tabs>
+  </Tab>
+
+  <Tab title="payment.refunded">
+    Disparado quando um pagamento é reembolsado após um pagamento ser reembolsado (checkout ou transparente). O `payerInformation` varia conforme o método.
+
+    <Tabs>
+      <Tab title="PIX">
+        ```json
+        {
+          "event": "payment.refunded",
+          "apiVersion": 2,
+          "devMode": false,
+          "data": {
+            "payment": {
+              "id": "char_xyz789",
+              "externalId": "pedido-456",
+              "amount": 5000,
+              "paidAmount": 5000,
+              "platformFee": 50,
+              "status": "PAID",
+              "methods": ["PIX"],
+              "receiptUrl": "https://app.abacatepay.com/receipt/...",
+              "createdAt": "2024-12-06T19:00:00.000Z",
+              "updatedAt": "2024-12-06T19:00:05.000Z"
+            },
+            "customer": {
+              "id": "cust_def456",
+              "name": "Maria Santos",
+              "email": "maria@exemplo.com",
+              "taxId": "12.***.***/0001-**"
+            },
+            "payerInformation": {
+              "method": "PIX",
+              "PIX": {
+                "name": "Maria Santos",
+                "taxId": "12.***.***/0001-**",
+                "isSameAsCustomer": true
+              }
+            },
+            "reason": "requested_by_customer"
+          }
+        }
+        ```
+      </Tab>
+
+      <Tab title="Cartão">
+        ```json
+        {
+          "event": "payment.refunded",
+          "apiVersion": 2,
+          "devMode": false,
+          "data": {
+            "payment": {
+              "id": "char_xyz789",
+              "externalId": "pedido-456",
+              "amount": 5000,
+              "paidAmount": 5000,
+              "platformFee": 78,
+              "status": "PAID",
+              "methods": ["CARD"],
+              "receiptUrl": "https://app.abacatepay.com/receipt/...",
+              "createdAt": "2024-12-06T19:00:00.000Z",
+              "updatedAt": "2024-12-06T19:00:05.000Z"
+            },
+            "customer": {
+              "id": "cust_def456",
+              "name": "Maria Santos",
+              "email": "maria@exemplo.com",
+              "taxId": "12.***.***/0001-**"
+            },
+            "payerInformation": {
+              "method": "CARD",
+              "CARD": {
+                "number": "1234",
+                "brand": "VISA"
+              }
+            },
+            "reason": "requested_by_customer"
+          }
+        }
+        ```
+      </Tab>
+    </Tabs>
+  </Tab>
+</Tabs>
+
+---
+
+## Eventos de Assinatura
+
+<Tabs>
+  <Tab title="subscription.completed">
+    Disparado quando uma assinatura se torna ativa.
+
+    ```json
+    {
+      "event": "subscription.completed",
+      "apiVersion": 2,
       "devMode": false,
-      "receiptUrl": "https://abacatepay.com/receipt/tran_1234567890abcdef",
-      "kind": "WITHDRAW",
-      "amount": 5000,
-      "platformFee": 80,
-      "externalId": "withdraw-1234",
-      "createdAt": "2024-12-06T18:56:15.538Z",
-      "updatedAt": "2024-12-06T19:00:30.123Z"
+      "data": {
+        "subscription": {
+          "id": "sub_abc123",
+          "amount": 2990,
+          "currency": "BRL",
+          "method": "CARD",
+          "status": "ACTIVE",
+          "frequency": "MONTHLY",
+          "createdAt": "2024-12-06T20:00:00.000Z",
+          "updatedAt": "2024-12-06T20:00:05.000Z",
+          "canceledAt": null,
+          "cancelPolicy": null,
+          "cancelledDueTo": null
+        },
+        "payment": {
+          "id": "char_xyz789",
+          "externalId": "pedido-456",
+          "amount": 5000,
+          "paidAmount": 5000,
+          "platformFee": 50,
+          "status": "PAID",
+          "methods": ["PIX"],
+          "receiptUrl": "https://app.abacatepay.com/receipt/...",
+          "createdAt": "2024-12-06T19:00:00.000Z",
+          "updatedAt": "2024-12-06T19:00:05.000Z"
+        },
+        "customer": {
+          "id": "cust_def456",
+          "name": "Maria Santos",
+          "email": "maria@exemplo.com",
+          "taxId": "12.***.***/0001-**"
+        },
+        "payerInformation": {
+          "method": "CARD",
+          "CARD": {
+            "number": "1234",
+            "brand": "VISA"
+          }
+        },
+      }
     }
-  },
-  "devMode": false,
-  "event": "payout.done"
-}
-```
+    ```
+  </Tab>
 
-### **Evento: `payout.failed`**  
-Saque que falhou.
+  <Tab title="subscription.renewed">
+    Disparado sempre que uma assinatura é renovada com sucesso.
 
-```json
-{
-  "id": "log_11111mnopqr",
-  "data": {
-    "transaction": {
-      "id": "tran_abcdef1234567890",
-      "status": "CANCELLED",
+    ```json
+    {
+      "event": "subscription.completed",
+      "apiVersion": 2,
       "devMode": false,
-      "receiptUrl": "https://abacatepay.com/receipt/tran_abcdef1234567890",
-      "kind": "WITHDRAW",
-      "amount": 5000,
-      "platformFee": 0,
-      "externalId": "withdraw-5678",
-      "createdAt": "2024-12-06T20:10:15.538Z",
-      "updatedAt": "2024-12-06T20:15:45.789Z"
+      "data": {
+        "subscription": {
+          "id": "sub_abc123",
+          "amount": 2990,
+          "currency": "BRL",
+          "method": "CARD",
+          "status": "CANCELLED",
+          "frequency": "MONTHLY",
+          "createdAt": "2024-12-06T20:00:00.000Z",
+          "updatedAt": "2024-12-06T20:00:05.000Z",
+          "canceledAt": null,
+          "cancelPolicy": null,
+          "cancelledDueTo": null
+        },
+        "payment": {
+          "id": "char_xyz789",
+          "externalId": "pedido-456",
+          "amount": 5000,
+          "paidAmount": 5000,
+          "platformFee": 50,
+          "status": "PAID",
+          "methods": ["PIX"],
+          "receiptUrl": "https://app.abacatepay.com/receipt/...",
+          "createdAt": "2024-12-06T19:00:00.000Z",
+          "updatedAt": "2024-12-06T19:00:05.000Z"
+        },
+        "customer": {
+          "id": "cust_def456",
+          "name": "Maria Santos",
+          "email": "maria@exemplo.com",
+          "taxId": "12.***.***/0001-**"
+        },
+        "payerInformation": {
+          "method": "CARD",
+          "CARD": {
+            "number": "1234",
+            "brand": "VISA"
+          }
+        },
+      }
     }
-  },
-  "devMode": false,
-  "event": "payout.failed"
-}
-```
+    ```
+  </Tab>
+
+  <Tab title="subscription.cancelled">
+    Disparado quando uma assinatura é cancelada.
+
+    ```json
+    {
+      "event": "subscription.completed",
+      "apiVersion": 2,
+      "devMode": false,
+      "data": {
+        "subscription": {
+          "id": "sub_abc123",
+          "amount": 2990,
+          "currency": "BRL",
+          "method": "CARD",
+          "status": "CANCELLED",
+          "frequency": "MONTHLY",
+          "createdAt": "2024-12-06T20:00:00.000Z",
+          "updatedAt": "2024-12-06T20:00:05.000Z",
+          "canceledAt": null,
+          "cancelPolicy": null,
+          "cancelledDueTo": null
+        },
+        "payment": {
+          "id": "char_xyz789",
+          "externalId": "pedido-456",
+          "amount": 5000,
+          "paidAmount": 5000,
+          "platformFee": 50,
+          "status": "PAID",
+          "methods": ["PIX"],
+          "receiptUrl": "https://app.abacatepay.com/receipt/...",
+          "createdAt": "2024-12-06T19:00:00.000Z",
+          "updatedAt": "2024-12-06T19:00:05.000Z"
+        },
+        "customer": {
+          "id": "cust_def456",
+          "name": "Maria Santos",
+          "email": "maria@exemplo.com",
+          "taxId": "12.***.***/0001-**"
+        },
+        "payerInformation": {
+          "method": "CARD",
+          "CARD": {
+            "number": "1234",
+            "brand": "VISA"
+          }
+        },
+      }
+    }
+    ```
+  </Tab>
+</Tabs>
+
+---
+
+## Estrutura dos payloads
+
+### Quando `customer` está vazio
+
+Se não houver cliente vinculado ao checkout, pagamento ou assinatura, o objeto `customer` será `null`.
 
 ---
 
@@ -315,6 +798,7 @@ Saque que falhou.
   * Registre cada evento recebido — processe cada um **uma única vez**  
   * Responda **200 OK** somente após concluir o processamento  
   * Implemente **retentativas com idempotência**
+  * **Não realize validação do payload inteiro** dos webhooks (como com Zod), **evitando que mudanças futuras não quebrem seu endpoint**
 </Card>
 
 ---
