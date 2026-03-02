@@ -130,25 +130,49 @@ paths:
       security:
         - bearerAuth: []
       parameters:
-        - name: page
+        - name: after
           in: query
-          description: Número da página (começa em 1)
+          description: Cursor para buscar itens após este ponto
           required: false
           schema:
-            type: integer
-            minimum: 1
-            default: 1
-            example: 1
+            type: string
+        - name: before
+          in: query
+          description: Cursor para buscar itens antes deste ponto
+          required: false
+          schema:
+            type: string
         - name: limit
           in: query
-          description: Quantidade de itens por página
+          description: Quantidade de itens por página (1-100)
           required: false
           schema:
             type: integer
             minimum: 1
             maximum: 100
-            default: 20
-            example: 20
+            default: 100
+            example: 100
+        - name: id
+          in: query
+          description: Filtrar por identificador único do cliente
+          required: false
+          schema:
+            type: string
+            example: cust_aebxkhDZNaMmJeKsy0AHS0FQ
+        - name: email
+          in: query
+          description: Filtrar por e-mail do cliente
+          required: false
+          schema:
+            type: string
+            example: daniel_lima@abacatepay.com
+        - name: taxId
+          in: query
+          description: Filtrar por CPF ou CNPJ do cliente
+          required: false
+          schema:
+            type: string
+            example: 123.456.789-01
       responses:
         '200':
           description: Lista de clientes retornada com sucesso.
@@ -162,38 +186,14 @@ paths:
                     description: Lista de clientes.
                     items:
                       $ref: '#/components/schemas/Customer'
-                  pagination:
-                    type: object
-                    description: Informações de paginação
-                    properties:
-                      page:
-                        type: integer
-                        description: Página atual
-                        example: 1
-                      limit:
-                        type: integer
-                        description: Quantidade de itens por página
-                        example: 20
-                      total:
-                        type: integer
-                        description: Total de itens
-                        example: 150
-                      totalPages:
-                        type: integer
-                        description: Total de páginas
-                        example: 8
-                    required:
-                      - page
-                      - limit
-                      - total
-                      - totalPages
-                    additionalProperties: false
+                  success:
+                    $ref: '#/components/schemas/Success'
                   error:
                     type: string
                     example: null
                     nullable: true
-                  success:
-                    $ref: '#/components/schemas/Success'
+                  pagination:
+                    $ref: '#/components/schemas/PaginationCursor'
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -391,25 +391,45 @@ paths:
       security:
         - bearerAuth: []
       parameters:
-        - name: page
+        - name: after
           in: query
-          description: Número da página (começa em 1)
+          description: Cursor para buscar itens após este ponto
           required: false
           schema:
-            type: integer
-            minimum: 1
-            default: 1
-            example: 1
+            type: string
+        - name: before
+          in: query
+          description: Cursor para buscar itens antes deste ponto
+          required: false
+          schema:
+            type: string
         - name: limit
           in: query
-          description: Quantidade de itens por página
+          description: Quantidade de itens por página (1-100)
           required: false
           schema:
             type: integer
             minimum: 1
             maximum: 100
-            default: 20
-            example: 20
+            default: 100
+            example: 100
+        - name: id
+          in: query
+          description: Filtrar por identificador único do cupom
+          required: false
+          schema:
+            type: string
+            example: DEYVIN_20
+        - name: status
+          in: query
+          description: Filtrar por status do cupom
+          required: false
+          schema:
+            type: string
+            enum:
+              - ACTIVE
+              - INACTIVE
+              - EXPIRED
       responses:
         '200':
           description: Lista de cupons retornada com sucesso.
@@ -423,38 +443,14 @@ paths:
                     description: Lista de cupons.
                     items:
                       $ref: '#/components/schemas/CouponResponse'
-                  pagination:
-                    type: object
-                    description: Informações de paginação
-                    properties:
-                      page:
-                        type: integer
-                        description: Página atual
-                        example: 1
-                      limit:
-                        type: integer
-                        description: Quantidade de itens por página
-                        example: 20
-                      total:
-                        type: integer
-                        description: Total de itens
-                        example: 150
-                      totalPages:
-                        type: integer
-                        description: Total de páginas
-                        example: 8
-                    required:
-                      - page
-                      - limit
-                      - total
-                      - totalPages
-                    additionalProperties: false
+                  success:
+                    $ref: '#/components/schemas/Success'
                   error:
                     type: string
                     nullable: true
                     example: null
-                  success:
-                    $ref: '#/components/schemas/Success'
+                  pagination:
+                    $ref: '#/components/schemas/PaginationCursor'
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -767,25 +763,51 @@ paths:
       security:
         - bearerAuth: []
       parameters:
-        - name: page
+        - name: after
           in: query
-          description: Número da página (começa em 1)
+          description: Cursor para buscar itens após este ponto
           required: false
           schema:
-            type: integer
-            minimum: 1
-            default: 1
-            example: 1
+            type: string
+        - name: before
+          in: query
+          description: Cursor para buscar itens antes deste ponto
+          required: false
+          schema:
+            type: string
         - name: limit
           in: query
-          description: Quantidade de itens por página
+          description: Quantidade de itens por página (1-100)
           required: false
           schema:
             type: integer
             minimum: 1
             maximum: 100
-            default: 20
-            example: 20
+            default: 100
+            example: 100
+        - name: id
+          in: query
+          description: Filtrar por identificador único do produto
+          required: false
+          schema:
+            type: string
+            example: prod_abc123xyz
+        - name: externalId
+          in: query
+          description: Filtrar por identificador do produto no seu sistema
+          required: false
+          schema:
+            type: string
+            example: prod-123
+        - name: status
+          in: query
+          description: Filtrar por status do produto
+          required: false
+          schema:
+            type: string
+            enum:
+              - ACTIVE
+              - INACTIVE
       responses:
         '200':
           description: Lista de produtos retornada com sucesso.
@@ -799,38 +821,14 @@ paths:
                     description: Lista de produtos.
                     items:
                       $ref: '#/components/schemas/Product'
-                  pagination:
-                    type: object
-                    description: Informações de paginação
-                    properties:
-                      page:
-                        type: integer
-                        description: Página atual
-                        example: 1
-                      limit:
-                        type: integer
-                        description: Quantidade de itens por página
-                        example: 20
-                      total:
-                        type: integer
-                        description: Total de itens
-                        example: 150
-                      totalPages:
-                        type: integer
-                        description: Total de páginas
-                        example: 8
-                    required:
-                      - page
-                      - limit
-                      - total
-                      - totalPages
-                    additionalProperties: false
+                  success:
+                    $ref: '#/components/schemas/Success'
                   error:
                     type: string
                     nullable: true
                     example: null
-                  success:
-                    $ref: '#/components/schemas/Success'
+                  pagination:
+                    $ref: '#/components/schemas/PaginationCursor'
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -1339,6 +1337,69 @@ paths:
         seus status, valores e informações relacionadas.
       security:
         - bearerAuth: []
+      parameters:
+        - name: after
+          in: query
+          description: Cursor para buscar itens após este ponto
+          required: false
+          schema:
+            type: string
+        - name: before
+          in: query
+          description: Cursor para buscar itens antes deste ponto
+          required: false
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: Quantidade de itens por página (1-100)
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 100
+            example: 100
+        - name: id
+          in: query
+          description: Filtrar por identificador único do Checkout
+          required: false
+          schema:
+            type: string
+            example: bill_abc123xyz
+        - name: externalId
+          in: query
+          description: Filtrar por identificador do Checkout no seu sistema
+          required: false
+          schema:
+            type: string
+            example: pedido-123
+        - name: status
+          in: query
+          description: Filtrar por status do Checkout
+          required: false
+          schema:
+            type: string
+            enum:
+              - PENDING
+              - EXPIRED
+              - CANCELLED
+              - PAID
+              - REFUNDED
+        - name: email
+          in: query
+          description: Filtrar por e-mail do cliente associado
+          required: false
+          schema:
+            type: string
+            example: daniel_lima@abacatepay.com
+        - name: taxId
+          in: query
+          description: Filtrar por CPF ou CNPJ do cliente associado
+          required: false
+          schema:
+            type: string
+            example: 123.456.789-01
       responses:
         '200':
           description: Checkouts listados com sucesso.
@@ -1352,10 +1413,14 @@ paths:
                     description: Lista de Checkouts.
                     items:
                       $ref: '#/components/schemas/Billing'
-                  error:
-                    type: 'null'
                   success:
                     $ref: '#/components/schemas/Success'
+                  error:
+                    type: string
+                    nullable: true
+                    example: null
+                  pagination:
+                    $ref: '#/components/schemas/PaginationCursor'
         '401':
           description: Falha na autenticação.
           content:
@@ -1373,6 +1438,55 @@ paths:
         Lista apenas links de pagamento (checkouts com frequency MULTIPLE_PAYMENTS).
       security:
         - bearerAuth: []
+      parameters:
+        - name: after
+          in: query
+          description: Cursor para buscar itens após este ponto
+          required: false
+          schema:
+            type: string
+        - name: before
+          in: query
+          description: Cursor para buscar itens antes deste ponto
+          required: false
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: Quantidade de itens por página (1-100)
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 100
+            example: 100
+        - name: id
+          in: query
+          description: Filtrar por identificador único do link de pagamento
+          required: false
+          schema:
+            type: string
+            example: bill_abc123xyz
+        - name: externalId
+          in: query
+          description: Filtrar por identificador do link no seu sistema
+          required: false
+          schema:
+            type: string
+            example: pedido-123
+        - name: status
+          in: query
+          description: Filtrar por status do link de pagamento
+          required: false
+          schema:
+            type: string
+            enum:
+              - PENDING
+              - EXPIRED
+              - CANCELLED
+              - PAID
+              - REFUNDED
       responses:
         '200':
           description: Links de pagamento listados com sucesso.
@@ -1386,10 +1500,14 @@ paths:
                     description: Lista de links de pagamento.
                     items:
                       $ref: '#/components/schemas/Billing'
-                  error:
-                    type: 'null'
                   success:
                     $ref: '#/components/schemas/Success'
+                  error:
+                    type: string
+                    nullable: true
+                    example: null
+                  pagination:
+                    $ref: '#/components/schemas/PaginationCursor'
         '401':
           description: Falha na autenticação.
           content:
@@ -1682,6 +1800,48 @@ paths:
         relacionadas.
       security:
         - bearerAuth: []
+      parameters:
+        - name: after
+          in: query
+          description: Cursor para buscar itens após este ponto
+          required: false
+          schema:
+            type: string
+        - name: before
+          in: query
+          description: Cursor para buscar itens antes deste ponto
+          required: false
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: Quantidade de itens por página (1-100)
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 100
+            example: 100
+        - name: id
+          in: query
+          description: Filtrar por identificador único do QRCode Pix
+          required: false
+          schema:
+            type: string
+            example: pix_char_123456
+        - name: status
+          in: query
+          description: Filtrar por status do QRCode Pix
+          required: false
+          schema:
+            type: string
+            enum:
+              - PENDING
+              - EXPIRED
+              - CANCELLED
+              - PAID
+              - REFUNDED
       responses:
         '200':
           description: Checkouts transparentes listados com sucesso.
@@ -1695,10 +1855,14 @@ paths:
                     description: Lista de Checkouts Transparentes (QRCodes PIX).
                     items:
                       $ref: '#/components/schemas/PixQRCode'
-                  error:
-                    type: 'null'
                   success:
                     $ref: '#/components/schemas/Success'
+                  error:
+                    type: string
+                    nullable: true
+                    example: null
+                  pagination:
+                    $ref: '#/components/schemas/PaginationCursor'
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -1964,25 +2128,54 @@ paths:
       security:
         - bearerAuth: []
       parameters:
-        - name: page
+        - name: after
           in: query
-          description: Número da página (começa em 1)
+          description: Cursor para buscar itens após este ponto
           required: false
           schema:
-            type: integer
-            minimum: 1
-            default: 1
-            example: 1
+            type: string
+        - name: before
+          in: query
+          description: Cursor para buscar itens antes deste ponto
+          required: false
+          schema:
+            type: string
         - name: limit
           in: query
-          description: Quantidade de itens por página
+          description: Quantidade de itens por página (1-100)
           required: false
           schema:
             type: integer
             minimum: 1
             maximum: 100
-            default: 20
-            example: 20
+            default: 100
+            example: 100
+        - name: id
+          in: query
+          description: Filtrar por identificador único da transação
+          required: false
+          schema:
+            type: string
+            example: tran_123456
+        - name: externalId
+          in: query
+          description: Filtrar por identificador do payout no seu sistema
+          required: false
+          schema:
+            type: string
+            example: saque-123
+        - name: status
+          in: query
+          description: Filtrar por status da transação
+          required: false
+          schema:
+            type: string
+            enum:
+              - PENDING
+              - EXPIRED
+              - CANCELLED
+              - COMPLETE
+              - REFUNDED
       responses:
         '200':
           description: Lista de payouts retornada com sucesso.
@@ -1996,38 +2189,14 @@ paths:
                     description: Lista de saques criados.
                     items:
                       $ref: '#/components/schemas/Transaction'
-                  pagination:
-                    type: object
-                    description: Informações de paginação
-                    properties:
-                      page:
-                        type: integer
-                        description: Página atual
-                        example: 1
-                      limit:
-                        type: integer
-                        description: Quantidade de itens por página
-                        example: 20
-                      total:
-                        type: integer
-                        description: Total de itens
-                        example: 150
-                      totalPages:
-                        type: integer
-                        description: Total de páginas
-                        example: 8
-                    required:
-                      - page
-                      - limit
-                      - total
-                      - totalPages
-                    additionalProperties: false
+                  success:
+                    $ref: '#/components/schemas/Success'
                   error:
                     type: string
                     nullable: true
                     example: null
-                  success:
-                    $ref: '#/components/schemas/Success'
+                  pagination:
+                    $ref: '#/components/schemas/PaginationCursor'
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -2237,23 +2406,58 @@ paths:
         Você pode filtrar usando:
         - `id`: Identificador único da transação PIX na AbacatePay
         - `externalId`: Identificador único do PIX em seu sistema
+        - `status`: Status da transação
       security:
         - bearerAuth: []
       parameters:
+        - name: after
+          in: query
+          description: Cursor para buscar itens após este ponto
+          required: false
+          schema:
+            type: string
+        - name: before
+          in: query
+          description: Cursor para buscar itens antes deste ponto
+          required: false
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: Quantidade de itens por página (1-100)
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 100
+            example: 100
         - name: id
           in: query
-          description: Identificador único da transação PIX na AbacatePay para filtrar.
+          description: Filtrar por identificador único da transação PIX na AbacatePay
           required: false
           schema:
             type: string
             example: txn_abc123xyz
         - name: externalId
           in: query
-          description: Identificador único do PIX em seu sistema para filtrar.
+          description: Filtrar por identificador do PIX em seu sistema
           required: false
           schema:
             type: string
             example: pix-123
+        - name: status
+          in: query
+          description: Filtrar por status da transação
+          required: false
+          schema:
+            type: string
+            enum:
+              - PENDING
+              - EXPIRED
+              - CANCELLED
+              - COMPLETE
+              - REFUNDED
       responses:
         '200':
           description: Lista de PIX retornada com sucesso.
@@ -2267,12 +2471,14 @@ paths:
                     description: Lista de transações PIX criadas.
                     items:
                       $ref: '#/components/schemas/PixTransaction'
+                  success:
+                    $ref: '#/components/schemas/Success'
                   error:
                     type: string
                     nullable: true
                     example: null
-                  success:
-                    $ref: '#/components/schemas/Success'
+                  pagination:
+                    $ref: '#/components/schemas/PaginationCursor'
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -2437,23 +2643,68 @@ paths:
       security:
         - bearerAuth: []
       parameters:
+        - name: after
+          in: query
+          description: Cursor para buscar itens após este ponto
+          required: false
+          schema:
+            type: string
+        - name: before
+          in: query
+          description: Cursor para buscar itens antes deste ponto
+          required: false
+          schema:
+            type: string
         - name: limit
           in: query
-          description: Quantidade de itens por página
+          description: Quantidade de itens por página (1-100)
           required: false
           schema:
             type: integer
             minimum: 1
             maximum: 100
-            default: 20
-            example: 20
-        - name: cursor
+            default: 100
+            example: 100
+        - name: id
           in: query
-          description: Cursor para paginação (obtido na resposta anterior)
+          description: Filtrar por identificador único do Checkout de assinatura
           required: false
           schema:
             type: string
             example: bill_abc123xyz
+        - name: externalId
+          in: query
+          description: Filtrar por identificador da assinatura no seu sistema
+          required: false
+          schema:
+            type: string
+            example: subs-123
+        - name: status
+          in: query
+          description: Filtrar por status do Checkout de assinatura
+          required: false
+          schema:
+            type: string
+            enum:
+              - PENDING
+              - EXPIRED
+              - CANCELLED
+              - PAID
+              - REFUNDED
+        - name: email
+          in: query
+          description: Filtrar por e-mail do cliente associado
+          required: false
+          schema:
+            type: string
+            example: daniel_lima@abacatepay.com
+        - name: taxId
+          in: query
+          description: Filtrar por CPF ou CNPJ do cliente associado
+          required: false
+          schema:
+            type: string
+            example: 123.456.789-01
       responses:
         '200':
           description: Lista de Checkouts de assinatura retornada com sucesso.
@@ -2469,38 +2720,14 @@ paths:
                       Checkout).
                     items:
                       $ref: '#/components/schemas/Billing'
-                  pagination:
-                    type: object
-                    description: Informações de paginação baseada em cursor.
-                    required:
-                      - limit
-                      - hasNext
-                      - hasPrevious
-                    additionalProperties: false
-                    properties:
-                      limit:
-                        type: integer
-                        description: Limite de itens por página.
-                        example: 20
-                      nextCursor:
-                        type: string
-                        nullable: true
-                        description: Cursor para próxima página.
-                        example: bill_abc123xyz
-                      hasNext:
-                        type: boolean
-                        description: Indica se existe próxima página.
-                        example: true
-                      hasPrevious:
-                        type: boolean
-                        description: Indica se existe página anterior.
-                        example: false
+                  success:
+                    $ref: '#/components/schemas/Success'
                   error:
                     type: string
                     nullable: true
                     example: null
-                  success:
-                    $ref: '#/components/schemas/Success'
+                  pagination:
+                    $ref: '#/components/schemas/PaginationCursor'
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -2780,6 +3007,26 @@ components:
       type: boolean
       description: Se a requisição obteve sucesso ou não.
       example: true
+    PaginationCursor:
+      type: object
+      description: Informações de paginação baseada em cursor.
+      required:
+        - hasMore
+        - next
+        - before
+      additionalProperties: false
+      properties:
+        hasMore:
+          type: boolean
+          description: Indica se existe mais itens para carregar.
+        next:
+          type: string
+          nullable: true
+          description: Cursor para próxima página (usar em after).
+        before:
+          type: string
+          nullable: true
+          description: Cursor para página anterior (usar em before).
     Customer:
       type: object
       description: Os dados do seu cliente.
