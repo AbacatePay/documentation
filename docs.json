@@ -42,7 +42,6 @@
               "pages/devmode",
               "pages/authentication",
               "pages/webhooks",
-              "pages/nocode",
               "pages/glossario",
               "pages/production"
             ]
