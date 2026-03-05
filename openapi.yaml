@@ -1591,63 +1591,78 @@ paths:
             schema:
               type: object
               example:
-                amount: 10000
+                method: PIX
+                data:
+                  amount: 10000
               properties:
-                amount:
-                  type: number
-                  description: Valor da cobrança em centavos.
-                expiresIn:
-                  type: number
-                  description: Tempo de expiração da cobrança em segundos.
-                  x-mint:
-                    hidden: true
-                description:
+                method:
                   type: string
-                  maxLength: 140
-                  description: Mensagem que aparecerá na hora do pagamento do PIX.
-                  x-mint:
-                    hidden: true
-                customer:
+                  description: Método de pagamento. Hoje apenas PIX é suportado.
+                  enum:
+                    - PIX
+                data:
                   type: object
-                  description: >
-                    Os dados do seu cliente para criá-lo.
-
-                    O objeto de customer não é obrigatório, mas ao informar
-                    qualquer informação do `customer` todos os campos `name`,
-                    `cellphone`, `email` e `taxId` são obrigatórios.
-                  required:
-                    - name
-                    - cellphone
-                    - email
-                    - taxId
-                  additionalProperties: false
-                  x-mint:
-                    hidden: true
+                  description: Dados da cobrança PIX.
                   properties:
-                    name:
+                    amount:
+                      type: number
+                      description: Valor da cobrança em centavos.
+                    expiresIn:
+                      type: number
+                      description: Tempo de expiração da cobrança em segundos.
+                      x-mint:
+                        hidden: true
+                    description:
                       type: string
-                      description: Nome completo do seu cliente
-                      example: Daniel Lima
-                    cellphone:
-                      type: string
-                      description: Celular do cliente
-                      example: (11) 4002-8922
-                    email:
-                      type: string
-                      description: E-mail do cliente
-                      example: daniel_lima@abacatepay.com
-                    taxId:
-                      type: string
-                      description: CPF ou CNPJ do cliente.
-                      example: 123.456.789-01
-                metadata:
-                  type: object
-                  description: Metadados opcionais para a cobrança
-                  additionalProperties: true
-                  x-mint:
-                    hidden: true
+                      maxLength: 140
+                      description: Mensagem que aparecerá na hora do pagamento do PIX.
+                      x-mint:
+                        hidden: true
+                    customer:
+                      type: object
+                      description: >
+                        Os dados do seu cliente para criá-lo.
+
+                        O objeto de customer não é obrigatório, mas ao informar
+                        qualquer informação do `customer` todos os campos `name`,
+                        `cellphone`, `email` e `taxId` são obrigatórios.
+                      required:
+                        - name
+                        - cellphone
+                        - email
+                        - taxId
+                      additionalProperties: false
+                      x-mint:
+                        hidden: true
+                      properties:
+                        name:
+                          type: string
+                          description: Nome completo do seu cliente
+                          example: Daniel Lima
+                        cellphone:
+                          type: string
+                          description: Celular do cliente
+                          example: (11) 4002-8922
+                        email:
+                          type: string
+                          description: E-mail do cliente
+                          example: daniel_lima@abacatepay.com
+                        taxId:
+                          type: string
+                          description: CPF ou CNPJ do cliente.
+                          example: 123.456.789-01
+                    metadata:
+                      type: object
+                      description: Metadados opcionais para a cobrança
+                      additionalProperties: true
+                      x-mint:
+                        hidden: true
+                  required:
+                    - amount
+                  additionalProperties: false
               required:
-                - amount
+                - method
+                - data
               additionalProperties: false
       responses:
         '200':
@@ -1707,7 +1722,11 @@ paths:
                           - EXPIRED
                           - CANCELLED
                           - PAID
+                          - UNDER_DISPUTE
                           - REFUNDED
+                          - REDEEMED
+                          - APPROVED
+                          - FAILED
                         example: PENDING
                       expiresAt:
                         type: string
@@ -3394,7 +3413,11 @@ components:
             - EXPIRED
             - CANCELLED
             - PAID
+            - UNDER_DISPUTE
             - REFUNDED
+            - REDEEMED
+            - APPROVED
+            - FAILED
           example: PENDING
         devMode:
           type: boolean
@@ -3424,6 +3447,10 @@ components:
           type: string
           description: Data de expiração do QRCode Pix
           example: '2025-03-25T21:50:20.772Z'
+        metadata:
+          type: object
+          description: Metadados opcionais da cobrança.
+          additionalProperties: true
     Transaction:
       type: object
       description: Dados de uma transação (pagamento ou saque).

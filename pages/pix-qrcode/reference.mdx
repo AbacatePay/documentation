@@ -36,18 +36,32 @@ O **checkout transparente** gera um PIX que o cliente paga sem sair do seu site 
 Use `/transparents/create`. A API devolve o QR Code em imagem (`brCodeBase64`) e o código copia e cola (`brCode`).
 
 <Card title="Campos obrigatórios" horizontal>
-  Só `amount` é obrigatório (valor em centavos).
+  Só `data.amount` é obrigatório (valor em centavos). O campo `method` hoje é sempre `"PIX"`.
 </Card>
 
-**Exemplo:**
+**Exemplo de requisição:**
 ```json
 POST /transparents/create
 {
-  "amount": 10000
+  "method": "PIX",
+  "data": {
+    "amount": 10000,
+    "description": "Cobrança PIX no checkout transparente",
+    "expiresIn": 3600,
+    "customer": {
+      "name": "Daniel Lima",
+      "email": "daniel_lima@abacatepay.com",
+      "taxId": "123.456.789-01",
+      "cellphone": "(11) 4002-8922"
+    },
+    "metadata": {
+      "pedidoId": "pedido-123"
+    }
+  }
 }
 ```
 
-**Resposta:**
+**Exemplo de resposta:**
 ```json
 {
   "data": {
@@ -60,7 +74,10 @@ POST /transparents/create
     "platformFee": 100,
     "createdAt": "2024-11-04T18:38:28.573Z",
     "updatedAt": "2024-11-04T18:38:28.573Z",
-    "expiresAt": "2024-11-04T19:38:28.573Z"
+    "expiresAt": "2024-11-04T19:38:28.573Z",
+    "metadata": {
+      "pedidoId": "pedido-123"
+    }
   },
   "success": true,
   "error": null
