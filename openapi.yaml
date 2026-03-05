@@ -1695,6 +1695,10 @@ paths:
                   data:
                     type: object
                     properties:
+                      id:
+                        type: string
+                        description: Identificador único do Checkout Transparente.
+                        example: pix_char_z2rSk6042t1mCKgGgeBpJe1u
                       status:
                         type: string
                         description: Informação sobre o andamento do QRCode Pix.
@@ -1708,7 +1712,7 @@ paths:
                       expiresAt:
                         type: string
                         description: Data de expiração do QRCode Pix
-                        example: '2025-03-25T21:50:20.772Z'
+                        example: '2026-03-04T15:48:59.876Z'
                   error:
                     type: string
                     example: null

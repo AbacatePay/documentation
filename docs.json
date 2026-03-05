@@ -56,7 +56,38 @@
             "tab": "Documentação",
             "groups": [
               {
-                "group": "Cobrar com Checkout",
+                "group": "Produtos",
+                "pages": [
+                  "pages/products/reference",
+                  "pages/products/create",
+                  "pages/products/list",
+                  "pages/products/get",
+                  "pages/products/delete"
+                ]
+              },
+              {
+                "group": "Clientes",
+                "pages": [
+                  "pages/client/reference",
+                  "pages/client/create",
+                  "pages/client/list",
+                  "pages/client/get",
+                  "pages/client/delete"
+                ]
+              },
+              {
+                "group": "Cupons",
+                "pages": [
+                  "pages/coupons/reference",
+                  "pages/coupons/create",
+                  "pages/coupons/list",
+                  "pages/coupons/get",
+                  "pages/coupons/delete",
+                  "pages/coupons/toggle"
+                ]
+              },
+              {
+                "group": "Checkouts",
                 "pages": [
                   "pages/payment/reference",
                   "pages/payment/create",
@@ -74,16 +105,6 @@
                 ]
               },
               {
-                "group": "Clientes",
-                "pages": [
-                  "pages/client/reference",
-                  "pages/client/create",
-                  "pages/client/list",
-                  "pages/client/get",
-                  "pages/client/delete"
-                ]
-              },
-              {
                 "group": "Checkout Transparente",
                 "pages": [
                   "pages/pix-qrcode/reference",
@@ -91,27 +112,6 @@
                   "pages/pix-qrcode/list",
                   "pages/pix-qrcode/simulate-payment",
                   "pages/pix-qrcode/check"
-                ]
-              },
-              {
-                "group": "Cupons",
-                "pages": [
-                  "pages/coupons/reference",
-                  "pages/coupons/create",
-                  "pages/coupons/list",
-                  "pages/coupons/get",
-                  "pages/coupons/delete",
-                  "pages/coupons/toggle"
-                ]
-              },
-              {
-                "group": "Produtos",
-                "pages": [
-                  "pages/products/reference",
-                  "pages/products/create",
-                  "pages/products/list",
-                  "pages/products/get",
-                  "pages/products/delete"
                 ]
               },
               {
