@@ -1,0 +1,68 @@
+---
+title: 'Node.js'
+description: 'SDK oficial para Node.js - Aceite pagamentos em segundos com uma integração simples'
+icon: 'node-js'
+---
+
+<Card 
+  title="AbacatePay Node.js SDK" 
+  icon="node-js" 
+  href="https://github.com/AbacatePay/abacatepay-nodejs-sdk"
+>
+  Official AbacatePay SDK - Accept payments in seconds with a simple integration.
+</Card>
+
+## Installation
+
+```bash
+npm install @abacatepay/sdk
+```
+
+## Quick Usage
+
+```ts
+import { AbacatePay } from "@abacatepay/sdk";
+
+// Initialize the SDK with your API key
+const abacate = AbacatePay({ secret: "API_KEY" });
+```
+
+## Creating a Payment
+
+```ts
+// Create a new checkout
+const checkout = await abacate.checkouts.create({
+    items: [
+        {
+            id: "item_abc123",
+            quantity: 2,
+        },
+    ],
+    customerId: "cust_987"
+});
+```
+
+## Response
+
+```ts
+{
+    id: "bill_123456789",
+    amount: 15000,
+    paidAmount: null,
+    externalId: null,
+    url: "https://abacatepay.com/pay/bill_123456789",
+    items: [
+        {
+            id: "item_abc123",
+            quantity: 2,
+        },
+    ],
+    status: "PENDING",
+    devMode: true,
+    receiptUrl: null,
+    coupons: [],
+    customerId: "cust_987",
+    createdAt: '2024-11-04T18:38:28.573',
+    updatedAt: '2024-11-04T18:38:28.573'
+}
+```

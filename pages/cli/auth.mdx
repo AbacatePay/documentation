@@ -1,0 +1,293 @@
+---
+title: 'Autenticação & Perfis'
+icon: 'key'
+description: 'Comandos de login, logout, perfis múltiplos e gerenciamento de autenticação na AbacatePay CLI.'
+---
+
+Comandos para gerenciar a autenticação e sessão na AbacatePay CLI.
+
+---
+
+### `abacatepay login`
+
+Realiza a autenticação na AbacatePay. Abre o navegador para login via OAuth ou permite autenticação direta com API key.
+
+```bash
+abacatepay login [flags]
+```
+
+| Flag | Alias | Descrição | Padrão |
+|------|-------|-----------|--------|
+| `--name` | - | Nome do perfil a ser criado | `""` |
+| `--key` | - | Sua API key da AbacatePay | `""` |
+| `--local` | `-l` | Usa servidor de teste | `false` |
+
+<Tip>
+Use `--name` para criar múltiplos perfis e alternar entre diferentes contas ou ambientes.
+</Tip>
+
+**Exemplos:**
+
+```bash
+# Login interativo via navegador
+abacatepay login
+
+# Login com API key específica
+abacatepay login --key "abc_prod_xxxxx"
+
+# Login criando um perfil nomeado
+abacatepay login --name producao --key "abc_prod_xxxxx"
+```
+
+<CodeGroup>
+```text text
+╭────────────────────────────╮
+│                            │
+│  🥑 Signed in successfully │
+│                            │
+│  Profile: default          │
+│  User: João Silva          │
+│  Email: joao@empresa.com   │
+│                            │
+╰────────────────────────────╯
+```
+
+```json json
+{
+  "profile": "default",
+  "user": "João Silva",
+  "email": "joao@empresa.com",
+  "status": "authenticated"
+}
+```
+
+```text table
+┌─────────┬──────────────────┐
+│ Profile │ default          │
+│ User    │ João Silva       │
+│ Email   │ joao@empresa.com │
+│ Status  │ Authenticated    │
+└─────────┴──────────────────┘
+```
+</CodeGroup>
+
+---
+
+### `abacatepay logout`
+
+Encerra a sessão atual e remove as credenciais do perfil ativo.
+
+```bash
+abacatepay logout
+```
+
+<CodeGroup>
+```text text
+╭─────────────────────────────╮
+│                             │
+│  🥑 Signed out successfully │
+│                             │
+│  Profile: default           │
+│                             │
+╰─────────────────────────────╯
+```
+
+```json json
+{
+  "title": "Signed out successfully",
+  "profile": "default"
+}
+```
+</CodeGroup>
+
+<Warning>
+Após o logout, você precisará fazer login novamente para usar comandos que requerem autenticação.
+</Warning>
+
+---
+
+### `abacatepay whoami`
+
+Exibe informações do usuário autenticado e o perfil ativo.
+
+```bash
+abacatepay whoami
+```
+
+<CodeGroup>
+```text text
+╭───────────────────────────╮
+│                           │
+│  🥑 User Information      │
+│                           │
+│  Status: Authenticated    │
+│  Profile: salve3          │
+│  User: Mock User          │
+│  Email: mock@example.com  │
+│                           │
+│                           │
+╰───────────────────────────╯
+```
+
+```json json
+{
+  "profile": "salve3",
+  "user": "Mock User",
+  "email": "mock@example.com",
+  "status": "authenticated"
+}
+```
+
+```text table
+┌─────────┬──────────────────┐
+│ Profile │ salve3           │
+│ User    │ Mock User        │
+│ Email   │ mock@example.com │
+│ Status  │ Authenticated    │
+└─────────┴──────────────────┘
+```
+</CodeGroup>
+
+---
+
+### `abacatepay status`
+
+Verifica o status da conexão e autenticação com a AbacatePay.
+
+```bash
+abacatepay status
+```
+
+<Tip>
+Use `abacatepay status` como diagnóstico rápido quando encontrar problemas de conectividade.
+</Tip>
+
+<CodeGroup>
+```text text
+╭────────────────────────────╮
+│                            │
+│  🥑 Connected successfully │
+│                            │
+│  Profile: default          │
+│  Status: Online            │
+│                            │
+╰────────────────────────────╯
+```
+
+```json json
+{
+  "profile": "default",
+  "status": "online"
+}
+```
+
+```text table
+┌─────────┬─────────┐
+│ Profile │ default │
+|─────────|─────────|
+│ Status  │ Online  │
+└─────────┴─────────┘
+```
+</CodeGroup>
+
+---
+
+## Perfis
+
+Comandos para gerenciar múltiplos perfis de autenticação.
+
+---
+
+### `abacatepay profile list`
+
+Lista todos os perfis configurados na máquina.
+
+```bash
+abacatepay profile list
+```
+
+<CodeGroup>
+```text text
+✓ Configured Profiles
+
+  * default (active)
+    producao
+    staging
+```
+
+```json json
+{
+  "profiles": [
+    {
+      "name": "default",
+      "key": "abc_prod..."
+    },
+    {
+      "name": "producao",
+      "key": "abc_prod..."
+    },
+    {
+      "name": "staging",
+      "key": "abc_dev..."
+    }
+  ],
+  "active": "default"
+}
+```
+
+```text table
+┌───────────┬────────────┬────────┐
+│ Name      │ API Key    │ Active │
+├───────────┼────────────┼────────┤
+│ default   │ abc_prod...│ 🥑     │
+│ producao  │ abc_prod...│        │
+│ staging   │ abc_dev... │        │
+└───────────┴────────────┴────────┘
+```
+</CodeGroup>
+
+---
+
+### `abacatepay profile delete`
+
+Remove um perfil salvo. Não é possível remover o perfil ativo.
+
+```bash
+abacatepay profile delete <name>
+```
+
+```bash
+abacatepay profile delete staging
+```
+
+```text
+Profile 'staging' successfully removed.
+```
+
+<Warning>
+Não é possível deletar o perfil ativo. Use `abacatepay switch` para mudar para outro perfil antes de deletar.
+</Warning>
+
+---
+
+### `abacatepay switch`
+
+Alterna para outro perfil existente.
+
+```bash
+abacatepay switch <name>
+```
+
+<Tip>
+Requer conexão com a internet para verificar o status online.
+</Tip>
+
+```bash
+abacatepay switch producao
+```
+
+```text
+Now using profile: producao
+```
+
+---

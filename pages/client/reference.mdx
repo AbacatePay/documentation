@@ -1,62 +1,53 @@
 ---
 title: 'Referência'
-description: 'Gerencie seus clientes, aqueles que pagam você.'
+description: 'Clientes para pré-preencher checkout e reutilizar em várias cobranças'
 icon: 'book-open-cover'
 ---
 
-Um cliente é seu usuário final, aquele que você vai cobrar e pagar o seu produto.
+Use `/customers/create` para cadastrar um cliente antes de cobrar. O `customerId` retornado pode ser usado em várias cobranças e pré-preenche o checkout.
 
-## <Icon icon="folder-tree" type="solid"/>  Estrutura
+<Card title="Campos obrigatórios" horizontal>
+  Só `email` é obrigatório. Recomendado: `name`, `cellphone` e `taxId` quando tiver.
+</Card>
 
-Um cliente é representado em nossa API pela seguinte estrutura:
+**Exemplo:**
+```json
+POST /customers/create
+{
+  "data": {
+    "email": "customer@example.com",        // obrigatório
+    "taxId": "12345678900",                 // opcional
+    "name": "João Silva",                   // opcional
+    "cellphone": "+5511999999999",          // opcional
+    "zipCode": "01310-100"                  // opcional
+  },
+  "metadata": {                             // opcional - dados extras da sua aplicação
+    "customField": "value"
+  }
+}
+```
 
+**Resposta:**
 ```json
 {
-  "id": "cust_aebxkhDZNaMmJeKsy0AHS0FQ",
-  "metadata": {
-    "name": "Test Customer",
-    "cellphone": "11999999999",
+  "data": {
+    "id": "cust_abc123xyz",
+    "devMode": false,
+    "email": "customer@example.com",
     "taxId": "12345678900",
-    "email": "test@example.com"
-  }
-} 
+    "country": "BR",
+    "name": "João Silva",
+    "cellphone": "+5511999999999",
+    "zipCode": "01310-100",
+    "metadata": {
+      "customField": "value"
+    }
+  },
+  "success": true,
+  "error": null
+}
 ```
 
-## Atributos
-
-### id: 
-
-```json {2}
-{
-  "id": "cust_aebxkhDZNaMmJeKsy0AHS0FQ",
-} 
-```
-
-`id` : <u> string. </u> <br />
-Id único do cliente na AbacatePay
-
-### metadados: 
-Objeto com os dados do cliente
-
-```json json {2-7}
-{
-  "metadata": {
-    "name": "Test Customer",
-    "cellphone": "11999999999",
-    "taxId": "12345678900",
-    "email": "test@example.com"
-  }
-} 
-```
-
-* `name` : <u> string. </u> <br /> Nome do cliente (opcional)
-
-* `cellphone` : <u> string. </u> <br /> Telefone do cliente (opcional)
-
-* `taxId` : <u> string. </u> <br /> Documento válido do cliente, podendo ser CPF ou CNPJ (opcional)
-
-* `email` : <u> string. </u> <br /> E-mail do cliente (obrigatório)
-
-<Tip title="Clientes são únicos por CPF/CNPJ" icon="book" horizontal>
- Não é possível criar um cliente com CPF/CNPJ inválido e caso já exista um cliente com esse CPF/CNPJ, a API não criará o cliente novo mas retornará o cliente já existente
+<Tip title="CPF/CNPJ único" icon="book" horizontal>
+ Cliente é único por CPF/CNPJ. Se já existir, a API devolve o existente em vez de criar outro. CPF/CNPJ inválido não é aceito.
 </Tip>

@@ -3,110 +3,289 @@
   "theme": "mint",
   "name": "AbacatePay",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#9EEA6C",
+    "light": "#9EEA6C",
+    "dark": "#9EEA6C"
+  },
+  "appearance": {
+    "default": "dark",
+    "strict": true
+  },
+  "fonts": {
+    "family": "Fustat"
   },
   "favicon": "/favicon.ico",
   "api": {
     "mdx": {
-      "server": "https://api.abacatepay.com/v1",
+      "server": "https://api.abacatepay.com/v2",
       "auth": {
         "method": "bearer"
       }
     }
   },
   "navigation": {
-    "tabs": [
+    "versions": [
       {
-        "tab": "Documentação",
-        "groups": [
+        "version": "v1",
+        "tag": "Current",
+        "tabs": [
           {
-            "group": "Introdução",
-            "pages": [
-              "pages/introduction",
-              "pages/devmode",
-              "pages/authentication",
-              "pages/webhooks",
-              "pages/production",
-              "pages/sdks",
-              "pages/trustMRR"
+            "tab": "Comece aqui",
+            "groups": [
+              {
+                "group": "Introdução",
+                "pages": [
+                  "pages/v1/introduction"
+                ]
+              },
+              {
+                "group": "Webhooks",
+                "pages": [
+                  "pages/v1/webhooks"
+                ]
+              }
             ]
           },
           {
-            "group": "Cliente",
-            "pages": [
-              "pages/client/reference",
-              "pages/client/create",
-              "pages/client/list"
-            ]
-          },
-          {
-            "group": "Cobrança",
-            "pages": [
-              "pages/payment/reference",
-              "pages/payment/create",
-              "pages/payment/list"
-            ]
-          },
-          {
-            "group": "Pix QRCode",
-            "pages": [
-              "pages/pix-qrcode/reference",
-              "pages/pix-qrcode/create",
-              "pages/pix-qrcode/simulate-payment",
-              "pages/pix-qrcode/check"
-            ]
-          },
-          {
-            "group": "Cupom",
-            "pages": [
-              "pages/coupon/reference",
-              "pages/coupon/create",
-              "pages/coupon/list"
-            ]
-          },
-          {
-            "group": "Saque",
-            "pages": [
-              "pages/withdraw/reference",
-              "pages/withdraw/create",
-              "pages/withdraw/get",
-              "pages/withdraw/list"
-            ]
-          },
-          {
-            "group": "Loja",
-            "pages": [
-              "pages/store/reference",
-              "pages/store/get"
-            ]
-          },
-          {
-            "group": "Trust MRR",
-            "pages": [
-              "pages/trustMRR/reference",
-              "pages/trustMRR/mrr",
-              "pages/trustMRR/get",
-              "pages/trustMRR/list"
-            ]
+            "tab": "API Reference",
+            "openapi": "openapi-v1.yaml"
           }
         ]
       },
       {
-        "tab": "Referência da API",
-        "openapi": "openapi.yaml"
+        "version": "v2",
+        "tag": "Beta",
+        "tabs": [
+          {
+            "tab": "Bem-vindo",
+            "pages": [
+              "pages/start/welcome"
+            ]
+          },
+          {
+            "tab": "Comece aqui",
+            "groups": [
+              {
+                "group": "Comece aqui",
+                "pages": [
+                  "pages/start/introduction",
+                  "pages/start/quickstart",
+                  "pages/devmode",
+                  "pages/authentication",
+                  "pages/webhooks",
+                  "pages/glossario",
+                  "pages/production"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Documentação",
+            "groups": [
+              {
+                "group": "Produtos",
+                "pages": [
+                  "pages/products/reference",
+                  "pages/products/create",
+                  "pages/products/list",
+                  "pages/products/get",
+                  "pages/products/delete"
+                ]
+              },
+              {
+                "group": "Clientes",
+                "pages": [
+                  "pages/client/reference",
+                  "pages/client/create",
+                  "pages/client/list",
+                  "pages/client/get",
+                  "pages/client/delete"
+                ]
+              },
+              {
+                "group": "Cupons",
+                "pages": [
+                  "pages/coupons/reference",
+                  "pages/coupons/create",
+                  "pages/coupons/list",
+                  "pages/coupons/get",
+                  "pages/coupons/delete",
+                  "pages/coupons/toggle"
+                ]
+              },
+              {
+                "group": "Checkouts",
+                "pages": [
+                  "pages/payment/reference",
+                  "pages/payment/create",
+                  "pages/payment/list",
+                  "pages/payment/one"
+                ]
+              },
+              {
+                "group": "Links de pagamento",
+                "pages": [
+                  "pages/payment-links/reference",
+                  "pages/payment-links/create",
+                  "pages/payment-links/list",
+                  "pages/payment-links/one"
+                ]
+              },
+              {
+                "group": "Checkout Transparente",
+                "pages": [
+                  "pages/pix-qrcode/reference",
+                  "pages/pix-qrcode/create",
+                  "pages/pix-qrcode/list",
+                  "pages/pix-qrcode/simulate-payment",
+                  "pages/pix-qrcode/check"
+                ]
+              },
+              {
+                "group": "Assinaturas",
+                "pages": [
+                  "pages/subscriptions/reference",
+                  "pages/subscriptions/create",
+                  "pages/subscriptions/list"
+                ]
+              },
+              {
+                "group": "Saques",
+                "pages": [
+                  "pages/payouts/reference",
+                  "pages/payouts/create",
+                  "pages/payouts/get",
+                  "pages/payouts/list"
+                ]
+              },
+              {
+                "group": "PIX",
+                "pages": [
+                  "pages/pix/reference",
+                  "pages/pix/create",
+                  "pages/pix/get",
+                  "pages/pix/list"
+                ]
+              },
+              {
+                "group": "Loja",
+                "pages": [
+                  "pages/store/reference",
+                  "pages/store/get"
+                ]
+              },
+              {
+                "group": "Public MRR",
+                "pages": [
+                  "pages/trustMRR/reference",
+                  "pages/trustMRR/mrr",
+                  "pages/trustMRR/get",
+                  "pages/trustMRR/list"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "SDKs",
+            "groups": [
+              {
+                "group": "SDKs",
+                "pages": [
+                  "pages/sdks/sdks",
+                  "pages/sdks/nodejs",
+                  "pages/sdks/python",
+                  "pages/sdks/java",
+                  "pages/sdks/php",
+                  "pages/sdks/ruby",
+                  "pages/sdks/go",
+                  "pages/sdks/rust",
+                  "pages/sdks/kotlin",
+                  "pages/sdks/swift"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "CLI",
+            "groups": [
+              {
+                "group": "CLI",
+                "pages": [
+                  "pages/cli/overview",
+                  "pages/cli/flags",
+                  "pages/cli/auth",
+                  "pages/cli/payments",
+                  "pages/cli/webhooks",
+                  "pages/cli/utils",
+                  "pages/cli/cases"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "AI",
+            "groups": [
+              {
+                "group": "AI",
+                "pages": [
+                  "pages/ai/overview"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Ecossistema",
+            "groups": [
+              {
+                "group": "Ecossistema",
+                "pages": [
+                  "pages/ecosystem/ecosystem",
+                  "pages/ecosystem/theme",
+                  "pages/ecosystem/rest",
+                  "pages/ecosystem/types",
+                  "pages/ecosystem/types-go",
+                  "pages/ecosystem/eslint",
+                  "pages/ecosystem/typebox",
+                  "pages/ecosystem/zod"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "HTTP",
+            "groups": [
+              {
+                "group": "HTTP",
+                "pages": [
+                  "pages/http/overview",
+                  "pages/http/postman",
+                  "pages/http/bruno"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Changelog",
+            "pages": [
+              "pages/changelog/index"
+            ]
+          }
+        ]
       }
     ]
   },
   "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
+    "light": "/images/logo_abkt.svg",
+    "dark": "/images/logo_abkt.svg"
   },
   "navbar": {
     "links": [
       {
-        "label": "Repositorio",
+        "label": "llms.txt",
+        "href": "https://www.abacatepay.com/llms.txt"
+      },
+      {
+        "label": "Repositório",
         "href": "https://github.com/AbacatePay/documentation"
       }
     ],
@@ -120,7 +299,10 @@
     "socials": {
       "x": "https://x.com/abacatepay",
       "github": "https://github.com/AbacatePay",
-      "linkedin": "https://br.linkedin.com/company/abacatepay?trk=public_post_feed-actor-name"
+      "discord": "https://discord.com/invite/CP57mm7EFk",
+      "linkedin": "https://br.linkedin.com/company/abacatepay?trk=public_post_feed-actor-name",
+      "youtube": "https://www.youtube.com/@abacatepay",
+      "instagram": "https://www.instagram.com/abacatepay/"
     }
   }
 }

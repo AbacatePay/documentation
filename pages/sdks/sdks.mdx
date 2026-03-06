@@ -1,0 +1,96 @@
+---
+title: 'SDKs'
+description: 'Bibliotecas oficiais para integração com a API da AbacatePay'
+icon: 'boxes-stacked'
+---
+
+## O que são os SDKs da AbacatePay?
+
+Os SDKs (Software Development Kits) da AbacatePay são bibliotecas que simplificam a comunicação com nossa API. Eles oferecem uma interface amigável e específica para cada linguagem, permitindo que você integre rapidamente nossos serviços de pagamento ao seu aplicativo.
+
+<Card title="Benefícios de usar nossos SDKs" horizontal>
+  * **Integração simplificada**: Funções prontas para todos os endpoints da API
+  * **Tipagem forte**: Interfaces completas em linguagens com suporte a tipos
+  * **Tratamento de erros**: Gerenciamento automático dos casos de erro mais comuns
+  * **Menor curva de aprendizado**: Não é necessário conhecer todos os detalhes da API
+  * **Atualizações frequentes**: Mantemos os SDKs atualizados com as mais recentes funcionalidades
+</Card>
+
+## SDKs Disponíveis
+
+Oferecemos SDKs oficiais para diversas linguagens de programação. Escolha o que melhor se adapta à sua stack tecnológica:
+
+<Tabs>
+  <Tab title="Backend">
+    <CardGroup cols={2}>
+      <Card title="Node.js" icon="node-js" color="#68A063" href="./nodejs">
+        SDK oficial para Node.js, compatível com TypeScript e ES modules.
+      </Card>
+      <Card title="Python" icon="python" color="#366B98" href="./python">
+        SDK oficial para Python 3.10+, com suporte a async/await e type hints.
+      </Card>
+      <Card title="Java" icon="java" color="#E76F00" href="./java">
+        SDK oficial para Java 8+, compatível com Spring Boot e Jakarta EE.
+      </Card>
+      <Card title="PHP" icon="php" color="#777BB3" href="./php">
+        SDK oficial para PHP 7.4+, com suporte a Composer e PSR standards.
+      </Card>
+      <Card title="Ruby" icon="gem" color="#CC342D" href="./ruby">
+        SDK oficial para Ruby 2.6+, disponível como gem e com suporte a Rails.
+      </Card>
+      <Card title="Go" icon="golang" color="#00ADD8" href="./go">
+        SDK oficial para Go 1.13+, com suporte a módulos e generics.
+      </Card>
+      <Card title="Rust" icon="rust" color="#DEA584" href="./rust">
+        SDK oficial para Rust, com foco em segurança e performance.
+      </Card>
+      <Card title="Elixir" icon="elixir" color="#6E4A7E" href="https://github.com/AbacatePay/abacatepay-elixir-sdk">
+        SDK oficial para Elixir, ideal para aplicações escaláveis e distribuídas.
+      </Card>
+    </CardGroup>
+  </Tab>
+  <Tab title="Mobile">
+    <CardGroup cols={2}>
+      <Card title="Kotlin" icon="android" color="#7F52FF" href="./kotlin">
+        SDK oficial para Kotlin, ideal para aplicativos Android modernos.
+      </Card>
+      <Card title="Swift" icon="apple" color="#F05138" href="./swift">
+        SDK oficial para Swift, ideal para aplicativos iOS e macOS.
+      </Card>
+    </CardGroup>
+  </Tab>
+</Tabs>
+
+
+## Perguntas Frequentes
+
+<Accordion title="Como instalar o SDK da minha linguagem?">
+  Cada SDK tem instruções de instalação específicas no seu repositório no GitHub. Geralmente, você pode usar o gerenciador de pacotes da sua linguagem, como npm, pip, composer, bundle, etc.
+</Accordion>
+
+<Accordion title="Os SDKs funcionam tanto em modo de desenvolvimento quanto em produção?">
+  Sim! Todos os nossos SDKs suportam ambos os ambientes. Em alguns casos, é preciso configurar o parâmetro `environment` ao inicializar o cliente para `sandbox` ou `production`, ou basta usar a chave de api do ambiente desejado.
+</Accordion>
+
+<Accordion title="O que fazer se encontrar um bug em um SDK?">
+  Você pode abrir uma issue no repositório do GitHub do SDK específico. Nossa equipe está sempre atenta para corrigir bugs e melhorar nossos SDKs.
+</Accordion>
+
+<Accordion title="Falta um SDK para a linguagem que eu uso. O que fazer?">
+  Entre em contato conosco em <Icon icon="envelope" type="solid"/> ajuda@abacatepay.com informando qual linguagem você precisa. Também aceitamos contribuições da comunidade!
+</Accordion>
+
+## Recursos Adicionais
+
+<CardGroup cols={2}>
+  <Card title="Webhooks" icon="webhook" href="./webhooks">
+    Aprenda a configurar webhooks para receber notificações de eventos.
+  </Card>
+  <Card title="Ambiente de Desenvolvimento" icon="code" href="./devmode">
+    Saiba como usar o ambiente de desenvolvimento para testar suas integrações.
+  </Card>
+</CardGroup>
+
+<Card title="Precisa de ajuda com integração?" icon="headset" >
+  Nossa equipe está disponível para ajudar. Entre em contato: <Icon icon="envelope" type="solid"/> ajuda@abacatepay.com
+</Card>

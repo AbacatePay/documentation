@@ -1,0 +1,145 @@
+---
+title: 'API Types (Golang)'
+description: 'Structs oficiais e helpers modernos para integrar com a API da AbacatePay em Golang.'
+icon: 'hammer'
+---
+
+## O que é o abacatepay/go-types?
+
+O pacote **abacatepay-go/types** fornece **structs oficiais e helpers modernos** para trabalhar com a API da AbacatePay em Go, de forma segura, previsível e fiel à documentação oficial.
+
+Ele serve como base para integrações diretas usando `net/http`, clientes HTTP próprios, CLIs, serviços backend e validações de payloads.
+
+> O pacote **não adiciona campos além do que existe na documentação oficial**.  
+> Cada struct reflete fielmente a API pública da AbacatePay.
+
+<Card title="Quando usar API Types em Go?" icon="help-circle" horizontal>
+  * Você quer **contratos fortes** com `structs` tipadas
+  * Usa `net/http` ou um client HTTP próprio
+  * Precisa de **compatibilidade explícita** entre versões da API
+  * Quer tipar webhooks, rotas e payloads sem SDKs opinativos
+</Card>
+
+---
+
+## Instalação
+
+Use o `go get` normalmente:
+
+```bash
+go get github.com/AbacatePay/go-types@latest
+```
+
+## Versionamento dos Tipos
+
+Os tipos são versionados por package, refletindo a versão da API:
+
+```go
+import "github.com/AbacatePay/go-types/v2"
+```
+
+<Card title="Por que versionar por package?" icon="ellipsis"> Isso evita breaking changes silenciosos e permite múltiplas versões da API coexistirem no mesmo projeto. </Card>
+
+## Convenções de Nomenclatura
+
+Os tipos seguem convenções claras e previsíveis:
+
+**Prefixo `API*`**
+- Estruturas gerais da API
+- Objetos retornados
+- Modelos públicos
+
+```go
+// https://docs.abacatepay.com/pages/store/reference#estrutura
+type APIStoreBalance struct {
+	// Balance available for withdrawal in cents.
+	Available uint64 `json:"available"`
+
+	// Balance pending confirmation in cents.
+	Pending uint64 `json:"pending"`
+
+	// Balance blocked in disputes in cents.
+	// The blocked balance represents amounts that are in dispute or under review. These amounts are not available for withdrawal until the situation is resolved.
+	Blocked uint64 `json:"blocked"`
+}
+```
+
+**Prefixo `REST<HTTPMethod>*`**
+
+Tipos usados em requisições diretas à API:
+
+- Body → corpo enviado na requisição
+    - Ex.: RESTPostCreateNewChargeBody
+- QueryParams → parâmetros de query
+    - Ex.: RESTGetCheckQRCodePixStatusQueryParams
+- Data → dados retornados
+    - Ex.: RESTGetListCouponsData
+
+**Prefixo `Webhook*`**
+
+- Payloads de eventos de webhook
+
+### Campos @unstable
+
+Campos marcados como @unstable:
+
+- Ainda não possuem definição formal na documentação
+- Foram inferidos a partir de exemplos oficiais
+- Podem mudar sem aviso prévio
+
+Eles são documentados diretamente nos comentários Go:
+
+```go
+// @unstable
+BillingKind string `json:"kind"`
+```
+
+## Quickstart
+
+### Criar um cupom
+
+```go
+package main
+
+import (
+	"bytes"
+	"encoding/json"
+	"net/http"
+
+	types "github.com/AbacatePay/go-types/v2"
+)
+
+func CreateCoupon(body types.RESTPostCreateCouponBody) (*types.RESTPostCreateCouponData, error) {
+	url := types.APIBaseURL + types.RouteCreateCoupon
+
+	payload, _ := json.Marshal(body)
+
+	req, _ := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(payload))
+
+	req.Header.Set("Authorization", "...")
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := http.DefaultClient.Do(req)
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer resp.Body.Close()
+
+	var data types.RESTPostCreateCouponData
+
+	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
+		return nil, err
+	}
+
+	return data, nil
+}
+```
+
+- Todas as structs e types contêm o seu respectivo `json` tag com o seu nome e propriedades, então você pode usar `json.Marshal` sem medo.
+
+## Integração com o Ecossistema
+<CardGroup cols={2}> <Card title="REST Client (Go)" icon="repeat" href="./rest-go"> Cliente HTTP oficial em Go que consome esses contratos diretamente. </Card> <Card title="SDKs & Ferramentas" icon="boxes-stacked" href="../sdks"> SDKs, CLIs e ferramentas que reutilizam os mesmos tipos versionados. </Card> </CardGroup>
+
+<Card title="Open Source, de verdade" icon="heart"> O [abacatepay/go-types](https://github.com/AbacatePay/go-types) é open source e mantido pela equipe AbacatePay. Structs estáveis, versionadas e 100% alinhadas à documentação oficial da API. </Card>

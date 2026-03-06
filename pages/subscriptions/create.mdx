@@ -1,0 +1,6 @@
+---
+title: 'Criar Checkout de assinatura'
+openapi: "POST /subscriptions/create"
+---
+
+Cria um checkout de assinatura (mesmo fluxo do Checkout). Envie um único item em `items` (`id` e `quantity`); o produto deve ter ciclo definido na loja. Use a `url` da resposta para redirecionar o cliente.

@@ -1,0 +1,82 @@
+---
+title: "Referência"
+description: "Envie dinheiro via PIX para qualquer chave PIX"
+icon: "book-open-cover"
+---
+
+Com o **PIX** você envia dinheiro para qualquer chave PIX que não seja da conta titular — terceiros, fornecedores ou parceiros.
+
+<Note>
+  **PIX vs Saques:** use **PIX** para enviar a chaves de terceiros; use **Saques** para enviar para sua própria chave.
+</Note>
+
+## Estrutura
+
+Exemplo de resposta de uma transação PIX:
+
+```json
+{
+  "data": {
+    "id": "txn_abc123xyz",
+    "status": "PENDING",
+    "devMode": false,
+    "receiptUrl": "https://app.abacatepay.com/receipt/txn_abc123xyz",
+    "amount": 10000,
+    "platformFee": 100,
+    "externalId": "pix-123",
+    "createdAt": "2024-11-04T18:38:28.573Z",
+    "updatedAt": "2024-11-04T18:38:28.573Z"
+  },
+  "success": true,
+  "error": null
+}
+```
+
+## Atributos
+
+| Atributo     | Tipo    | Descrição |
+| ------------ | ------- | --------- |
+| `id`         | string  | ID único da transação na AbacatePay |
+| `status`     | string  | Status da transação (veja valores abaixo) |
+| `devMode`    | boolean | `true` se criado em sandbox |
+| `receiptUrl` | string  | URL do comprovante; disponível quando `status` é `COMPLETE` |
+| `amount`     | number  | Valor em centavos (ex.: 10000 = R$ 100,00) |
+| `platformFee` | number | Taxa da plataforma em centavos |
+| `externalId` | string \| null | ID no seu sistema; pode ser `null` |
+| `createdAt`  | string  | Data/hora de criação (ISO 8601) |
+| `updatedAt`  | string  | Data/hora da última atualização |
+
+**Valores de `status`:**
+
+| Valor        | Significado |
+| ------------ | ----------- |
+| `PENDING`    | Criado, aguardando processamento |
+| `EXPIRED`    | Expirado |
+| `CANCELLED`  | Cancelado |
+| `COMPLETE`   | Concluído com sucesso |
+| `REFUNDED`   | Reembolsado |
+
+## Tipos de chave PIX
+
+Ao criar um PIX, informe o tipo da chave de destino:
+
+| Tipo      | Descrição                    | Exemplo              |
+| --------- | ---------------------------- | -------------------- |
+| `CPF`     | CPF (11 dígitos)             | `12345678901`        |
+| `CNPJ`    | CNPJ (14 dígitos)            | `12345678000190`     |
+| `PHONE`   | Celular (DDD + número)       | `11987654321`        |
+| `EMAIL`   | E-mail                       | `contato@exemplo.com`|
+| `RANDOM`  | Chave aleatória (UUID)       | `a1b2c3d4-e5f6-...`  |
+| `BR_CODE` | Código BR (QR Code)          | Código completo do QR|
+
+## Limites e taxas
+
+- **Mínimo:** R$ 1,00
+- **Taxa:** ver [termos de uso](https://abacatepay.com/termos)
+- **Processamento:** instantâneo; disponível 24/7
+- **Limite:** consulte o dashboard; excesso pode retornar HTTP 429
+
+## Segurança
+
+- Requisições autenticadas via Bearer Token
+- Abusos podem levar à suspensão da conta conforme os [termos de uso](https://abacatepay.com/termos)

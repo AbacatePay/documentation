@@ -1,0 +1,88 @@
+---
+title: "Referência"
+description: "Gerencie produtos para suas cobranças"
+icon: "book-open-cover"
+---
+{/* <div style={{ 
+    position: "relative", 
+    paddingBottom: "56.25%", 
+    height: 0, 
+    overflow: "hidden",
+    maxWidth: "800px",
+    margin: "32px auto",
+    borderRadius: "8px"
+}}>
+<iframe
+    src="https://www.youtube.com/embed/SEU_VIDEO_ID"
+    title="Criar Cobrança com Checkout - AbacatePay"
+    frameBorder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    allowFullScreen
+    style={{ 
+        position: "absolute", 
+        top: 0, 
+        left: 0, 
+        width: "100%", 
+        height: "100%" 
+        }}
+      />
+    </div> */}
+Produtos são itens do seu catálogo usados nas cobranças: nome, preço, descrição e opcionalmente ciclo de assinatura. **Avulso** = pagamento único (`cycle` omitido ou `null`). **Assinatura** = `cycle`: `WEEKLY`, `MONTHLY`, `SEMIANNUALLY` ou `ANNUALLY`.
+
+## Criar produto
+
+Use `/products/create`. Moeda é sempre `BRL`.
+
+<Card title="Campos obrigatórios" horizontal>
+  Obrigatórios: `externalId` (único no seu sistema), `name`, `price`, `currency`. Opcionais: `description`, `imageUrl`, `cycle` (null/omitido = avulso).
+</Card>
+
+**Exemplo (produto avulso):**
+```json
+POST /products/create
+{
+  "externalId": "prod-123",              // obrigatório - identificador único do produto no seu sistema
+  "name": "Produto Exemplo",             // obrigatório - nome do produto
+  "price": 10000,                        // obrigatório - preço em centavos
+  "currency": "BRL",                     // obrigatório - moeda (sempre BRL)
+  "description": "Descrição do produto", // opcional - descrição
+  "imageUrl": null                       // opcional - URL da imagem (string | null)
+}
+```
+
+**Exemplo (produto de assinatura):**
+```json
+POST /products/create
+{
+  "externalId": "prod-assinatura-1",
+  "name": "Plano Mensal",
+  "price": 4990,
+  "currency": "BRL",
+  "cycle": "MONTHLY"                     // opcional - WEEKLY | MONTHLY | SEMIANNUALLY | ANNUALLY; omitir ou null = avulso
+}
+```
+
+**Resposta (modelo Product):**
+```json
+{
+  "data": {
+    "externalId": "prod-123",
+    "name": "Produto Exemplo",
+    "description": "Descrição do produto",
+    "imageUrl": null,
+    "price": 10000,
+    "devMode": false,
+    "currency": "BRL",
+    "createdAt": "2024-11-04T18:38:28.573Z",
+    "updatedAt": "2024-11-04T18:38:28.573Z",
+    "status": "ACTIVE",
+    "id": "prod_abc123xyz",
+    "cycle": null
+  },
+  "success": true,
+  "error": null
+}
+```
+
+O `data` retornado segue o modelo Product: `id`, `externalId`, `name`, `description`, `imageUrl`, `price`, `currency`, `status`, `cycle`, `createdAt`, `updatedAt`, etc.
+

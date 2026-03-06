@@ -1,0 +1,98 @@
+---
+title: 'Utilitários'
+icon: 'wrench'
+description: 'Comandos auxiliares para verificação de webhooks, atualização e documentação na AbacatePay CLI.'
+---
+
+Comandos auxiliares para verificação de webhooks, atualização e documentação.
+
+---
+
+### `abacatepay verify`
+
+Verifica assinaturas de webhooks localmente, útil para debug e validação offline.
+
+```bash
+abacatepay verify --secret <secret> --payload <json> --signature <header>
+```
+
+| Flag | Tipo | Obrigatória | Descrição |
+|------|------|-------------|-----------|
+| `--secret` | string | Sim | Webhook signing secret (inicia com `whsec_`) |
+| `--payload` | string | Sim | Corpo JSON raw do payload |
+| `--signature` | string | Sim | Valor do header `X-Abacate-Signature` |
+
+<Info>
+O formato do header de assinatura segue o padrão: `t=TIMESTAMP,v1=SIGNATURE`
+</Info>
+
+```bash
+abacatepay verify \
+  --secret "whsec_abc123xyz789" \
+  --payload '{"id":"evt_123","event":"billing.paid"}' \
+  --signature "t=1705849200,v1=a1b2c3d4e5f6..."
+```
+
+<CodeGroup>
+```text Sucesso
+╭───────────────────────────╮
+│                           │
+│  🥑 Signature Verified    │
+│                           │
+│  Timestamp: 1705849200    │
+│  Secret:    whsec_...x789 │
+│  Status:    VALID         │
+│                           │
+╰───────────────────────────╯
+```
+
+```text Erro
+✗ Signature Mismatch
+  Expected: a1b2c3d4e5f6...
+  Received: 9z8y7x6w5v4u...
+```
+</CodeGroup>
+
+<Warning>
+Se o timestamp da assinatura tiver mais de 5 minutos, um aviso será exibido. Isso pode indicar um replay attack.
+</Warning>
+
+---
+
+### `abacatepay update`
+
+Atualiza a CLI para a versão mais recente.
+
+```bash
+abacatepay update
+```
+
+<CodeGroup>
+```text Atualização Disponível
+Update available: v1.5.0
+Downloading and installing...
+Update complete ✨
+```
+
+```text Já Atualizado
+You're already on the latest version (v1.4.2)
+```
+</CodeGroup>
+
+<Tip>
+Execute `abacatepay update` periodicamente para garantir as últimas funcionalidades e correções de segurança.
+</Tip>
+
+---
+
+### `abacatepay docs`
+
+Abre a documentação oficial da CLI no navegador.
+
+```bash
+abacatepay docs
+```
+
+---
+
+

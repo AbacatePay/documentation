@@ -1,0 +1,23 @@
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build
+.next/
+dist/
+build/
+
+# Environment
+.env
+.env.local
+.env.*.local
+

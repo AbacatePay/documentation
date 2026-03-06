@@ -1,0 +1,105 @@
+---
+title: 'ESLint Plugin'
+description: 'Plugin ESLint para evitar vazamento de chaves da AbacatePay e reforçar boas práticas de segurança.'
+icon: 'shield'
+---
+
+## O que é o @abacatepay/eslint-plugin?
+
+O `@abacatepay/eslint-plugin` é um **plugin de segurança para ESLint** que evita o vazamento acidental de **API keys da AbacatePay** diretamente no código-fonte.
+
+Ele detecta **chaves secretas hardcoded** em qualquer contexto (strings, headers, JSX, templates, configs, etc.) e incentiva o uso correto de **variáveis de ambiente**, antes que o problema chegue ao repositório ou à produção.
+
+<Card title="Por que isso importa?" icon="alert-triangle" horizontal>
+  * Vazamento de API keys é um dos erros mais comuns em projetos
+  * Linters pegam o problema **antes do commit**
+  * Segurança como padrão, sem depender de code review
+</Card>
+
+---
+
+## Instalação
+
+Use o *package manager* da sua preferência:
+
+```bash
+bun add -d @abacatepay/eslint-plugin
+# ou
+pnpm add -d @abacatepay/eslint-plugin
+# ou
+npm install -d @abacatepay/eslint-plugin
+```
+
+## Configuração
+
+**ESLint v9+ (Flat Config)**
+
+O plugin foi projetado exclusivamente para ESLint v9+, utilizando o novo formato de flat config.
+
+```ts
+import abacatepay from '@abacatepay/eslint-plugin';
+
+export default [
+    {
+        plugins: {
+            abacatepay,
+        },
+        rules: {
+            'abacatepay/no-secret-key': 'error',
+        },
+    },
+];
+```
+
+## Regras Disponíveis
+
+`abacatepay/no-secret-key`
+
+Impede o uso de chaves secretas da AbacatePay diretamente no código, independentemente do contexto:
+
+- Strings literais
+- Headers HTTP
+- JSX / props
+- Templates
+- Configurações de clientes
+
+<Card title="Comportamento da regra"> A regra <strong>não aplica autofix destrutivo</strong>. Sempre que possível, ela oferece <strong>sugestões seguras</strong> para substituição. </Card>
+
+### Sugestões Automáticas
+
+Quando detecta uma chave hardcoded, a regra sugere automaticamente o uso de variáveis de ambiente:
+
+```diff
+- "abc_prod_xxxxxxxxxxxxxxxxxxxxxxx"
++ process.env.ABACATEPAY_API_KEY
+```
+
+### Exemplos de Uso Incorreto
+
+```ts
+import { AbacatePay } from '@abacatepay/sdk';
+
+const abacate = AbacatePay({
+    secret: 'abc_dev_xxxxxxxxxxxxxxxxxxxxxxx',
+});
+```
+
+```ts
+import { REST } from '@abacatepay/rest';
+
+const client = new REST({
+    secret: 'abc_prod_xxxxxxxxxxxxxxxxxxxxxxx',
+});
+```
+
+```tsx
+<Component secret="abc_dev_xxxxxxxxxxxxxxxxxxxxxxx" />
+```
+
+## Segurança por Design
+
+<CardGroup cols={2}> <Card title="Preventivo" icon="shield"> O erro é detectado antes do commit ou deploy. </Card> <Card title="Baixo ruído" icon="filter"> Apenas casos reais de risco são reportados. </Card> </CardGroup>
+
+## Recursos Relacionados
+
+<CardGroup cols={2}> <Card title="@abacatepay/rest" icon="repeat" href="./rest"> Cliente REST oficial para a API da AbacatePay. </Card> <Card title="SDKs Oficiais" icon="boxes-stacked" href="../sdks"> Integrações de alto nível para diversas linguagens. </Card> </CardGroup> <Card title="Open source, de verdade" icon="heart"> O <code>@abacatepay/eslint-plugin</code> é open source e mantido pela equipe AbacatePay. Contribuições e sugestões são bem-vindas. </Card>

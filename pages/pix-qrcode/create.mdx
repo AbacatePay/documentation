@@ -1,4 +1,15 @@
 ---
 title: Criar QRCode PIX
-openapi: 'POST /pixQrCode/create'
+openapi: 'POST /transparents/create'
 ---
+
+<Card horizontal>
+  Requer a permissão `CHECKOUT:READ`.
+</Card>
+
+Este endpoint cria um checkout transparente via PIX.
+
+- Envie sempre `method` como `"PIX"`.
+- Os dados da cobrança ficam dentro do objeto `data` (incluindo `amount`, `description`, `expiresIn`, `customer` e `metadata`).
+
+Veja o exemplo completo em `Checkout Transparente` na página de referência.

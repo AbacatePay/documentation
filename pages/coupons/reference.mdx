@@ -1,0 +1,75 @@
+---
+title: 'Referência'
+description: 'Crie cupons de desconto para seus clientes usarem uma ou várias vezes'
+icon: 'book-open-cover'
+---
+
+{/* <div style={{ 
+    position: "relative", 
+    paddingBottom: "56.25%", 
+    height: 0, 
+    overflow: "hidden",
+    maxWidth: "800px",
+    margin: "32px auto",
+    borderRadius: "8px"
+}}>
+<iframe
+    src="https://www.youtube.com/embed/SEU_VIDEO_ID"
+    title="Criar Cobrança com Checkout - AbacatePay"
+    frameBorder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    allowFullScreen
+    style={{ 
+        position: "absolute", 
+        top: 0, 
+        left: 0, 
+        width: "100%", 
+        height: "100%" 
+    }}
+/>  
+</div> */}
+
+Cupons oferecem desconto percentual ou valor fixo aos clientes, com limite de uso e contagem de resgates.
+
+## Criar cupom
+
+Use `/coupons/create`.
+
+<Card title="Campos obrigatórios" horizontal>
+  Obrigatórios: `code` (único), `discount`, `discountKind` (`PERCENTAGE` ou `FIXED`). Opcionais: `maxRedeems`, `notes`, `metadata`.
+</Card>
+
+**Exemplo:**
+```json
+POST /coupons/create
+{
+  "code": "MY_COUPON",                    // obrigatório - identificador único do cupom
+  "discountKind": "PERCENTAGE",           // obrigatório - tipo de desconto (PERCENTAGE ou FIXED)
+  "discount": 10,                         // obrigatório - valor do desconto
+  "maxRedeems": -1,                      
+  "notes": "Cupom de desconto especial",  
+  "metadata": {                           
+    "campaign": "black-friday"
+  }
+}
+```
+
+**Resposta:**
+```json
+{
+  "data": {
+    "id": "MY_COUPON",
+    "discountKind": "PERCENTAGE",
+    "discount": 10,
+    "maxRedeems": -1,
+    "redeemsCount": 0,
+    "status": "ACTIVE",
+    "devMode": true,
+    "notes": "Cupom de desconto especial",
+    "createdAt": "2025-01-23T14:06:16.880Z",
+    "updatedAt": "2025-01-23T14:06:16.880Z"
+  },
+  "success": true,
+  "error": null
+}
+```

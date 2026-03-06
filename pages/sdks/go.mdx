@@ -1,0 +1,96 @@
+---
+title: 'Go '
+description: 'SDK oficial para Go - Aceite pagamentos em segundos com uma integração simples'
+icon: 'golang'
+---
+
+<Card 
+  title="AbacatePay Go" 
+  icon="golang" 
+  href="https://github.com/AbacatePay/abacatepay-go-sdk"
+>
+  Official AbacatePay SDK - Accept payments in seconds with a simple integration.
+</Card>
+
+## Instalação
+
+```bash
+go get github.com/AbacatePay/abacatepay-go-sdk
+```
+
+## Quick Usage
+
+```go
+package main
+
+import (
+	"context"
+	"github.com/AbacatePay/abacatepay-go-sdk/abacatepay"
+	"time"
+)
+
+func main() {
+	// Inicialize o client com a sua API key
+	client, err := abacatepay.New(&abacatepay.ClientConfig{
+		ApiKey:  "YOUR_API_KEY",
+		Timeout: 10 * time.Second,
+	})
+
+	if err != nil {
+		panic(err)
+	}
+	
+	// Use o cliente...
+}
+```
+
+## Criando uma Cobrança PIX
+
+```go
+package main
+
+import (
+	"context"
+	"time"
+	"log"
+
+	"github.com/AbacatePay/abacatepay-go-sdk/v1"
+	"github.com/AbacatePay/abacatepay-go-sdk/v1/pix"
+)
+
+func main() {
+	// ...
+	ctx, cancel := context.WithTimeout(context.Background(), 15 * time.Second)
+
+	defer cancel()
+
+	body := &pix.CreateQrCodePIXBody{
+		Amount: 100,
+	}
+
+	response, err := client.Pix.Create(ctx, body)
+	
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	log.Printf("PIX criado: %s\n", response.Data.ID)
+}
+```
+
+## Response
+
+```json
+{
+    "id": "pix_char_123456",
+    "amount": 100,
+    "status": "PENDING",
+    "devMode": true,
+    "brCode": "00020101021226950014br.gov.bcb.pix",
+    "brCodeBase64": "data:image/png;base64,iVBORw0KGgoAAA",
+    "platformFee": 80,
+    "createdAt": "2025-03-24T21:50:20.772Z",
+    "updatedAt": "2025-03-24T21:50:20.772Z",
+    "expiresAt": "2025-03-25T21:50:20.772Z"
+}
+```

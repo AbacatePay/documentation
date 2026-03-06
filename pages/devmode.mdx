@@ -1,41 +1,70 @@
 ---
 title: 'Dev mode, o que é?'
-description: "Aprenda o que é dev mode e como utilizar da melhor forma"
+description: "Entenda o Dev mode e aprenda a usar este ambiente para testar sua integração com segurança."
 icon: 'code'
 ---
 
-O Dev mode é o ambiente de desenvolvimento da AbacatePay, projetado para permitir que você teste todas as funcionalidades da plataforma de forma segura e controlada.
+O **Dev mode** é o ambiente de testes da AbacatePay.  
+Ele permite que você experimente toda a plataforma sem risco, simulando pagamentos, cobranças e webhooks antes de ir para produção.
 
-## <Icon icon="flask" type="solid"/>  O que é o Dev mode?
+{/* <div style={{ 
+  position: "relative", 
+  paddingBottom: "56.25%", 
+  height: 0, 
+  overflow: "hidden",
+  maxWidth: "800px",
+  margin: "32px auto",
+  borderRadius: "8px"
+}}>
+  <iframe
+    src="https://www.youtube.com/embed/SEU_VIDEO_ID"
+    title="Dev mode - AbacatePay"
+    frameBorder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    allowFullScreen
+    style={{ 
+      position: "absolute", 
+      top: 0, 
+      left: 0, 
+      width: "100%", 
+      height: "100%" 
+    }}
+  />
+</div> */}
 
-Quando você cria sua conta na AbacatePay, ela é automaticamente configurada em Dev mode. Neste ambiente:
+## O que é o Dev mode?
 
-- Todas as operações são simuladas
-- Nenhuma transação real é processada
-- Você pode testar todas as funcionalidades sem riscos
-- Os dados são isolados do ambiente de produção
+Ao criar sua conta, você já começa no Dev mode.  
+Nesse ambiente:
 
-<Card title="Benefícios do Dev mode" icon="star" horizontal>
-  * Teste suas integrações com segurança
-  * Experimente diferentes cenários de pagamento
-  * Configure webhooks e receba notificações de teste
-  * Valide o fluxo completo da sua aplicação
+- Os pagamentos são **simulados**
+- Nada é cobrado de verdade
+- Você pode testar quantas vezes quiser
+- Seus testes não afetam os dados de produção
+
+É o lugar ideal para montar e validar toda sua integração.
+
+<Card title="Por que usar o Dev mode?" horizontal>
+  * Teste sua integração com segurança  
+  * Simule diferentes tipos de pagamento  
+  * Configure webhooks sem risco  
+  * Valide o comportamento da sua aplicação  
 </Card>
 
-## <Icon icon="key" type="solid"/>  Usando o Dev mode
+## Como usar o Dev mode
 
-Para começar a testar:
+Para começar:
 
-1. Crie uma chave de API no ambiente de desenvolvimento
-2. Use esta chave em suas requisições de teste
-3. Configure webhooks para receber notificações de teste
-4. Valide todos os fluxos da sua aplicação
+1. <a href="/pages/authentication">Crie sua chave de API de desenvolvimento</a>  
+2. Use essa chave em todas as requisições de teste  
+3. Configure webhooks para receber notificações simuladas  
+4. Teste o fluxo completo: criar cliente, gerar cobrança, pagar, receber webhook, etc.
 
-<Card title="Dicas para Testes Efetivos" icon="lightbulb" horizontal>
-  * Teste todos os cenários possíveis
-  * Valide o tratamento de erros
-  * Verifique as notificações de webhook
-  * Confirme a integração com seu sistema
+<Card title="Boas práticas ao testar" horizontal>
+  * Cubra todos os cenários (sucesso, erro e exceções)  
+  * Valide mensagens de erro e retornos da API  
+  * Confira se seus webhooks estão recebendo os eventos corretos  
+  * Revise o comportamento da sua aplicação em cada etapa  
 </Card>
 
 ## <Icon icon="credit-card" type="solid"/>  Testando pagamentos com cartão
@@ -64,12 +93,13 @@ Os números abaixo são sempre **rejeitados** no Dev mode, para você testar o f
 
 ## <Icon icon="arrow-right" type="solid"/>  Próximos Passos
 
-Quando estiver confiante com sua integração:
-1. Desative o Dev mode
-2. Complete o processo de verificação da conta
-3. Aguarde a aprovação para produção
-4. Comece a processar transações reais
+Quando sua integração estiver funcionando:
 
-<Card title="Precisa de ajuda?" icon="headset" color="#25c2a0">
-  Nossa equipe está disponível para auxiliar no processo de desenvolvimento. Entre em contato pelo e-mail <Icon icon="envelope" type="solid"/> ajuda@abacatepay.com
-</Card>
+1. Desative o Dev mode  
+2. Finalize a verificação da conta  
+3. Aguarde a aprovação para produção  
+4. Comece a processar pagamentos reais
+
+<Card title="Precisa de ajuda?" color="#25c2a0">
+  Estamos à disposição. Fale com a gente:  <Icon icon="envelope" type="solid"/> ajuda@abacatepay.com 
+  </Card>

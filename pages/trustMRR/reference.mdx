@@ -1,21 +1,21 @@
 ---
 title: 'Referência'
-description: 'Compartilhe suas métricas de receita de forma transparente'
+description: 'Métricas de receita públicas para integração ou exibição'
 icon: 'book-open-cover'
 ---
 
-As rotas Trust MRR permitem que você compartilhe suas métricas de receita de forma transparente, seja integrando com plataformas Trust MRR ou consumindo diretamente as APIs para exibir em seu próprio site ou dashboard.
+As rotas **Public MRR** expõem métricas de receita da loja para integração com plataformas Trust MRR ou para exibir no seu site ou dashboard.
 
-## <Icon icon="folder-tree" type="solid"/> Estrutura
+## Estrutura
 
-### Informações do Merchant
+### Merchant (`/public-mrr/merchant-info`)
 
-Informações básicas da loja retornadas pela rota `/public-mrr/merchant-info`:
+Dados básicos da loja:
 
 ```json
 {
   "data": {
-    "id": "store_123456",
+    "id": "store_abc123xyz",
     "name": "Example Tech",
     "website": "https://www.example.com",
     "createdAt": "2024-12-06T18:53:31.756Z"
@@ -24,9 +24,9 @@ Informações básicas da loja retornadas pela rota `/public-mrr/merchant-info`:
 }
 ```
 
-### MRR (Monthly Recurring Revenue)
+### MRR (`/public-mrr/mrr`)
 
-Dados de receita recorrente mensal retornados pela rota `/public-mrr/mrr`:
+Receita recorrente mensal:
 
 ```json
 {
@@ -38,9 +38,9 @@ Dados de receita recorrente mensal retornados pela rota `/public-mrr/mrr`:
 }
 ```
 
-### Receita por Período
+### Receita por período (`/public-mrr/revenue`)
 
-Dados de receita por período retornados pela rota `/public-mrr/revenue`:
+Totais e transações por dia:
 
 ```json
 {
@@ -48,128 +48,41 @@ Dados de receita por período retornados pela rota `/public-mrr/revenue`:
     "totalRevenue": 150000,
     "totalTransactions": 45,
     "transactionsPerDay": {
-      "2024-01-15": {
-        "amount": 5000,
-        "count": 3
-      },
-      "2024-01-16": {
-        "amount": 3000,
-        "count": 2
-      }
+      "2024-01-15": { "amount": 5000, "count": 3 },
+      "2024-01-16": { "amount": 3000, "count": 2 }
     }
   },
   "error": null
 }
 ```
 
-## Atributos:
+## Atributos
 
-<AccordionGroup>
-  <Accordion title="id:">
-        ```json {2}
-        {
-          "id": "store_123456",
-        } 
-        ```
+**Merchant (merchant-info):**
 
-        `id` : <u> string. </u> <br />
-        Identificador único da loja
-    </Accordion>
-    <Accordion title="name:">
-        ```json {3}
-        {
-          "name": "Example Tech",
-        } 
-        ```
+| Atributo   | Tipo   | Descrição |
+| ---------- | ------ | --------- |
+| `id`       | string | ID único da loja |
+| `name`     | string | Nome da loja |
+| `website`  | string | Site da loja |
+| `createdAt`| string | Data de criação (ISO 8601) |
 
-        `name` : <u> string. </u> <br />
-        Nome da loja
-    </Accordion>
-    <Accordion title="website:">
-        ```json {4}
-        {
-          "website": "https://www.example.com",
-        } 
-        ```
+**MRR (mrr):**
 
-        `website` : <u> string. </u> <br />
-        Website da loja
-    </Accordion>
-    <Accordion title="createdAt:">
-        ```json {5}
-        {
-          "createdAt": "2024-12-06T18:53:31.756Z",
-        } 
-        ```
+| Atributo                    | Tipo    | Descrição |
+| -------------------------- | ------- | --------- |
+| `mrr`                      | number  | Receita recorrente mensal em centavos (0 = nenhuma) |
+| `totalActiveSubscriptions` | integer | Quantidade de assinaturas ativas (0 = nenhuma) |
 
-        `createdAt` : <u> date-time. </u> <br />
-        Data de criação da loja
-    </Accordion>
-    <Accordion title="mrr:">
-        ```json {4}
-        {
-          "mrr": 0,
-        } 
-        ```
+**Receita (revenue):**
 
-        `mrr` : <u> number. </u> <br />
-        Receita recorrente mensal em centavos. Valor 0 indica que não há receita recorrente no momento.
-    </Accordion>
-    <Accordion title="totalActiveSubscriptions:">
-        ```json {5}
-        {
-          "totalActiveSubscriptions": 0,
-        } 
-        ```
-
-        `totalActiveSubscriptions` : <u> integer. </u> <br />
-        Total de assinaturas ativas. Valor 0 indica que não há assinaturas ativas no momento.
-    </Accordion>
-    <Accordion title="totalRevenue:">
-        ```json {3}
-        {
-          "totalRevenue": 150000,
-        } 
-        ```
-
-        `totalRevenue` : <u> number. </u> <br />
-        Receita total do período em centavos
-    </Accordion>
-    <Accordion title="totalTransactions:">
-        ```json {4}
-        {
-          "totalTransactions": 45,
-        } 
-        ```
-
-        `totalTransactions` : <u> integer. </u> <br />
-        Total de transações no período
-    </Accordion>
-    <Accordion title="transactionsPerDay:">
-        ```json {5-12}
-        {
-          "transactionsPerDay": {
-            "2024-01-15": {
-              "amount": 5000,
-              "count": 3
-            },
-            "2024-01-16": {
-              "amount": 3000,
-              "count": 2
-            }
-          }
-        } 
-        ```
-
-        `transactionsPerDay` : <u> object. </u> <br />
-        Objeto com transações agrupadas por dia (chave é a data no formato YYYY-MM-DD)
-
-        * `amount` : <u> number. </u> <br /> Valor total das transações do dia em centavos
-        * `count` : <u> integer. </u> <br /> Quantidade de transações do dia
-    </Accordion>
-</AccordionGroup>
+| Atributo              | Tipo   | Descrição |
+| --------------------- | ------ | --------- |
+| `totalRevenue`        | number | Receita total do período em centavos |
+| `totalTransactions`   | integer| Número de transações no período |
+| `transactionsPerDay`  | object | Por dia (chave = data YYYY-MM-DD); cada valor tem `amount` (centavos) e `count` |
 
 <Tip title="Valores em centavos" icon="coins" horizontal>
- Todos os valores monetários são retornados em centavos. Para converter para reais, divida por 100. Por exemplo: 150000 centavos = R$ 1.500,00
+ Valores monetários vêm em centavos. Divida por 100 para reais (ex.: 150000 = R$ 1.500,00).
 </Tip>
 

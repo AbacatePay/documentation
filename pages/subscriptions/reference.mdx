@@ -1,0 +1,96 @@
+---
+title: "Referência"
+description: "Crie checkouts de assinatura e gerencie as existentes."
+icon: "book-open-cover"
+---
+
+Toda assinatura antes de ser iniciada, o seu cliente deve passar pelo [Checkout](/pages/payment/reference).
+
+A diferença é que um checkout de assinatura aceita **só um produto**, e esse produto precisa ter **ciclo (frequency)** definido na loja.
+
+Quando o pagamento é realizado, a assinatura se torna ativa.
+
+## Parâmetros
+
+O `POST /subscriptions/create` usa os mesmos parâmetros do Checkout:
+
+| Parâmetro       | Obrigatório | Descrição |
+|-----------------|-------------|-----------|
+| `items`         | Sim         | Lista com **exatamente um** item (`id` e `quantity`); o produto deve ter sido criado com ciclo de assinatura |
+| `customerId`    | Não         | ID do cliente já cadastrado |
+| `externalId`    | Não         | ID da assinatura no seu sistema |
+| `returnUrl`     | Não         | URL de retorno ao clicar em "Voltar" |
+| `completionUrl` | Não         | URL após pagamento concluído |
+| `metadata`      | Não         | Metadados livres |
+| `coupons`       | Não         | Lista de cupons |
+| `method`        | Não         | `PIX` ou `CARD` |
+
+Exemplo (cada item só precisa de `id` e `quantity`; o ciclo vem do produto):
+
+```json
+{
+  "items": [
+    {
+      "id": "prod-1234",
+      "quantity": 1
+    }
+  ],
+  "customerId": "cust_abc123xyz",
+  "externalId": "subs-123",
+  "returnUrl": "https://seusite.com/voltar",
+  "completionUrl": "https://seusite.com/sucesso"
+}
+```
+
+## Resposta
+
+Create e list retornam o mesmo formato do Checkout (`id`, `url`, `amount`, `items`, `status`, etc.).
+
+**Resposta:**
+
+```json
+{
+  "data": {
+    "id": "bill_abc123xyz",
+    "externalId": "subs-123",
+    "url": "https://app.abacatepay.com/pay/bill_abc123xyz",
+    "amount": 10000,
+    "paidAmount": null,
+    "items": [
+      {
+        "id": "prod_456",
+        "quantity": 1
+      }
+    ],
+    "status": "PENDING",
+    "coupons": [],
+    "devMode": false,
+    "customerId": "cust_abc123xyz",
+    "returnUrl": "https://seusite.com/voltar",
+    "completionUrl": "https://seusite.com/sucesso",
+    "receiptUrl": null,
+    "metadata": {},
+    "createdAt": "2024-11-04T18:38:28.573Z",
+    "updatedAt": "2024-11-04T18:38:28.573Z"
+  },
+  "success": true,
+  "error": null
+}
+```
+
+<Tip title="Redirecione o cliente" icon="book" horizontal>
+Use a `url` retornada para levar o cliente ao checkout e concluir o pagamento.
+</Tip>
+
+## Ciclo de cobrança
+
+Definido no produto ao criar na loja. Valores: **MONTHLY**, **YEARLY**, **WEEKLY**, **DAILY**.
+
+## Status
+
+Mesmos do Checkout: **PENDING**, **EXPIRED**, **CANCELLED**, **PAID**, **REFUNDED**.
+
+## Segurança
+
+- Requisições autenticadas via Bearer Token
+- Abusos podem levar à suspensão da conta conforme os [termos de uso](https://abacatepay.com/termos)

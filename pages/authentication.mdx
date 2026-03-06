@@ -1,93 +1,150 @@
 ---
-title: 'Autenticação'
-description: 'Como enviar requisições para a nossa API'
-icon: 'lock'
+title: 'Chaves de API'
+description: 'Aprenda como funcionam as chaves de API e como utilizá-las para acessar a AbacatePay'
+icon: 'key'
 ---
 
 <Tip>
-  **Chave de API**: Sua credencial de acesso à API da AbacatePay. Esta chave identifica sua conta e autoriza suas requisições. **IMPORTANTE**: Sem a chave de API, as requisições serão recusadas.
-</Tip> 
+  A **chave de API** é sua credencial de acesso à AbacatePay. Ela identifica sua conta e autoriza cada requisição enviada para a nossa API. **Sem uma chave válida, nenhum pedido será aceito.**
+</Tip>
 
-## <Icon icon="lock" type="solid"/>  Gerenciando chaves de API
+{/* <div style={{ 
+  position: "relative", 
+  paddingBottom: "56.25%", 
+  height: 0, 
+  overflow: "hidden",
+  maxWidth: "800px",
+  margin: "32px auto",
+  borderRadius: "8px"
+}}>
+  <iframe
+    src="https://www.youtube.com/embed/SEU_VIDEO_ID"
+    title="Chaves de API - AbacatePay"
+    frameBorder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    allowFullScreen
+    style={{ 
+      position: "absolute", 
+      top: 0, 
+      left: 0, 
+      width: "100%", 
+      height: "100%" 
+    }}
+  />
+</div> */}
 
-Gerencie suas chaves de API diretamente em nossa plataforma. Você pode:
-- Listar todas as chaves ativas
-- Criar novas chaves
-- Revogar chaves existentes
+## O que você pode fazer com suas chaves
 
-<Card title="Ambientes e Chaves de API" icon="book" horizontal>
-  Todas as requisições são enviadas para o mesmo endpoint (`https://api.abacatepay.com`), mas o ambiente é determinado pela chave de API utilizada:
-  - Chaves criadas em **dev mode** processam transações no ambiente de testes
-  - Chaves criadas em **produção** processam transações reais
-  
-  Saiba mais sobre o ambiente de desenvolvimento <a href="./devmode">aqui</a>.
+As chaves de API são gerenciadas diretamente pelo dashboard. Com elas, você pode:
+
+- Ver todas as chaves ativas  
+- Criar novas chaves para diferentes projetos  
+- Revogar chaves comprometidas ou que não são mais usadas  
+
+<Card title="Dev mode x Produção" horizontal>
+  Todas as requisições usam o mesmo endpoint [api.abacatepay.com](https://api.abacatepay.com).  
+  O ambiente é definido **pela chave utilizada**:
+  - Chaves criadas em **Dev mode** → transações simuladas  
+  - Chaves criadas em **Produção** → transações reais  
+
+  Saiba mais sobre o ambiente de testes <a href="./devmode">aqui</a>.
 </Card>
 
-<Card title="Erro de Autenticação" icon="warning" horizontal>
-  A API retornará o código HTTP `401` quando:
-  - A chave de API não for fornecida no header
-  - A chave for inválida
-  - A chave tiver sido revogada
+<Card title="Erro de Autenticação (401)" horizontal>
+  Você receberá um **HTTP 401** quando:
+
+  - A chave não for enviada no header  
+  - A chave estiver incorreta  
+  - A chave tiver sido revogada  
 </Card>
 
-## <Icon icon="key" type="solid"/>  Criando chaves de API
+## Permissões da chave de API
 
-<Card title="Boas Práticas de Segurança" icon="light-emergency-on" horizontal>
-  * Armazene suas chaves em variáveis de ambiente ou gerenciadores de segredos
-  * Nunca compartilhe suas chaves de API
-  * A AbacatePay nunca solicitará suas chaves
-  * Revogue imediatamente qualquer chave comprometida
+Além de identificar sua conta, a chave de API define **quais recursos** você pode acessar. Quase todos os endpoints da API exigem que a chave tenha a permissão correspondente; sem ela, a requisição será recusada (por exemplo, com **403 Forbidden**).
+
+Ao criar ou gerenciar chaves no dashboard, você pode atribuir apenas as permissões necessárias para cada integração — por exemplo, uma chave só para leitura de clientes ou outra só para criar cobranças. Isso melhora a segurança e o princípio do menor privilégio.
+
+**Exceção:** o endpoint de **MRR** (`/public-mrr/mrr`) é público e não exige permissão de chave.
+
+### Permissões disponíveis
+
+| Recurso   | Permissões                                      |
+| --------- | ----------------------------------------------- |
+| Checkout  | `CHECKOUT:CREATE`, `CHECKOUT:READ`, `CHECKOUT:DELETE` |
+| Coupon    | `COUPON:CREATE`, `COUPON:READ`, `COUPON:UPDATE`, `COUPON:DELETE` |
+| Customer  | `CUSTOMER:CREATE`, `CUSTOMER:READ`, `CUSTOMER:DELETE` |
+| Product   | `PRODUCT:CREATE`, `PRODUCT:READ`, `PRODUCT:DELETE` |
+| Store     | `STORE:READ`, `STORE:CREATE`, `STORE:DELETE` |
+| Withdraw  | `WITHDRAW:CREATE`, `WITHDRAW:READ` |
+| Connect   | `CONNECT:READ`, `CONNECT:CREATE`, `CONNECT:DELETE` |
+
+Cada endpoint da documentação indica qual permissão é necessária no topo da página.
+
+## Boas práticas de segurança
+
+<Card horizontal>
+  * Armazene suas chaves em variáveis de ambiente  
+  * Nunca publique sua chave em repositórios ou grupos  
+  * A AbacatePay **nunca** solicitará sua chave  
+  * Revogue imediatamente qualquer chave que possa ter vazado  
 </Card>
 
-## Como criar sua chave de API
+---
 
-Siga estes passos no dashboard da AbacatePay:
+## Como criar uma chave de API
+
+Siga os passos abaixo no dashboard:
 
 <Steps>
-  <Step title="Acesse a Seção de Integração">
+  <Step title="Acesse a seção de Integração">
     <Card>
       <img
         src="/images/criar-chave-api.png"
         alt="Interface da plataforma AbacatePay mostrando o botão de criação de chave"
       />
-      <Card title="Clique no botão 'Criar Chave'">
-        Inicie o processo de criação de uma nova chave de API
+      <Card title="Clique em 'Criar Chave'">
+        Inicie a criação de uma nova chave de API.
       </Card>
     </Card>
   </Step>
-  <Step title="Adicione uma Descrição">
+
+  <Step title="Adicione uma descrição">
     <Card>
       <img
         src="/images/exemplo-de-chave-api.png"
         alt="Formulário de criação de chave com campo de descrição"
       />
-      <Card title="Identifique sua chave">
-        Adicione uma descrição clara para identificar o propósito desta chave
+      <Card title="Identifique a chave">
+        Use nomes claros, como “Loja Principal” ou “Ambiente de testes”.
       </Card>
     </Card>
   </Step>
-  <Step title="Copie sua Chave">
+
+  <Step title="Copie a chave gerada">
     <Card>
       <img
         src="/images/copiar-chave-api.png"
         alt="Lista de chaves com opção para copiar"
       />
-      <Card title="Armazene sua chave com segurança">
-        Copie a chave gerada e armazene-a em um local seguro
+      <Card title="Guarde com segurança">
+        Copie a chave e salve em um local seguro ou gerenciador de segredos.
       </Card>
     </Card>
   </Step>
 </Steps>
 
-Após criar sua chave, você pode começar a integrar com nossa API. Lembre-se de incluir a chave em todas as requisições no header `Authorization`:
+Depois disso, você já pode enviar requisições:
 
 ```bash
-curl -X POST https://api.abacatepay.com/v1/payments \
-  -H "Authorization: Bearer sua_chave_api" \
+curl -X POST https://api.abacatepay.com/v2/transparents/create \
+  -H "Authorization: Bearer {{API_KEY}}" \
   -H "Content-Type: application/json" \
-  -d '{"amount": 1000}'
+  -data '{
+    "amount": 1000,
+    "method": "PIX_QRCODE"
+  }'
 ```
 
-<Card title="Nota Importante" icon="info" horizontal>
-  O mesmo endpoint (`https://api.abacatepay.com`) é usado tanto para o ambiente de desenvolvimento quanto para produção. O ambiente é determinado automaticamente pela chave de API utilizada na requisição.
+<Card title="Nota Importante">
+  O mesmo endpoint [api.abacatepay.com](https://api.abacatepay.com) é usado para o ambiente de desenvolvimento e produção. O ambiente é determinado automaticamente pela chave de API utilizada na requisição.
 </Card>

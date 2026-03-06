@@ -1,0 +1,65 @@
+---
+title: "Referência"
+description: "Saques do seu saldo para sua própria chave PIX"
+icon: "book-open-cover"
+---
+
+Com **payouts** você saca o saldo da conta de forma automatizada para uma chave PIX de sua titularidade.
+
+## Estrutura
+
+Exemplo de resposta de um saque:
+
+```json
+{
+  "data": {
+    "id": "txn_abc123xyz",
+    "status": "PENDING",
+    "devMode": false,
+    "receiptUrl": null,
+    "amount": 10000,
+    "platformFee": 100,
+    "externalId": "saque-123",
+    "createdAt": "2024-11-04T18:38:28.573Z",
+    "updatedAt": "2024-11-04T18:38:28.573Z"
+  },
+  "success": true,
+  "error": null
+}
+```
+
+## Atributos
+
+| Atributo     | Tipo    | Descrição |
+| ------------ | ------- | --------- |
+| `id`         | string  | ID único da transação na AbacatePay |
+| `status`     | string  | Status do saque (veja valores abaixo) |
+| `devMode`    | boolean | `true` se criado em sandbox |
+| `receiptUrl` | string \| null | URL do comprovante; disponível quando `status` é `COMPLETE` |
+| `amount`     | number  | Valor em centavos (ex.: 10000 = R$ 100,00) |
+| `platformFee` | number | Taxa da plataforma em centavos |
+| `externalId` | string  | ID no seu sistema |
+| `createdAt`  | string  | Data/hora de criação (ISO 8601) |
+| `updatedAt`  | string  | Data/hora da última atualização |
+
+**Valores de `status`:**
+
+| Valor        | Significado |
+| ------------ | ----------- |
+| `PENDING`    | Criado, aguardando processamento |
+| `EXPIRED`    | Expirado |
+| `CANCELLED`  | Cancelado |
+| `COMPLETE`   | Concluído com sucesso |
+| `REFUNDED`   | Reembolsado |
+
+## Limites e taxas
+
+- **Mínimo:** R$ 3,50 (350 centavos)
+- **Taxa:** R$ 0,80 por saque dentro dos limites; ver [termos de uso](https://abacatepay.com/termos)
+- **Processamento:** instantâneo; 24/7 respeitando limites diários e noturnos da conta
+- **Limite:** 1 saque por minuto; excesso retorna HTTP 429. Para aumentar, fale com o suporte
+
+## Segurança
+
+- Requisições autenticadas via Bearer Token
+- Abusos podem levar à suspensão da conta conforme os [termos de uso](https://abacatepay.com/termos)

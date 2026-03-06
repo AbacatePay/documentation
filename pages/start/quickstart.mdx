@@ -1,0 +1,126 @@
+---
+title: 'Primeira requisição'
+description: 'Comece a usar a API da AbacatePay em minutos'
+icon: 'rocket'
+---
+
+<Info>
+    Este guia rápido te ajudará a fazer sua primeira requisição à API da
+    AbacatePay em poucos minutos.
+</Info>
+
+## Pré-requisitos
+
+Antes de começar, você precisa de:
+
+- Uma conta na AbacatePay
+- Uma chave de API (criada no dashboard)
+- Conhecimento básico de HTTP e JSON
+
+<Card title="Novo na AbacatePay?" icon="user-plus" horizontal>
+    Se você ainda não tem uma conta, acesse o <a href="https://app.abacatepay.com" target="_blank">dashboard</a>
+  e crie sua conta gratuitamente.
+</Card>
+
+## Passo 1: Obter sua Chave de API
+
+Primeiro, você precisa criar uma chave de API no dashboard da AbacatePay:
+
+<Steps>
+  <Step title="Acesse o Dashboard">
+    Faça login no <a href="https://app.abacatepay.com" target="_blank">dashboard da AbacatePay</a>
+  </Step>
+  <Step title="Crie uma Chave de API">
+    Navegue até a seção de integração e clique em "Criar Chave"
+  </Step>
+  <Step title="Copie sua Chave">
+    Copie a chave gerada e armazene-a em um local seguro
+  </Step>
+</Steps>
+
+<Warning>
+  **Importante**: Sua chave de API é uma credencial sensível. Nunca a
+  compartilhe publicamente ou a commite em repositórios de código.
+</Warning>
+
+<Card title="Modo Dev vs Produção" horizontal>
+  O modo da cobrança (dev ou produção) é determinado automaticamente pela **chave de API** utilizada na requisição:
+
+- **Chave de API de Dev**: Transações simuladas, ideal para testes
+- **Chave de API de Produção**: Transações reais, requer conta verificada
+  
+  Observe que na resposta, o campo `devMode` indica se a cobrança foi criada em modo de desenvolvimento ou produção.
+</Card>
+
+Para mais detalhes sobre autenticação, consulte a <a href="./authentication">documentação de autenticação</a>.
+
+## Passo 2: Fazer sua Primeira Requisição
+
+Agora vamos criar sua primeira cobrança de Checkout Transparente via API.
+
+### Exemplo com cURL
+
+```bash
+curl --request POST \
+  --url https://api.abacatepay.com/v2/transparents/create \
+  --header 'Authorization: Bearer {{API_KEY}}' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "amount": 1000,
+    "method": "PIX_QRCODE"
+  }'
+```
+
+### Resposta de Sucesso
+
+```json
+  {
+    "error": null,
+    "data": {
+      "id":" pix_char_cY2F1nwmknGfg2jdRxrkgmgN",
+      "amount": 1000,
+      "status": "PENDING",
+      "devMode": true,
+      "method": "PIX_QRCODE",
+      "brCode": "0002010121126580014BR.GOV.BCB...",
+      "brCodeBase64 ":"data:image/png;base64...",
+      "platformFee": 80,
+      "createdAt": "2025-12-08T17:01:48.857Z",
+      "updatedAt": "2025-12-08T17:01:48.857Z",
+      "expiresAt": "2025-12-09T17:01:48.857Z",
+    }
+  }
+```
+
+
+
+<Card title="Visualizar sua Checkout Transparente" horizontal>
+  Após criar sua cobrança, você pode visualizá-la no dashboard da AbacatePay. Acesse o{" "}
+  <a href="https://app.abacatepay.com" target="_blank">dashboard</a>{" "}
+  e navegue até a seção de **Cobranças** para ver todos os detalhes da cobrança criada, incluindo status, valores e histórico de pagamentos.
+</Card>
+
+## Próximos Passos
+
+Agora que você fez sua primeira requisição, explore mais funcionalidades:
+
+<CardGroup cols={2}>
+  <Card title="Criar Clientes" icon="users" href="/pages/client/create">
+    Aprenda a criar e gerenciar clientes via API
+  </Card>
+  <Card title="Criar Cobranças" icon="money-bill" href="/pages/payment/create">
+    Veja todas as opções disponíveis para criar cobranças
+  </Card>
+  <Card title="Configurar Webhooks" icon="bell" href="/pages/webhooks">
+    Receba notificações em tempo real sobre eventos
+  </Card>
+  <Card title="SDKs Oficiais" icon="code" href="/pages/sdks">
+    Use nossos SDKs para facilitar a integração
+  </Card>
+</CardGroup>
+
+## Precisa de Ajuda?
+
+<Card title="Suporte" horizontal>
+ Nossa equipe está sempre à disposição! Contate-nos: ajuda@abacatepay.com
+</Card>

@@ -1,0 +1,74 @@
+---
+title: Comece aqui
+icon: 'Avocado'
+description: "Pegue seu café e aprenda sobre a AbacatePay!"
+---
+Nesta documentação você encontrará tudo o que precisa para integrar com a API da AbacatePay. Desenvolvida por desenvolvedores para desenvolvedores, nossa plataforma foi projetada para ser intuitiva e fácil de usar.
+
+## O que é a AbacatePay?
+
+A AbacatePay é um gateway de pagamento que surgiu da nossa própria necessidade de simplificar cobranças em nossos produtos. Percebemos que os meios de pagamento existentes eram excessivamente complexos:
+- Documentações extensas e confusas
+- Processos de homologação longos e burocráticos
+- Múltiplas formas de realizar a mesma operação
+- Alguns gateways até exigem cursos para integração!
+
+Nossa solução? Uma plataforma que transforma a complexidade das Fintechs em uma API simples e intuitiva. Veja como é fácil:
+
+```ts
+// Exemplo de criação de uma cobrança
+abacatepay.checkouts.create({
+   items: [{ id: 'pro', quantity: 1 }],
+});
+```
+
+## API descomplicada
+
+Nossa API foi construída com três princípios fundamentais:
+
+1. **Baseada em intenção**: Cada endpoint representa exatamente o que você lê
+   ```
+   POST /checkouts/create    // Cria um pagamento
+   GET /checkouts/get       // Busca um pagamento específico
+   ```
+
+2. **Consistente**: Nossa API retorna sempre um option contendo o erro ou os dados de retorno, o que facilita a implementação em linguagens de tipagem forte e consistência em todas as operações.
+   ```json
+   {
+      "data": {
+         "id": "bill_abc123xyz",
+         "externalId": "pedido-123",
+         "url": "https://app.abacatepay.com/pay/bill_abc123xyz",
+         "amount": 10000,
+         "paidAmount": null,
+         "items": [
+            {
+               "id": "prod_456",
+               "quantity": 2
+            }
+         ],
+         "status": "PENDING",
+         "coupons": [],
+         "devMode": false,
+         "customerId": null,
+         "returnUrl": null,
+         "completionUrl": null,
+         "receiptUrl": null,
+         "metadata": {},
+         "createdAt": "2024-11-04T18:38:28.573Z",
+         "updatedAt": "2024-11-04T18:38:28.573Z"
+      },
+      "success": true,
+      "error": null
+   }
+   ```
+
+   <Card title="Estrutura de Resposta" horizontal>
+      Todas as respostas da API seguem o padrão `{data, error, success}`. Se `success` for
+      `true`, a operação foi bem-sucedida e os dados estarão em `data`.
+      Os endpoints respondem com `status code` de erro ou sucesso.
+   </Card>
+
+Para facilitar ainda mais, nossa API oferecemos SDKs oficiais e suporte a modo de desenvolvimento com chaves de API dedicadas.
+
+
