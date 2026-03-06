@@ -209,6 +209,10 @@ export function verifyAbacateSignature(rawBody: string, signatureFromHeader: str
 | `subscription.completed` | Assinatura criada e ativada |
 | `subscription.cancelled` | Assinatura cancelada |
 | `subscription.renewed` | Cobrança recorrente da assinatura foi paga |
+| `transfer.completed` | Transferência concluída com sucesso |
+| `transfer.failed` | Transferência falhou |
+| `payout.completed` | Saque concluído com sucesso |
+| `payout.failed` | Saque falhou |
 
 Todos os webhooks v2 compartilham o mesmo formato de payload:
 
@@ -774,6 +778,125 @@ Todos os webhooks v2 compartilham o mesmo formato de payload:
             "brand": "VISA"
           }
         },
+      }
+    }
+    ```
+  </Tab>
+</Tabs>
+
+---
+
+## Eventos de Transferência
+
+Usados para notificar o status de **transferências** (envio de valores para contas externas).
+
+<Tabs>
+  <Tab title="transfer.completed">
+    Disparado quando uma transferência é concluída com sucesso.
+
+    ```json
+    {
+      "event": "transfer.completed",
+      "apiVersion": 2,
+      "devMode": false,
+      "data": {
+        "transfer": {
+          "id": "tran_xxx",
+          "externalId": "payout-ext-123",
+          "amount": 1000,
+          "status": "COMPLETE",
+          "method": "PIX",
+          "platformFee": 80,
+          "receiptUrl": "https://...",
+          "createdAt": "...",
+          "updatedAt": "...",
+          "endToEndIdentifier": "E123..."
+        }
+      }
+    }
+    ```
+  </Tab>
+
+  <Tab title="transfer.failed">
+    Disparado quando uma transferência falha.
+
+    ```json
+    {
+      "event": "transfer.failed",
+      "apiVersion": 2,
+      "devMode": false,
+      "data": {
+        "transfer": {
+          "id": "tran_xxx",
+          "externalId": "payout-ext-123",
+          "amount": 1000,
+          "status": "FAILED",
+          "method": "PIX",
+          "platformFee": 80,
+          "receiptUrl": "https://...",
+          "createdAt": "...",
+          "updatedAt": "...",
+          "endToEndIdentifier": "E123..."
+        }
+      }
+    }
+    ```
+  </Tab>
+</Tabs>
+
+---
+
+## Eventos de Payout (Saque)
+
+Usados para notificar o status de **saques** (retirada de saldo da plataforma).
+
+<Tabs>
+  <Tab title="payout.completed">
+    Disparado quando um saque é concluído com sucesso. O campo `endToEndIdentifier` está presente apenas em saques concluídos.
+
+    ```json
+    {
+      "event": "payout.completed",
+      "apiVersion": 2,
+      "devMode": false,
+      "data": {
+        "withdraw": {
+          "id": "tran_xxx",
+          "amount": 1000,
+          "status": "COMPLETE",
+          "method": "PIX",
+          "platformFee": 80,
+          "receiptUrl": "https://...",
+          "externalId": null,
+          "createdAt": "...",
+          "updatedAt": "...",
+          "endToEndIdentifier": "E123..."
+        }
+      }
+    }
+    ```
+  </Tab>
+
+  <Tab title="payout.failed">
+    Disparado quando um saque falha.
+
+    ```json
+    {
+      "event": "payout.failed",
+      "apiVersion": 2,
+      "devMode": false,
+      "data": {
+        "withdraw": {
+          "id": "tran_xxx",
+          "amount": 1000,
+          "status": "FAILED",
+          "method": "PIX",
+          "platformFee": 80,
+          "receiptUrl": "https://...",
+          "externalId": null,
+          "createdAt": "...",
+          "updatedAt": "..."
+        }
       }
     }
     ```
