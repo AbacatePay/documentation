@@ -26,8 +26,35 @@
   "navigation": {
     "versions": [
       {
+        "version": "v1",
+        "tag": "Current",
+        "tabs": [
+          {
+            "tab": "Comece aqui",
+            "groups": [
+              {
+                "group": "Introdução",
+                "pages": [
+                  "pages/v1/introduction"
+                ]
+              },
+              {
+                "group": "Webhooks",
+                "pages": [
+                  "pages/v1/webhooks"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "API Reference",
+            "openapi": "openapi-v1.yaml"
+          }
+        ]
+      },
+      {
         "version": "v2",
-        "tag": "Latest",
+        "tag": "Beta",
         "tabs": [
           {
             "tab": "Bem-vindo",
@@ -242,33 +269,6 @@
             "pages": [
               "pages/changelog/index"
             ]
-          }
-        ]
-      },
-      {
-        "version": "v1",
-        "tag": "Legacy",
-        "tabs": [
-          {
-            "tab": "Comece aqui",
-            "groups": [
-              {
-                "group": "Introdução",
-                "pages": [
-                  "pages/v1/introduction"
-                ]
-              },
-              {
-                "group": "Webhooks",
-                "pages": [
-                  "pages/v1/webhooks"
-                ]
-              }
-            ]
-          },
-          {
-            "tab": "API Reference",
-            "openapi": "openapi-v1.yaml"
           }
         ]
       }
