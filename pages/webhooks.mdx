@@ -374,24 +374,27 @@ Todos os webhooks v2 compartilham o mesmo formato de payload:
 ## Eventos de Pagamento
 
 <Tabs>
-  <Tab title="payment.completed">
-    Disparado quando um pagamento é confirmado independente se foi realizado via checkout ou via checkout transparente. O `payerInformation` varia conforme o método.
+  <Tab title="transparent.completed">
+    Disparado quando um pagamento via checkout transparente é realizado. O `payerInformation` varia conforme o método.
 
     <Tabs>
       <Tab title="PIX">
         ```json
         {
-          "event": "payment.completed",
+          "event": "transparent.completed",
           "apiVersion": 2,
           "devMode": false,
           "data": {
-            "payment": {
+            "transparent": {
               "id": "char_xyz789",
               "externalId": "pedido-456",
               "amount": 5000,
               "paidAmount": 5000,
               "platformFee": 50,
               "status": "PAID",
+              "frequency": "ONE_TIME",
+              "devMode": true,
+              "customerId": "cust_abc123",
               "methods": ["PIX"],
               "receiptUrl": "https://app.abacatepay.com/receipt/...",
               "createdAt": "2024-12-06T19:00:00.000Z",
@@ -419,17 +422,20 @@ Todos os webhooks v2 compartilham o mesmo formato de payload:
       <Tab title="Cartão">
         ```json
         {
-          "event": "payment.completed",
+          "event": "transparent.completed",
           "apiVersion": 2,
           "devMode": false,
           "data": {
-            "payment": {
+            "transparent": {
               "id": "char_xyz789",
               "externalId": "pedido-456",
               "amount": 5000,
               "paidAmount": 5000,
               "platformFee": 78,
               "status": "PAID",
+              "frequency": "ONE_TIME",
+              "devMode": true,
+              "customerId": "cust_abc123",
               "methods": ["CARD"],
               "receiptUrl": "https://app.abacatepay.com/receipt/...",
               "createdAt": "2024-12-06T19:00:00.000Z",
@@ -455,24 +461,27 @@ Todos os webhooks v2 compartilham o mesmo formato de payload:
     </Tabs>
   </Tab>
 
-  <Tab title="payment.disputed">
-    Disparado quando um pagamento sofre alguma disputa (checkout ou transparente). O `payerInformation` varia conforme o método.
+  <Tab title="transparent.disputed">
+    Disparado quando um pagamento via checkout transparente sofre uma disputa. O `payerInformation` varia conforme o método.
 
     <Tabs>
       <Tab title="PIX">
         ```json
         {
-          "event": "payment.disputed",
+          "event": "transparent.disputed",
           "apiVersion": 2,
           "devMode": false,
           "data": {
-            "payment": {
+            "transparent": {
               "id": "char_xyz789",
               "externalId": "pedido-456",
               "amount": 5000,
               "paidAmount": 5000,
               "platformFee": 50,
               "status": "PAID",
+              "frequency": "ONE_TIME",
+              "devMode": true,
+              "customerId": "cust_abc123",
               "methods": ["PIX"],
               "receiptUrl": "https://app.abacatepay.com/receipt/...",
               "createdAt": "2024-12-06T19:00:00.000Z",
@@ -505,13 +514,16 @@ Todos os webhooks v2 compartilham o mesmo formato de payload:
           "apiVersion": 2,
           "devMode": false,
           "data": {
-            "payment": {
+            "transparent": {
               "id": "char_xyz789",
               "externalId": "pedido-456",
               "amount": 5000,
               "paidAmount": 5000,
               "platformFee": 78,
               "status": "PAID",
+              "frequency": "ONE_TIME",
+              "devMode": true,
+              "customerId": "cust_abc123",
               "methods": ["CARD"],
               "receiptUrl": "https://app.abacatepay.com/receipt/...",
               "createdAt": "2024-12-06T19:00:00.000Z",
@@ -538,24 +550,27 @@ Todos os webhooks v2 compartilham o mesmo formato de payload:
     </Tabs>
   </Tab>
 
-  <Tab title="payment.refunded">
-    Disparado quando um pagamento é reembolsado após um pagamento ser reembolsado (checkout ou transparente). O `payerInformation` varia conforme o método.
+  <Tab title="transparent.refunded">
+    Disparado quando um pagamento via checkout transparente é reembolsado. O `payerInformation` varia conforme o método.
 
     <Tabs>
       <Tab title="PIX">
         ```json
         {
-          "event": "payment.refunded",
+          "event": "transparent.refunded",
           "apiVersion": 2,
           "devMode": false,
           "data": {
-            "payment": {
+            "transparent": {
               "id": "char_xyz789",
               "externalId": "pedido-456",
               "amount": 5000,
               "paidAmount": 5000,
               "platformFee": 50,
               "status": "PAID",
+              "frequency": "ONE_TIME",
+              "devMode": true,
+              "customerId": "cust_abc123",
               "methods": ["PIX"],
               "receiptUrl": "https://app.abacatepay.com/receipt/...",
               "createdAt": "2024-12-06T19:00:00.000Z",
@@ -584,17 +599,20 @@ Todos os webhooks v2 compartilham o mesmo formato de payload:
       <Tab title="Cartão">
         ```json
         {
-          "event": "payment.refunded",
+          "event": "transparent.refunded",
           "apiVersion": 2,
           "devMode": false,
           "data": {
-            "payment": {
+            "transparent": {
               "id": "char_xyz789",
               "externalId": "pedido-456",
               "amount": 5000,
               "paidAmount": 5000,
               "platformFee": 78,
               "status": "PAID",
+              "frequency": "ONE_TIME",
+              "devMode": true,
+              "customerId": "cust_abc123",
               "methods": ["CARD"],
               "receiptUrl": "https://app.abacatepay.com/receipt/...",
               "createdAt": "2024-12-06T19:00:00.000Z",
