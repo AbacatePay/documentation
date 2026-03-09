@@ -65,7 +65,7 @@ Tudo isso sem precisar fazer nada manualmente, e sem fazer seu cliente esperar.
 
 3. **Sempre que algo importante acontece**, como um pagamento aprovado:
    - A AbacatePay envia um POST para a sua URL
-   - O POST contém o evento (ex: `checkout.completed`, `payment.completed`)
+   - O POST contém o evento (ex: `checkout.completed`, `transparent.completed`)
    - Seu sistema processa esse evento
 
 É como receber uma notificação push — só que para servidores.
@@ -203,9 +203,9 @@ export function verifyAbacateSignature(rawBody: string, signatureFromHeader: str
 | `checkout.completed` | Pagamento de um checkout foi confirmado |
 | `checkout.refunded` | Reembolso de um checkout foi concluído |
 | `checkout.disputed` | Disputa/chargeback aberta em um checkout |
-| `payment.completed` | Pagamento confirmado (checkout ou transparente) |
-| `payment.refunded` | Reembolso de um pagamento foi concluído |
-| `payment.disputed` | Disputa/chargeback aberta em um pagamento |
+| `transparent.completed` | Pagamento de um checkout transparante confirmado |
+| `transparent.refunded` | Reembolso de um checkout transparante  foi concluído |
+| `transparent.disputed` | Disputa/chargeback aberta em um pagamento de um checkout transparante |
 | `subscription.completed` | Assinatura criada e ativada |
 | `subscription.cancelled` | Assinatura cancelada |
 | `subscription.renewed` | Cobrança recorrente da assinatura foi paga |
@@ -510,7 +510,7 @@ Todos os webhooks v2 compartilham o mesmo formato de payload:
       <Tab title="Cartão">
         ```json
         {
-          "event": "payment.disputed",
+          "event": "transparent.disputed",
           "apiVersion": 2,
           "devMode": false,
           "data": {
