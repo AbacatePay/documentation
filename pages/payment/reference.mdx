@@ -46,6 +46,7 @@ POST /checkouts/create
   "externalId": "pedido-123",                  // opcional - ID no seu sistema
   "returnUrl": "https://seusite.com/voltar",   // opcional - URL de retorno
   "completionUrl": "https://seusite.com/sucesso", // opcional - URL após pagamento
+  "methods": ["PIX", "CARD"],                  // opcional - métodos de pagamento (padrão: PIX e CARD)
   "metadata": {                                 // opcional - dados adicionais
     "customField": "value"
   }

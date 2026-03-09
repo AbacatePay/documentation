@@ -23,7 +23,7 @@ O `POST /subscriptions/create` usa os mesmos parâmetros do Checkout:
 | `completionUrl` | Não         | URL após pagamento concluído |
 | `metadata`      | Não         | Metadados livres |
 | `coupons`       | Não         | Lista de cupons |
-| `method`        | Não         | `PIX` ou `CARD` |
+| `methods`       | Não         | Lista de métodos (`PIX`, `CARD`). Padrão: `["CARD"]` para assinaturas |
 
 Exemplo (cada item só precisa de `id` e `quantity`; o ciclo vem do produto):
 
@@ -39,7 +39,7 @@ Exemplo (cada item só precisa de `id` e `quantity`; o ciclo vem do produto):
   "externalId": "subs-123",
   "returnUrl": "https://seusite.com/voltar",
   "completionUrl": "https://seusite.com/sucesso",
-  "method": "CARD"
+  "methods": ["CARD"]
 }
 ```
 
