@@ -988,6 +988,7 @@ paths:
                 items:
                   - id: prod-1234
                     quantity: 2
+                methods: ["PIX", "CARD"]
               properties:
                 items:
                   type: array
@@ -1013,12 +1014,16 @@ paths:
                         description: Quantidade deste item.
                         minimum: 1
                         example: 2
-                method:
-                  type: string
-                  description: Método de pagamento disponível.
-                  enum:
-                    - PIX
-                    - CARD
+                methods:
+                  type: array
+                  description: Métodos de pagamento disponíveis. Padrão ["PIX", "CARD"].
+                  items:
+                    type: string
+                    enum:
+                      - PIX
+                      - CARD
+                  minItems: 1
+                  default: ["PIX", "CARD"]
                   x-mint:
                     hidden: true
                 returnUrl:
@@ -1200,6 +1205,7 @@ paths:
                 items:
                   - id: prod-1234
                     quantity: 2
+                methods: ["PIX", "CARD"]
               properties:
                 frequency:
                   type: string
@@ -1232,12 +1238,16 @@ paths:
                         description: Quantidade deste item.
                         minimum: 1
                         example: 2
-                method:
-                  type: string
-                  description: Método de pagamento disponível.
-                  enum:
-                    - PIX
-                    - CARD
+                methods:
+                  type: array
+                  description: Métodos de pagamento disponíveis. Padrão ["PIX", "CARD"].
+                  items:
+                    type: string
+                    enum:
+                      - PIX
+                      - CARD
+                  minItems: 1
+                  default: ["PIX", "CARD"]
                   x-mint:
                     hidden: true
                 returnUrl:
@@ -2524,7 +2534,7 @@ paths:
 
 
         Aceita os mesmos parâmetros do Checkout (`returnUrl`, `completionUrl`,
-        `customerId`, `externalId`, `metadata`, `coupons`, `method`). O Checkout
+        `customerId`, `externalId`, `metadata`, `coupons`, `methods`). O Checkout
         de assinatura aceita **apenas um produto**; o ciclo (frequência) já deve
         estar definido no produto ao criá-lo na loja — não é enviado no
         checkout.
@@ -2550,11 +2560,7 @@ paths:
                   - id: prod-1234
                     quantity: 1
                 customerId: cust_abc123xyz
-                externalId: subs-123
-                returnUrl: 'https://seusite.com/voltar'
-                completionUrl: 'https://seusite.com/sucesso'
-                metadata:
-                  plan: premium
+                methods: ["CARD"]
               properties:
                 items:
                   type: array
@@ -2583,12 +2589,16 @@ paths:
                         description: Quantidade (geralmente 1 para assinatura).
                         minimum: 1
                         example: 1
-                method:
-                  type: string
-                  description: Método de pagamento disponível.
-                  enum:
-                    - PIX
-                    - CARD
+                methods:
+                  type: array
+                  description: Métodos de pagamento disponíveis. Assinaturas suportam apenas CARD. Padrão ["CARD"].
+                  items:
+                    type: string
+                    enum:
+                      - PIX
+                      - CARD
+                  minItems: 1
+                  default: ["CARD"]
                 returnUrl:
                   type: string
                   format: uri
