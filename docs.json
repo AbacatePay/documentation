@@ -34,15 +34,11 @@
             "groups": [
               {
                 "group": "Introdução",
-                "pages": [
-                  "pages/v1/introduction"
-                ]
+                "pages": ["pages/v1/introduction"]
               },
               {
                 "group": "Webhooks",
-                "pages": [
-                  "pages/v1/webhooks"
-                ]
+                "pages": ["pages/v1/webhooks"]
               }
             ]
           },
@@ -58,9 +54,7 @@
         "tabs": [
           {
             "tab": "Bem-vindo",
-            "pages": [
-              "pages/start/welcome"
-            ]
+            "pages": ["pages/start/welcome"]
           },
           {
             "tab": "Comece aqui",
@@ -83,13 +77,16 @@
             "tab": "Documentação",
             "groups": [
               {
-                "group": "Produtos",
+                "group": "Cobrar com Checkout",
+                "pages": ["pages/payment/reference", "pages/payment/create", "pages/payment/list", "pages/payment/one"]
+              },
+              {
+                "group": "Links de pagamento",
                 "pages": [
-                  "pages/products/reference",
-                  "pages/products/create",
-                  "pages/products/list",
-                  "pages/products/get",
-                  "pages/products/delete"
+                  "pages/payment-links/reference",
+                  "pages/payment-links/create",
+                  "pages/payment-links/list",
+                  "pages/payment-links/one"
                 ]
               },
               {
@@ -100,6 +97,16 @@
                   "pages/client/list",
                   "pages/client/get",
                   "pages/client/delete"
+                ]
+              },
+              {
+                "group": "Checkout Transparente",
+                "pages": [
+                  "pages/pix-qrcode/reference",
+                  "pages/pix-qrcode/create",
+                  "pages/pix-qrcode/list",
+                  "pages/pix-qrcode/simulate-payment",
+                  "pages/pix-qrcode/check"
                 ]
               },
               {
@@ -114,74 +121,34 @@
                 ]
               },
               {
-                "group": "Checkouts",
+                "group": "Produtos",
                 "pages": [
-                  "pages/payment/reference",
-                  "pages/payment/create",
-                  "pages/payment/list",
-                  "pages/payment/one"
-                ]
-              },
-              {
-                "group": "Links de pagamento",
-                "pages": [
-                  "pages/payment-links/reference",
-                  "pages/payment-links/create",
-                  "pages/payment-links/list",
-                  "pages/payment-links/one"
-                ]
-              },
-              {
-                "group": "Checkout Transparente",
-                "pages": [
-                  "pages/pix-qrcode/reference",
-                  "pages/pix-qrcode/create",
-                  "pages/pix-qrcode/list",
-                  "pages/pix-qrcode/simulate-payment",
-                  "pages/pix-qrcode/check"
+                  "pages/products/reference",
+                  "pages/products/create",
+                  "pages/products/list",
+                  "pages/products/get",
+                  "pages/products/delete"
                 ]
               },
               {
                 "group": "Assinaturas",
-                "pages": [
-                  "pages/subscriptions/reference",
-                  "pages/subscriptions/create",
-                  "pages/subscriptions/list"
-                ]
+                "pages": ["pages/subscriptions/reference", "pages/subscriptions/create", "pages/subscriptions/list"]
               },
               {
                 "group": "Saques",
-                "pages": [
-                  "pages/payouts/reference",
-                  "pages/payouts/create",
-                  "pages/payouts/get",
-                  "pages/payouts/list"
-                ]
+                "pages": ["pages/payouts/reference", "pages/payouts/create", "pages/payouts/get", "pages/payouts/list"]
               },
               {
                 "group": "PIX",
-                "pages": [
-                  "pages/pix/reference",
-                  "pages/pix/create",
-                  "pages/pix/get",
-                  "pages/pix/list"
-                ]
+                "pages": ["pages/pix/reference", "pages/pix/create", "pages/pix/get", "pages/pix/list"]
               },
               {
                 "group": "Loja",
-                "pages": [
-                  "pages/store/reference",
-                  "pages/store/get"
-                ]
+                "pages": ["pages/store/reference", "pages/store/get"]
               },
               {
                 "group": "Public MRR",
-                "pages": [
-                  "pages/trustMRR/reference",
-                  "pages/trustMRR/mrr",
-                  "pages/trustMRR/get",
-                  "pages/trustMRR/list"
-                ]
+                "pages": ["pages/trustMRR/reference", "pages/trustMRR/mrr", "pages/trustMRR/get", "pages/trustMRR/list"]
               }
             ]
           },
@@ -227,9 +194,7 @@
             "groups": [
               {
                 "group": "AI",
-                "pages": [
-                  "pages/ai/overview"
-                ]
+                "pages": ["pages/ai/overview"]
               }
             ]
           },
@@ -256,19 +221,13 @@
             "groups": [
               {
                 "group": "HTTP",
-                "pages": [
-                  "pages/http/overview",
-                  "pages/http/postman",
-                  "pages/http/bruno"
-                ]
+                "pages": ["pages/http/overview", "pages/http/postman", "pages/http/bruno"]
               }
             ]
           },
           {
             "tab": "Changelog",
-            "pages": [
-              "pages/changelog/index"
-            ]
+            "pages": ["pages/changelog/index"]
           }
         ]
       }

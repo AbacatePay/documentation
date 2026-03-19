@@ -14,6 +14,47 @@ Feedbacks também são bem-vindos no nosso Discord (#dev).
 ## Atualizações Recentes
 
 
+<Update label="19 de Mar, 2026">
+## Webhooks de Assinatura: novo campo `checkout` no payload
+
+Os eventos de assinatura (`subscription.completed`, `subscription.renewed`, `subscription.cancelled`) passam a retornar um novo campo **`checkout`** dentro de `data`, contendo o objeto completo do checkout associado à cobrança.
+
+**O que mudou:**
+
+- Adicionado campo `checkout` em `data` com os detalhes do checkout associado à cobrança (id, url, amount, items, status, methods, etc.)
+- Adicionado campo `id` no nível raiz do payload (identificador único do log do webhook)
+
+**Estrutura anterior:**
+```json
+{
+  "event": "subscription.completed",
+  "data": {
+    "subscription": { ... },
+    "customer": { ... },
+    "payment": { ... },
+    "payerInformation": { ... }
+  }
+}
+```
+
+**Nova estrutura:**
+```json
+{
+  "id": "log_abc123xyz",
+  "event": "subscription.completed",
+  "data": {
+    "subscription": { ... },
+    "customer": { ... },
+    "payment": { ... },
+    "payerInformation": { ... },
+    "checkout": { ... }
+  }
+}
+```
+
+---
+</Update>
+
 <Update label="6 de Mar, 2026">
 ## Nova versão da API
 
