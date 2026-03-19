@@ -24,183 +24,216 @@
     }
   },
   "navigation": {
-    "tabs": [
+    "versions": [
       {
-        "tab": "Bem-vindo",
-        "pages": ["pages/start/welcome"]
-      },
-      {
-        "tab": "Comece aqui",
-        "groups": [
+        "version": "v1",
+        "tag": "Current",
+        "tabs": [
           {
-            "group": "Comece aqui",
-            "pages": [
-              "pages/start/introduction",
-              "pages/start/quickstart",
-              "pages/devmode",
-              "pages/authentication",
-              "pages/webhooks",
-              "pages/glossario",
-              "pages/production"
+            "tab": "Comece aqui",
+            "groups": [
+              {
+                "group": "Introdução",
+                "pages": [
+                  "pages/v1/introduction"
+                ]
+              },
+              {
+                "group": "Webhooks",
+                "pages": [
+                  "pages/v1/webhooks"
+                ]
+              }
             ]
+          },
+          {
+            "tab": "API Reference",
+            "openapi": "openapi-v1.yaml"
           }
         ]
       },
       {
-        "tab": "Documentação",
-        "groups": [
+        "version": "v2",
+        "tag": "Beta",
+        "tabs": [
           {
-            "group": "Cobrar com Checkout",
-            "pages": ["pages/payment/reference", "pages/payment/create", "pages/payment/list", "pages/payment/one"]
+            "tab": "Bem-vindo",
+            "pages": ["pages/start/welcome"]
           },
           {
-            "group": "Links de pagamento",
-            "pages": [
-              "pages/payment-links/reference",
-              "pages/payment-links/create",
-              "pages/payment-links/list",
-              "pages/payment-links/one"
+            "tab": "Comece aqui",
+            "groups": [
+              {
+                "group": "Comece aqui",
+                "pages": [
+                  "pages/start/introduction",
+                  "pages/start/quickstart",
+                  "pages/devmode",
+                  "pages/authentication",
+                  "pages/webhooks",
+                  "pages/glossario",
+                  "pages/production"
+                ]
+              }
             ]
           },
           {
-            "group": "Clientes",
-            "pages": [
-              "pages/client/reference",
-              "pages/client/create",
-              "pages/client/list",
-              "pages/client/get",
-              "pages/client/delete"
+            "tab": "Documentação",
+            "groups": [
+              {
+                "group": "Cobrar com Checkout",
+                "pages": ["pages/payment/reference", "pages/payment/create", "pages/payment/list", "pages/payment/one"]
+              },
+              {
+                "group": "Links de pagamento",
+                "pages": [
+                  "pages/payment-links/reference",
+                  "pages/payment-links/create",
+                  "pages/payment-links/list",
+                  "pages/payment-links/one"
+                ]
+              },
+              {
+                "group": "Clientes",
+                "pages": [
+                  "pages/client/reference",
+                  "pages/client/create",
+                  "pages/client/list",
+                  "pages/client/get",
+                  "pages/client/delete"
+                ]
+              },
+              {
+                "group": "Checkout Transparente",
+                "pages": [
+                  "pages/pix-qrcode/reference",
+                  "pages/pix-qrcode/create",
+                  "pages/pix-qrcode/list",
+                  "pages/pix-qrcode/simulate-payment",
+                  "pages/pix-qrcode/check"
+                ]
+              },
+              {
+                "group": "Cupons",
+                "pages": [
+                  "pages/coupons/reference",
+                  "pages/coupons/create",
+                  "pages/coupons/list",
+                  "pages/coupons/get",
+                  "pages/coupons/delete",
+                  "pages/coupons/toggle"
+                ]
+              },
+              {
+                "group": "Produtos",
+                "pages": [
+                  "pages/products/reference",
+                  "pages/products/create",
+                  "pages/products/list",
+                  "pages/products/get",
+                  "pages/products/delete"
+                ]
+              },
+              {
+                "group": "Assinaturas",
+                "pages": ["pages/subscriptions/reference", "pages/subscriptions/create", "pages/subscriptions/list"]
+              },
+              {
+                "group": "Saques",
+                "pages": ["pages/payouts/reference", "pages/payouts/create", "pages/payouts/get", "pages/payouts/list"]
+              },
+              {
+                "group": "PIX",
+                "pages": ["pages/pix/reference", "pages/pix/create", "pages/pix/get", "pages/pix/list"]
+              },
+              {
+                "group": "Loja",
+                "pages": ["pages/store/reference", "pages/store/get"]
+              },
+              {
+                "group": "Public MRR",
+                "pages": ["pages/trustMRR/reference", "pages/trustMRR/mrr", "pages/trustMRR/get", "pages/trustMRR/list"]
+              }
             ]
           },
           {
-            "group": "Checkout Transparente",
-            "pages": [
-              "pages/pix-qrcode/reference",
-              "pages/pix-qrcode/create",
-              "pages/pix-qrcode/list",
-              "pages/pix-qrcode/simulate-payment",
-              "pages/pix-qrcode/check"
+            "tab": "SDKs",
+            "groups": [
+              {
+                "group": "SDKs",
+                "pages": [
+                  "pages/sdks/sdks",
+                  "pages/sdks/nodejs",
+                  "pages/sdks/python",
+                  "pages/sdks/java",
+                  "pages/sdks/php",
+                  "pages/sdks/ruby",
+                  "pages/sdks/go",
+                  "pages/sdks/rust",
+                  "pages/sdks/kotlin",
+                  "pages/sdks/swift"
+                ]
+              }
             ]
           },
           {
-            "group": "Cupons",
-            "pages": [
-              "pages/coupons/reference",
-              "pages/coupons/create",
-              "pages/coupons/list",
-              "pages/coupons/get",
-              "pages/coupons/delete",
-              "pages/coupons/toggle"
+            "tab": "CLI",
+            "groups": [
+              {
+                "group": "CLI",
+                "pages": [
+                  "pages/cli/overview",
+                  "pages/cli/flags",
+                  "pages/cli/auth",
+                  "pages/cli/payments",
+                  "pages/cli/webhooks",
+                  "pages/cli/utils",
+                  "pages/cli/cases"
+                ]
+              }
             ]
           },
           {
-            "group": "Produtos",
-            "pages": [
-              "pages/products/reference",
-              "pages/products/create",
-              "pages/products/list",
-              "pages/products/get",
-              "pages/products/delete"
+            "tab": "AI",
+            "groups": [
+              {
+                "group": "AI",
+                "pages": ["pages/ai/overview"]
+              }
             ]
           },
           {
-            "group": "Assinaturas",
-            "pages": ["pages/subscriptions/reference", "pages/subscriptions/create", "pages/subscriptions/list"]
+            "tab": "Ecossistema",
+            "groups": [
+              {
+                "group": "Ecossistema",
+                "pages": [
+                  "pages/ecosystem/ecosystem",
+                  "pages/ecosystem/theme",
+                  "pages/ecosystem/rest",
+                  "pages/ecosystem/types",
+                  "pages/ecosystem/types-go",
+                  "pages/ecosystem/eslint",
+                  "pages/ecosystem/typebox",
+                  "pages/ecosystem/zod"
+                ]
+              }
+            ]
           },
           {
-            "group": "Saques",
-            "pages": ["pages/payouts/reference", "pages/payouts/create", "pages/payouts/get", "pages/payouts/list"]
+            "tab": "HTTP",
+            "groups": [
+              {
+                "group": "HTTP",
+                "pages": ["pages/http/overview", "pages/http/postman", "pages/http/bruno"]
+              }
+            ]
           },
           {
-            "group": "PIX",
-            "pages": ["pages/pix/reference", "pages/pix/create", "pages/pix/get", "pages/pix/list"]
-          },
-          {
-            "group": "Loja",
-            "pages": ["pages/store/reference", "pages/store/get"]
-          },
-          {
-            "group": "Public MRR",
-            "pages": ["pages/trustMRR/reference", "pages/trustMRR/mrr", "pages/trustMRR/get", "pages/trustMRR/list"]
+            "tab": "Changelog",
+            "pages": ["pages/changelog/index"]
           }
         ]
-      },
-      {
-        "tab": "SDKs",
-        "groups": [
-          {
-            "group": "SDKs",
-            "pages": [
-              "pages/sdks/sdks",
-              "pages/sdks/nodejs",
-              "pages/sdks/python",
-              "pages/sdks/java",
-              "pages/sdks/php",
-              "pages/sdks/ruby",
-              "pages/sdks/go",
-              "pages/sdks/rust",
-              "pages/sdks/kotlin",
-              "pages/sdks/swift"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "CLI",
-        "groups": [
-          {
-            "group": "CLI",
-            "pages": [
-              "pages/cli/overview",
-              "pages/cli/flags",
-              "pages/cli/auth",
-              "pages/cli/payments",
-              "pages/cli/webhooks",
-              "pages/cli/utils",
-              "pages/cli/cases"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "AI",
-        "groups": [
-          {
-            "group": "AI",
-            "pages": ["pages/ai/overview"]
-          }
-        ]
-      },
-      {
-        "tab": "Ecossistema",
-        "groups": [
-          {
-            "group": "Ecossistema",
-            "pages": [
-              "pages/ecosystem/ecosystem",
-              "pages/ecosystem/theme",
-              "pages/ecosystem/rest",
-              "pages/ecosystem/types",
-              "pages/ecosystem/types-go",
-              "pages/ecosystem/eslint",
-              "pages/ecosystem/typebox",
-              "pages/ecosystem/zod"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "HTTP",
-        "groups": [
-          {
-            "group": "HTTP",
-            "pages": ["pages/http/overview", "pages/http/postman", "pages/http/bruno"]
-          }
-        ]
-      },
-      {
-        "tab": "Changelog",
-        "pages": ["pages/changelog/index"]
       }
     ]
   },
