@@ -218,6 +218,7 @@ Todos os webhooks v2 compartilham o mesmo formato de payload:
 
 ```json
 {
+  "id": "log_abc123xyz",
   "event": "checkout.completed",
   "apiVersion": 2,
   "devMode": false,
@@ -650,12 +651,13 @@ Todos os webhooks v2 compartilham o mesmo formato de payload:
 
     ```json
     {
+      "id": "log_taQArRTApemxwcbw5EJeF3hS",
       "event": "subscription.completed",
       "apiVersion": 2,
       "devMode": false,
       "data": {
         "subscription": {
-          "id": "sub_abc123",
+          "id": "subs_tAFqDWBhcEYTjQh2K0ZYDHau",
           "amount": 2990,
           "currency": "BRL",
           "method": "CARD",
@@ -667,23 +669,23 @@ Todos os webhooks v2 compartilham o mesmo formato de payload:
           "cancelPolicy": null,
           "cancelledDueTo": null
         },
-        "payment": {
-          "id": "char_xyz789",
-          "externalId": "pedido-456",
-          "amount": 5000,
-          "paidAmount": 5000,
-          "platformFee": 50,
-          "status": "PAID",
-          "methods": ["PIX"],
-          "receiptUrl": "https://app.abacatepay.com/receipt/...",
-          "createdAt": "2024-12-06T19:00:00.000Z",
-          "updatedAt": "2024-12-06T19:00:05.000Z"
-        },
         "customer": {
           "id": "cust_def456",
           "name": "Maria Santos",
           "email": "maria@exemplo.com",
           "taxId": "12.***.***/0001-**"
+        },
+        "payment": {
+          "id": "char_xyz789",
+          "externalId": "pedido-456",
+          "amount": 2990,
+          "paidAmount": 2990,
+          "platformFee": 100,
+          "status": "PAID",
+          "methods": ["CARD"],
+          "receiptUrl": "https://app.abacatepay.com/receipt/...",
+          "createdAt": "2024-12-06T20:00:00.000Z",
+          "updatedAt": "2024-12-06T20:00:05.000Z"
         },
         "payerInformation": {
           "method": "CARD",
@@ -692,6 +694,22 @@ Todos os webhooks v2 compartilham o mesmo formato de payload:
             "brand": "VISA"
           }
         },
+        "checkout": {
+          "id": "bill_jskd3TMfScHZDJe5NSZjTmQ4",
+          "externalId": null,
+          "url": "https://app.abacatepay.com/pay/bill_jskd3TMfScHZDJe5NSZjTmQ4",
+          "amount": 2990,
+          "paidAmount": 2990,
+          "platformFee": 100,
+          "frequency": "SUBSCRIPTION",
+          "items": [{ "id": "prod_bx4BstRWhQ2SUcKsPt4c6pmq", "quantity": 1 }],
+          "status": "PAID",
+          "methods": ["CARD"],
+          "customerId": "cust_def456",
+          "receiptUrl": "https://app.abacatepay.com/receipt/...",
+          "createdAt": "2024-12-06T19:59:57.819Z",
+          "updatedAt": "2024-12-06T20:00:05.000Z"
+        }
       }
     }
     ```
@@ -702,40 +720,41 @@ Todos os webhooks v2 compartilham o mesmo formato de payload:
 
     ```json
     {
-      "event": "subscription.completed",
+      "id": "log_abc123xyz",
+      "event": "subscription.renewed",
       "apiVersion": 2,
       "devMode": false,
       "data": {
         "subscription": {
-          "id": "sub_abc123",
+          "id": "subs_tAFqDWBhcEYTjQh2K0ZYDHau",
           "amount": 2990,
           "currency": "BRL",
           "method": "CARD",
-          "status": "CANCELLED",
+          "status": "ACTIVE",
           "frequency": "MONTHLY",
           "createdAt": "2024-12-06T20:00:00.000Z",
-          "updatedAt": "2024-12-06T20:00:05.000Z",
+          "updatedAt": "2025-01-06T20:00:05.000Z",
           "canceledAt": null,
           "cancelPolicy": null,
           "cancelledDueTo": null
-        },
-        "payment": {
-          "id": "char_xyz789",
-          "externalId": "pedido-456",
-          "amount": 5000,
-          "paidAmount": 5000,
-          "platformFee": 50,
-          "status": "PAID",
-          "methods": ["PIX"],
-          "receiptUrl": "https://app.abacatepay.com/receipt/...",
-          "createdAt": "2024-12-06T19:00:00.000Z",
-          "updatedAt": "2024-12-06T19:00:05.000Z"
         },
         "customer": {
           "id": "cust_def456",
           "name": "Maria Santos",
           "email": "maria@exemplo.com",
           "taxId": "12.***.***/0001-**"
+        },
+        "payment": {
+          "id": "char_xyz789",
+          "externalId": "pedido-456",
+          "amount": 2990,
+          "paidAmount": 2990,
+          "platformFee": 100,
+          "status": "PAID",
+          "methods": ["CARD"],
+          "receiptUrl": "https://app.abacatepay.com/receipt/...",
+          "createdAt": "2025-01-06T20:00:00.000Z",
+          "updatedAt": "2025-01-06T20:00:05.000Z"
         },
         "payerInformation": {
           "method": "CARD",
@@ -744,6 +763,22 @@ Todos os webhooks v2 compartilham o mesmo formato de payload:
             "brand": "VISA"
           }
         },
+        "checkout": {
+          "id": "bill_renewxyz789",
+          "externalId": null,
+          "url": "https://app.abacatepay.com/pay/bill_renewxyz789",
+          "amount": 2990,
+          "paidAmount": 2990,
+          "platformFee": 100,
+          "frequency": "SUBSCRIPTION",
+          "items": [{ "id": "prod_bx4BstRWhQ2SUcKsPt4c6pmq", "quantity": 1 }],
+          "status": "PAID",
+          "methods": ["CARD"],
+          "customerId": "cust_def456",
+          "receiptUrl": "https://app.abacatepay.com/receipt/...",
+          "createdAt": "2025-01-06T19:59:57.819Z",
+          "updatedAt": "2025-01-06T20:00:05.000Z"
+        }
       }
     }
     ```
@@ -754,12 +789,13 @@ Todos os webhooks v2 compartilham o mesmo formato de payload:
 
     ```json
     {
-      "event": "subscription.completed",
+      "id": "log_abc123xyz",
+      "event": "subscription.cancelled",
       "apiVersion": 2,
       "devMode": false,
       "data": {
         "subscription": {
-          "id": "sub_abc123",
+          "id": "subs_tAFqDWBhcEYTjQh2K0ZYDHau",
           "amount": 2990,
           "currency": "BRL",
           "method": "CARD",
@@ -767,27 +803,27 @@ Todos os webhooks v2 compartilham o mesmo formato de payload:
           "frequency": "MONTHLY",
           "createdAt": "2024-12-06T20:00:00.000Z",
           "updatedAt": "2024-12-06T20:00:05.000Z",
-          "canceledAt": null,
+          "canceledAt": "2024-12-06T20:00:05.000Z",
           "cancelPolicy": null,
           "cancelledDueTo": null
-        },
-        "payment": {
-          "id": "char_xyz789",
-          "externalId": "pedido-456",
-          "amount": 5000,
-          "paidAmount": 5000,
-          "platformFee": 50,
-          "status": "PAID",
-          "methods": ["PIX"],
-          "receiptUrl": "https://app.abacatepay.com/receipt/...",
-          "createdAt": "2024-12-06T19:00:00.000Z",
-          "updatedAt": "2024-12-06T19:00:05.000Z"
         },
         "customer": {
           "id": "cust_def456",
           "name": "Maria Santos",
           "email": "maria@exemplo.com",
           "taxId": "12.***.***/0001-**"
+        },
+        "payment": {
+          "id": "char_xyz789",
+          "externalId": "pedido-456",
+          "amount": 2990,
+          "paidAmount": 2990,
+          "platformFee": 100,
+          "status": "PAID",
+          "methods": ["CARD"],
+          "receiptUrl": "https://app.abacatepay.com/receipt/...",
+          "createdAt": "2024-12-06T20:00:00.000Z",
+          "updatedAt": "2024-12-06T20:00:05.000Z"
         },
         "payerInformation": {
           "method": "CARD",
@@ -796,6 +832,22 @@ Todos os webhooks v2 compartilham o mesmo formato de payload:
             "brand": "VISA"
           }
         },
+        "checkout": {
+          "id": "bill_jskd3TMfScHZDJe5NSZjTmQ4",
+          "externalId": null,
+          "url": "https://app.abacatepay.com/pay/bill_jskd3TMfScHZDJe5NSZjTmQ4",
+          "amount": 2990,
+          "paidAmount": 2990,
+          "platformFee": 100,
+          "frequency": "SUBSCRIPTION",
+          "items": [{ "id": "prod_bx4BstRWhQ2SUcKsPt4c6pmq", "quantity": 1 }],
+          "status": "PAID",
+          "methods": ["CARD"],
+          "customerId": "cust_def456",
+          "receiptUrl": "https://app.abacatepay.com/receipt/...",
+          "createdAt": "2024-12-06T19:59:57.819Z",
+          "updatedAt": "2024-12-06T20:00:05.000Z"
+        }
       }
     }
     ```
