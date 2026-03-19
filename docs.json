@@ -34,15 +34,11 @@
             "groups": [
               {
                 "group": "Introdução",
-                "pages": [
-                  "pages/v1/introduction"
-                ]
+                "pages": ["pages/v1/introduction"]
               },
               {
                 "group": "Webhooks",
-                "pages": [
-                  "pages/v1/webhooks"
-                ]
+                "pages": ["pages/v1/webhooks"]
               }
             ]
           },
