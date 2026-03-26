@@ -9,10 +9,50 @@ Este changelog é atualizado continuamente com melhorias, correções e mudança
 Sugestões de features ou melhorias podem ser enviadas pela área de Roadmap no dashboard.
 Feedbacks também são bem-vindos no nosso Discord (#dev).
 
-
-
 ## Atualizações Recentes
 
+<Update label="26 de Mar, 2026">
+## Checkouts e Assinaturas: suporte ao campo `metadata` na criação
+
+As rotas de criação de cobrança passam a aceitar e persistir um campo **`metadata`** customizado enviado pelo integrador.
+
+**O que mudou:**
+
+- Adicionado campo `metadata` (objeto chave-valor) no body das rotas:
+  - `POST /v2/checkouts/create`
+  - `POST /v2/subscriptions/create`
+- O `metadata` enviado é salvo e retornado no objeto de cobrança dentro do campo `metadata`
+
+**Exemplo de uso:**
+
+```json
+// POST /v2/checkouts/create
+{
+  "items": [{ "id": "prod_abc123", "quantity": 1 }],
+  "metadata": {
+    "orderId": "order_xyz",
+    "source": "mobile"
+  },
+  ...
+}
+```
+
+**Resposta:**
+
+```json
+{
+  "id": "bill_abc123",
+  "metadata": {
+    "orderId": "order_xyz",
+    "source": "mobile"
+  },
+  ...
+}
+```
+
+---
+
+</Update>
 
 <Update label="19 de Mar, 2026">
 ## Webhooks de Assinatura: novo campo `checkout` no payload
@@ -25,6 +65,7 @@ Os eventos de assinatura (`subscription.completed`, `subscription.renewed`, `sub
 - Adicionado campo `id` no nível raiz do payload (identificador único do log do webhook)
 
 **Estrutura anterior:**
+
 ```json
 {
   "event": "subscription.completed",
@@ -38,6 +79,7 @@ Os eventos de assinatura (`subscription.completed`, `subscription.renewed`, `sub
 ```
 
 **Nova estrutura:**
+
 ```json
 {
   "id": "log_abc123xyz",
@@ -53,6 +95,7 @@ Os eventos de assinatura (`subscription.completed`, `subscription.renewed`, `sub
 ```
 
 ---
+
 </Update>
 
 <Update label="6 de Mar, 2026">
@@ -81,11 +124,10 @@ Se você ainda precisa consultar a documentação da v1 durante a migração:
 - Em produção, selecione a versão **v1** no seletor de versões no topo desta documentação ou acessar o [link](/pages/v1/introduction)
 
 ---
+
 </Update>
 
 <Update label="Antes da API v2">
-Esquecemos os updates antes da v2. Prometemos que todo novo update aparecerá por aqui.
-<img src="https://c.tenor.com/hTqHcjxGcgAAAAAC/tenor.gif" /> 
+  Esquecemos os updates antes da v2. Prometemos que todo novo update aparecerá por aqui.
+  <img src="https://c.tenor.com/hTqHcjxGcgAAAAAC/tenor.gif" />
 </Update>
-
-
