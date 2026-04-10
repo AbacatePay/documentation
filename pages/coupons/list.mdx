@@ -3,6 +3,10 @@ title: 'Listar cupons'
 openapi: "GET /coupons/list"
 ---
 
-<Card  horizontal>
+Retorna todos os cupons da sua loja, incluindo ativos e inativos.
+
+<Card horizontal>
   Requer a permissão `COUPON:READ`.
-</Card> 
+</Card>
+
+Use `limit`, `after` e `before` para paginar. Cada item segue o mesmo formato da resposta do [Criar Cupom](/pages/coupons/create), incluindo `status`, `redeemsCount` e `maxRedeems`.

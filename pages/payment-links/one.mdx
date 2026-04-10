@@ -3,8 +3,10 @@ title: 'Buscar um link de pagamento'
 openapi: "GET /payment-links/get"
 ---
 
+Retorna os dados de um link de pagamento pelo seu `id`.
+
 <Card horizontal>
   Requer a permissão `CHECKOUT:READ`.
 </Card>
 
-Retorna os dados de uma cobrança pelo ID. Para links de pagamento, o campo `frequency` virá como `MULTIPLE_PAYMENTS`.
+O campo `frequency` virá como `MULTIPLE_PAYMENTS`. Use `paidAmount` para acompanhar o total arrecadado via esse link ao longo do tempo.

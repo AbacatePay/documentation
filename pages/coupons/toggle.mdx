@@ -3,6 +3,10 @@ title: 'Alternar Status de um Cupom'
 openapi: "POST /coupons/toggle"
 ---
 
-<Card  horizontal>
+Ativa ou desativa um cupom. Cupons inativos não podem ser aplicados em checkouts.
+
+<Card horizontal>
   Requer a permissão `COUPON:UPDATE`.
 </Card>
+
+Chame este endpoint sempre que quiser pausar uma promoção temporariamente ou reativá-la sem precisar recriar o cupom.

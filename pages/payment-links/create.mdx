@@ -3,8 +3,25 @@ title: Criar um link de pagamento
 openapi: 'POST /payment-links/create'
 ---
 
-<Card horizontal>
-  Requer a permissão `CHECKOUT:CREATE`.
+Cria um link de pagamento que pode ser pago por múltiplos clientes — ideal para vendas em massa, rifas ou formulários de inscrição sem criar um checkout por cliente.
+
+<Card title="Obrigatório" horizontal>
+  Envie `"frequency": "MULTIPLE_PAYMENTS"` junto com `items`. O restante dos parâmetros é idêntico ao [Checkout](/pages/payment/create).
 </Card>
 
-Para criar um **link de pagamento**, envie `"frequency": "MULTIPLE_PAYMENTS"` no body. O restante dos parâmetros é o mesmo do [Checkout](/pages/payment/reference).
+**Exemplo:**
+```json
+{
+  "frequency": "MULTIPLE_PAYMENTS",
+  "items": [
+    { "id": "prod_abc123xyz", "quantity": 1 }
+  ],
+  "externalId": "link-campanha-123",
+  "completionUrl": "https://seusite.com/obrigado",
+  "methods": ["PIX", "CARD"]
+}
+```
+
+<Tip title="Use a url retornada" horizontal>
+Compartilhe `data.url` — cada cliente que acessar o link pode pagar de forma independente.
+</Tip>

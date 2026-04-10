@@ -3,4 +3,29 @@ title: 'Criar Checkout de assinatura'
 openapi: "POST /subscriptions/create"
 ---
 
-Cria um checkout de assinatura (mesmo fluxo do Checkout). Envie um único item em `items` (`id` e `quantity`); o produto deve ter ciclo definido na loja. Use a `url` da resposta para redirecionar o cliente.
+Cria um checkout de assinatura. O cliente paga uma vez e entra no ciclo de cobranças recorrentes do produto.
+
+<Card title="Pré-requisito" horizontal>
+  O produto referenciado em `items` deve ter um `cycle` definido (`WEEKLY`, `MONTHLY`, `SEMIANNUALLY` ou `ANNUALLY`). Produtos avulsos retornam erro.
+</Card>
+
+**Exemplo:**
+```json
+{
+  "items": [
+    { "id": "prod_abc123xyz", "quantity": 1 }
+  ],
+  "customerId": "cust_abc123xyz",
+  "externalId": "subs-123",
+  "completionUrl": "https://seusite.com/sucesso",
+  "methods": ["CARD"]
+}
+```
+
+<Tip title="Use a url retornada" horizontal>
+Redirecione o cliente para `data.url` para concluir o primeiro pagamento e ativar a assinatura.
+</Tip>
+
+<Note>
+Assinaturas aceitam apenas **um produto por checkout**. O método padrão é `CARD`.
+</Note>

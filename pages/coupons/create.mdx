@@ -3,6 +3,35 @@ title: 'Criar um cupom'
 openapi: "POST /coupons/create"
 ---
 
-<Card  horizontal>
-  Requer a permissão `COUPON:CREATE`.
-</Card> 
+Cria um cupom de desconto que seus clientes aplicam no checkout.
+
+<Card title="Obrigatórios" horizontal>
+  `code` (único na sua loja), `discountKind` (`PERCENTAGE` ou `FIXED`) e `discount` (valor do desconto).
+</Card>
+
+**`PERCENTAGE`** desconta uma porcentagem do total. **`FIXED`** desconta um valor fixo em centavos.
+
+**Exemplo — 10% de desconto ilimitado:**
+```json
+{
+  "code": "BEMVINDO10",
+  "discountKind": "PERCENTAGE",
+  "discount": 10,
+  "maxRedeems": -1,
+  "notes": "Cupom de boas-vindas"
+}
+```
+
+**Exemplo — R$ 20,00 fixo, válido 50 vezes:**
+```json
+{
+  "code": "PROMO20",
+  "discountKind": "FIXED",
+  "discount": 2000,
+  "maxRedeems": 50
+}
+```
+
+<Tip title="maxRedeems" horizontal>
+`-1` significa usos ilimitados. Qualquer valor positivo limita o número total de resgates.
+</Tip>

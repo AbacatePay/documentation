@@ -3,6 +3,20 @@ title: 'Buscar um Checkout'
 openapi: "GET /checkouts/get"
 ---
 
-<Card  horizontal>
+Retorna os dados completos de um checkout pelo seu `id`.
+
+<Card horizontal>
   Requer a permissão `CHECKOUT:READ`.
 </Card>
+
+Use este endpoint para verificar o `status` de uma cobrança após o cliente retornar ao seu site, ou ao receber um [webhook](/pages/webhooks) de pagamento.
+
+**Valores de `status`:**
+
+| Valor | Significado |
+|-------|-------------|
+| `PENDING` | Aguardando pagamento |
+| `PAID` | Pago com sucesso |
+| `EXPIRED` | Expirado sem pagamento |
+| `CANCELLED` | Cancelado |
+| `REFUNDED` | Reembolsado |

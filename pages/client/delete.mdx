@@ -3,6 +3,12 @@ title: 'Deletar um Cliente'
 openapi: "POST /customers/delete"
 ---
 
-<Card  horizontal>
+Remove um cliente da sua loja pelo `id`.
+
+<Card horizontal>
   Requer a permissão `CUSTOMER:DELETE`.
 </Card>
+
+<Warning>
+Deletar um cliente não cancela cobranças ou assinaturas vinculadas a ele.
+</Warning>

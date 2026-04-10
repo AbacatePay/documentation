@@ -3,6 +3,10 @@ title: 'Listar Clientes'
 openapi: "GET /customers/list"
 ---
 
-<Card  horizontal>
+Retorna todos os clientes cadastrados na sua loja.
+
+<Card horizontal>
   Requer a permissão `CUSTOMER:READ`.
 </Card>
+
+Use `limit`, `after` e `before` para paginar. Cada item segue o mesmo formato da resposta do [Criar Cliente](/pages/client/create), incluindo `id`, `email`, `name` e `taxId`.

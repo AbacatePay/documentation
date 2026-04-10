@@ -3,6 +3,30 @@ title: 'Criar um Cliente'
 openapi: "POST /customers/create"
 ---
 
-<Card  horizontal>
-  Requer a permissão `CUSTOMER:CREATE`.
+Cadastra um cliente para pré-preencher o checkout e reutilizar em várias cobranças.
+
+<Card title="Obrigatório" horizontal>
+  Só `data.email` é obrigatório. Inclua `name`, `taxId` e `cellphone` sempre que tiver — melhora a experiência no checkout.
 </Card>
+
+**Exemplo:**
+```json
+{
+  "data": {
+    "email": "joao@exemplo.com",
+    "name": "João Silva",
+    "taxId": "12345678900",
+    "cellphone": "+5511999999999",
+    "zipCode": "01310-100"
+  },
+  "metadata": { "plano": "premium" }
+}
+```
+
+<Tip title="Reuse o customerId" horizontal>
+Guarde o `data.id` retornado e passe como `customerId` ao criar checkouts — o cliente não precisa preencher os dados novamente.
+</Tip>
+
+<Note>
+Cliente é único por CPF/CNPJ. Se já existir um cadastro com o mesmo `taxId`, a API devolve o registro existente em vez de criar um duplicado.
+</Note>

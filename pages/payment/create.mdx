@@ -3,6 +3,40 @@ title: Criar um Checkout
 openapi: 'POST /checkouts/create'
 ---
 
-<Card  horizontal>
-  Requer a permissão `CHECKOUT:CREATE`.
+Gera uma página de pagamento hospedada. Você envia os produtos; a API devolve a `url` para redirecionar o cliente.
+
+<Card title="Obrigatório" horizontal>
+  Só `items` é obrigatório — lista com `id` do produto e `quantity`.
 </Card>
+
+**Exemplo mínimo:**
+```json
+{
+  "items": [
+    { "id": "prod_abc123xyz", "quantity": 1 }
+  ]
+}
+```
+
+**Exemplo completo:**
+```json
+{
+  "items": [
+    { "id": "prod_abc123xyz", "quantity": 1 }
+  ],
+  "customerId": "cust_abc123xyz",
+  "externalId": "pedido-123",
+  "returnUrl": "https://seusite.com/voltar",
+  "completionUrl": "https://seusite.com/sucesso",
+  "methods": ["PIX", "CARD"],
+  "metadata": { "origem": "app-mobile" }
+}
+```
+
+<Tip title="Use a url retornada" horizontal>
+Redirecione o cliente para `data.url` — é lá que ele finaliza o pagamento.
+</Tip>
+
+<Note>
+Para cobranças recorrentes use [Assinaturas](/pages/subscriptions/create). Para um link que múltiplos clientes podem pagar use [Links de pagamento](/pages/payment-links/create).
+</Note>

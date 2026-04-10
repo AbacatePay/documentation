@@ -139,9 +139,9 @@ Depois disso, você já pode enviar requisições:
 curl -X POST https://api.abacatepay.com/v2/transparents/create \
   -H "Authorization: Bearer {{API_KEY}}" \
   -H "Content-Type: application/json" \
-  -data '{
+  --data '{
     "amount": 1000,
-    "method": "PIX_QRCODE"
+    "method": "PIX"
   }'
 ```
 
