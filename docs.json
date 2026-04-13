@@ -131,6 +131,16 @@
                 ]
               },
               {
+                "group": "Webhooks",
+                "pages": [
+                  "pages/webhooks/reference",
+                  "pages/webhooks/create",
+                  "pages/webhooks/list",
+                  "pages/webhooks/get",
+                  "pages/webhooks/delete"
+                ]
+              },
+              {
                 "group": "Assinaturas",
                 "pages": ["pages/subscriptions/reference", "pages/subscriptions/create", "pages/subscriptions/list"]
               },
