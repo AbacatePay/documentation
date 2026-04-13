@@ -2774,6 +2774,69 @@ paths:
                       Mensagem de erro descrevendo o motivo da falha na
                       autenticação.
                     example: Token de autenticação inválido ou ausente.
+  /subscriptions/cancel:
+    post:
+      summary: Cancelar uma assinatura
+      description: |
+        Cancela imediatamente uma assinatura ativa.
+
+        A assinatura passa para o status `CANCELLED` e nenhuma cobrança futura será gerada. Esta operação é irreversível.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - id
+              additionalProperties: false
+              properties:
+                id:
+                  type: string
+                  description: Identificador único da assinatura a ser cancelada
+                  example: subs_abc123xyz
+      responses:
+        '200':
+          description: Assinatura cancelada com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Subscription'
+                  error:
+                    type: string
+                    nullable: true
+                    example: null
+                  success:
+                    $ref: '#/components/schemas/Success'
+        '401':
+          description: Não autorizado. Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: >-
+                      Mensagem de erro descrevendo o motivo da falha na
+                      autenticação.
+                    example: Token de autenticação inválido ou ausente.
+        '404':
+          description: Assinatura não encontrada.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Mensagem de erro indicando que a assinatura não foi encontrada.
+                    example: Subscription not found
   /store/get:
     get:
       summary: Obter detalhes da loja
