@@ -3034,6 +3034,256 @@ paths:
                       Mensagem de erro descrevendo o motivo da falha na
                       autenticação.
                     example: Token de autenticação inválido ou ausente.
+  /webhooks/create:
+    post:
+      summary: Criar um webhook
+      description: >
+        Cria um novo webhook para receber notificações automáticas de eventos da
+        sua loja.
+
+
+        O `endpoint` deve ser uma URL HTTPS válida e não pode apontar para
+        endereços locais ou IPs privados.
+
+
+        **Alternativa**: Você também pode criar e gerenciar seus webhooks pelo
+        [Dashboard da AbacatePay](https://app.abacatepay.com/webhooks).
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookCreateInput'
+      responses:
+        '200':
+          description: Webhook criado com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/WebhookResponse'
+                  error:
+                    type: string
+                    nullable: true
+                    example: null
+                  success:
+                    $ref: '#/components/schemas/Success'
+        '401':
+          description: Não autorizado. Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: >-
+                      Mensagem de erro descrevendo o motivo da falha na
+                      autenticação.
+                    example: Token de autenticação inválido ou ausente.
+  /webhooks/list:
+    get:
+      summary: Listar webhooks
+      description: >
+        Retorna todos os webhooks da sua loja com suporte a paginação e busca.
+
+
+        **Alternativa**: Você também pode visualizar e gerenciar seus webhooks
+        pelo [Dashboard da AbacatePay](https://app.abacatepay.com/webhooks).
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: search
+          in: query
+          description: Busca por nome, ID ou endpoint do webhook
+          required: false
+          schema:
+            type: string
+            example: pagamentos
+        - name: after
+          in: query
+          description: Cursor para buscar itens após este ponto
+          required: false
+          schema:
+            type: string
+        - name: before
+          in: query
+          description: Cursor para buscar itens antes deste ponto
+          required: false
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: Quantidade de itens por página (1-100)
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 100
+            example: 100
+        - name: id
+          in: query
+          description: Filtrar por identificador único do webhook
+          required: false
+          schema:
+            type: string
+            example: webh_abc123xyz
+      responses:
+        '200':
+          description: Lista de webhooks retornada com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    description: Lista de webhooks.
+                    items:
+                      $ref: '#/components/schemas/WebhookResponse'
+                  success:
+                    $ref: '#/components/schemas/Success'
+                  error:
+                    type: string
+                    nullable: true
+                    example: null
+                  pagination:
+                    $ref: '#/components/schemas/PaginationCursor'
+        '401':
+          description: Não autorizado. Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: >-
+                      Mensagem de erro descrevendo o motivo da falha na
+                      autenticação.
+                    example: Token de autenticação inválido ou ausente.
+  /webhooks/get:
+    get:
+      summary: Buscar um webhook
+      description: Retorna os dados de um webhook específico pelo seu identificador.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: query
+          description: Identificador único do webhook
+          required: true
+          schema:
+            type: string
+            example: webh_abc123xyz
+      responses:
+        '200':
+          description: Webhook encontrado com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/WebhookResponse'
+                  error:
+                    type: string
+                    nullable: true
+                    example: null
+                  success:
+                    $ref: '#/components/schemas/Success'
+        '401':
+          description: Não autorizado. Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: >-
+                      Mensagem de erro descrevendo o motivo da falha na
+                      autenticação.
+                    example: Token de autenticação inválido ou ausente.
+        '404':
+          description: Webhook não encontrado.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Mensagem de erro indicando que o webhook não foi encontrado.
+                    example: Webhook não encontrado.
+  /webhooks/delete:
+    post:
+      summary: Deletar um webhook
+      description: |
+        Remove um webhook da sua loja.
+
+        Esta operação é irreversível. Use com cuidado.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - id
+              additionalProperties: false
+              properties:
+                id:
+                  type: string
+                  description: Identificador único do webhook a ser deletado
+                  example: webh_abc123xyz
+      responses:
+        '200':
+          description: Webhook deletado com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/WebhookResponse'
+                  error:
+                    type: string
+                    nullable: true
+                    example: null
+                  success:
+                    $ref: '#/components/schemas/Success'
+        '401':
+          description: Não autorizado. Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: >-
+                      Mensagem de erro descrevendo o motivo da falha na
+                      autenticação.
+                    example: Token de autenticação inválido ou ausente.
+        '404':
+          description: Webhook não encontrado.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Mensagem de erro indicando que o webhook não foi encontrado.
+                    example: Webhook não encontrado.
 components:
   schemas:
     Success:
@@ -3698,6 +3948,105 @@ components:
           format: date-time
           description: Data de atualização da assinatura.
           example: '2024-11-04T18:38:28.573Z'
+    WebhookCreateInput:
+      type: object
+      description: Dados para criação de um webhook.
+      required:
+        - name
+        - endpoint
+        - secret
+        - events
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+          description: Nome identificador do webhook
+          example: Webhook de Pagamentos
+        endpoint:
+          type: string
+          description: URL HTTPS que receberá as notificações de eventos
+          example: 'https://meusite.com/webhooks/abacatepay'
+        secret:
+          type: string
+          description: Sua chave usada para autenticar nosso webhook
+          example: meu-secret-seguro
+        events:
+          type: array
+          description: Lista de eventos que este webhook deve receber
+          items:
+            type: string
+            enum:
+              - checkout.completed
+              - checkout.refunded
+              - checkout.disputed
+              - checkout.lost
+              - transparent.completed
+              - transparent.refunded
+              - transparent.disputed
+              - transparent.lost
+              - subscription.completed
+              - subscription.trial_started
+              - subscription.cancelled
+              - subscription.renewed
+              - payout.completed
+              - payout.failed
+              - transfer.completed
+              - transfer.failed
+          example:
+            - checkout.completed
+            - subscription.renewed
+    WebhookResponse:
+      type: object
+      description: Os dados do webhook.
+      required:
+        - id
+        - name
+        - endpoint
+        - events
+        - devMode
+        - v2
+        - createdAt
+        - updatedAt
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          description: Identificador único do webhook
+          example: webh_abc123xyz
+        name:
+          type: string
+          description: Nome identificador do webhook
+          example: Webhook de Pagamentos
+        endpoint:
+          type: string
+          description: URL HTTPS que recebe as notificações de eventos
+          example: 'https://meusite.com/webhooks/abacatepay'
+        events:
+          type: array
+          description: Lista de eventos subscritos
+          items:
+            type: string
+          example:
+            - checkout.completed
+            - subscription.renewed
+        devMode:
+          type: boolean
+          description: Indica se o webhook foi criado em ambiente de testes
+          example: false
+        v2:
+          type: boolean
+          description: Indica se o webhook usa o formato de payload v2
+          example: true
+        createdAt:
+          type: string
+          format: date-time
+          description: Data de criação do webhook
+          example: '2025-01-01T00:00:00.000Z'
+        updatedAt:
+          type: string
+          format: date-time
+          description: Data da última atualização do webhook
+          example: '2025-01-01T00:00:00.000Z'
   securitySchemes:
     bearerAuth:
       type: http

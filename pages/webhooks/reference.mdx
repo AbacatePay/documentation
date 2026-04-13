@@ -1,0 +1,88 @@
+---
+title: "Referência"
+description: "Crie e gerencie webhooks para receber notificações automáticas de eventos na sua loja."
+icon: "book-open-cover"
+---
+
+Webhooks permitem que a AbacatePay envie notificações automáticas para o seu sistema sempre que um evento relevante ocorrer, como um pagamento aprovado ou uma assinatura renovada.
+
+Para entender como funcionam os webhooks, os eventos disponíveis e como validar as assinaturas HMAC, consulte a [página de webhooks](/pages/webhooks).
+
+## Criar webhook
+
+Use `POST /webhooks/create`.
+
+<Card title="Campos obrigatórios" horizontal>
+  Obrigatórios: `name`, `endpoint` (URL HTTPS), `secret`, `events`.
+</Card>
+
+**Exemplo:**
+```json
+POST /webhooks/create
+{
+  "name": "Meu Webhook de Pagamentos",                    // obrigatório - nome identificador do webhook
+  "endpoint": "https://meusite.com/webhooks/abacatepay", // obrigatório - URL HTTPS que receberá os eventos
+  "secret": "meu-secret-seguro",                         // obrigatório - chave usada para assinar os payloads
+  "events": ["checkout.completed", "subscription.renewed"] // obrigatório - lista de eventos
+}
+```
+
+**Resposta:**
+```json
+{
+  "data": {
+    "id": "webh_abc123xyz",
+    "name": "Meu Webhook de Pagamentos",
+    "endpoint": "https://meusite.com/webhooks/abacatepay",
+    "events": ["checkout.completed", "subscription.renewed"],
+    "devMode": false,
+    "v2": true,
+    "createdAt": "2025-01-01T00:00:00.000Z",
+    "updatedAt": "2025-01-01T00:00:00.000Z"
+  },
+  "success": true,
+  "error": null
+}
+```
+
+## Eventos suportados
+
+| Evento | Quando é disparado |
+|--------|---------------------|
+| `checkout.completed` | Pagamento de um checkout foi confirmado |
+| `checkout.refunded` | Reembolso de um checkout foi concluído |
+| `checkout.disputed` | Disputa/chargeback aberta em um checkout |
+| `checkout.lost` | Disputa de checkout perdida |
+| `transparent.completed` | Pagamento transparente confirmado |
+| `transparent.refunded` | Reembolso de pagamento transparente concluído |
+| `transparent.disputed` | Disputa em pagamento transparente |
+| `transparent.lost` | Disputa de pagamento transparente perdida |
+| `subscription.completed` | Assinatura criada e ativada |
+| `subscription.cancelled` | Assinatura cancelada |
+| `subscription.renewed` | Cobrança recorrente da assinatura paga |
+| `subscription.trial_started` | Período de trial iniciado |
+| `payout.completed` | Saque concluído com sucesso |
+| `payout.failed` | Saque falhou |
+| `transfer.completed` | Transferência concluída com sucesso |
+| `transfer.failed` | Transferência falhou |
+
+## Modelo do webhook
+
+O objeto retornado nas operações de criar, buscar e listar segue este formato:
+
+| Campo | Tipo | Descrição |
+|-------|------|-----------|
+| `id` | `string` | Identificador único do webhook |
+| `name` | `string` | Nome do webhook |
+| `endpoint` | `string` | URL HTTPS que recebe os eventos |
+| `events` | `string[]` | Lista de eventos subscritos |
+| `devMode` | `boolean` | Se o webhook é de ambiente de testes |
+| `v2` | `boolean` | Se o webhook usa o formato de payload v2 |
+| `createdAt` | `string` | Data de criação (ISO 8601) |
+| `updatedAt` | `string` | Data da última atualização (ISO 8601) |
+
+## Segurança
+
+- Requisições autenticadas via Bearer Token
+- O `endpoint` deve usar HTTPS e não pode apontar para endereços locais ou IPs privados
+- Abusos podem levar à suspensão da conta conforme os [termos de uso](https://abacatepay.com/termos)
