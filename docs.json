@@ -142,7 +142,7 @@
               },
               {
                 "group": "Assinaturas",
-                "pages": ["pages/subscriptions/reference", "pages/subscriptions/create", "pages/subscriptions/list"]
+                "pages": ["pages/subscriptions/reference", "pages/subscriptions/create", "pages/subscriptions/list", "pages/subscriptions/cancel"]
               },
               {
                 "group": "Saques",
