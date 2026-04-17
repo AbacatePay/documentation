@@ -1668,37 +1668,41 @@ paths:
                 - method
                 - data
               additionalProperties: false
-            examples:
-              pix:
-                summary: PIX QR Code
-                value:
-                  method: PIX
-                  data:
-                    amount: 10000
-                    description: Cobrança PIX no checkout transparente
-                    expiresIn: 3600
-                    customer:
-                      name: Daniel Lima
-                      email: daniel_lima@abacatepay.com
-                      cellphone: (11) 4002-8922
-                      taxId: 123.456.789-01
-                    metadata:
-                      pedidoId: pedido-123
-              boleto:
-                summary: Boleto Bancário
-                value:
-                  method: BOLETO
-                  data:
-                    amount: 25000
-                    description: Fatura de serviço mensal
-                    customer:
-                      name: Mariana Costa
-                      taxId: 987.654.321-00
-                      email: mariana.costa@empresa.com.br
-                      cellphone: (21) 99876-5432
-                    metadata:
-                      faturaId: fatura-456
-                      plano: pro
+              examples:
+                pix:
+                  summary: PIX QR Code
+                  value:
+                    method: PIX
+                    data:
+                      amount: 10000
+                      description: Cobrança PIX no checkout transparente
+                      expiresIn: 3600
+                      customer:
+                        name: Daniel Lima
+                        email: daniel_lima@abacatepay.com
+                        cellphone: (11) 4002-8922
+                        taxId: 123.456.789-01
+                      metadata:
+                        pedidoId: pedido-123
+                  x-mint:
+                    when: method == "PIX"
+                boleto:
+                  summary: Boleto Bancário
+                  value:
+                    method: BOLETO
+                    data:
+                      amount: 25000
+                      description: Fatura de serviço mensal
+                      customer:
+                        name: Mariana Costa
+                        taxId: 987.654.321-00
+                        email: mariana.costa@empresa.com.br
+                        cellphone: (21) 99876-5432
+                      metadata:
+                        faturaId: fatura-456
+                        plano: pro
+                  x-mint:
+                    when: method == "BOLETO"
       responses:
         '200':
           description: Checkout transparente criado com sucesso
@@ -1717,6 +1721,53 @@ paths:
                     nullable: true
                   success:
                     $ref: '#/components/schemas/Success'
+              examples:
+                pix:
+                  summary: Resposta PIX QR Code
+                  value:
+                    data:
+                      id: pix_k8pqr2mnvx
+                      amount: 10000
+                      status: PENDING
+                      devMode: false
+                      brCode: 00020126580014BR.GOV.BCB.PIX0136d2b4e5f6-7890-abcd-ef12-34567890abcd5204000053039865802BR5913Daniel Lima6009SAO PAULO62070503***6304F1C2
+                      brCodeBase64: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...
+                      platformFee: 100
+                      expiresAt: '2024-11-04T15:22:10.381Z'
+                      createdAt: '2024-11-04T14:22:10.381Z'
+                      updatedAt: '2024-11-04T14:22:10.381Z'
+                      metadata:
+                        pedidoId: pedido-123
+                    error: null
+                    success:
+                      message: Checkout transparente criado com sucesso
+                  x-mint:
+                    when: method == "PIX"
+                boleto:
+                  summary: Resposta Boleto Bancário
+                  value:
+                    data:
+                      id: bole_k8pqr2mnvx
+                      amount: 25000
+                      status: PENDING
+                      devMode: false
+                      barCode: 23793.38128 60007.827263 37000.963779 4 10010000025000
+                      url: https://app.abacatepay.com/pay/bole_k8pqr2mnvx/boleto
+                      pix:
+                        brCode: 00020126580014BR.GOV.BCB.PIX0136d2b4e5f6-7890-abcd-ef12-34567890abcd5204000053039865802BR5914Mariana Costa6009SAO PAULO62070503***6304F1C2
+                        brCodeBase64: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...
+                      platformFee: 250
+                      expiresAt: '2024-11-07T03:00:00.000Z'
+                      createdAt: '2024-11-04T14:22:10.381Z'
+                      updatedAt: '2024-11-04T14:22:10.381Z'
+                      metadata:
+                        faturaId: fatura-456
+                        plano: pro
+                    error: null
+                    success:
+                      message: Checkout transparente criado com sucesso
+                  x-mint:
+                    when: method == "BOLETO"
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
