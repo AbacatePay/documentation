@@ -1,0 +1,147 @@
+---
+title: 'Referência'
+description: 'PIX QR Code e Boleto no seu checkout sem redirecionar o cliente'
+icon: 'book-open-cover'
+---
+
+O **checkout transparente** permite receber pagamentos diretamente no seu site ou app — sem redirecionar o cliente para outra página. Suporta **PIX** e **Boleto**.
+
+## Métodos disponíveis
+
+| `method` | Descrição |
+|---|---|
+| `PIX` | Gera um QR Code e código copia e cola instantâneos |
+| `BOLETO` | Gera um boleto bancário com PIX alternativo incluído |
+
+Todos os métodos usam o mesmo endpoint: `POST /transparents/create`.
+
+---
+
+## Receber via PIX
+
+Use `/transparents/create`. A API devolve o QR Code em imagem (`brCodeBase64`) e o código copia e cola (`brCode`).
+
+<Card title="Campos obrigatórios" horizontal>
+  Só `data.amount` é obrigatório (valor em centavos). Envie `method: "PIX"`.
+</Card>
+
+**Exemplo de requisição:**
+```json
+POST /transparents/create
+{
+  "method": "PIX",
+  "data": {
+    "amount": 10000,
+    "description": "Cobrança PIX no checkout transparente",
+    "expiresIn": 3600,
+    "customer": {
+      "name": "Daniel Lima",
+      "email": "daniel_lima@abacatepay.com",
+      "taxId": "123.456.789-01",
+      "cellphone": "(11) 4002-8922"
+    },
+    "metadata": {
+      "pedidoId": "pedido-123"
+    }
+  }
+}
+```
+
+**Exemplo de resposta:**
+```json
+{
+  "data": {
+    "id": "pix_char_abc123xyz",
+    "amount": 10000,
+    "status": "PENDING",
+    "devMode": false,
+    "brCode": "00020160014BR.GOV.BCB.PIX070503***6304ABCD",
+    "brCodeBase64": "data:image/png;base64,iVBORw0KG...",
+    "platformFee": 100,
+    "createdAt": "2024-11-04T18:38:28.573Z",
+    "updatedAt": "2024-11-04T18:38:28.573Z",
+    "expiresAt": "2024-11-04T19:38:28.573Z",
+    "metadata": {
+      "pedidoId": "pedido-123"
+    }
+  },
+  "success": true,
+  "error": null
+}
+```
+
+<Tip title="Usando a resposta" horizontal>
+Use `brCodeBase64` para exibir a imagem do QR Code ou `brCode` (copia e cola) para enviar por WhatsApp/Telegram ou integrar no seu checkout.
+</Tip>
+
+---
+
+## Receber via Boleto
+
+Use `/transparents/create` com `method: "BOLETO"`. A API devolve a linha digitável (`barCode`), uma URL para visualização e impressão do boleto (`url`), e um código PIX alternativo para a mesma cobrança.
+
+<Card title="Campos obrigatórios" horizontal>
+  `data.amount` e `data.customer` (com `name` e `taxId`) são obrigatórios para boleto.
+</Card>
+
+**Exemplo de requisição:**
+```json
+POST /transparents/create
+{
+  "method": "BOLETO",
+  "data": {
+    "amount": 25000,
+    "description": "Fatura de serviço mensal",
+    "customer": {
+      "name": "Mariana Costa",
+      "taxId": "987.654.321-00",
+      "email": "mariana.costa@empresa.com.br",
+      "cellphone": "(21) 99876-5432"
+    },
+    "metadata": {
+      "faturaId": "fatura-456",
+      "plano": "pro"
+    }
+  }
+}
+```
+
+**Exemplo de resposta:**
+```json
+{
+  "data": {
+    "id": "bole_k8pqr2mnvx",
+    "amount": 25000,
+    "status": "PENDING",
+    "devMode": false,
+    "barCode": "23793.38128 60007.827263 37000.963779 4 10010000025000",
+    "url": "https://app.abacatepay.com/pay/bole_k8pqr2mnvx/boleto",
+    "pix": {
+      "brCode": "00020126580014BR.GOV.BCB.PIX0136d2b4e5f6-7890-abcd-ef12-34567890abcd5204000053039865802BR5913Mariana Costa6009SAO PAULO62070503***6304F1C2",
+      "brCodeBase64": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA..."
+    },
+    "platformFee": 250,
+    "expiresAt": "2024-11-07T03:00:00.000Z",
+    "createdAt": "2024-11-04T14:22:10.381Z",
+    "updatedAt": "2024-11-04T14:22:10.381Z",
+    "metadata": {
+      "faturaId": "fatura-456",
+      "plano": "pro"
+    }
+  },
+  "success": true,
+  "error": null
+}
+```
+
+<Tip title="Usando a resposta" horizontal>
+  Abra `url` para exibir o boleto para impressão. Use `barCode` para o cliente digitar a linha digitável no app do banco. O objeto `pix` permite oferecer PIX como alternativa sem nenhum esforço adicional.
+</Tip>
+
+---
+
+## Ideias de uso
+
+- **PIX no checkout próprio:** exiba o QR Code na sua página e mantenha o cliente no seu site.
+- **Boleto por e-mail:** envie `url` ou `barCode` por e-mail ou WhatsApp.
+- **Boleto + PIX:** ofereça os dois métodos na mesma tela — o cliente escolhe como pagar.

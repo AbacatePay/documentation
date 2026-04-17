@@ -1,0 +1,36 @@
+---
+title: Criar Boleto
+openapi: 'POST /transparents/create'
+---
+
+<Card horizontal>
+  Requer a permissão `CHECKOUT:READ`.
+</Card>
+
+Este endpoint cria um checkout transparente via Boleto.
+
+- Envie sempre `method` como `"BOLETO"`.
+- Os dados da cobrança ficam dentro do objeto `data` (incluindo `amount`, `customer`, `description`, `expiresIn` e `metadata`).
+- O campo `customer` é obrigatório: informe pelo menos `name` e `taxId` (CPF ou CNPJ).
+
+```json
+{
+  "method": "BOLETO",
+  "data": {
+    "amount": 25000,
+    "description": "Fatura de serviço mensal",
+    "customer": {
+      "name": "Mariana Costa",
+      "taxId": "987.654.321-00",
+      "email": "mariana.costa@empresa.com.br",
+      "cellphone": "(21) 99876-5432"
+    },
+    "metadata": {
+      "faturaId": "fatura-456",
+      "plano": "pro"
+    }
+  }
+}
+```
+
+Veja o exemplo completo em `Checkout Transparente` na página de referência.
