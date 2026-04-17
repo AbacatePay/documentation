@@ -1,0 +1,79 @@
+---
+title: Criar cobrança PIX
+openapi: 'POST /transparents/create'
+---
+
+<Card horizontal>
+  Requer a permissão `CHECKOUT:READ`.
+</Card>
+
+Cria um checkout transparente via **PIX**. A API devolve o QR Code em imagem (`brCodeBase64`) e o código copia e cola (`brCode`) — o cliente nunca sai do seu site.
+
+<Note>
+  Para cobrar via Boleto, veja [Criar cobrança Boleto](/pages/transparents/boleto).
+</Note>
+
+---
+
+## Campos obrigatórios
+
+| Campo | Tipo | Descrição |
+|---|---|---|
+| `method` | `string` | Deve ser `"PIX"` |
+| `data.amount` | `number` | Valor em centavos (ex: `10000` = R$ 100,00) |
+
+Todos os outros campos são opcionais mas recomendados para melhor rastreabilidade.
+
+---
+
+## Requisição
+
+```json
+{
+  "method": "PIX",
+  "data": {
+    "amount": 10000,
+    "description": "Cobrança PIX no checkout transparente",
+    "expiresIn": 3600,
+    "customer": {
+      "name": "Daniel Lima",
+      "email": "daniel_lima@abacatepay.com",
+      "taxId": "123.456.789-01",
+      "cellphone": "(11) 4002-8922"
+    },
+    "metadata": {
+      "pedidoId": "pedido-123"
+    }
+  }
+}
+```
+
+---
+
+## Resposta
+
+```json
+{
+  "data": {
+    "id": "pix_char_abc123xyz",
+    "amount": 10000,
+    "status": "PENDING",
+    "devMode": false,
+    "brCode": "00020160014BR.GOV.BCB.PIX070503***6304ABCD",
+    "brCodeBase64": "data:image/png;base64,iVBORw0KG...",
+    "platformFee": 100,
+    "createdAt": "2024-11-04T18:38:28.573Z",
+    "updatedAt": "2024-11-04T18:38:28.573Z",
+    "expiresAt": "2024-11-04T19:38:28.573Z",
+    "metadata": {
+      "pedidoId": "pedido-123"
+    }
+  },
+  "success": true,
+  "error": null
+}
+```
+
+<Tip horizontal>
+  Use `brCodeBase64` para renderizar a imagem do QR Code diretamente na sua página. Use `brCode` (copia e cola) para enviar por WhatsApp, Telegram ou e-mail.
+</Tip>

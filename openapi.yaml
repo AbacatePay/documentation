@@ -1588,10 +1588,11 @@ paths:
                     example: Link de pagamento não encontrado.
   /transparents/create:
     post:
-      summary: Criar QRCode PIX
+      summary: Criar Checkout Transparente
       description: >-
-        Permite que você crie um código copia-e-cola e um QRCode Pix para seu
-        cliente fazer o pagamento.
+        Cria um checkout transparente. Use `"method": "PIX"` para gerar um QR
+        Code ou `"method": "BOLETO"` para emitir um boleto com PIX alternativo
+        incluído.
       security:
         - bearerAuth: []
       requestBody:
@@ -1600,46 +1601,41 @@ paths:
           application/json:
             schema:
               type: object
-              example:
-                method: PIX
-                data:
-                  amount: 10000
               properties:
                 method:
                   type: string
-                  description: Método de pagamento. Hoje apenas PIX é suportado.
+                  description: Método de pagamento.
                   enum:
                     - PIX
+                    - BOLETO
+                  default: PIX
+                  example: PIX
                 data:
                   type: object
-                  description: Dados da cobrança PIX.
+                  description: Dados da cobrança.
                   properties:
                     amount:
                       type: number
                       description: Valor da cobrança em centavos.
                     expiresIn:
                       type: number
-                      description: Tempo de expiração da cobrança em segundos.
+                      description: PIX — expiração em segundos.
                       x-mint:
                         hidden: true
                     description:
                       type: string
-                      maxLength: 140
-                      description: Mensagem que aparecerá na hora do pagamento do PIX.
+                      maxLength: 500
+                      description: Descrição da cobrança.
                       x-mint:
                         hidden: true
                     customer:
                       type: object
                       description: >
-                        Os dados do seu cliente para criá-lo.
-
-                        O objeto de customer não é obrigatório, mas ao informar
-                        qualquer informação do `customer` todos os campos `name`,
-                        `cellphone`, `email` e `taxId` são obrigatórios.
+                        Dados do pagador. Obrigatório para BOLETO (`name` e
+                        `taxId` sempre exigidos). Para PIX, se informado, todos
+                        os campos são obrigatórios.
                       required:
                         - name
-                        - cellphone
-                        - email
                         - taxId
                       additionalProperties: false
                       x-mint:
@@ -1647,23 +1643,23 @@ paths:
                       properties:
                         name:
                           type: string
-                          description: Nome completo do seu cliente
                           example: Daniel Lima
-                        cellphone:
-                          type: string
-                          description: Celular do cliente
-                          example: (11) 4002-8922
-                        email:
-                          type: string
-                          description: E-mail do cliente
-                          example: daniel_lima@abacatepay.com
                         taxId:
                           type: string
-                          description: CPF ou CNPJ do cliente.
                           example: 123.456.789-01
+                        email:
+                          type: string
+                          example: daniel_lima@abacatepay.com
+                        cellphone:
+                          type: string
+                          example: (11) 4002-8922
+                    externalId:
+                      type: string
+                      description: ID no seu sistema para idempotência.
+                      x-mint:
+                        hidden: true
                     metadata:
                       type: object
-                      description: Metadados opcionais para a cobrança
                       additionalProperties: true
                       x-mint:
                         hidden: true
@@ -1676,20 +1672,40 @@ paths:
               additionalProperties: false
       responses:
         '200':
-          description: QRCode Pix criado com sucesso
+          description: Checkout transparente criado com sucesso
           content:
             application/json:
               schema:
                 type: object
                 properties:
                   data:
-                    $ref: '#/components/schemas/PixQRCode'
+                    $ref: '#/components/schemas/TransparentCharge'
                   error:
                     type: string
                     example: null
                     nullable: true
                   success:
                     $ref: '#/components/schemas/Success'
+              example:
+                data:
+                  id: bole_k8pqr2mnvx
+                  amount: 25000
+                  status: PENDING
+                  devMode: false
+                  barCode: 23793.38128 60007.827263 37000.963779 4 10010000025000
+                  url: https://app.abacatepay.com/pay/bole_k8pqr2mnvx/boleto
+                  brCode: 00020126580014BR.GOV.BCB.PIX0136d2b4e5f6-7890-abcd-ef12-34567890abcd5204000053039865802BR5914Mariana Costa6009SAO PAULO62070503***6304F1C2
+                  brCodeBase64: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...
+                  platformFee: 250
+                  expiresAt: '2024-11-07T03:00:00.000Z'
+                  createdAt: '2024-11-04T14:22:10.381Z'
+                  updatedAt: '2024-11-04T14:22:10.381Z'
+                  metadata:
+                    faturaId: fatura-456
+                    plano: pro
+                error: null
+                success:
+                  message: Checkout transparente criado com sucesso
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -1699,9 +1715,6 @@ paths:
                 properties:
                   error:
                     type: string
-                    description: >-
-                      Mensagem de erro descrevendo o motivo da falha na
-                      autenticação.
                     example: Token de autenticação inválido ou ausente.
   /transparents/check:
     get:
@@ -3773,6 +3786,148 @@ components:
         metadata:
           type: object
           description: Metadados opcionais da cobrança.
+          additionalProperties: true
+    TransparentCharge:
+      type: object
+      description: >-
+        Dados da cobrança retornados pelo checkout transparente. Os campos
+        `brCode` e `brCodeBase64` são sempre retornados (PIX direto ou PIX
+        alternativo do boleto). Para boleto também retornam `barCode` e
+        `url`.
+      properties:
+        id:
+          type: string
+          description: Identificador único da cobrança.
+          example: bole_k8pqr2mnvx
+        amount:
+          type: number
+          description: Valor a ser pago em centavos.
+          example: 25000
+        status:
+          type: string
+          description: Status atual da cobrança.
+          enum:
+            - PENDING
+            - EXPIRED
+            - CANCELLED
+            - PAID
+            - UNDER_DISPUTE
+            - REFUNDED
+            - REDEEMED
+            - APPROVED
+            - FAILED
+          example: PENDING
+        devMode:
+          type: boolean
+          description: Indica se a cobrança foi criada em ambiente sandbox.
+          example: false
+        brCode:
+          type: string
+          description: >-
+            Código copia-e-cola do QR Code PIX. Para `method: "BOLETO"`,
+            representa o PIX alternativo da mesma cobrança.
+          example: 00020126580014BR.GOV.BCB.PIX0136d2b4e5f6-7890-abcd-ef12-34567890abcd5204000053039865802BR5913Daniel Lima6009SAO PAULO62070503***6304F1C2
+        brCodeBase64:
+          type: string
+          description: >-
+            Imagem em Base64 do QR Code PIX. Para `method: "BOLETO"`,
+            representa o PIX alternativo da mesma cobrança.
+          example: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...
+        barCode:
+          type: string
+          description: >-
+            Linha digitável do boleto para pagamento no app do banco.
+            Retornado quando `method` é `"BOLETO"`.
+          example: 23793.38128 60007.827263 37000.963779 4 10010000025000
+        url:
+          type: string
+          description: >-
+            URL para visualização e impressão do boleto. Retornado quando
+            `method` é `"BOLETO"`.
+          example: https://app.abacatepay.com/pay/bole_k8pqr2mnvx/boleto
+        platformFee:
+          type: number
+          description: Taxa da plataforma em centavos.
+          example: 250
+        expiresAt:
+          type: string
+          description: >-
+            Data de expiração da cobrança (ISO 8601). Para boleto, representa
+            a data de vencimento.
+          example: '2024-11-07T03:00:00.000Z'
+        createdAt:
+          type: string
+          description: Data de criação.
+          example: '2024-11-04T14:22:10.381Z'
+        updatedAt:
+          type: string
+          description: Data da última atualização.
+          example: '2024-11-04T14:22:10.381Z'
+        metadata:
+          type: object
+          description: Campos livres enviados na requisição.
+          additionalProperties: true
+    BoletoTransparent:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Identificador único do boleto.
+          example: bole_k8pqr2mnvx
+        amount:
+          type: number
+          description: Valor a ser pago em centavos.
+          example: 25000
+        status:
+          type: string
+          description: Status atual da cobrança.
+          enum:
+            - PENDING
+            - EXPIRED
+            - CANCELLED
+            - PAID
+            - UNDER_DISPUTE
+            - REFUNDED
+          example: PENDING
+        devMode:
+          type: boolean
+          description: Indica se a cobrança foi criada em ambiente sandbox.
+          example: false
+        barCode:
+          type: string
+          description: Linha digitável do boleto para pagamento no app do banco.
+          example: 23793.38128 60007.827263 37000.963779 4 10010000025000
+        url:
+          type: string
+          description: URL para visualização e impressão do boleto.
+          example: https://app.abacatepay.com/pay/bole_k8pqr2mnvx/boleto
+        brCode:
+          type: string
+          description: Código PIX copia e cola alternativo vinculado à mesma cobrança.
+          example: 00020126580014BR.GOV.BCB.PIX0136d2b4e5f6-7890-abcd-ef12-34567890abcd5204000053039865802BR5913Mariana Costa6009SAO PAULO62070503***6304F1C2
+        brCodeBase64:
+          type: string
+          description: QR Code PIX alternativo em base64.
+          example: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...
+        platformFee:
+          type: number
+          description: Taxa da plataforma em centavos.
+          example: 250
+        expiresAt:
+          type: string
+          description: Data de vencimento do boleto (ISO 8601).
+          example: '2024-11-07T03:00:00.000Z'
+        createdAt:
+          type: string
+          description: Data de criação.
+          example: '2024-11-04T14:22:10.381Z'
+        updatedAt:
+          type: string
+          description: Data da última atualização.
+          example: '2024-11-04T14:22:10.381Z'
+        metadata:
+          type: object
+          description: Campos livres enviados na requisição.
           additionalProperties: true
     Transaction:
       type: object

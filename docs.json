@@ -102,11 +102,12 @@
               {
                 "group": "Checkout Transparente",
                 "pages": [
-                  "pages/pix-qrcode/reference",
-                  "pages/pix-qrcode/create",
-                  "pages/pix-qrcode/list",
-                  "pages/pix-qrcode/simulate-payment",
-                  "pages/pix-qrcode/check"
+                  "pages/transparents/reference",
+                  "pages/transparents/create",
+                  "pages/transparents/boleto",
+                  "pages/transparents/list",
+                  "pages/transparents/simulate-payment",
+                  "pages/transparents/check"
                 ]
               },
               {
