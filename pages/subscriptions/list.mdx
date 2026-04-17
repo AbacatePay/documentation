@@ -3,4 +3,20 @@ title: 'Listar Checkouts de assinatura'
 openapi: "GET /subscriptions/list"
 ---
 
-Lista os checkouts de assinatura. Cada item em `data` tem o mesmo formato do Checkout (`id`, `url`, `amount`, `items`, `status`, etc.). Pagine com `limit`, `after` e `before`.
+Retorna todos os checkouts de assinatura da sua loja.
+
+<Card horizontal>
+  Requer a permissão `CHECKOUT:READ`.
+</Card>
+
+Use `limit`, `after` e `before` para paginar. Cada item segue o mesmo formato da resposta do [Criar Checkout de assinatura](/pages/subscriptions/create), incluindo `status`, `url`, `amount` e `items`.
+
+**Valores de `status`:**
+
+| Valor | Significado |
+|-------|-------------|
+| `PENDING` | Aguardando o primeiro pagamento |
+| `PAID` | Assinatura ativa |
+| `EXPIRED` | Expirado sem pagamento |
+| `CANCELLED` | Cancelado |
+| `REFUNDED` | Reembolsado |

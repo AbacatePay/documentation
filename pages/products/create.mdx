@@ -3,6 +3,36 @@ title: 'Criar um produto'
 openapi: "POST /products/create"
 ---
 
-<Card  horizontal>
-  Requer a permissão `PRODUCT:CREATE`.
+Cria um produto no seu catálogo para usar em checkouts, assinaturas e links de pagamento.
+
+<Card title="Obrigatórios" horizontal>
+  `externalId` (único no seu sistema), `name`, `price` (em centavos) e `currency` (sempre `"BRL"`).
 </Card>
+
+**Produto avulso** (pagamento único — omita `cycle`):
+```json
+{
+  "externalId": "prod-123",
+  "name": "Camiseta Premium",
+  "price": 8990,
+  "currency": "BRL",
+  "description": "Camiseta 100% algodão"
+}
+```
+
+**Produto de assinatura** (defina `cycle`):
+```json
+{
+  "externalId": "plano-mensal",
+  "name": "Plano Mensal",
+  "price": 4990,
+  "currency": "BRL",
+  "cycle": "MONTHLY"
+}
+```
+
+**Valores de `cycle`:** `WEEKLY` · `MONTHLY` · `SEMIANNUALLY` · `ANNUALLY`
+
+<Tip title="ID retornado" horizontal>
+Guarde o `data.id` retornado — é ele que você passa como `items[].id` ao criar checkouts e assinaturas.
+</Tip>

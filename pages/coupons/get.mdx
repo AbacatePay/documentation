@@ -3,6 +3,10 @@ title: 'Buscar um Cupom'
 openapi: "GET /coupons/get"
 ---
 
-<Card  horizontal>
+Retorna os dados de um cupom pelo seu `code`.
+
+<Card horizontal>
   Requer a permissão `COUPON:READ`.
 </Card>
+
+Use `redeemsCount` para acompanhar quantas vezes o cupom já foi utilizado e `status` para verificar se ainda está ativo.

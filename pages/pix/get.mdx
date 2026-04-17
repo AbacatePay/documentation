@@ -3,6 +3,19 @@ title: Buscar PIX
 openapi: 'GET /pix/get'
 ---
 
-<Card  horizontal>
+Retorna os dados de uma transação PIX pelo seu `id`.
+
+<Card horizontal>
   Requer a permissão `WITHDRAW:READ`.
 </Card>
+
+Use para acompanhar o `status` de um envio após criar a transação.
+
+**Valores de `status`:**
+
+| Valor | Significado |
+|-------|-------------|
+| `PENDING` | Aguardando processamento |
+| `COMPLETE` | Enviado com sucesso — `receiptUrl` disponível |
+| `CANCELLED` | Cancelado |
+| `REFUNDED` | Reembolsado |

@@ -3,6 +3,10 @@ title: Listar PIX
 openapi: 'GET /pix/list'
 ---
 
-<Card  horizontal>
+Retorna todas as transações PIX enviadas pela sua conta.
+
+<Card horizontal>
   Requer a permissão `WITHDRAW:READ`.
 </Card>
+
+Use `limit`, `after` e `before` para paginar. Cada item segue o mesmo formato da resposta do [Enviar PIX](/pages/pix/create), incluindo `status`, `amount`, `platformFee` e `receiptUrl`.

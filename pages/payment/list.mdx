@@ -3,6 +3,14 @@ title: 'Listar Checkouts'
 openapi: "GET /checkouts/list"
 ---
 
-<Card  horizontal>
+Retorna todos os checkouts da sua loja em ordem cronológica decrescente.
+
+<Card horizontal>
   Requer a permissão `CHECKOUT:READ`.
 </Card>
+
+Use os parâmetros de paginação `limit`, `after` e `before` para navegar pelos resultados. Cada item da lista segue o mesmo formato da resposta do [Criar Checkout](/pages/payment/create).
+
+<Tip title="Filtrando por status" horizontal>
+Combine com `status` para buscar só cobranças pendentes, pagas ou canceladas.
+</Tip>

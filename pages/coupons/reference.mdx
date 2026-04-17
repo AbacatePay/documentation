@@ -46,7 +46,7 @@ POST /coupons/create
   "code": "MY_COUPON",                    // obrigatório - identificador único do cupom
   "discountKind": "PERCENTAGE",           // obrigatório - tipo de desconto (PERCENTAGE ou FIXED)
   "discount": 10,                         // obrigatório - valor do desconto
-  "maxRedeems": -1,                      
+  "maxRedeems": -1,                       // -1 = ilimitado; qualquer número positivo limita os usos
   "notes": "Cupom de desconto especial",  
   "metadata": {                           
     "campaign": "black-friday"

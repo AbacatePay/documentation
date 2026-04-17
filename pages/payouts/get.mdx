@@ -3,6 +3,19 @@ title: Buscar saque
 openapi: 'GET /payouts/get'
 ---
 
-<Card  horizontal>
+Retorna os dados de um saque pelo seu `id`.
+
+<Card horizontal>
   Requer a permissão `WITHDRAW:READ`.
 </Card>
+
+Use para verificar o `status` de um saque após criá-lo. Quando `status` for `COMPLETE`, o campo `receiptUrl` estará disponível com o comprovante.
+
+**Valores de `status`:**
+
+| Valor | Significado |
+|-------|-------------|
+| `PENDING` | Aguardando processamento |
+| `COMPLETE` | Concluído — `receiptUrl` disponível |
+| `CANCELLED` | Cancelado |
+| `REFUNDED` | Reembolsado |

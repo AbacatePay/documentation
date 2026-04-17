@@ -3,6 +3,10 @@ title: 'Listar Checkouts Transparentes'
 openapi: "GET /transparents/list"
 ---
 
-<Card  horizontal>
+Retorna todos os checkouts transparentes (PIX QR Code) da sua loja.
+
+<Card horizontal>
   Requer a permissão `CHECKOUT:READ`.
 </Card>
+
+Use `limit`, `after` e `before` para paginar. Cada item segue o mesmo formato da resposta do [Criar QRCode PIX](/pages/pix-qrcode/create), incluindo `status`, `brCode`, `amount` e `expiresAt`.

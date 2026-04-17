@@ -3,13 +3,41 @@ title: Criar QRCode PIX
 openapi: 'POST /transparents/create'
 ---
 
-<Card horizontal>
-  Requer a permissão `CHECKOUT:READ`.
+Gera um QR Code PIX para o cliente pagar sem sair do seu site ou app. A resposta traz a imagem do QR Code e o código copia e cola.
+
+<Card title="Obrigatório" horizontal>
+  Só `data.amount` é obrigatório (valor em centavos). O campo `method` deve ser sempre `"PIX"`.
 </Card>
 
-Este endpoint cria um checkout transparente via PIX.
+**Exemplo mínimo:**
+```json
+{
+  "method": "PIX",
+  "data": {
+    "amount": 10000
+  }
+}
+```
 
-- Envie sempre `method` como `"PIX"`.
-- Os dados da cobrança ficam dentro do objeto `data` (incluindo `amount`, `description`, `expiresIn`, `customer` e `metadata`).
+**Exemplo completo:**
+```json
+{
+  "method": "PIX",
+  "data": {
+    "amount": 10000,
+    "description": "Pedido #123",
+    "expiresIn": 3600,
+    "customer": {
+      "name": "João Silva",
+      "email": "joao@exemplo.com",
+      "taxId": "123.456.789-01",
+      "cellphone": "(11) 4002-8922"
+    },
+    "metadata": { "pedidoId": "pedido-123" }
+  }
+}
+```
 
-Veja o exemplo completo em `Checkout Transparente` na página de referência.
+<Tip title="Usando a resposta" horizontal>
+Use `data.brCodeBase64` para exibir a imagem do QR Code na sua página. Use `data.brCode` (copia e cola) para enviar via WhatsApp ou Telegram.
+</Tip>

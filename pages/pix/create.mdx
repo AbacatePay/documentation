@@ -3,6 +3,38 @@ title: Enviar PIX
 openapi: 'POST /pix/send'
 ---
 
-<Card  horizontal>
+Envia dinheiro para qualquer chave PIX de terceiros — fornecedores, parceiros ou colaboradores.
+
+<Card horizontal>
   Requer a permissão `WITHDRAW:CREATE`.
 </Card>
+
+<Note>
+**PIX vs Saques:** use **PIX** para enviar a chaves de terceiros. Para sacar para a sua própria chave use [Saques](/pages/payouts/create).
+</Note>
+
+**Exemplo:**
+```json
+{
+  "amount": 10000,
+  "description": "Pagamento fornecedor #42",
+  "externalId": "pix-123",
+  "pixKey": "contato@fornecedor.com",
+  "pixKeyType": "EMAIL"
+}
+```
+
+**Tipos de chave PIX aceitos:**
+
+| `pixKeyType` | Exemplo |
+|--------------|---------|
+| `CPF` | `12345678901` |
+| `CNPJ` | `12345678000190` |
+| `PHONE` | `11987654321` |
+| `EMAIL` | `contato@exemplo.com` |
+| `RANDOM` | UUID aleatório |
+| `BR_CODE` | Código completo do QR |
+
+<Tip title="Limites" horizontal>
+Valor mínimo: R$ 1,00. O processamento é instantâneo e disponível 24/7.
+</Tip>
