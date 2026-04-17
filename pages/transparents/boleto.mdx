@@ -7,7 +7,7 @@ openapi: 'POST /transparents/create'
   Requer a permissão `CHECKOUT:READ`.
 </Card>
 
-Cria um checkout transparente via **Boleto**. A API devolve a linha digitável (`barCode`), uma URL para visualização e impressão do boleto (`url`), e um QR Code PIX alternativo para a mesma cobrança — tudo em uma única chamada.
+Cria um checkout transparente via **Boleto**. A API devolve a linha digitável (`barCode`), uma URL para visualização e impressão do boleto (`url`), e o PIX alternativo (`brCode`/`brCodeBase64`) para a mesma cobrança — tudo em uma única chamada.
 
 <Note>
   Para cobrar via PIX, veja [Criar cobrança PIX](/pages/transparents/create).
@@ -61,10 +61,8 @@ Cria um checkout transparente via **Boleto**. A API devolve a linha digitável (
     "devMode": false,
     "barCode": "23793.38128 60007.827263 37000.963779 4 10010000025000",
     "url": "https://app.abacatepay.com/pay/bole_k8pqr2mnvx/boleto",
-    "pix": {
-      "brCode": "00020126580014BR.GOV.BCB.PIX0136d2b4e5f6-7890-abcd-ef12-34567890abcd5204000053039865802BR5913Mariana Costa6009SAO PAULO62070503***6304F1C2",
-      "brCodeBase64": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA..."
-    },
+    "brCode": "00020126580014BR.GOV.BCB.PIX0136d2b4e5f6-7890-abcd-ef12-34567890abcd5204000053039865802BR5913Mariana Costa6009SAO PAULO62070503***6304F1C2",
+    "brCodeBase64": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...",
     "platformFee": 250,
     "expiresAt": "2024-11-07T03:00:00.000Z",
     "createdAt": "2024-11-04T14:22:10.381Z",
@@ -80,5 +78,5 @@ Cria um checkout transparente via **Boleto**. A API devolve a linha digitável (
 ```
 
 <Tip horizontal>
-  Abra `url` para exibir o boleto para impressão. Use `barCode` para o cliente digitar a linha digitável no app do banco. O objeto `pix` permite oferecer PIX como alternativa sem nenhum esforço adicional.
+  Abra `url` para exibir o boleto para impressão. Use `barCode` para o cliente digitar a linha digitável no app do banco. Use `brCode`/`brCodeBase64` para oferecer PIX como alternativa sem nenhum esforço adicional.
 </Tip>
