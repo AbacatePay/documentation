@@ -3,6 +3,12 @@ title: 'Deletar um Produto'
 openapi: "POST /products/delete"
 ---
 
-<Card  horizontal>
+Remove um produto do catálogo pelo seu `id`.
+
+<Card horizontal>
   Requer a permissão `PRODUCT:DELETE`.
 </Card>
+
+<Warning>
+Produtos vinculados a checkouts ou assinaturas ativos não devem ser deletados — isso pode causar inconsistências nas cobranças em andamento.
+</Warning>

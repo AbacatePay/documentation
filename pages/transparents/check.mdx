@@ -3,6 +3,21 @@ title: 'Checar Status'
 openapi: 'GET /transparents/check'
 ---
 
-<Card  horizontal>
+Verifica o status atual de um checkout transparente pelo seu `id`.
+
+<Card horizontal>
   Requer a permissão `CHECKOUT:READ`.
 </Card>
+
+Use este endpoint para confirmar se o cliente já realizou o pagamento do QR Code. O campo `status` indica o estado atual:
+
+| Valor | Significado |
+|-------|-------------|
+| `PENDING` | Aguardando pagamento |
+| `PAID` | PIX recebido com sucesso |
+| `EXPIRED` | QR Code expirado sem pagamento |
+| `CANCELLED` | Cancelado |
+
+<Tip title="Polling ou webhook?" horizontal>
+Prefira [webhooks](/pages/webhooks) a fazer polling — você recebe a confirmação em tempo real sem precisar consultar repetidamente.
+</Tip>

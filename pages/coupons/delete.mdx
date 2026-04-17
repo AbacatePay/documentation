@@ -3,6 +3,12 @@ title: 'Deletar um Cupom'
 openapi: "POST /coupons/delete"
 ---
 
-<Card  horizontal>
+Remove permanentemente um cupom da sua loja pelo `code`.
+
+<Card horizontal>
   Requer a permissão `COUPON:DELETE`.
 </Card>
+
+<Warning>
+Esta operação é irreversível. Se quiser apenas impedir novos usos sem deletar, use [Alternar Status](/pages/coupons/toggle) para desativar o cupom.
+</Warning>

@@ -3,6 +3,10 @@ title: 'Listar produtos'
 openapi: "GET /products/list"
 ---
 
-<Card  horizontal>
+Retorna todos os produtos do seu catálogo.
+
+<Card horizontal>
   Requer a permissão `PRODUCT:READ`.
 </Card>
+
+Use `limit`, `after` e `before` para paginar. Cada item segue o mesmo formato da resposta do [Criar Produto](/pages/products/create), incluindo `id`, `name`, `price`, `cycle` e `status`.
