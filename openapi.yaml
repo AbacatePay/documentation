@@ -1608,6 +1608,8 @@ paths:
                   enum:
                     - PIX
                     - BOLETO
+                  default: PIX
+                  example: PIX
                 data:
                   type: object
                   description: Dados da cobrança.
