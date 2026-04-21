@@ -11,6 +11,53 @@ Feedbacks também são bem-vindos no nosso Discord (#dev).
 
 ## Atualizações Recentes
 
+<Update label="20 de Abr, 2026">
+## API v2 disponível para todos
+
+A **API v2 está agora disponível publicamente** para todos os integradores, encerrando a fase beta. Não é mais necessário entrar em contato com o suporte para obter acesso.
+
+**O que mudou:**
+
+- A API v2 deixa de ser exclusiva para clientes selecionados e passa a ser o padrão para todos
+- Novos cadastros já têm acesso à v2 diretamente, sem nenhuma etapa adicional
+- Toda a documentação oficial passa a referenciar a v2 como versão atual
+
+**Próximos passos recomendados:**
+
+Se você ainda utiliza a v1, recomendamos iniciar a migração para a v2. A v1 continuará funcionando até **1º de março de 2028**.
+
+---
+
+</Update>
+
+<Update label="17 de Abr, 2026">
+## Checkout Transparente: rotas de Boleto e Boleto Transparente
+
+Adicionadas as rotas de **Boleto** e **Boleto Transparente** ao Checkout Transparente, permitindo a criação de cobranças via boleto bancário diretamente pela API.
+
+**O que mudou:**
+
+- Nova rota `POST /v2/checkout/transparent/boleto` para criação de cobranças via boleto no fluxo de checkout transparente
+- Suporte a boleto no fluxo de checkout padrão através do método `boleto` nas rotas existentes
+
+**Exemplo de uso:**
+
+```json
+// POST /v2/checkout/transparent/boleto
+{
+  "amount": 10000,
+  "customer": {
+    "name": "João Silva",
+    "email": "joao@exemplo.com",
+    "taxId": "123.456.789-00"
+  }
+}
+```
+
+---
+
+</Update>
+
 <Update label="26 de Mar, 2026">
 ## Checkouts e Assinaturas: suporte ao campo `metadata` na criação
 
