@@ -55,7 +55,7 @@
             "groups": [
               {
                 "group": "Cobrar com Checkout",
-                "pages": ["pages/payment/reference", "pages/payment/create", "pages/payment/list", "pages/payment/one"]
+                "pages": ["pages/payment/reference", "pages/payment/create", "pages/payment/installments", "pages/payment/list", "pages/payment/one"]
               },
               {
                 "group": "Links de pagamento",

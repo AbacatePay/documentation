@@ -29,9 +29,16 @@ Gera uma página de pagamento hospedada. Você envia os produtos; a API devolve 
   "returnUrl": "https://seusite.com/voltar",
   "completionUrl": "https://seusite.com/sucesso",
   "methods": ["PIX", "CARD"],
+  "card": {
+    "maxInstallments": 12
+  },
   "metadata": { "origem": "app-mobile" }
 }
 ```
+
+<Tip title="Parcelamento no cartão" horizontal>
+Use `card.maxInstallments` (1–12) para permitir que o cliente parcele no cartão. O valor mínimo por parcela é R$ 10,00. Veja a [doc completa de parcelamento](/pages/payment/installments).
+</Tip>
 
 <Tip title="Use a url retornada" horizontal>
 Redirecione o cliente para `data.url` — é lá que ele finaliza o pagamento.
