@@ -37,19 +37,22 @@ Adicionadas as rotas de **Boleto** e **Boleto Transparente** ao Checkout Transpa
 
 **O que mudou:**
 
-- Nova rota `POST /v2/checkout/transparent/boleto` para criação de cobranças via boleto no fluxo de checkout transparente
-- Suporte a boleto no fluxo de checkout padrão através do método `boleto` nas rotas existentes
+- Adicionado suporte ao método `BOLETO` na rota `POST /v2/transparents/create`
+- Boleto passa a ser uma opção de pagamento no fluxo de checkout transparente
 
 **Exemplo de uso:**
 
 ```json
-// POST /v2/checkout/transparent/boleto
+// POST /v2/transparents/create
 {
-  "amount": 10000,
-  "customer": {
-    "name": "João Silva",
-    "email": "joao@exemplo.com",
-    "taxId": "123.456.789-00"
+  "method": "BOLETO",
+  "data": {
+    "amount": 10000,
+    "customer": {
+      "name": "João Silva",
+      "taxId": "123.456.789-00",
+      "email": "joao@exemplo.com"
+    }
   }
 }
 ```
