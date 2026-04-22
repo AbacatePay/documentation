@@ -1,0 +1,112 @@
+---
+title: Receber parcelado (Cartão)
+description: Permita que seus clientes paguem em até 12x no cartão de crédito.
+icon: "credit-card"
+---
+
+Ao criar um checkout, você pode definir o número máximo de parcelas que o cliente pode escolher no cartão de crédito. O cliente seleciona as parcelas na tela de pagamento e o valor total é dividido automaticamente.
+
+<Card title="Não disponível em assinaturas" horizontal>
+  Parcelamento funciona em checkouts `ONE_TIME` e links de pagamento (`MULTIPLE_PAYMENTS`). Apenas assinaturas (`SUBSCRIPTION`) não suportam parcelamento.
+</Card>
+
+## Como funciona
+
+Envie o objeto `card` com o campo `maxInstallments` ao criar o checkout. O valor deve ser um inteiro entre **1 e 12**.
+
+```json
+POST /checkouts/create
+{
+  "items": [
+    { "id": "prod_abc123xyz", "quantity": 1 }
+  ],
+  "methods": ["CARD"],
+  "card": {
+    "maxInstallments": 12
+  }
+}
+```
+
+O checkout gerado exibe um seletor para o cliente escolher de 1x até o máximo definido.
+
+## Regras e restrições
+
+| Regra | Detalhe |
+|-------|---------|
+| **Mínimo por parcela** | R$ 10,00 — para oferecer 3x o total deve ser ≥ R$ 30,00 |
+| **Máximo de parcelas** | 12x |
+| **Método obrigatório** | `CARD` deve estar em `methods` |
+| **Frequência** | `ONE_TIME` e `MULTIPLE_PAYMENTS`; não funciona em assinaturas (`SUBSCRIPTION`) |
+
+<Warning>
+Se o valor total for insuficiente para o número de parcelas configurado, a API retorna erro: `"Total below minimum for Nx (R$10 per installment)"`.
+</Warning>
+
+## Exemplo completo
+
+```json
+POST /checkouts/create
+{
+  "items": [
+    { "id": "prod_abc123xyz", "quantity": 1 }
+  ],
+  "customerId": "cust_abc123xyz",
+  "externalId": "pedido-456",
+  "returnUrl": "https://seusite.com/voltar",
+  "completionUrl": "https://seusite.com/sucesso",
+  "methods": ["PIX", "CARD"],
+  "card": {
+    "maxInstallments": 6
+  }
+}
+```
+
+**Resposta:**
+```json
+{
+  "data": {
+    "id": "bill_abc123xyz",
+    "url": "https://app.abacatepay.com/pay/bill_abc123xyz",
+    "amount": 10000,
+    "status": "PENDING",
+    "frequency": "ONE_TIME",
+    "methods": ["PIX", "CARD"],
+    "card": {
+      "maxInstallments": 6
+    },
+    "createdAt": "2025-04-17T12:00:00.000Z",
+    "updatedAt": "2025-04-17T12:00:00.000Z"
+  },
+  "success": true,
+  "error": null
+}
+```
+
+<Tip title="Redirecione o cliente" horizontal>
+Use a `url` retornada para levar o cliente ao checkout. O seletor de parcelas aparece automaticamente na tela de pagamento quando `maxInstallments` for maior que 1.
+</Tip>
+
+## Só aceitar cartão parcelado
+
+Se o seu produto só faz sentido com parcelamento (ex: curso, produto de ticket alto), remova o PIX de `methods` e defina `maxInstallments`:
+
+```json
+{
+  "items": [{ "id": "prod_abc123xyz", "quantity": 1 }],
+  "methods": ["CARD"],
+  "card": {
+    "maxInstallments": 12
+  }
+}
+```
+
+## Próximos passos
+
+<CardGroup cols={2}>
+  <Card title="Criar checkout" href="/pages/payment/create">
+    Veja todos os campos disponíveis ao criar um checkout.
+  </Card>
+  <Card title="Webhooks" href="/pages/webhooks">
+    Receba notificações quando cada parcela for paga.
+  </Card>
+</CardGroup>
