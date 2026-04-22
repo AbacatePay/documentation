@@ -66,30 +66,32 @@ curl --request POST \
   --header 'Authorization: Bearer {{API_KEY}}' \
   --header 'Content-Type: application/json' \
   --data '{
-    "amount": 1000,
-    "method": "PIX_QRCODE"
+    "method": "PIX",
+    "data": {
+      "amount": 10000
+    }
   }'
 ```
 
 ### Resposta de Sucesso
 
 ```json
-  {
-    "error": null,
-    "data": {
-      "id":" pix_char_cY2F1nwmknGfg2jdRxrkgmgN",
-      "amount": 1000,
-      "status": "PENDING",
-      "devMode": true,
-      "method": "PIX_QRCODE",
-      "brCode": "0002010121126580014BR.GOV.BCB...",
-      "brCodeBase64 ":"data:image/png;base64...",
-      "platformFee": 80,
-      "createdAt": "2025-12-08T17:01:48.857Z",
-      "updatedAt": "2025-12-08T17:01:48.857Z",
-      "expiresAt": "2025-12-09T17:01:48.857Z",
-    }
+{
+  "success": true,
+  "error": null,
+  "data": {
+    "id": "pix_char_cY2F1nwmknGfg2jdRxrkgmgN",
+    "amount": 10000,
+    "status": "PENDING",
+    "devMode": true,
+    "brCode": "0002010121126580014BR.GOV.BCB...",
+    "brCodeBase64": "data:image/png;base64...",
+    "platformFee": 80,
+    "createdAt": "2025-12-08T17:01:48.857Z",
+    "updatedAt": "2025-12-08T17:01:48.857Z",
+    "expiresAt": "2025-12-09T17:01:48.857Z"
   }
+}
 ```
 
 
