@@ -1,0 +1,141 @@
+---
+title: 'Checkout'
+description: 'Eventos disparados para pagamentos via Checkout.'
+icon: 'cart-shopping'
+---
+
+<Tabs>
+  <Tab title="checkout.completed">
+    Disparado quando um pagamento via checkout é realizado. O `payerInformation` varia conforme o método.
+
+    ```json
+    {
+      "event": "checkout.completed",
+      "apiVersion": 2,
+      "devMode": false,
+      "data": {
+        "checkout": {
+          "id": "bill_abc123xyz",
+          "externalId": "pedido-123",
+          "url": "https://app.abacatepay.com/pay/bill_abc123xyz",
+          "amount": 10000,
+          "paidAmount": 10000,
+          "platformFee": 80,
+          "frequency": "ONE_TIME",
+          "items": [{ "id": "prod_xyz", "quantity": 1 }],
+          "status": "PAID",
+          "methods": ["PIX"],
+          "customerId": "cust_abc123",
+          "receiptUrl": "https://app.abacatepay.com/receipt/...",
+          "createdAt": "2024-12-06T18:56:15.538Z",
+          "updatedAt": "2024-12-06T18:56:20.000Z"
+        },
+        "customer": {
+          "id": "cust_abc123",
+          "name": "João Silva",
+          "email": "joao@exemplo.com",
+          "taxId": "123.***.***-**"
+        },
+        "payerInformation": {
+          "method": "PIX",
+          "PIX": {
+            "name": "João Silva",
+            "taxId": "123.***.***-**",
+            "isSameAsCustomer": true
+          }
+        }
+      }
+    }
+    ```
+  </Tab>
+
+  <Tab title="checkout.disputed">
+    Disparado quando um pagamento via checkout sofre uma disputa. O `payerInformation` varia conforme o método.
+
+    ```json
+    {
+      "event": "checkout.disputed",
+      "apiVersion": 2,
+      "devMode": false,
+      "data": {
+        "checkout": {
+          "id": "bill_abc123xyz",
+          "externalId": "pedido-123",
+          "url": "https://app.abacatepay.com/pay/bill_abc123xyz",
+          "amount": 10000,
+          "paidAmount": 10000,
+          "platformFee": 80,
+          "frequency": "ONE_TIME",
+          "items": [{ "id": "prod_xyz", "quantity": 1 }],
+          "status": "PAID",
+          "methods": ["PIX"],
+          "customerId": "cust_abc123",
+          "receiptUrl": "https://app.abacatepay.com/receipt/...",
+          "createdAt": "2024-12-06T18:56:15.538Z",
+          "updatedAt": "2024-12-06T18:56:20.000Z"
+        },
+        "customer": {
+          "id": "cust_abc123",
+          "name": "João Silva",
+          "email": "joao@exemplo.com",
+          "taxId": "123.***.***-**"
+        },
+        "payerInformation": {
+          "method": "PIX",
+          "PIX": {
+            "name": "João Silva",
+            "taxId": "123.***.***-**",
+            "isSameAsCustomer": true
+          }
+        },
+        "reason": "requested_by_customer"
+      }
+    }
+    ```
+  </Tab>
+
+  <Tab title="checkout.refunded">
+    Disparado quando um pagamento via checkout é reembolsado. O `payerInformation` varia conforme o método.
+
+    ```json
+    {
+      "event": "checkout.refunded",
+      "apiVersion": 2,
+      "devMode": false,
+      "data": {
+        "checkout": {
+          "id": "bill_abc123xyz",
+          "externalId": "pedido-123",
+          "url": "https://app.abacatepay.com/pay/bill_abc123xyz",
+          "amount": 10000,
+          "paidAmount": 10000,
+          "platformFee": 80,
+          "frequency": "ONE_TIME",
+          "items": [{ "id": "prod_xyz", "quantity": 1 }],
+          "status": "PAID",
+          "methods": ["PIX"],
+          "customerId": "cust_abc123",
+          "receiptUrl": "https://app.abacatepay.com/receipt/...",
+          "createdAt": "2024-12-06T18:56:15.538Z",
+          "updatedAt": "2024-12-06T18:56:20.000Z"
+        },
+        "customer": {
+          "id": "cust_abc123",
+          "name": "João Silva",
+          "email": "joao@exemplo.com",
+          "taxId": "123.***.***-**"
+        },
+        "payerInformation": {
+          "method": "PIX",
+          "PIX": {
+            "name": "João Silva",
+            "taxId": "123.***.***-**",
+            "isSameAsCustomer": true
+          }
+        },
+        "reason": "requested_by_customer"
+      }
+    }
+    ```
+  </Tab>
+</Tabs>

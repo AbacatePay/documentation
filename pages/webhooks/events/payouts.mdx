@@ -1,0 +1,60 @@
+---
+title: 'Saques'
+description: 'Eventos disparados para saques (retirada de saldo da plataforma).'
+icon: 'money-bill-transfer'
+---
+
+Usados para notificar o status de **saques** (retirada de saldo da plataforma).
+
+<Tabs>
+  <Tab title="payout.completed">
+    Disparado quando um saque é concluído com sucesso. O campo `endToEndIdentifier` está presente apenas em saques concluídos.
+
+    ```json
+    {
+      "event": "payout.completed",
+      "apiVersion": 2,
+      "devMode": false,
+      "data": {
+        "withdraw": {
+          "id": "tran_xxx",
+          "amount": 1000,
+          "status": "COMPLETE",
+          "method": "PIX",
+          "platformFee": 80,
+          "receiptUrl": "https://...",
+          "externalId": null,
+          "createdAt": "...",
+          "updatedAt": "...",
+          "endToEndIdentifier": "E123..."
+        }
+      }
+    }
+    ```
+  </Tab>
+
+  <Tab title="payout.failed">
+    Disparado quando um saque falha.
+
+    ```json
+    {
+      "event": "payout.failed",
+      "apiVersion": 2,
+      "devMode": false,
+      "data": {
+        "withdraw": {
+          "id": "tran_xxx",
+          "amount": 1000,
+          "status": "FAILED",
+          "method": "PIX",
+          "platformFee": 80,
+          "receiptUrl": "https://...",
+          "externalId": null,
+          "createdAt": "...",
+          "updatedAt": "..."
+        }
+      }
+    }
+    ```
+  </Tab>
+</Tabs>

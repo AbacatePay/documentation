@@ -43,9 +43,27 @@
                   "pages/start/quickstart",
                   "pages/devmode",
                   "pages/authentication",
-                  "pages/webhooks",
                   "pages/glossario",
                   "pages/production"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Webhooks",
+            "groups": [
+              {
+                "group": "Visão geral",
+                "pages": ["pages/webhooks"]
+              },
+              {
+                "group": "Eventos",
+                "pages": [
+                  "pages/webhooks/events/checkout",
+                  "pages/webhooks/events/transparent",
+                  "pages/webhooks/events/subscriptions",
+                  "pages/webhooks/events/transfers",
+                  "pages/webhooks/events/payouts"
                 ]
               }
             ]
