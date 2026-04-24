@@ -1,0 +1,137 @@
+---
+title: 'MCP Server'
+description: 'Integre a AbacatePay diretamente em agentes de IA como Claude Desktop e Cursor via Model Context Protocol.'
+icon: 'plug'
+---
+
+O **AbacatePay MCP Server** expõe toda a API da AbacatePay como ferramentas nativas para agentes de IA compatíveis com o [Model Context Protocol](https://modelcontextprotocol.io). Com ele, você pode criar cobranças, consultar clientes, emitir PIX e muito mais — direto de uma conversa com Claude ou Cursor.
+
+<Info>
+  O servidor suporta **v1 e v2 simultaneamente** em um único processo. As ferramentas v2 têm o prefixo `v2`; as v1 não têm prefixo. As chaves **não são intercambiáveis** entre versões.
+</Info>
+
+---
+
+## Pré-requisitos
+
+- [Bun](https://bun.sh) 1.x
+- Chave de API da AbacatePay — acesse o dashboard em **Integrar → API Keys**
+
+---
+
+## Instalação local
+
+```bash
+git clone https://github.com/AbacatePay/abacatepay-mcp.git
+cd abacatepay-mcp
+bun install
+```
+
+---
+
+## Configuração
+
+<Tabs>
+  <Tab title="Claude Desktop">
+    Abra o arquivo de configuração do Claude Desktop (`claude_desktop_config.json`) e adicione:
+
+    ```json
+    {
+      "mcpServers": {
+        "abacate-pay": {
+          "command": "bun",
+          "args": ["/caminho/absoluto/para/abacatepay-mcp/src/index.ts"],
+          "env": {
+            "ABACATE_PAY_API_KEY": "sua_chave_aqui"
+          }
+        }
+      }
+    }
+    ```
+
+    <Warning>
+      Use o **caminho absoluto** para `src/index.ts`. Caminhos relativos causam falha na inicialização.
+    </Warning>
+  </Tab>
+
+  <Tab title="Cursor">
+    Em `mcp.servers` nas configurações do Cursor, adicione a mesma estrutura:
+
+    ```json
+    {
+      "mcp.servers": {
+        "abacate-pay": {
+          "command": "bun",
+          "args": ["/caminho/absoluto/para/abacatepay-mcp/src/index.ts"],
+          "env": {
+            "ABACATE_PAY_API_KEY": "sua_chave_aqui"
+          }
+        }
+      }
+    }
+    ```
+  </Tab>
+
+  <Tab title="HTTP remoto">
+    Use o endpoint público hospedado pela AbacatePay — sem precisar instalar nada localmente:
+
+    ```json
+    {
+      "mcpServers": {
+        "abacatepay": {
+          "url": "https://mcp.abacatepay.com/mcp",
+          "headers": {
+            "Authorization": "Bearer SUA_CHAVE_API"
+          }
+        }
+      }
+    }
+    ```
+
+    Também é aceito o header `X-API-Key` como alternativa ao `Authorization`.
+  </Tab>
+</Tabs>
+
+---
+
+## Ferramentas disponíveis (v2)
+
+Todas as ferramentas v2 têm o prefixo `v2` e cobrem os principais recursos da API:
+
+| Categoria | Exemplos de ferramentas |
+|-----------|------------------------|
+| Clientes | `v2ListCustomers`, `v2CreateCustomer` |
+| Cupons | `v2ListCoupons`, `v2CreateCoupon` |
+| Produtos | `v2ListProducts`, `v2CreateProduct` |
+| Checkouts | `v2CreateCheckout`, `v2ListCheckouts` |
+| Links de pagamento | `v2CreatePaymentLink`, `v2ListPaymentLinks` |
+| Checkout Transparente (PIX) | `v2CreatePixPayment` |
+| Saques | `v2CreatePayout`, `v2GetPayout` |
+| Transferências PIX | `v2CreatePixTransfer` |
+| Assinaturas | `v2CreateSubscription`, `v2ListSubscriptions` |
+| Loja | `v2GetStorefront` |
+| Métricas públicas | `v2GetPublicMRR` |
+
+---
+
+## Solução de problemas
+
+<AccordionGroup>
+  <Accordion title="Erro de chave de API">
+    Verifique se a variável `ABACATE_PAY_API_KEY` está definida no lugar certo (dentro do bloco `env` da config, não no shell). Confirme também que a versão da chave (v1 ou v2) corresponde às ferramentas que está usando.
+  </Accordion>
+
+  <Accordion title="Servidor não conecta">
+    Confirme que o caminho para `src/index.ts` é absoluto e que o Bun está instalado (`bun --version`). Após alterar a configuração, reinicie o Claude Desktop ou o Cursor.
+  </Accordion>
+
+  <Accordion title="Ferramenta não encontrada">
+    Ferramentas v2 têm o prefixo `v2`. Se uma ferramenta esperada não aparece, verifique se está usando a chave v2 e se o servidor subiu sem erros.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+<Card title="Repositório" icon="github" href="https://github.com/AbacatePay/abacatepay-mcp">
+  Código-fonte, changelog e guia de contribuição no GitHub.
+</Card>

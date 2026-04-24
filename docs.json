@@ -200,7 +200,7 @@
             "groups": [
               {
                 "group": "AI",
-                "pages": ["pages/ai/overview"]
+                "pages": ["pages/ai/overview", "pages/ai/mcp"]
               }
             ]
           },
