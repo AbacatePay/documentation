@@ -35,19 +35,27 @@
               {
                 "group": "Comece aqui",
                 "pages": [
-                  "pages/start/welcome",
-                  "pages/start/introduction",
-                  "pages/start/quickstart",
-                  "pages/devmode",
+                  "pages/start/welcome"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Guias",
+            "groups": [
+              {
+                "group": "Integração",
+                "pages": [
                   "pages/authentication",
+                  "pages/devmode",
                   "pages/production"
                 ]
               },
               {
                 "group": "Ajuda",
                 "pages": [
-                  "pages/glossario",
-                  "pages/faq/index"
+                  "pages/faq/index",
+                  "pages/glossario"
                 ]
               }
             ]
