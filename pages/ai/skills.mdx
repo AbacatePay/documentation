@@ -1,0 +1,102 @@
+---
+title: 'Skills'
+icon: 'book-open'
+description: 'Pacotes de contexto especializado para ensinar agentes de IA a integrar com a AbacatePay.'
+---
+
+A **AbacatePay Skills** é um conjunto de **conhecimentos estruturados**, **regras técnicas** e **exemplos práticos** projetados para ensinar agentes de IA e desenvolvedores a integrar corretamente com o ecossistema AbacatePay.
+
+Funciona como um **manual inteligente e executável** — focado em reduzir ambiguidade, evitar erros comuns e acelerar integrações reais, especialmente em ambientes assistidos por IA.
+
+---
+
+## O que são Skills?
+
+Skills são **pacotes de contexto especializado** que descrevem:
+
+- Regras de negócio da AbacatePay
+- Padrões técnicos oficiais
+- Convenções de código por linguagem
+- Boas práticas para APIs, SDKs e Webhooks
+
+Elas podem ser consumidas por **IDEs** e **ferramentas de AI coding** como Cursor, Claude Code e similares.
+
+<CardGroup cols={3}>
+  <Card title="Contexto Preciso" icon="pen">
+    Informação atualizada e específica sobre APIs, SDKs e Webhooks.
+  </Card>
+  <Card title="Padronização" icon="ruler">
+    Código gerado alinhado às convenções oficiais da AbacatePay.
+  </Card>
+  <Card title="Aceleração" icon="rocket">
+    Menos leitura de docs longas, mais regras diretas.
+  </Card>
+  <Card title="Exemplos Reais" icon="code">
+    Implementações práticas em TypeScript e Go.
+  </Card>
+  <Card title="IA-friendly" icon="sparkles">
+    Estrutura pensada para consumo por agentes de IA.
+  </Card>
+  <Card title="Menos Erros" icon="shield-check">
+    Reduz interpretações erradas e integrações incorretas.
+  </Card>
+</CardGroup>
+
+---
+
+## Como instalar
+
+<Steps>
+  <Step title="Clone o repositório">
+    ```bash
+    git clone https://github.com/abacatepay/skills
+    ```
+  </Step>
+
+  <Step title="Adicione ao contexto da IA">
+    Inclua a pasta `skills/` no contexto do seu editor.
+
+    **Cursor:** adicione o caminho em `.cursorrules` ou workspace rules.
+
+    **Claude Code:** referencie na configuração do projeto.
+  </Step>
+
+  <Step title="Use via CLI (opcional)">
+    Algumas skills já estão integradas diretamente na [AbacatePay CLI](/pages/cli/overview).
+  </Step>
+</Steps>
+
+---
+
+## Estrutura do repositório
+
+- **[tests](https://github.com/AbacatePay/skills/tree/main/tests)** — suítes de teste para validar integrações e fluxos críticos
+- **[tools](https://github.com/AbacatePay/skills/tree/main/tools)** — documentação técnica de ferramentas auxiliares, SDKs e clientes
+- **[examples](https://github.com/AbacatePay/skills/tree/main/examples)** — implementações reais e snippets prontos para uso imediato
+- **[rules](https://github.com/AbacatePay/skills/tree/main/rules)** — regras específicas por linguagem (TypeScript / Go) e por módulo (Checkout, Subscriptions, Webhooks, etc.)
+
+---
+
+## Filosofia
+
+As AbacatePay Skills seguem alguns princípios claros:
+
+- **Explícitas** — sem regras implícitas ou achismos
+- **Auditáveis** — texto claro, versionado e revisável
+- **Modulares** — cada skill resolve um problema específico
+- **IA-first** — escritas pensando em consumo automático
+
+<CardGroup cols={2}>
+  <Card title="Human-readable" icon="user">
+    Também úteis para humanos, não só para máquinas.
+  </Card>
+  <Card title="Fonte única de verdade" icon="database">
+    Evita divergência entre docs, exemplos e código.
+  </Card>
+</CardGroup>
+
+---
+
+<Card title="SKILL.md" icon="book-open" href="https://github.com/AbacatePay/skills/blob/main/SKILL.md">
+  Documento central que descreve todas as skills disponíveis e como usá-las.
+</Card>

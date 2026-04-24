@@ -219,7 +219,7 @@
             "groups": [
               {
                 "group": "AI",
-                "pages": ["pages/ai/overview", "pages/ai/mcp"]
+                "pages": ["pages/ai/overview", "pages/ai/mcp", "pages/ai/skills"]
               }
             ]
           },
