@@ -1,20 +1,26 @@
 ---
 title: 'Rust'
-description: 'SDK oficial para Rust - Aceite pagamentos em segundos com uma integração simples'
+description: 'Integre a AbacatePay em aplicações Rust em minutos.'
 icon: 'rust'
 ---
 
-<Card 
-  title="AbacatePay Rust SDK" 
-  icon="rust" 
-  href="https://github.com/AbacatePay/abacatepay-rust-sdk"
->
-  Official AbacatePay SDK - Accept payments in seconds with a simple integration.
+<Card title="AbacatePay Rust SDK" icon="github" href="https://github.com/AbacatePay/abacatepay-rust-sdk">
+  Repositório oficial — issues, changelog e contribuições.
 </Card>
+
+## Pré-requisitos
+
+- Rust (edição 2021+) com Tokio
+- Uma chave de API ([criar no dashboard](https://app.abacatepay.com))
 
 ## Instalação
 
-Adicione a dependência ao seu `Cargo.toml`:
+```bash
+cargo add abacatepay-rust-sdk
+cargo add tokio --features full
+```
+
+Ou adicione ao `Cargo.toml`:
 
 ```toml
 [dependencies]
@@ -22,29 +28,18 @@ abacatepay-rust-sdk = "0.1.0"
 tokio = { version = "1", features = ["full"] }
 ```
 
-Ou instale diretamente via cargo:
+## Configuração
 
-```bash
-cargo add abacatepay-rust-sdk
-cargo add tokio --features full
-```
-
-## Quick Usage
+Armazene sua chave de API em uma variável de ambiente e nunca no código:
 
 ```rust
 use abacatepay_rust_sdk::AbacatePay;
 
-#[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Initialize the SDK with your API key
-    let client = AbacatePay::new("your_api_key".to_string());
-    
-    // Use the client...
-    Ok(())
-}
+let api_key = std::env::var("ABACATEPAY_API_KEY").expect("ABACATEPAY_API_KEY not set");
+let client = AbacatePay::new(api_key);
 ```
 
-## Criando uma Cobrança
+## Primeira cobrança
 
 ```rust
 use abacatepay_rust_sdk::{
@@ -53,51 +48,58 @@ use abacatepay_rust_sdk::{
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let client = AbacatePay::new("your_api_key".to_string());
+    let client = AbacatePay::new(std::env::var("ABACATEPAY_API_KEY")?);
 
-    // Criando uma Cobrança Única
-    let billing_data = CreateBillingData {
-        frequency: BillingKind::OneTime,
-        methods: vec![BillingMethods::Pix],
+    let billing = client.create_billing(CreateBillingData {
+        frequency:      BillingKind::OneTime,
+        methods:        vec![BillingMethods::Pix],
+        return_url:     "https://meusite.com/app".to_string(),
+        completion_url: "https://meusite.com/pagamento/sucesso".to_string(),
         products: vec![CreateBillingProduct {
             external_id: "PRO-PLAN".to_string(),
-            name: "Pro plan".to_string(),
-            quantity: 1,
-            price: 1000.0, // Preço em centavos
-            description: Some("Pro plan subscription".to_string()),
+            name:        "Pro plan".to_string(),
+            quantity:    1,
+            price:       1000.0, // em centavos
+            description: None,
         }],
-        return_url: "https://yoursite.com/app".to_string(),
-        completion_url: "https://yoursite.com/payment/success".to_string(),
         customer_id: None,
-    };
+    }).await?;
 
-    let billing = client.create_billing(billing_data).await?;
-    println!("{}", billing.url); // URL de pagamento para seu cliente
-
+    println!("{}", billing.url); // URL de pagamento para o cliente
     Ok(())
 }
 ```
 
-## Response
+**Resposta:**
 
-```rust
+```json
 {
+  "success": true,
+  "error": null,
+  "data": {
     "id": "bill_12345667",
-    "url": "https://abacatepay.com/pay/bill_12345667",  // URL de pagamento para seu cliente
+    "url": "https://app.abacatepay.com/pay/bill_12345667",
     "amount": 1000,
     "status": "PENDING",
     "devMode": true,
-    "methods": ["PIX"],
-    "frequency": "ONE_TIME",
-    "nextBilling": null,
-    "customer": {
-        "id": "cust_12345",
-        "metadata": {
-            "email": "customer@example.com"
-        }
-    },
-    "createdAt": "2024-11-04T18:38:28.573",
-    "updatedAt": "2024-11-04T18:38:28.573"
+    "createdAt": "2024-11-04T18:38:28.573Z"
+  }
 }
 ```
 
+## Próximos passos
+
+<CardGroup cols={2}>
+  <Card title="Configurar webhooks" icon="bell" href="/pages/webhooks">
+    Receba notificações em tempo real sobre pagamentos confirmados.
+  </Card>
+  <Card title="Checkout Transparente" icon="credit-card" href="/pages/transparents/create">
+    Aceite PIX e cartão diretamente na sua interface.
+  </Card>
+  <Card title="Criar clientes" icon="users" href="/pages/client/create">
+    Gerencie clientes vinculados às cobranças.
+  </Card>
+  <Card title="Referência completa" icon="book-open" href="/pages/reference/introduction">
+    Todos os endpoints, status codes e formato de resposta.
+  </Card>
+</CardGroup>

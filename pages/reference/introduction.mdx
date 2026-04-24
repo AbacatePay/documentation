@@ -1,0 +1,101 @@
+---
+title: 'Introdução'
+description: 'Base URL, autenticação, formato de resposta, códigos de status e limites da API.'
+icon: 'book-open'
+---
+
+## Base URL
+
+Todas as requisições da v2 usam o seguinte endereço:
+
+```
+https://api.abacatepay.com/v2
+```
+
+O ambiente (desenvolvimento ou produção) é determinado pela chave de API usada — não pela URL.
+
+---
+
+## Autenticação
+
+Toda requisição deve incluir sua chave de API no header `Authorization`:
+
+```bash
+Authorization: Bearer SUA_CHAVE_API
+```
+
+Requisições sem chave ou com chave inválida retornam `401 Unauthorized`. Consulte a [página de autenticação](/pages/authentication) para criar e gerenciar suas chaves.
+
+---
+
+## Formato de resposta
+
+Todos os endpoints retornam JSON com a mesma estrutura:
+
+```json
+{
+  "data": { ... },
+  "success": true,
+  "error": null
+}
+```
+
+Em caso de erro:
+
+```json
+{
+  "data": null,
+  "success": false,
+  "error": "Mensagem descritiva do erro"
+}
+```
+
+<Info>
+  Sempre verifique `success` antes de acessar `data`. Nunca assuma que a requisição funcionou apenas pelo status HTTP.
+</Info>
+
+---
+
+## Códigos de status HTTP
+
+| Código | Significado |
+|--------|-------------|
+| `200` | Sucesso |
+| `400` | Requisição inválida — verifique os campos enviados |
+| `401` | Não autenticado — chave ausente, inválida ou revogada |
+| `403` | Sem permissão — a chave não tem acesso ao recurso solicitado |
+| `404` | Recurso não encontrado |
+| `422` | Erro de validação — dados corretos mas semanticamente inválidos |
+| `429` | Rate limit atingido |
+| `5xx` | Erro interno — tente novamente com backoff exponencial |
+
+---
+
+## Permissões
+
+Cada chave de API pode ter permissões granulares por recurso. Se você receber `403`, verifique se a chave usada tem a permissão necessária para o endpoint. Consulte a [página de autenticação](/pages/authentication) para ver todas as permissões disponíveis.
+
+---
+
+## Paginação
+
+Endpoints de listagem retornam todos os registros disponíveis. Futuramente suportarão paginação via `limit` e `offset`.
+
+---
+
+## Dicas gerais
+
+<CardGroup cols={2}>
+  <Card title="Use Dev mode para testes" icon="code" href="/pages/devmode">
+    Chaves de desenvolvimento simulam pagamentos sem cobranças reais.
+  </Card>
+  <Card title="Armazene a chave em variável de ambiente" icon="shield">
+    Nunca comite sua chave de API no código. Use `process.env`, `.env` ou um gerenciador de segredos.
+  </Card>
+  <Card title="Idempotência em webhooks" icon="repeat" href="/pages/webhooks">
+    Sempre registre o ID do evento recebido e descarte duplicatas.
+  </Card>
+  <Card title="Backoff em erros 5xx" icon="rotate">
+    Implemente retentativas com espera crescente para falhas temporárias.
+  </Card>
+</CardGroup>

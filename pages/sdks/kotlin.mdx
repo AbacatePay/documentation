@@ -1,28 +1,22 @@
 ---
 title: 'Kotlin'
-description: 'SDK oficial para Kotlin - Aceite pagamentos em segundos com uma integração simples'
+description: 'Integre a AbacatePay em aplicações Android e Kotlin em minutos.'
 icon: 'android'
 ---
 
-<Card 
-  title="AbacatePay Kotlin SDK" 
-  icon="android" 
-  href="https://github.com/AbacatePay/abacatepay-kotlin-sdk"
->
-  Official AbacatePay SDK - Accept payments in seconds with a simple integration.
+<Card title="AbacatePay Kotlin SDK" icon="github" href="https://github.com/AbacatePay/abacatepay-kotlin-sdk">
+  Repositório oficial — issues, changelog e contribuições.
 </Card>
+
+## Pré-requisitos
+
+- Kotlin 2+ e Java 11+
+- Android 5+ (se for app Android)
+- Uma chave de API ([criar no dashboard](https://app.abacatepay.com))
 
 ## Instalação
 
-### Requisitos
-
-- Android 5+ (se estiver usando Android)
-- Java 11+
-- Kotlin 2+
-
-### Adicionando a dependência
-
-Adicione ao seu `build.gradle.kts` ou `build.gradle`:
+Adicione ao `build.gradle.kts`:
 
 ```kotlin
 repositories {
@@ -35,72 +29,72 @@ dependencies {
 }
 ```
 
-## Quick Usage
+## Configuração
+
+Armazene sua chave de API em uma variável de ambiente ou arquivo seguro e nunca no código:
 
 ```kotlin
-import kotlinx.coroutines.runBlocking
 import com.abacatepay.AbacatePayClient
 
-runBlocking {
-    // Initialize the SDK with your API key
-    val client = AbacatePayClient(apiKey = "your_api_key")
-    
-    // Use the client...
-    val billings = client.listBillings()
-}
+val client = AbacatePayClient(apiKey = BuildConfig.ABACATEPAY_API_KEY)
 ```
 
-## Criando uma Cobrança
+## Primeira cobrança
 
 ```kotlin
 import kotlinx.coroutines.runBlocking
-import com.abacatepay.AbacatePayClient
 import com.abacatepay.models.*
 
 runBlocking {
-    val client = AbacatePayClient(apiKey = "your_api_key")
-
-    // Criando uma Cobrança Única
     val billing = client.createBilling(
-        frequency = BillingFrequency.ONE_TIME,
-        methods = listOf(BillingMethod.PIX),
+        frequency     = BillingFrequency.ONE_TIME,
+        methods       = listOf(BillingMethod.PIX),
+        returnUrl     = "https://meusite.com/app",
+        completionUrl = "https://meusite.com/pagamento/sucesso",
         products = listOf(
             BillingProduct(
                 externalId = "PRO-PLAN",
-                name = "Pro plan",
-                description = "Pro plan subscription",
-                quantity = 1,
-                price = 1000 // Preço em centavos
+                name       = "Pro plan",
+                quantity   = 1,
+                price      = 1000, // em centavos
             )
         ),
-        returnUrl = "https://yoursite.com/app",
-        completionUrl = "https://yoursite.com/payment/success"
     )
 
-    println(billing.url) // URL de pagamento para seu cliente
+    println(billing.url) // URL de pagamento para o cliente
 }
 ```
 
-## Response
+**Resposta:**
 
-```kotlin
+```json
 {
+  "success": true,
+  "error": null,
+  "data": {
     "id": "bill_12345667",
-    "url": "https://abacatepay.com/pay/bill_12345667",  // URL de pagamento para seu cliente
+    "url": "https://app.abacatepay.com/pay/bill_12345667",
     "amount": 1000,
     "status": "PENDING",
     "devMode": true,
-    "methods": ["PIX"],
-    "frequency": "ONE_TIME",
-    "nextBilling": null,
-    "customer": {
-        "id": "cust_12345",
-        "metadata": {
-            "email": "customer@example.com"
-        }
-    },
-    "createdAt": "2024-11-04T18:38:28.573",
-    "updatedAt": "2024-11-04T18:38:28.573"
+    "createdAt": "2024-11-04T18:38:28.573Z"
+  }
 }
 ```
 
+## Próximos passos
+
+<CardGroup cols={2}>
+  <Card title="Configurar webhooks" icon="bell" href="/pages/webhooks">
+    Receba notificações em tempo real sobre pagamentos confirmados.
+  </Card>
+  <Card title="Checkout Transparente" icon="credit-card" href="/pages/transparents/create">
+    Aceite PIX e cartão diretamente na sua interface.
+  </Card>
+  <Card title="Criar clientes" icon="users" href="/pages/client/create">
+    Gerencie clientes vinculados às cobranças.
+  </Card>
+  <Card title="Referência completa" icon="book-open" href="/pages/reference/introduction">
+    Todos os endpoints, status codes e formato de resposta.
+  </Card>
+</CardGroup>

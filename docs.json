@@ -30,21 +30,24 @@
         "tag": "Current",
         "tabs": [
           {
-            "tab": "Bem-vindo",
-            "pages": ["pages/start/welcome"]
-          },
-          {
             "tab": "Comece aqui",
             "groups": [
               {
                 "group": "Comece aqui",
                 "pages": [
+                  "pages/start/welcome",
                   "pages/start/introduction",
                   "pages/start/quickstart",
                   "pages/devmode",
                   "pages/authentication",
-                  "pages/glossario",
                   "pages/production"
+                ]
+              },
+              {
+                "group": "Ajuda",
+                "pages": [
+                  "pages/glossario",
+                  "pages/faq/index"
                 ]
               }
             ]
@@ -55,6 +58,10 @@
               {
                 "group": "Visão geral",
                 "pages": ["pages/webhooks"]
+              },
+              {
+                "group": "Segurança",
+                "pages": ["pages/webhooks/security"]
               },
               {
                 "group": "Eventos",
@@ -71,6 +78,10 @@
           {
             "tab": "Referência",
             "groups": [
+              {
+                "group": "Introdução",
+                "pages": ["pages/reference/introduction"]
+              },
               {
                 "group": "Cobrar com Checkout",
                 "pages": ["pages/payment/reference", "pages/payment/create", "pages/payment/installments", "pages/payment/list", "pages/payment/one"]
@@ -163,15 +174,23 @@
             "groups": [
               {
                 "group": "SDKs",
+                "pages": ["pages/sdks/sdks"]
+              },
+              {
+                "group": "Backend",
                 "pages": [
-                  "pages/sdks/sdks",
                   "pages/sdks/nodejs",
                   "pages/sdks/python",
+                  "pages/sdks/go",
                   "pages/sdks/java",
                   "pages/sdks/php",
                   "pages/sdks/ruby",
-                  "pages/sdks/go",
-                  "pages/sdks/rust",
+                  "pages/sdks/rust"
+                ]
+              },
+              {
+                "group": "Mobile",
+                "pages": [
                   "pages/sdks/kotlin",
                   "pages/sdks/swift"
                 ]
@@ -205,7 +224,7 @@
             ]
           },
           {
-            "tab": "Ecossistema",
+            "tab": "Ferramentas",
             "groups": [
               {
                 "group": "Ecossistema",

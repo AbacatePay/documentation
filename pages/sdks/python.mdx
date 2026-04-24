@@ -1,93 +1,99 @@
 ---
 title: 'Python'
-description: 'SDK oficial para Python - Aceite pagamentos em segundos com uma integração simples'
+description: 'Integre a AbacatePay em aplicações Python em minutos.'
 icon: 'python'
 ---
 
-<Card 
-  title="AbacatePay Python SDK" 
-  icon="python" 
-  href="https://github.com/AbacatePay/abacatepay-python-sdk"
->
-  Official AbacatePay SDK - Accept payments in seconds with a simple integration.
+<Card title="AbacatePay Python SDK" icon="github" href="https://github.com/AbacatePay/abacatepay-python-sdk">
+  Repositório oficial — issues, changelog e contribuições.
 </Card>
+
+## Pré-requisitos
+
+- Python 3.10+
+- Uma chave de API ([criar no dashboard](https://app.abacatepay.com))
 
 ## Instalação
 
-### Usando pip
-
-```bash
+<CodeGroup>
+```bash pip
 pip install abacatepay
 ```
-
-### Usando Poetry
-
-```bash
+```bash poetry
 poetry add abacatepay
 ```
+```bash uv
+uv add abacatepay
+```
+</CodeGroup>
 
-## Quick Usage
+## Configuração
 
-```python
-import abacatepay
+Armazene sua chave de API em uma variável de ambiente e nunca no código:
 
-# Initialize the SDK with your API key
-client = abacatepay.AbacatePay("your_api_key")
+```bash
+# .env
+ABACATEPAY_API_KEY=sua_chave_aqui
 ```
 
-## Criando uma Cobrança
+```python
+import os
+import abacatepay
+
+client = abacatepay.AbacatePay(os.environ["ABACATEPAY_API_KEY"])
+```
+
+## Primeira cobrança
 
 ```python
 from abacatepay.products import Product
 
-products = [
-    Product(
-        external_id="PRO-PLAN",
-        name="Pro plan",
-        quantity=1,
-        price=1000,  # Amount in cents
-        description="Pro plan subscription"
-    ),
-    # ou como um dicionário
-    {
-        'external_id': "BASIC-PLAN",
-        'name': "Basic plan",
-        'quantity': 1,
-        'price': 500,
-        'description': "Basic plan subscription"
-    }
-]
-
-# Criando uma Cobrança Única
-billing = client.billing.create(
-    products=products,
-    return_url="https://yoursite.com/app",
-    completion_url="https://yoursite.com/payment/success"
+checkout = client.billing.create(
+    products=[
+        Product(
+            external_id="PRO-PLAN",
+            name="Pro plan",
+            quantity=1,
+            price=1000,  # em centavos
+        )
+    ],
+    return_url="https://meusite.com/app",
+    completion_url="https://meusite.com/pagamento/sucesso",
 )
 
-print(billing.data.url)
+print(checkout.data.url)  # URL de pagamento para o cliente
 ```
 
-## Response
+**Resposta:**
 
-```python
+```json
 {
-    'id': 'bill_12345667',
-    'url': 'https://abacatepay.com/pay/bill_12345667',  # URL de pagamento para seu cliente
-    'amount': 1000,
-    'status': 'PENDING',
-    'devMode': True,
-    'methods': ['PIX'],
-    'frequency': 'ONE_TIME',
-    'nextBilling': None,
-    'customer': {
-        'id': 'cust_12345',
-        'metadata': {
-            'email': 'customer@example.com'
-        }
-    },
-    'createdAt': '2024-11-04T18:38:28.573',
-    'updatedAt': '2024-11-04T18:38:28.573',
+  "success": true,
+  "error": null,
+  "data": {
+    "id": "bill_12345667",
+    "url": "https://app.abacatepay.com/pay/bill_12345667",
+    "amount": 1000,
+    "status": "PENDING",
+    "devMode": true,
+    "createdAt": "2024-11-04T18:38:28.573Z"
+  }
 }
 ```
 
+## Próximos passos
+
+<CardGroup cols={2}>
+  <Card title="Configurar webhooks" icon="bell" href="/pages/webhooks">
+    Receba notificações em tempo real sobre pagamentos confirmados.
+  </Card>
+  <Card title="Checkout Transparente" icon="credit-card" href="/pages/transparents/create">
+    Aceite PIX e cartão diretamente na sua interface.
+  </Card>
+  <Card title="Criar clientes" icon="users" href="/pages/client/create">
+    Gerencie clientes vinculados às cobranças.
+  </Card>
+  <Card title="Referência completa" icon="book-open" href="/pages/reference/introduction">
+    Todos os endpoints, status codes e formato de resposta.
+  </Card>
+</CardGroup>
