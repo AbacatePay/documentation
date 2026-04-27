@@ -1,0 +1,101 @@
+---
+title: 'Perguntas Frequentes'
+description: 'Respostas para as dúvidas mais comuns durante a integração com a AbacatePay.'
+icon: 'circle-question'
+---
+
+### Autenticação e chaves
+
+<AccordionGroup>
+  <Accordion title="Como obtenho minha chave de API?">
+    Acesse o [dashboard da AbacatePay](https://app.abacatepay.com), vá em **Integrar → API Keys** e clique em **Criar Chave**. Consulte o [guia de autenticação](/pages/authentication) para o passo a passo completo.
+  </Accordion>
+
+  <Accordion title="Posso usar a mesma chave em dev e produção?">
+    Não. Chaves de Dev mode só funcionam no ambiente de desenvolvimento — elas nunca processam transações reais. Para produção, crie uma chave separada após verificar sua conta.
+  </Accordion>
+
+  <Accordion title="Recebi erro 401. O que fazer?">
+    Verifique se:
+    - O header `Authorization: Bearer SUA_CHAVE` está presente na requisição
+    - A chave não foi revogada no dashboard
+    - Você está usando a chave do ambiente correto (dev ou produção)
+  </Accordion>
+
+  <Accordion title="Recebi erro 403. O que fazer?">
+    A chave existe e é válida, mas não tem permissão para o recurso solicitado. Acesse o dashboard, edite a chave e adicione a permissão necessária (ex: `CHECKOUT:CREATE`). Consulte a [tabela de permissões](/pages/authentication).
+  </Accordion>
+</AccordionGroup>
+
+### Dev mode e testes
+
+<AccordionGroup>
+  <Accordion title="Qual a diferença entre Dev mode e Produção?">
+    No Dev mode, todos os pagamentos são simulados — nenhum valor real é movimentado. O ambiente é determinado automaticamente pela chave usada: chaves de Dev geram transações fictícias, chaves de Produção processam transações reais.
+  </Accordion>
+
+  <Accordion title="Como simulo um pagamento aprovado no Dev mode?">
+    Para PIX, use o endpoint `/transparents/simulate-payment` após criar a cobrança. Para cartão, use o número `4242 4242 4242 4242` com qualquer data futura e CVV de 3 dígitos. Consulte o [guia de Dev mode](/pages/devmode).
+  </Accordion>
+
+  <Accordion title="Meus webhooks do Dev mode recebem eventos reais?">
+    Não. Webhooks criados em Dev mode recebem apenas eventos simulados. Para eventos reais, use uma chave de produção e crie o webhook no ambiente de produção.
+  </Accordion>
+</AccordionGroup>
+
+### Webhooks
+
+<AccordionGroup>
+  <Accordion title="Meu webhook não está recebendo eventos. O que verificar?">
+    1. Confirme que a URL está acessível publicamente via HTTPS
+    2. Verifique se o endpoint responde `200 OK` — qualquer outro código faz a AbacatePay considerar a entrega como falha
+    3. Confira se o webhook foi criado no ambiente correto (dev ou produção)
+    4. Veja os logs do webhook no dashboard para checar tentativas anteriores
+  </Accordion>
+
+  <Accordion title="A AbacatePay tenta reenviar eventos se meu endpoint estiver fora do ar?">
+    Sim. Em caso de falha (timeout ou resposta não-2xx), a AbacatePay realiza novas tentativas com backoff progressivo. Implemente idempotência usando o campo `id` do evento para evitar processamento duplicado.
+  </Accordion>
+
+  <Accordion title="Como validar que um webhook veio da AbacatePay?">
+    Cada requisição inclui o header `X-Webhook-Signature` com uma assinatura HMAC-SHA256. Consulte a [página de segurança de webhooks](/pages/webhooks/security) para exemplos em Node.js, Python e Go.
+  </Accordion>
+</AccordionGroup>
+
+### Pagamentos e cobranças
+
+<AccordionGroup>
+  <Accordion title="Qual a diferença entre Checkout e Checkout Transparente?">
+    O **Checkout** redireciona o cliente para uma página de pagamento hospedada pela AbacatePay. O **Checkout Transparente** permite que você construa a interface de pagamento na sua própria aplicação, enquanto a AbacatePay processa a transação nos bastidores.
+  </Accordion>
+
+  <Accordion title="Como funciona o parcelamento?">
+    O parcelamento está disponível no Checkout com cartão de crédito. Você define o número máximo de parcelas ao criar o checkout. Consulte a [documentação de parcelamento](/pages/payment/installments) para os detalhes de configuração.
+  </Accordion>
+
+  <Accordion title="Quanto tempo leva para um PIX ser confirmado?">
+    No Dev mode, a confirmação é imediata após simular o pagamento. Em produção, PIX são confirmados em segundos após o pagamento pelo cliente — você receberá um webhook `transparent.completed` ou `checkout.completed` assim que ocorrer.
+  </Accordion>
+</AccordionGroup>
+
+### SDKs e integração
+
+<AccordionGroup>
+  <Accordion title="Qual SDK devo usar?">
+    Use o SDK da linguagem do seu backend. Para Node.js/TypeScript é `@abacatepay/sdk`. Consulte a [página de SDKs](/pages/sdks/sdks) para ver todas as opções disponíveis.
+  </Accordion>
+
+  <Accordion title="Posso usar a API diretamente sem SDK?">
+    Sim. Todos os endpoints aceitam requisições HTTP padrão com `Content-Type: application/json`. Os SDKs são conveniência, não obrigação.
+  </Accordion>
+
+  <Accordion title="Encontrei um bug no SDK. O que faço?">
+    Abra uma issue no repositório GitHub do SDK específico. Os links estão na [página de cada SDK](/pages/sdks/sdks). Nossa equipe monitora ativamente os repositórios.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+<Card title="Não encontrou sua resposta?" icon="headset" color="#25c2a0">
+  Entre em contato com nossa equipe: <Icon icon="envelope" type="solid" /> ajuda@abacatepay.com
+</Card>

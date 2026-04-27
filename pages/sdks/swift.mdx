@@ -1,97 +1,94 @@
 ---
 title: 'Swift'
-description: 'SDK oficial para Swift - Aceite pagamentos em segundos com uma integração simples'
+description: 'Integre a AbacatePay em aplicações iOS e macOS em minutos.'
 icon: 'apple'
 ---
 
-<Card 
-  title="AbacatePay Swift SDK" 
-  icon="apple" 
-  href="https://github.com/AbacatePay/abacatepay-swift-sdk"
->
-  Official AbacatePay SDK - Accept payments in seconds with a simple integration.
+<Card title="AbacatePay Swift SDK" icon="github" href="https://github.com/AbacatePay/abacatepay-swift-sdk">
+  Repositório oficial — issues, changelog e contribuições.
 </Card>
+
+## Pré-requisitos
+
+- Swift 5.5+ / Xcode 13+
+- iOS 14+ ou macOS 11+
+- Uma chave de API ([criar no dashboard](https://app.abacatepay.com))
 
 ## Instalação
 
-### Usando Swift Package Manager
-
-Adicione a dependência ao seu `Package.swift`:
-
-```swift
+<CodeGroup>
+```swift Package.swift
 dependencies: [
     .package(url: "https://github.com/AbacatePay/abacatepay-swift-sdk", from: "1.0.0")
 ]
 ```
-
-Ou no Xcode, vá em **File > Add Package Dependencies** e adicione:
 ```
-https://github.com/AbacatePay/abacatepay-swift-sdk
+Xcode → File → Add Package Dependencies
+URL: https://github.com/AbacatePay/abacatepay-swift-sdk
 ```
+</CodeGroup>
 
-## Quick Usage
+## Configuração
+
+Armazene sua chave de API em variáveis de configuração ou no Keychain e nunca no código:
 
 ```swift
-import Foundation
 import AbacatePay
 
-// Initialize the SDK with your API key
-let abacatePay = AbacatePay(apiKey: "your_api_key")
+let abacatePay = AbacatePay(apiKey: ProcessInfo.processInfo.environment["ABACATEPAY_API_KEY"]!)
 ```
 
-## Criando uma Cobrança
+## Primeira cobrança
 
 ```swift
-import Foundation
-import AbacatePay
-
-let abacatePay = AbacatePay(apiKey: "your_api_key")
-
-// Criando uma Cobrança Única
 let billingData = CreateBillingData(
-    frequency: .oneTime,
-    methods: [.pix],
+    frequency:    .oneTime,
+    methods:      [.pix],
+    returnUrl:    "https://meusite.com/app",
+    completionUrl: "https://meusite.com/pagamento/sucesso",
     products: [
-        .init(
-            externalId: "PRO-PLAN",
-            name: "Pro plan",
-            quantity: 1,
-            price: 1000 // Preço em centavos
-        )
-    ],
-    returnUrl: "https://yoursite.com/app",
-    completionUrl: "https://yoursite.com/payment/success",
-    automaticTaxReceipt: true
+        .init(externalId: "PRO-PLAN", name: "Pro plan", quantity: 1, price: 1000)
+    ]
 )
 
 do {
     let billing = try await abacatePay.billing.create(data: billingData)
-    print(billing.url) // URL de pagamento para seu cliente
+    print(billing.url) // URL de pagamento para o cliente
 } catch {
-    print("Error creating billing:", error)
+    print("Erro:", error)
 }
 ```
 
-## Response
+**Resposta:**
 
-```swift
+```json
 {
-    id: "bill_12345667",
-    url: "https://abacatepay.com/pay/bill_12345667",  // URL de pagamento para seu cliente
-    amount: 1000,
-    status: "PENDING",
-    devMode: true,
-    methods: ["PIX"],
-    frequency: "ONE_TIME",
-    nextBilling: nil,
-    customer: {
-        id: "cust_12345",
-        metadata: {
-            email: "customer@example.com"
-        }
-    },
-    createdAt: "2024-11-04T18:38:28.573",
-    updatedAt: "2024-11-04T18:38:28.573"
+  "success": true,
+  "error": null,
+  "data": {
+    "id": "bill_12345667",
+    "url": "https://app.abacatepay.com/pay/bill_12345667",
+    "amount": 1000,
+    "status": "PENDING",
+    "devMode": true,
+    "createdAt": "2024-11-04T18:38:28.573Z"
+  }
 }
 ```
 
+## Próximos passos
+
+<CardGroup cols={2}>
+  <Card title="Configurar webhooks" icon="bell" href="/pages/webhooks">
+    Receba notificações em tempo real sobre pagamentos confirmados.
+  </Card>
+  <Card title="Checkout Transparente" icon="credit-card" href="/pages/transparents/create">
+    Aceite PIX e cartão diretamente na sua interface.
+  </Card>
+  <Card title="Criar clientes" icon="users" href="/pages/client/create">
+    Gerencie clientes vinculados às cobranças.
+  </Card>
+  <Card title="Referência completa" icon="book-open" href="/pages/reference/introduction">
+    Todos os endpoints, status codes e formato de resposta.
+  </Card>
+</CardGroup>

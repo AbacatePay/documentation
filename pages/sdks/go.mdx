@@ -1,16 +1,17 @@
 ---
-title: 'Go '
-description: 'SDK oficial para Go - Aceite pagamentos em segundos com uma integração simples'
+title: 'Go'
+description: 'Integre a AbacatePay em aplicações Go em minutos.'
 icon: 'golang'
 ---
 
-<Card 
-  title="AbacatePay Go" 
-  icon="golang" 
-  href="https://github.com/AbacatePay/abacatepay-go-sdk"
->
-  Official AbacatePay SDK - Accept payments in seconds with a simple integration.
+<Card title="AbacatePay Go SDK" icon="github" href="https://github.com/AbacatePay/abacatepay-go-sdk">
+  Repositório oficial — issues, changelog e contribuições.
 </Card>
+
+## Pré-requisitos
+
+- Go 1.21+
+- Uma chave de API ([criar no dashboard](https://app.abacatepay.com))
 
 ## Instalação
 
@@ -18,79 +19,81 @@ icon: 'golang'
 go get github.com/AbacatePay/abacatepay-go-sdk
 ```
 
-## Quick Usage
+## Configuração
+
+Armazene sua chave de API em uma variável de ambiente e nunca no código:
 
 ```go
-package main
-
 import (
-	"context"
-	"github.com/AbacatePay/abacatepay-go-sdk/abacatepay"
-	"time"
+    "os"
+    "time"
+    "github.com/AbacatePay/abacatepay-go-sdk/abacatepay"
 )
 
-func main() {
-	// Inicialize o client com a sua API key
-	client, err := abacatepay.New(&abacatepay.ClientConfig{
-		ApiKey:  "YOUR_API_KEY",
-		Timeout: 10 * time.Second,
-	})
-
-	if err != nil {
-		panic(err)
-	}
-	
-	// Use o cliente...
+client, err := abacatepay.New(&abacatepay.ClientConfig{
+    ApiKey:  os.Getenv("ABACATEPAY_API_KEY"),
+    Timeout: 10 * time.Second,
+})
+if err != nil {
+    panic(err)
 }
 ```
 
-## Criando uma Cobrança PIX
+## Primeira cobrança (PIX)
 
 ```go
-package main
-
 import (
-	"context"
-	"time"
-	"log"
+    "context"
+    "log"
+    "time"
 
-	"github.com/AbacatePay/abacatepay-go-sdk/v1"
-	"github.com/AbacatePay/abacatepay-go-sdk/v1/pix"
+    "github.com/AbacatePay/abacatepay-go-sdk/v1/pix"
 )
 
-func main() {
-	// ...
-	ctx, cancel := context.WithTimeout(context.Background(), 15 * time.Second)
+ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+defer cancel()
 
-	defer cancel()
-
-	body := &pix.CreateQrCodePIXBody{
-		Amount: 100,
-	}
-
-	response, err := client.Pix.Create(ctx, body)
-	
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	log.Printf("PIX criado: %s\n", response.Data.ID)
+response, err := client.Pix.Create(ctx, &pix.CreateQrCodePIXBody{
+    Amount: 1000, // em centavos
+})
+if err != nil {
+    log.Fatal(err)
 }
+
+log.Printf("PIX criado: %s\n", response.Data.ID)
 ```
 
-## Response
+**Resposta:**
 
 ```json
 {
+  "success": true,
+  "error": null,
+  "data": {
     "id": "pix_char_123456",
-    "amount": 100,
+    "amount": 1000,
     "status": "PENDING",
     "devMode": true,
-    "brCode": "00020101021226950014br.gov.bcb.pix",
-    "brCodeBase64": "data:image/png;base64,iVBORw0KGgoAAA",
-    "platformFee": 80,
+    "brCode": "00020101021226950014br.gov.bcb.pix...",
     "createdAt": "2025-03-24T21:50:20.772Z",
-    "updatedAt": "2025-03-24T21:50:20.772Z",
     "expiresAt": "2025-03-25T21:50:20.772Z"
+  }
 }
 ```
+
+## Próximos passos
+
+<CardGroup cols={2}>
+  <Card title="Configurar webhooks" icon="bell" href="/pages/webhooks">
+    Receba notificações em tempo real sobre pagamentos confirmados.
+  </Card>
+  <Card title="Checkout Transparente" icon="credit-card" href="/pages/transparents/create">
+    Aceite PIX e cartão diretamente na sua interface.
+  </Card>
+  <Card title="Criar clientes" icon="users" href="/pages/client/create">
+    Gerencie clientes vinculados às cobranças.
+  </Card>
+  <Card title="Referência completa" icon="book-open" href="/pages/reference/introduction">
+    Todos os endpoints, status codes e formato de resposta.
+  </Card>
+</CardGroup>

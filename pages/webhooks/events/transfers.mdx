@@ -1,0 +1,61 @@
+---
+title: 'Transferências'
+description: 'Eventos disparados para transferências de valores para contas externas.'
+icon: 'arrow-right-arrow-left'
+---
+
+Usados para notificar o status de **transferências** (envio de valores para contas externas).
+
+<Tabs>
+  <Tab title="transfer.completed">
+    Disparado quando uma transferência é concluída com sucesso.
+
+    ```json
+    {
+      "event": "transfer.completed",
+      "apiVersion": 2,
+      "devMode": false,
+      "data": {
+        "transfer": {
+          "id": "tran_xxx",
+          "externalId": "payout-ext-123",
+          "amount": 1000,
+          "status": "COMPLETE",
+          "method": "PIX",
+          "platformFee": 80,
+          "receiptUrl": "https://...",
+          "createdAt": "...",
+          "updatedAt": "...",
+          "endToEndIdentifier": "E123..."
+        }
+      }
+    }
+    ```
+  </Tab>
+
+  <Tab title="transfer.failed">
+    Disparado quando uma transferência falha.
+
+    ```json
+    {
+      "event": "transfer.failed",
+      "apiVersion": 2,
+      "devMode": false,
+      "data": {
+        "transfer": {
+          "id": "tran_xxx",
+          "externalId": "payout-ext-123",
+          "amount": 1000,
+          "status": "FAILED",
+          "method": "PIX",
+          "platformFee": 80,
+          "receiptUrl": "https://...",
+          "createdAt": "...",
+          "updatedAt": "...",
+          "endToEndIdentifier": "E123..."
+        }
+      }
+    }
+    ```
+  </Tab>
+</Tabs>

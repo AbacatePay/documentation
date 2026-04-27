@@ -1,0 +1,149 @@
+---
+title: 'Verificação e Segurança'
+description: 'Como validar a autenticidade dos webhooks e lidar com retentativas.'
+icon: 'shield-check'
+---
+
+Todo webhook enviado pela AbacatePay inclui dois mecanismos de segurança: um **secret na URL** e uma **assinatura HMAC** no header. Use os dois juntos.
+
+---
+
+## 1. Secret na URL
+
+Ao criar o webhook, você define um `secret`. A AbacatePay inclui esse valor como query parameter em cada requisição:
+
+```
+https://meusite.com/webhook/abacatepay?webhookSecret=SEU_SECRET
+```
+
+Seu backend valida antes de qualquer processamento:
+
+```ts
+if (req.query.webhookSecret !== process.env.WEBHOOK_SECRET) {
+  return res.status(401).json({ error: "Unauthorized" });
+}
+```
+
+---
+
+## 2. Assinatura HMAC
+
+Mesmo que alguém descubra sua URL e seu secret, a assinatura HMAC garante que o **corpo da requisição não foi alterado** e que o evento realmente veio da AbacatePay.
+
+O header enviado é:
+
+```
+X-Webhook-Signature: <assinatura em base64>
+```
+
+A assinatura é calculada com **HMAC-SHA256** sobre o corpo raw da requisição usando a chave pública da AbacatePay.
+
+### Validação em Node.js
+
+```typescript
+import crypto from "node:crypto";
+
+const ABACATEPAY_PUBLIC_KEY =
+  "t9dXRhHHo3yDEj5pVDYz0frf7q6bMKyMRmxxCPIPp3RCplBfXRxqlC6ZpiWmOqj4L63qEaeUOtrCI8P0VMUgo6iIga2ri9ogaHFs0WIIywSMg0q7RmBfybe1E5XJcfC4IW3alNqym0tXoAKkzvfEjZxV6bE0oG2zJrNNYmUCKZyV0KZ3JS8Votf9EAWWYdiDkMkpbMdPggfh1EqHlVkMiTady6jOR3hyzGEHrIz2Ret0xHKMbiqkr9HS1JhNHDX9";
+
+export function verifyAbacateSignature(rawBody: string, signatureFromHeader: string): boolean {
+  const expectedSig = crypto
+    .createHmac("sha256", ABACATEPAY_PUBLIC_KEY)
+    .update(Buffer.from(rawBody, "utf8"))
+    .digest("base64");
+
+  const A = Buffer.from(expectedSig);
+  const B = Buffer.from(signatureFromHeader);
+
+  return A.length === B.length && crypto.timingSafeEqual(A, B);
+}
+```
+
+### Validação em Python
+
+```python
+import hmac
+import hashlib
+import base64
+
+ABACATEPAY_PUBLIC_KEY = "t9dXRhHHo3yDEj5pVDYz0frf7q6bMKyMRmxxCPIPp3RCplBfXRxqlC6ZpiWmOqj4L63qEaeUOtrCI8P0VMUgo6iIga2ri9ogaHFs0WIIywSMg0q7RmBfybe1E5XJcfC4IW3alNqym0tXoAKkzvfEjZxV6bE0oG2zJrNNYmUCKZyV0KZ3JS8Votf9EAWWYdiDkMkpbMdPggfh1EqHlVkMiTady6jOR3hyzGEHrIz2Ret0xHKMbiqkr9HS1JhNHDX9"
+
+def verify_abacate_signature(raw_body: bytes, signature_from_header: str) -> bool:
+    expected = hmac.new(
+        ABACATEPAY_PUBLIC_KEY.encode("utf-8"),
+        raw_body,
+        hashlib.sha256
+    ).digest()
+    expected_b64 = base64.b64encode(expected).decode("utf-8")
+    return hmac.compare_digest(expected_b64, signature_from_header)
+```
+
+### Validação em Go
+
+```go
+package webhook
+
+import (
+    "crypto/hmac"
+    "crypto/sha256"
+    "encoding/base64"
+)
+
+const abacatePublicKey = "t9dXRhHHo3yDEj5pVDYz0frf7q6bMKyMRmxxCPIPp3RCplBfXRxqlC6ZpiWmOqj4L63qEaeUOtrCI8P0VMUgo6iIga2ri9ogaHFs0WIIywSMg0q7RmBfybe1E5XJcfC4IW3alNqym0tXoAKkzvfEjZxV6bE0oG2zJrNNYmUCKZyV0KZ3JS8Votf9EAWWYdiDkMkpbMdPggfh1EqHlVkMiTady6jOR3hyzGEHrIz2Ret0xHKMbiqkr9HS1JhNHDX9"
+
+func VerifySignature(rawBody []byte, signatureFromHeader string) bool {
+    mac := hmac.New(sha256.New, []byte(abacatePublicKey))
+    mac.Write(rawBody)
+    expected := base64.StdEncoding.EncodeToString(mac.Sum(nil))
+    return hmac.Equal([]byte(expected), []byte(signatureFromHeader))
+}
+```
+
+<Warning>
+  Use sempre `timingSafeEqual` (ou equivalente) ao comparar assinaturas — nunca `==`. Comparações diretas são vulneráveis a timing attacks.
+</Warning>
+
+---
+
+## Retentativas
+
+Se seu endpoint não retornar `2xx` dentro do timeout, a AbacatePay tenta reenviar o evento automaticamente com backoff progressivo.
+
+**O que pode causar retentativa:**
+- Timeout na conexão
+- Resposta com status `5xx`
+- Resposta com status `4xx` (exceto `200`)
+
+**Boas práticas para lidar com retentativas:**
+
+<Card title="Idempotência é obrigatória" horizontal>
+  Armazene o campo `id` de cada evento recebido. Antes de processar, verifique se esse ID já foi tratado anteriormente. Eventos duplicados são raros mas acontecem.
+</Card>
+
+```ts
+// Exemplo de controle de idempotência
+const eventId = req.body.id; // ex: "log_abc123xyz"
+
+const alreadyProcessed = await db.events.findOne({ id: eventId });
+if (alreadyProcessed) {
+  return res.status(200).json({ ok: true }); // responde 200 mas não processa de novo
+}
+
+await processEvent(req.body);
+await db.events.insert({ id: eventId, processedAt: new Date() });
+
+return res.status(200).json({ ok: true });
+```
+
+---
+
+## Checklist de segurança
+
+<Card horizontal>
+  - Use **HTTPS** — nunca HTTP em produção
+  - Valide o **secret** na query string
+  - Valide a **assinatura HMAC** do header
+  - Responda **200 OK** somente após concluir o processamento
+  - Implemente **idempotência** usando o `id` do evento
+  - Não valide o payload inteiro com schemas rígidos (como Zod) — campos novos podem ser adicionados futuramente
+</Card>

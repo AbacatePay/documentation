@@ -1,38 +1,19 @@
 ---
 title: 'Java'
-description: 'SDK oficial para Java - Aceite pagamentos em segundos com uma integração simples'
+description: 'Integre a AbacatePay em aplicações Java em minutos.'
 icon: 'java'
 ---
 
-<Card 
-  title="AbacatePay Java SDK" 
-  icon="java" 
-  href="https://github.com/AbacatePay/abacatepay-java-sdk"
->
-  Official AbacatePay SDK - Accept payments in seconds with a simple integration.
+<Card title="AbacatePay Java SDK" icon="github" href="https://github.com/AbacatePay/abacatepay-java-sdk">
+  Repositório oficial — issues, changelog e contribuições.
 </Card>
 
+## Pré-requisitos
+
+- Java 8+ e Maven
+- Uma chave de API ([criar no dashboard](https://app.abacatepay.com))
+
 ## Instalação
-
-### Requisitos
-
-Certifique-se de ter instalado:
-- **Java**: JDK 8 ou superior
-- **Maven**: Para gerenciar dependências e construir o projeto
-
-### Instalando Maven
-
-**Linux:**
-```bash
-sudo apt install maven
-```
-
-**Windows (usando Chocolatey):**
-```bash
-choco install maven -y
-```
-
-### Adicionando a dependência Feign
 
 Adicione a dependência Feign ao seu `pom.xml`:
 
@@ -44,57 +25,63 @@ Adicione a dependência Feign ao seu `pom.xml`:
 </dependency>
 ```
 
-## Quick Usage
+## Configuração
+
+Armazene sua chave de API em uma variável de ambiente e nunca no código:
 
 ```java
 import com.abacatepay.AbacatePay;
 
-// Initialize the SDK with your API key
-AbacatePay abacate = new AbacatePay("your_api_key");
+AbacatePay abacate = new AbacatePay(System.getenv("ABACATEPAY_API_KEY"));
 ```
 
-## Criando uma Cobrança
+## Primeira cobrança
 
 ```java
-import com.abacatepay.AbacatePay;
 import com.abacatepay.model.billing.CreateBillingData;
 import com.abacatepay.model.billing.CreateBillingResponse;
 import java.util.Arrays;
 
-AbacatePay abacate = new AbacatePay("your_api_key");
-
-// Criando uma Cobrança Única
 CreateBillingData billingData = new CreateBillingData();
 billingData.setFrequency("ONE_TIME");
 billingData.setMethods(Arrays.asList("PIX"));
-// Configure os produtos conforme necessário
-billingData.setReturnUrl("https://yoursite.com/app");
-billingData.setCompletionUrl("https://yoursite.com/payment/success");
+billingData.setReturnUrl("https://meusite.com/app");
+billingData.setCompletionUrl("https://meusite.com/pagamento/sucesso");
 
 CreateBillingResponse billing = abacate.createBilling(billingData);
-System.out.println(billing.getUrl()); // URL de pagamento para seu cliente
+System.out.println(billing.getUrl()); // URL de pagamento para o cliente
 ```
 
-## Response
+**Resposta:**
 
-```java
+```json
 {
+  "success": true,
+  "error": null,
+  "data": {
     "id": "bill_12345667",
-    "url": "https://abacatepay.com/pay/bill_12345667",  // URL de pagamento para seu cliente
+    "url": "https://app.abacatepay.com/pay/bill_12345667",
     "amount": 1000,
     "status": "PENDING",
     "devMode": true,
-    "methods": ["PIX"],
-    "frequency": "ONE_TIME",
-    "nextBilling": null,
-    "customer": {
-        "id": "cust_12345",
-        "metadata": {
-            "email": "customer@example.com"
-        }
-    },
-    "createdAt": "2024-11-04T18:38:28.573",
-    "updatedAt": "2024-11-04T18:38:28.573"
+    "createdAt": "2024-11-04T18:38:28.573Z"
+  }
 }
 ```
 
+## Próximos passos
+
+<CardGroup cols={2}>
+  <Card title="Configurar webhooks" icon="bell" href="/pages/webhooks">
+    Receba notificações em tempo real sobre pagamentos confirmados.
+  </Card>
+  <Card title="Checkout Transparente" icon="credit-card" href="/pages/transparents/create">
+    Aceite PIX e cartão diretamente na sua interface.
+  </Card>
+  <Card title="Criar clientes" icon="users" href="/pages/client/create">
+    Gerencie clientes vinculados às cobranças.
+  </Card>
+  <Card title="Referência completa" icon="book-open" href="/pages/reference/introduction">
+    Todos os endpoints, status codes e formato de resposta.
+  </Card>
+</CardGroup>

@@ -1,27 +1,20 @@
 ---
 title: 'PHP'
-description: 'SDK oficial para PHP - Aceite pagamentos em segundos com uma integração simples'
+description: 'Integre a AbacatePay em aplicações PHP em minutos.'
 icon: 'php'
 ---
 
-<Card 
-  title="AbacatePay PHP" 
-  icon="php" 
-  href="https://github.com/AbacatePay/abacatepay-php-sdk"
->
-  Official AbacatePay SDK - Accept payments in seconds with a simple integration.
+<Card title="AbacatePay PHP SDK" icon="github" href="https://github.com/AbacatePay/abacatepay-php-sdk">
+  Repositório oficial — issues, changelog e contribuições.
 </Card>
 
+## Pré-requisitos
+
+- PHP 7.2.5+ e Composer
+- SSL habilitado em produção
+- Uma chave de API ([criar no dashboard](https://app.abacatepay.com))
+
 ## Instalação
-
-### Requisitos
-
-- PHP 7.2.5 ou superior
-- Composer
-- Conta AbacatePay válida e credenciais de API
-- SSL habilitado para ambientes de produção
-
-### Instalação via Composer
 
 ```bash
 composer require abacatepay/php-sdk
@@ -29,30 +22,15 @@ composer require abacatepay/php-sdk
 
 ## Configuração
 
-Primeiro, inicialize o SDK com seu token de API:
+Armazene sua chave de API em uma variável de ambiente e nunca no código:
 
 ```php
 use AbacatePay\Clients\Client;
 
-Client::setToken($_ENV["ABACATEPAY_TOKEN"]);
+Client::setToken($_ENV['ABACATEPAY_API_KEY']);
 ```
 
-> ⚠️ Nunca faça commit dos seus tokens de API no controle de versão. Use variáveis de ambiente.
-
-## Quick Usage
-
-```php
-use AbacatePay\Clients\Client;
-use AbacatePay\Clients\BillingClient;
-
-// Configure o token de API
-Client::setToken("your_api_key");
-
-// Inicialize o cliente de billing
-$billingClient = new BillingClient();
-```
-
-## Criando uma Cobrança
+## Primeira cobrança
 
 ```php
 use AbacatePay\Clients\BillingClient;
@@ -61,61 +39,59 @@ use AbacatePay\Resources\Billing\Product;
 use AbacatePay\Resources\Billing\Metadata as BillingMetadata;
 use AbacatePay\Enums\Billing\Methods;
 use AbacatePay\Enums\Billing\Frequencies;
-use AbacatePay\Resources\Customer;
-use AbacatePay\Resources\Customer\Metadata as CustomerMetadata;
 
 $billingClient = new BillingClient();
 
-// Criando uma Cobrança Única
 $billing = $billingClient->create(new Billing([
     'frequency' => Frequencies::ONE_TIME,
-    'methods' => [Methods::PIX],
-    'products' => [
+    'methods'   => [Methods::PIX],
+    'products'  => [
         new Product([
             'external_id' => 'PRO-PLAN',
-            'name' => 'Pro plan',
-            'description' => 'Pro plan subscription',
-            'quantity' => 1,
-            'price' => 1000 // Preço em centavos
+            'name'        => 'Pro plan',
+            'quantity'    => 1,
+            'price'       => 1000, // em centavos
         ])
     ],
     'metadata' => new BillingMetadata([
-        'return_url' => 'https://yoursite.com/app',
-        'completion_url' => 'https://yoursite.com/payment/success'
+        'return_url'     => 'https://meusite.com/app',
+        'completion_url' => 'https://meusite.com/pagamento/sucesso',
     ]),
-    'customer' => new Customer([
-        'metadata' => new CustomerMetadata([
-            'name' => 'Customer Name',
-            'cellphone' => '11999999999',
-            'email' => 'customer@example.com',
-            'tax_id' => '09240529020'
-        ])
-    ])
 ]));
 
-echo $billing->url; // URL de pagamento para seu cliente
+echo $billing->url; // URL de pagamento para o cliente
 ```
 
-## Response
+**Resposta:**
 
-```php
+```json
 {
+  "success": true,
+  "error": null,
+  "data": {
     "id": "bill_12345667",
-    "url": "https://abacatepay.com/pay/bill_12345667",  // URL de pagamento para seu cliente
+    "url": "https://app.abacatepay.com/pay/bill_12345667",
     "amount": 1000,
     "status": "PENDING",
     "devMode": true,
-    "methods": ["PIX"],
-    "frequency": "ONE_TIME",
-    "nextBilling": null,
-    "customer": {
-        "id": "cust_12345",
-        "metadata": {
-            "email": "customer@example.com"
-        }
-    },
-    "createdAt": "2024-11-04T18:38:28.573",
-    "updatedAt": "2024-11-04T18:38:28.573"
+    "createdAt": "2024-11-04T18:38:28.573Z"
+  }
 }
 ```
 
+## Próximos passos
+
+<CardGroup cols={2}>
+  <Card title="Configurar webhooks" icon="bell" href="/pages/webhooks">
+    Receba notificações em tempo real sobre pagamentos confirmados.
+  </Card>
+  <Card title="Checkout Transparente" icon="credit-card" href="/pages/transparents/create">
+    Aceite PIX e cartão diretamente na sua interface.
+  </Card>
+  <Card title="Criar clientes" icon="users" href="/pages/client/create">
+    Gerencie clientes vinculados às cobranças.
+  </Card>
+  <Card title="Referência completa" icon="book-open" href="/pages/reference/introduction">
+    Todos os endpoints, status codes e formato de resposta.
+  </Card>
+</CardGroup>

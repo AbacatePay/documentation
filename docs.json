@@ -30,29 +30,66 @@
         "tag": "Current",
         "tabs": [
           {
-            "tab": "Bem-vindo",
-            "pages": ["pages/start/welcome"]
-          },
-          {
             "tab": "Comece aqui",
             "groups": [
               {
                 "group": "Comece aqui",
                 "pages": [
-                  "pages/start/introduction",
-                  "pages/start/quickstart",
-                  "pages/devmode",
-                  "pages/authentication",
-                  "pages/webhooks",
-                  "pages/glossario",
-                  "pages/production"
+                  "pages/start/welcome"
                 ]
               }
             ]
           },
           {
-            "tab": "Documentação",
+            "tab": "Guias",
             "groups": [
+              {
+                "group": "Integração",
+                "pages": [
+                  "pages/authentication",
+                  "pages/devmode",
+                  "pages/production"
+                ]
+              },
+              {
+                "group": "Ajuda",
+                "pages": [
+                  "pages/faq/index",
+                  "pages/glossario"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Webhooks",
+            "groups": [
+              {
+                "group": "Visão geral",
+                "pages": ["pages/webhooks"]
+              },
+              {
+                "group": "Segurança",
+                "pages": ["pages/webhooks/security"]
+              },
+              {
+                "group": "Eventos",
+                "pages": [
+                  "pages/webhooks/events/checkout",
+                  "pages/webhooks/events/transparent",
+                  "pages/webhooks/events/subscriptions",
+                  "pages/webhooks/events/transfers",
+                  "pages/webhooks/events/payouts"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Referência",
+            "groups": [
+              {
+                "group": "Introdução",
+                "pages": ["pages/reference/introduction"]
+              },
               {
                 "group": "Cobrar com Checkout",
                 "pages": ["pages/payment/reference", "pages/payment/create", "pages/payment/installments", "pages/payment/list", "pages/payment/one"]
@@ -145,15 +182,23 @@
             "groups": [
               {
                 "group": "SDKs",
+                "pages": ["pages/sdks/sdks"]
+              },
+              {
+                "group": "Backend",
                 "pages": [
-                  "pages/sdks/sdks",
                   "pages/sdks/nodejs",
                   "pages/sdks/python",
+                  "pages/sdks/go",
                   "pages/sdks/java",
                   "pages/sdks/php",
                   "pages/sdks/ruby",
-                  "pages/sdks/go",
-                  "pages/sdks/rust",
+                  "pages/sdks/rust"
+                ]
+              },
+              {
+                "group": "Mobile",
+                "pages": [
                   "pages/sdks/kotlin",
                   "pages/sdks/swift"
                 ]
@@ -182,12 +227,12 @@
             "groups": [
               {
                 "group": "AI",
-                "pages": ["pages/ai/overview"]
+                "pages": ["pages/ai/overview", "pages/ai/mcp", "pages/ai/skills"]
               }
             ]
           },
           {
-            "tab": "Ecossistema",
+            "tab": "Ferramentas",
             "groups": [
               {
                 "group": "Ecossistema",
@@ -201,15 +246,6 @@
                   "pages/ecosystem/typebox",
                   "pages/ecosystem/zod"
                 ]
-              }
-            ]
-          },
-          {
-            "tab": "HTTP",
-            "groups": [
-              {
-                "group": "HTTP",
-                "pages": ["pages/http/overview", "pages/http/postman", "pages/http/bruno"]
               }
             ]
           },

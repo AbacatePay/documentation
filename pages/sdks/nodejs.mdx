@@ -1,68 +1,91 @@
 ---
 title: 'Node.js'
-description: 'SDK oficial para Node.js - Aceite pagamentos em segundos com uma integração simples'
+description: 'Integre a AbacatePay em aplicações Node.js e TypeScript em minutos.'
 icon: 'node-js'
 ---
 
-<Card 
-  title="AbacatePay Node.js SDK" 
-  icon="node-js" 
-  href="https://github.com/AbacatePay/abacatepay-nodejs-sdk"
->
-  Official AbacatePay SDK - Accept payments in seconds with a simple integration.
+<Card title="AbacatePay Node.js SDK" icon="github" href="https://github.com/AbacatePay/abacatepay-nodejs-sdk">
+  Repositório oficial — issues, changelog e contribuições.
 </Card>
 
-## Installation
+## Pré-requisitos
 
-```bash
+- Node.js 18+
+- Uma chave de API ([criar no dashboard](https://app.abacatepay.com))
+
+## Instalação
+
+<CodeGroup>
+```bash npm
 npm install @abacatepay/sdk
 ```
+```bash yarn
+yarn add @abacatepay/sdk
+```
+```bash pnpm
+pnpm add @abacatepay/sdk
+```
+```bash bun
+bun add @abacatepay/sdk
+```
+</CodeGroup>
 
-## Quick Usage
+## Configuração
+
+Armazene sua chave de API em uma variável de ambiente e nunca no código:
+
+```ts
+// .env
+ABACATEPAY_API_KEY=sua_chave_aqui
+```
 
 ```ts
 import { AbacatePay } from "@abacatepay/sdk";
 
-// Initialize the SDK with your API key
-const abacate = AbacatePay({ secret: "API_KEY" });
+const abacate = AbacatePay({ secret: process.env.ABACATEPAY_API_KEY! });
 ```
 
-## Creating a Payment
+## Primeira cobrança
 
 ```ts
-// Create a new checkout
 const checkout = await abacate.checkouts.create({
-    items: [
-        {
-            id: "item_abc123",
-            quantity: 2,
-        },
-    ],
-    customerId: "cust_987"
+  items: [{ id: "prod_abc123", quantity: 1 }],
+  customerId: "cust_987",
 });
+
+console.log(checkout.data.url); // URL de pagamento para o cliente
 ```
 
-## Response
+**Resposta:**
 
-```ts
+```json
 {
-    id: "bill_123456789",
-    amount: 15000,
-    paidAmount: null,
-    externalId: null,
-    url: "https://abacatepay.com/pay/bill_123456789",
-    items: [
-        {
-            id: "item_abc123",
-            quantity: 2,
-        },
-    ],
-    status: "PENDING",
-    devMode: true,
-    receiptUrl: null,
-    coupons: [],
-    customerId: "cust_987",
-    createdAt: '2024-11-04T18:38:28.573',
-    updatedAt: '2024-11-04T18:38:28.573'
+  "success": true,
+  "error": null,
+  "data": {
+    "id": "bill_123456789",
+    "url": "https://app.abacatepay.com/pay/bill_123456789",
+    "amount": 15000,
+    "status": "PENDING",
+    "devMode": true,
+    "createdAt": "2024-11-04T18:38:28.573Z"
+  }
 }
 ```
+
+## Próximos passos
+
+<CardGroup cols={2}>
+  <Card title="Configurar webhooks" icon="bell" href="/pages/webhooks">
+    Receba notificações em tempo real sobre pagamentos confirmados.
+  </Card>
+  <Card title="Checkout Transparente" icon="credit-card" href="/pages/transparents/create">
+    Aceite PIX e cartão diretamente na sua interface.
+  </Card>
+  <Card title="Criar clientes" icon="users" href="/pages/client/create">
+    Gerencie clientes vinculados às cobranças.
+  </Card>
+  <Card title="Referência completa" icon="book-open" href="/pages/reference/introduction">
+    Todos os endpoints, status codes e formato de resposta.
+  </Card>
+</CardGroup>

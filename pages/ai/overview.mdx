@@ -1,128 +1,48 @@
 ---
 title: 'Visão Geral'
-icon: 'command'
-description: 'Pacotes de contexto especializado para potencializar integrações com a AbacatePay usando IAs e automações.'
+icon: 'sparkles'
+description: 'Ferramentas e contexto especializado para integrar a AbacatePay com IA.'
 ---
 
-A **AbacatePay Skills** é um conjunto de **conhecimentos estruturados**, **regras técnicas** e **exemplos práticos** projetados para ensinar **agentes de IA** e desenvolvedores a integrar corretamente com o ecossistema AbacatePay.
+<div style={{
+  position: "relative",
+  textAlign: "center",
+  padding: "64px 20px",
+  background: "linear-gradient(135deg, rgba(158,234,108,0.08) 0%, rgba(158,234,108,0.02) 100%)",
+  borderBottom: "1px solid rgba(255,255,255,0.06)",
+  borderRadius: "12px",
+  marginBottom: "40px"
+}}>
+  <h1 style={{ fontSize: "36px", fontWeight: "600", marginBottom: "12px", color: "#fff" }}>
+    AbacatePay + IA
+  </h1>
+  <p style={{ maxWidth: "640px", margin: "0 auto", opacity: 0.7, fontSize: "17px", fontWeight: "300" }}>
+    Use a AbacatePay diretamente em agentes de IA, editors assistidos e ferramentas de automação — sem magia, sem atrito.
+  </p>
+</div>
 
-Funciona como um **manual inteligente e executável**, focado em reduzir ambiguidade, evitar erros comuns e acelerar integrações reais — especialmente em ambientes assistidos por IA.
-
----
-
-## O que são Skills?
-
-Skills são **pacotes de contexto especializado** que descrevem:
-
-- Regras de negócio da AbacatePay  
-- Padrões técnicos oficiais  
-- Convenções de código por linguagem  
-- Boas práticas para APIs, SDKs e Webhooks  
-
-Elas podem ser consumidas por **IDEs**, **ferramentas de AI coding** (Cursor, Antigravity, Claude Code) ou diretamente por desenvolvedores humanos.
-
----
-
-## Para que Servem
-
-<CardGroup cols={3}>
-  <Card title="Contexto Preciso" icon="pen">
-    Informação atualizada e específica sobre APIs, SDKs e Webhooks.
-  </Card>
-
-  <Card title="Padronização" icon="ruler">
-    Código gerado alinhado às convenções oficiais da AbacatePay.
-  </Card>
-
-  <Card title="Aceleração" icon="rocket">
-    Menos leitura de docs longas, mais regras diretas.
-  </Card>
-
-  <Card title="Exemplos Reais" icon="code">
-    Implementações práticas em TypeScript e Go.
-  </Card>
-
-  <Card title="IA-friendly" icon="sparkles">
-    Estrutura pensada para consumo por agentes de IA.
-  </Card>
-
-  <Card title="Menos Erros" icon="shield-check">
-    Reduz interpretações erradas e integrações incorretas.
-  </Card>
-</CardGroup>
-
----
-
-## Como Instalar
-
-As skills são consumidas principalmente por **IDEs** e **agentes de IA** que suportam leitura de contexto local.
-
-<Steps>
-  <Step title="Clone o repositório">
-    ```bash
-    git clone https://github.com/abacatepay/skills
-    ```
-  </Step>
-
-  <Step title="Adicione ao contexto da IA">
-    Inclua a pasta `skills/` no contexto do seu editor  
-    (Exemplo: `.cursorrules`, workspace rules ou config equivalente).
-  </Step>
-
-  <Step title="Use via CLI (opcional)">
-    Algumas skills já são integradas diretamente na [**AbacatePay CLI**](../cli).
-  </Step>
-</Steps>
-
----
-
-## Como Usar
-
-A estrutura do repositório é organizada para facilitar descoberta e consumo incremental:
-
-- **[tests](https://github.com/AbacatePay/skills/tree/main/tests)**  
-  Suítes de teste para validar integrações e fluxos críticos.
-
-- **[tools](https://github.com/AbacatePay/skills/tree/main/tools)**  
-  Documentação técnica de ferramentas auxiliares, SDKs e clientes.
-
-- **[examples](https://github.com/AbacatePay/skills/tree/main/examples)**  
-  Implementações reais e snippets prontos para uso imediato.
-
-- **[rules](https://github.com/AbacatePay/skills/tree/main/rules)**  
-  Regras específicas por linguagem (TypeScript / Go) e por módulo  
-  (Checkout, Subscriptions, Webhooks, etc).
-
----
-
-## Referência Completa
-
-Para uma visão detalhada de todos os arquivos, regras e convenções disponíveis, consulte
-
-<Card title="SKILL.md" icon="book-open" href="https://github.com/AbacatePay/skills/blob/main/SKILL.md">
-Documento central que descreve todas as skills disponíveis e como usá-las.
-</Card>
-
----
-
-## Design & Filosofia
-
-As AbacatePay Skills seguem alguns princípios claros:
-
-- **Explícitas** — Sem regras implícitas ou “achismos”
-- **Auditáveis** — Texto claro, versionado e revisável
-- **Modulares** — Cada skill resolve um problema específico
-- **IA-first** — Escritas pensando em consumo automático
+## O que está disponível
 
 <CardGroup cols={2}>
-  <Card title="Human-readable" icon="user">
-    Também úteis para humanos, não só para máquinas.
+  <Card title="MCP Server" icon="plug" href="/pages/ai/mcp">
+    Exponha toda a API da AbacatePay como ferramentas nativas para Claude Desktop, Cursor e qualquer cliente MCP. Crie cobranças, consulte clientes e gerencie assinaturas direto de uma conversa.
   </Card>
 
-  <Card title="Fonte única de verdade" icon="database">
-    Evita divergência entre docs, exemplos e código.
+  <Card title="Skills" icon="book-open" href="/pages/ai/skills">
+    Pacotes de contexto especializado que ensinam agentes de IA a integrar corretamente com a AbacatePay — regras de negócio, padrões técnicos e exemplos prontos.
   </Card>
 </CardGroup>
+
+---
+
+## Para quem é cada ferramenta
+
+| | MCP Server | Skills |
+|---|---|---|
+| **Objetivo** | Executar ações na API via IA | Fornecer contexto para a IA gerar código correto |
+| **Ideal para** | Automações, assistentes, agentes | IDEs com AI coding (Cursor, Claude Code) |
+| **Formato** | Ferramentas MCP chamadas em runtime | Arquivos de contexto lidos pelo editor |
+| **Requer API key** | Sim | Não |
 
 ---
 
@@ -132,17 +52,10 @@ As AbacatePay Skills seguem alguns princípios claros:
   <Card title="Documentação Oficial" icon="book" href="https://docs.abacatepay.com">
     Guia completo da API AbacatePay.
   </Card>
-
   <Card title="SDK Node.js" icon="box" href="https://www.npmjs.com/package/@abacatepay/sdk">
     Integração ergonômica de alto nível.
   </Card>
-
   <Card title="REST Client" icon="repeat" href="https://www.npmjs.com/package/@abacatepay/rest">
     Cliente HTTP tipado de baixo nível.
   </Card>
 </CardGroup>
-
-<Card title="Open source de verdade" icon="heart">
-Mantido pela equipe AbacatePay e pela comunidade.  
-Conhecimento compartilhado, sem mágica.
-</Card>

@@ -1,0 +1,272 @@
+---
+title: 'Checkout Transparente'
+description: 'Eventos disparados para pagamentos via Checkout Transparente (PIX e Cartão).'
+icon: 'credit-card'
+---
+
+<Tabs>
+  <Tab title="transparent.completed">
+    Disparado quando um pagamento via checkout transparente é realizado. O `payerInformation` varia conforme o método.
+
+    <Tabs>
+      <Tab title="PIX">
+        ```json
+        {
+          "event": "transparent.completed",
+          "apiVersion": 2,
+          "devMode": false,
+          "data": {
+            "transparent": {
+              "id": "char_xyz789",
+              "externalId": "pedido-456",
+              "amount": 5000,
+              "paidAmount": 5000,
+              "platformFee": 50,
+              "status": "PAID",
+              "frequency": "ONE_TIME",
+              "devMode": true,
+              "customerId": "cust_abc123",
+              "methods": ["PIX"],
+              "receiptUrl": "https://app.abacatepay.com/receipt/...",
+              "createdAt": "2024-12-06T19:00:00.000Z",
+              "updatedAt": "2024-12-06T19:00:05.000Z"
+            },
+            "customer": {
+              "id": "cust_def456",
+              "name": "Maria Santos",
+              "email": "maria@exemplo.com",
+              "taxId": "12.***.***/0001-**"
+            },
+            "payerInformation": {
+              "method": "PIX",
+              "PIX": {
+                "name": "Maria Santos",
+                "taxId": "12.***.***/0001-**",
+                "isSameAsCustomer": true
+              }
+            }
+          }
+        }
+        ```
+      </Tab>
+
+      <Tab title="Cartão">
+        ```json
+        {
+          "event": "transparent.completed",
+          "apiVersion": 2,
+          "devMode": false,
+          "data": {
+            "transparent": {
+              "id": "char_xyz789",
+              "externalId": "pedido-456",
+              "amount": 5000,
+              "paidAmount": 5000,
+              "platformFee": 78,
+              "status": "PAID",
+              "frequency": "ONE_TIME",
+              "devMode": true,
+              "customerId": "cust_abc123",
+              "methods": ["CARD"],
+              "receiptUrl": "https://app.abacatepay.com/receipt/...",
+              "createdAt": "2024-12-06T19:00:00.000Z",
+              "updatedAt": "2024-12-06T19:00:05.000Z"
+            },
+            "customer": {
+              "id": "cust_def456",
+              "name": "Maria Santos",
+              "email": "maria@exemplo.com",
+              "taxId": "12.***.***/0001-**"
+            },
+            "payerInformation": {
+              "method": "CARD",
+              "CARD": {
+                "number": "1234",
+                "brand": "VISA"
+              }
+            }
+          }
+        }
+        ```
+      </Tab>
+    </Tabs>
+  </Tab>
+
+  <Tab title="transparent.disputed">
+    Disparado quando um pagamento via checkout transparente sofre uma disputa. O `payerInformation` varia conforme o método.
+
+    <Tabs>
+      <Tab title="PIX">
+        ```json
+        {
+          "event": "transparent.disputed",
+          "apiVersion": 2,
+          "devMode": false,
+          "data": {
+            "transparent": {
+              "id": "char_xyz789",
+              "externalId": "pedido-456",
+              "amount": 5000,
+              "paidAmount": 5000,
+              "platformFee": 50,
+              "status": "PAID",
+              "frequency": "ONE_TIME",
+              "devMode": true,
+              "customerId": "cust_abc123",
+              "methods": ["PIX"],
+              "receiptUrl": "https://app.abacatepay.com/receipt/...",
+              "createdAt": "2024-12-06T19:00:00.000Z",
+              "updatedAt": "2024-12-06T19:00:05.000Z"
+            },
+            "customer": {
+              "id": "cust_def456",
+              "name": "Maria Santos",
+              "email": "maria@exemplo.com",
+              "taxId": "12.***.***/0001-**"
+            },
+            "payerInformation": {
+              "method": "PIX",
+              "PIX": {
+                "name": "Maria Santos",
+                "taxId": "12.***.***/0001-**",
+                "isSameAsCustomer": true
+              }
+            },
+            "reason": "requested_by_customer"
+          }
+        }
+        ```
+      </Tab>
+
+      <Tab title="Cartão">
+        ```json
+        {
+          "event": "transparent.disputed",
+          "apiVersion": 2,
+          "devMode": false,
+          "data": {
+            "transparent": {
+              "id": "char_xyz789",
+              "externalId": "pedido-456",
+              "amount": 5000,
+              "paidAmount": 5000,
+              "platformFee": 78,
+              "status": "PAID",
+              "frequency": "ONE_TIME",
+              "devMode": true,
+              "customerId": "cust_abc123",
+              "methods": ["CARD"],
+              "receiptUrl": "https://app.abacatepay.com/receipt/...",
+              "createdAt": "2024-12-06T19:00:00.000Z",
+              "updatedAt": "2024-12-06T19:00:05.000Z"
+            },
+            "customer": {
+              "id": "cust_def456",
+              "name": "Maria Santos",
+              "email": "maria@exemplo.com",
+              "taxId": "12.***.***/0001-**"
+            },
+            "payerInformation": {
+              "method": "CARD",
+              "CARD": {
+                "number": "1234",
+                "brand": "VISA"
+              }
+            },
+            "reason": "requested_by_customer"
+          }
+        }
+        ```
+      </Tab>
+    </Tabs>
+  </Tab>
+
+  <Tab title="transparent.refunded">
+    Disparado quando um pagamento via checkout transparente é reembolsado. O `payerInformation` varia conforme o método.
+
+    <Tabs>
+      <Tab title="PIX">
+        ```json
+        {
+          "event": "transparent.refunded",
+          "apiVersion": 2,
+          "devMode": false,
+          "data": {
+            "transparent": {
+              "id": "char_xyz789",
+              "externalId": "pedido-456",
+              "amount": 5000,
+              "paidAmount": 5000,
+              "platformFee": 50,
+              "status": "PAID",
+              "frequency": "ONE_TIME",
+              "devMode": true,
+              "customerId": "cust_abc123",
+              "methods": ["PIX"],
+              "receiptUrl": "https://app.abacatepay.com/receipt/...",
+              "createdAt": "2024-12-06T19:00:00.000Z",
+              "updatedAt": "2024-12-06T19:00:05.000Z"
+            },
+            "customer": {
+              "id": "cust_def456",
+              "name": "Maria Santos",
+              "email": "maria@exemplo.com",
+              "taxId": "12.***.***/0001-**"
+            },
+            "payerInformation": {
+              "method": "PIX",
+              "PIX": {
+                "name": "Maria Santos",
+                "taxId": "12.***.***/0001-**",
+                "isSameAsCustomer": true
+              }
+            },
+            "reason": "requested_by_customer"
+          }
+        }
+        ```
+      </Tab>
+
+      <Tab title="Cartão">
+        ```json
+        {
+          "event": "transparent.refunded",
+          "apiVersion": 2,
+          "devMode": false,
+          "data": {
+            "transparent": {
+              "id": "char_xyz789",
+              "externalId": "pedido-456",
+              "amount": 5000,
+              "paidAmount": 5000,
+              "platformFee": 78,
+              "status": "PAID",
+              "frequency": "ONE_TIME",
+              "devMode": true,
+              "customerId": "cust_abc123",
+              "methods": ["CARD"],
+              "receiptUrl": "https://app.abacatepay.com/receipt/...",
+              "createdAt": "2024-12-06T19:00:00.000Z",
+              "updatedAt": "2024-12-06T19:00:05.000Z"
+            },
+            "customer": {
+              "id": "cust_def456",
+              "name": "Maria Santos",
+              "email": "maria@exemplo.com",
+              "taxId": "12.***.***/0001-**"
+            },
+            "payerInformation": {
+              "method": "CARD",
+              "CARD": {
+                "number": "1234",
+                "brand": "VISA"
+              }
+            },
+            "reason": "requested_by_customer"
+          }
+        }
+        ```
+      </Tab>
+    </Tabs>
+  </Tab>
+</Tabs>

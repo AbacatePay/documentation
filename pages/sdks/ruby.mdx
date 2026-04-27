@@ -1,127 +1,101 @@
 ---
 title: 'Ruby'
-description: 'SDK oficial para Ruby - Aceite pagamentos em segundos com uma integração simples'
+description: 'Integre a AbacatePay em aplicações Ruby em minutos.'
 icon: 'gem'
 ---
 
-<Card 
-  title="AbacatePay Ruby" 
-  icon="gem" 
-  href="https://github.com/AbacatePay/abacatepay-ruby-sdk"
->
-  Official AbacatePay SDK - Accept payments in seconds with a simple integration.
+<Card title="AbacatePay Ruby SDK" icon="github" href="https://github.com/AbacatePay/abacatepay-ruby-sdk">
+  Repositório oficial — issues, changelog e contribuições.
 </Card>
+
+## Pré-requisitos
+
+- Ruby 2.6+
+- Uma chave de API ([criar no dashboard](https://app.abacatepay.com))
 
 ## Instalação
 
-### Usando Gemfile
-
-Adicione esta linha ao Gemfile da sua aplicação:
-
-```ruby
+<CodeGroup>
+```bash Gemfile
+# Adicione ao seu Gemfile:
 gem 'abacatepay-ruby'
-```
-
-E então execute:
-
-```bash
+# Depois execute:
 bundle install
 ```
-
-### Instalação direta
-
-Ou instale diretamente:
-
-```bash
+```bash gem
 gem install abacatepay-ruby
 ```
+</CodeGroup>
 
 ## Configuração
 
-Configure seu token de API e ambiente em um inicializador:
+Armazene sua chave de API em uma variável de ambiente e nunca no código:
 
 ```ruby
 # config/initializers/abacatepay.rb
 AbacatePay.configure do |config|
-  config.api_token = ENV['ABACATEPAY_TOKEN']
+  config.api_token   = ENV['ABACATEPAY_API_KEY']
   config.environment = :sandbox # ou :production
 end
 ```
 
-> ⚠️ Nunca faça commit dos seus tokens de API no controle de versão. Use variáveis de ambiente.
-
-## Quick Usage
-
-```ruby
-require 'abacatepay'
-
-# Configure o token de API e ambiente
-AbacatePay.configure do |config|
-  config.api_token = 'your_api_key'
-  config.environment = :sandbox
-end
-
-# Inicialize o cliente de billing
-billing_client = AbacatePay::Clients::BillingClient.new
-```
-
-## Criando uma Cobrança
+## Primeira cobrança
 
 ```ruby
 billing_client = AbacatePay::Clients::BillingClient.new
 
-# Criando uma Cobrança Única
 billing = billing_client.create(
   AbacatePay::Resources::Billing.new(
     frequency: AbacatePay::Enums::Billing::Frequencies::ONE_TIME,
-    methods: [AbacatePay::Enums::Billing::Methods::PIX],
+    methods:   [AbacatePay::Enums::Billing::Methods::PIX],
     products: [
       AbacatePay::Resources::Billing::Product.new(
         external_id: 'PRO-PLAN',
-        name: 'Pro plan',
-        description: 'Pro plan subscription',
-        quantity: 1,
-        price: 1000 # Preço em centavos
+        name:        'Pro plan',
+        quantity:    1,
+        price:       1000, # em centavos
       )
     ],
     metadata: AbacatePay::Resources::Billing::Metadata.new(
-      return_url: 'https://yoursite.com/app',
-      completion_url: 'https://yoursite.com/payment/success'
+      return_url:     'https://meusite.com/app',
+      completion_url: 'https://meusite.com/pagamento/sucesso',
     ),
-    customer: AbacatePay::Resources::Customer.new(
-      metadata: AbacatePay::Resources::Customer::Metadata.new(
-        name: 'Customer Name',
-        cellphone: '11999999999',
-        email: 'customer@example.com',
-        tax_id: '09240529020'
-      )
-    )
   )
 )
 
-puts billing.url # URL de pagamento para seu cliente
+puts billing.url # URL de pagamento para o cliente
 ```
 
-## Response
+**Resposta:**
 
-```ruby
+```json
 {
+  "success": true,
+  "error": null,
+  "data": {
     "id": "bill_12345667",
-    "url": "https://abacatepay.com/pay/bill_12345667",  # URL de pagamento para seu cliente
+    "url": "https://app.abacatepay.com/pay/bill_12345667",
     "amount": 1000,
     "status": "PENDING",
     "devMode": true,
-    "methods": ["PIX"],
-    "frequency": "ONE_TIME",
-    "nextBilling": null,
-    "customer": {
-        "id": "cust_12345",
-        "metadata": {
-            "email": "customer@example.com"
-        }
-    },
-    "createdAt": "2024-11-04T18:38:28.573",
-    "updatedAt": "2024-11-04T18:38:28.573"
+    "createdAt": "2024-11-04T18:38:28.573Z"
+  }
 }
 ```
 
+## Próximos passos
+
+<CardGroup cols={2}>
+  <Card title="Configurar webhooks" icon="bell" href="/pages/webhooks">
+    Receba notificações em tempo real sobre pagamentos confirmados.
+  </Card>
+  <Card title="Checkout Transparente" icon="credit-card" href="/pages/transparents/create">
+    Aceite PIX e cartão diretamente na sua interface.
+  </Card>
+  <Card title="Criar clientes" icon="users" href="/pages/client/create">
+    Gerencie clientes vinculados às cobranças.
+  </Card>
+  <Card title="Referência completa" icon="book-open" href="/pages/reference/introduction">
+    Todos os endpoints, status codes e formato de resposta.
+  </Card>
+</CardGroup>

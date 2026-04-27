@@ -12,29 +12,59 @@ mode: "custom"
     backgroundPosition: "center",
     backgroundRepeat: "no-repeat",
     borderBottom: "1px solid rgba(255,255,255,0.08)"
-}}
->
-  {" "}
+}}>
   <h1 style={{ fontSize: "40px", fontWeight: "600", marginBottom: "16px", color: "#fff" }}>
-      Bem-vindo à API da AbacatePay
+    Bem-vindo à API da AbacatePay
   </h1>
-
-{" "}
-
-<p
-  style={{
+  <p style={{
     maxWidth: "800px",
     margin: "0 auto",
     opacity: 0.8,
     fontSize: "18px",
     fontWeight: "300",
-  }}
->
-  Aqui você encontra tudo o que precisa para integrar a API da AbacatePay:
-  <br />
-  pagamentos instantâneos, gestão de transações e ferramentas avançadas para o seu
-  sistema.
-</p>
+  }}>
+    Aqui você encontra tudo o que precisa para integrar a API da AbacatePay:
+    <br />
+    pagamentos instantâneos, gestão de transações e ferramentas avançadas para o seu sistema.
+  </p>
+</div>
+
+<div style={{
+  padding: "60px 20px",
+  maxWidth: "1100px",
+  margin: "0 auto",
+  borderBottom: "1px solid rgba(255,255,255,0.06)"
+}}>
+  <h2 style={{ fontSize: "22px", fontWeight: "600", marginBottom: "12px", color: "#fff" }}>
+    O que é a AbacatePay?
+  </h2>
+  <p style={{ opacity: 0.7, marginBottom: "24px", lineHeight: "1.7" }}>
+    A AbacatePay é um gateway de pagamento que surgiu da nossa própria necessidade de simplificar cobranças. Percebemos que os meios de pagamento existentes eram excessivamente complexos — documentações confusas, processos longos de homologação e múltiplas formas de fazer a mesma coisa. Nossa solução foi uma API que transforma essa complexidade em algo simples e intuitivo:
+  </p>
+
+  ```ts
+  abacatepay.checkouts.create({
+    items: [{ id: 'pro', quantity: 1 }],
+  });
+  ```
+
+  <div style={{ marginTop: "32px" }}>
+    <h3 style={{ fontSize: "18px", fontWeight: "600", marginBottom: "16px", color: "#fff" }}>
+      Princípios da API
+    </h3>
+    <div style={{
+      display: "grid",
+      gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+      gap: "16px"
+    }}>
+      <Card title="Baseada em intenção" icon="bullseye-arrow" horizontal>
+        Cada endpoint representa exatamente o que você lê. `POST /checkouts/create` cria um checkout. Sem ambiguidade.
+      </Card>
+      <Card title="Consistente" icon="check-double" horizontal>
+        Toda resposta segue o padrão `{data, error, success}`. Se `success` for `true`, os dados estão em `data`.
+      </Card>
+    </div>
+  </div>
 </div>
 
 <div style={{ 
@@ -52,7 +82,7 @@ mode: "custom"
     gap: "24px",
     marginBottom: "48px"
   }}>
-    <Card icon="qrcode" title="Receber via Pix" href="/pages/pix-qrcode/create">
+    <Card icon="qrcode" title="Receber via Pix" href="/pages/pix/create">
       Gere um QR Code PIX para cobrar seus clientes de forma instantânea.
     </Card>
 
@@ -95,10 +125,6 @@ mode: "custom"
     gap: "24px",
     marginBottom: "48px"
   }}>
-    <Card icon="rocket" title="Fazer sua primeira requisição" href="/pages/start/quickstart">
-      Aprenda como fazer sua primeira chamada à API e começar a processar pagamentos.
-    </Card>
-
     <Card icon="key" title="Chaves de API" href="/pages/authentication">
       Consulte como gerar e gerenciar suas credenciais com segurança.
     </Card>
@@ -120,21 +146,15 @@ mode: "custom"
     <button
       id="load-more-btn"
       onClick={() => {
-        const cards = ['card-11', 'card-15', 'card-16', 'card-17', 'card-18', 'card-19'];
+        const cards = ['card-11'];
         const btn = document.getElementById('load-more-btn');
         const firstCard = document.getElementById('card-11');
         const isHidden = firstCard && firstCard.style.display === 'none';
-        
         cards.forEach(id => {
           const card = document.getElementById(id);
-          if (card) {
-            card.style.display = isHidden ? 'block' : 'none';
-          }
+          if (card) card.style.display = isHidden ? 'block' : 'none';
         });
-        
-        if (btn) {
-          btn.textContent = isHidden ? 'Mostrar menos' : 'Carregar mais';
-        }
+        if (btn) btn.textContent = isHidden ? 'Mostrar menos' : 'Carregar mais';
       }}
       style={{
         padding: "12px 32px",
@@ -145,10 +165,7 @@ mode: "custom"
         border: "none",
         borderRadius: "75rem",
         cursor: "pointer",
-        transition: "background-color 0.2s"
       }}
-      onMouseOver={(e) => e.target.style.backgroundColor = "#9EEA6C"}
-      onMouseOut={(e) => e.target.style.backgroundColor = "#9EEA6C"}
     >
       Carregar mais
     </button>
@@ -164,23 +181,19 @@ mode: "custom"
         Veja os SDKs disponíveis para a AbacatePay.
       </Card>
 
-      <Card icon="codepen" title="Ecossistema" href="/pages/ecosystem">
-        Explore o nosso Ecossistema e descubra coisas novas.
+      <Card icon="codepen" title="Ferramentas" href="/pages/ecosystem/ecosystem">
+        Explore o nosso ecossistema de ferramentas.
       </Card>
 
       <Card icon="scroll" title="ChangeLog" href="/pages/changelog/index">
         Veja as últimas alterações na API da AbacatePay.
       </Card>
 
-      <Card icon="terminal" title="CLI" href="/pages/cli">
+      <Card icon="terminal" title="CLI" href="/pages/cli/overview">
         Veja o que temos de melhor com a nossa CLI oficial.
       </Card>
 
-      <Card icon="route" title="HTTP" href="/pages/http">
-        Crie requisições HTTP facilmente com as nossas collections e arquivos HTTP.
-      </Card>
-
-      <Card icon="command" title="AI" href="/pages/ai">
+      <Card icon="command" title="AI" href="/pages/ai/overview">
         Integre com as nossas ferramentas de IA facilmente, sem magia.
       </Card>
     </div>
@@ -206,16 +219,15 @@ mode: "custom"
     gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
     gap: "24px"
   }}>
-
-    <Card icon="graduation-cap" title=" AbacatePay Academy" href="https://chat.abacatepay.com/academy">
+    <Card icon="graduation-cap" title="AbacatePay Academy" href="https://chat.abacatepay.com/academy">
       Acesse o AbacatePay Academy para aprender a usar a API da AbacatePay.
     </Card>
 
-    <Card icon="book-open-cover" title=" Glossário" href="/pages/glossario">
-      Consulte o glossário de termos técnicos e conceitos da AbacatePay.
+    <Card icon="circle-question" title="FAQ e Glossário" href="/pages/faq/index">
+      Dúvidas frequentes e termos técnicos explicados.
     </Card>
 
-    <Card icon="headset" title=" Suporte" href="https://www.abacatepay.com/">
+    <Card icon="headset" title="Suporte" href="https://www.abacatepay.com/">
       Entre em contato com o suporte da AbacatePay para ajuda com sua integração.
     </Card>
   </div>
