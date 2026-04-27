@@ -36,6 +36,20 @@ Gera uma página de pagamento hospedada. Você envia os produtos; a API devolve 
 }
 ```
 
+**Exemplo com upsell:**
+```json
+{
+  "items": [
+    { "id": "prod_abc123xyz", "quantity": 1 }
+  ],
+  "upSellProductId": "prod_bump456xyz"
+}
+```
+
+<Tip title="Upsell" horizontal>
+Use `upSellProductId` para exibir um produto adicional na tela de pagamento antes da finalização. O produto deve ser **avulso** (sem `cycle`) e estar com status `ACTIVE`. Veja a [referência completa de upsell](/pages/payment/reference#upsell-order-bump).
+</Tip>
+
 <Tip title="Parcelamento no cartão" horizontal>
 Use `card.maxInstallments` (1–12) para permitir que o cliente parcele no cartão. O valor mínimo por parcela é R$ 10,00. Veja a [doc completa de parcelamento](/pages/payment/installments).
 </Tip>

@@ -87,3 +87,41 @@ POST /checkouts/create
 <Tip title="Redirecione o cliente" icon="book" horizontal>
 Use a `url` retornada para levar o cliente ao checkout e concluir o pagamento.
 </Tip>
+
+## Upsell
+
+Você pode exibir um produto adicional na tela de pagamento usando o campo `upSellProductId`. O produto é apresentado ao cliente como um complemento opcional antes de ele finalizar o pagamento — ideal para aumentar o ticket médio sem criar um checkout separado.
+
+<Card title="Regras do produto de upsell" horizontal>
+  O produto referenciado em `upSellProductId` precisa estar com `status: ACTIVE` e **não pode ter `cycle`** (deve ser avulso, sem assinatura).
+</Card>
+
+**Exemplo:**
+```json
+POST /checkouts/create
+{
+  "items": [
+    { "id": "prod_principal", "quantity": 1 }
+  ],
+  "upSellProductId": "prod_bump456xyz"
+}
+```
+
+**Resposta (com upsell):**
+```json
+{
+  "data": {
+    "id": "bill_abc123xyz",
+    "url": "https://app.abacatepay.com/pay/bill_abc123xyz",
+    "amount": 10000,
+    "upSellProductId": "prod_bump456xyz",
+    "status": "PENDING",
+    "frequency": "ONE_TIME",
+    ...
+  },
+  "success": true,
+  "error": null
+}
+```
+
+O `upSellProductId` é retornado na resposta e ficará `null` caso nenhum produto de upsell tenha sido vinculado ao checkout.
