@@ -90,7 +90,7 @@ Use a `url` retornada para levar o cliente ao checkout e concluir o pagamento.
 
 ## Upsell
 
-Você pode exibir um produto adicional na tela de pagamento usando o campo `upSellProductId`. O produto é apresentado ao cliente como um complemento opcional antes de ele finalizar o pagamento — ideal para aumentar o ticket médio sem criar um checkout separado.
+Você pode oferecer um produto adicional ao cliente após a conclusão do pagamento usando o campo `upSellProductId`. O produto é apresentado como uma oferta na página de confirmação — ideal para aumentar o ticket médio sem criar um novo checkout.
 
 <Card title="Regras do produto de upsell" horizontal>
   O produto referenciado em `upSellProductId` precisa estar com `status: ACTIVE` e **não pode ter `cycle`** (deve ser avulso, sem assinatura).

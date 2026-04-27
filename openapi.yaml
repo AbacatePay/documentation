@@ -1078,8 +1078,8 @@ paths:
                 upSellProductId:
                   type: string
                   description: >
-                    ID de um produto avulso (sem `cycle`) a ser exibido como
-                    upsell na tela de pagamento.
+                    ID de um produto avulso (sem `cycle`) a ser ofertado como
+                    upsell após a conclusão do pagamento.
 
 
                     O produto deve estar com `status: ACTIVE` e **não pode ter
