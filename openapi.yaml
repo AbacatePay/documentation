@@ -1075,6 +1075,20 @@ paths:
                     **Exemplo**: `"seu_id_123"`
                   x-mint:
                     hidden: true
+                upSellProductId:
+                  type: string
+                  description: >
+                    ID de um produto avulso (sem `cycle`) a ser ofertado como
+                    upsell após a conclusão do pagamento.
+
+
+                    O produto deve estar com `status: ACTIVE` e **não pode ter
+                    `cycle`** — apenas produtos de pagamento único são aceitos.
+
+
+                    **Exemplo**: `"prod_bump456xyz"`
+                  x-mint:
+                    hidden: true
                 metadata:
                   type: object
                   description: >
@@ -3715,6 +3729,13 @@ components:
           nullable: true
           description: URL do comprovante de pagamento.
           example: null
+        upSellProductId:
+          type: string
+          nullable: true
+          description: >-
+            ID do produto de upsell vinculado ao Checkout. Null se
+            nenhum produto de upsell foi informado na criação.
+          example: prod_bump456xyz
         metadata:
           type: object
           description: Metadados adicionais do Checkout.
