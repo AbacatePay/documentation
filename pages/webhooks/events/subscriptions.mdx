@@ -1,6 +1,6 @@
 ---
 title: 'Assinaturas'
-description: 'Eventos disparados para assinaturas.'
+description: 'Eventos disparados para assinaturas (PIX e Cartão).'
 icon: 'repeat'
 ---
 
@@ -8,207 +8,423 @@ icon: 'repeat'
   <Tab title="subscription.completed">
     Disparado quando uma assinatura se torna ativa.
 
-    ```json
-    {
-      "id": "log_taQArRTApemxwcbw5EJeF3hS",
-      "event": "subscription.completed",
-      "apiVersion": 2,
-      "devMode": false,
-      "data": {
-        "subscription": {
-          "id": "subs_tAFqDWBhcEYTjQh2K0ZYDHau",
-          "amount": 2990,
-          "currency": "BRL",
-          "method": "CARD",
-          "status": "ACTIVE",
-          "frequency": "MONTHLY",
-          "createdAt": "2024-12-06T20:00:00.000Z",
-          "updatedAt": "2024-12-06T20:00:05.000Z",
-          "canceledAt": null,
-          "cancelPolicy": null,
-          "cancelledDueTo": null
-        },
-        "customer": {
-          "id": "cust_def456",
-          "name": "Maria Santos",
-          "email": "maria@exemplo.com",
-          "taxId": "12.***.***/0001-**"
-        },
-        "payment": {
-          "id": "char_xyz789",
-          "externalId": "pedido-456",
-          "amount": 2990,
-          "paidAmount": 2990,
-          "platformFee": 100,
-          "status": "PAID",
-          "methods": ["CARD"],
-          "receiptUrl": "https://app.abacatepay.com/receipt/...",
-          "createdAt": "2024-12-06T20:00:00.000Z",
-          "updatedAt": "2024-12-06T20:00:05.000Z"
-        },
-        "payerInformation": {
-          "method": "CARD",
-          "CARD": {
-            "number": "1234",
-            "brand": "VISA"
+    <Tabs>
+      <Tab title="Cartão">
+        ```json
+        {
+          "id": "log_taQArRTApemxwcbw5EJeF3hS",
+          "event": "subscription.completed",
+          "apiVersion": 2,
+          "devMode": false,
+          "data": {
+            "subscription": {
+              "id": "subs_tAFqDWBhcEYTjQh2K0ZYDHau",
+              "amount": 2990,
+              "currency": "BRL",
+              "method": "CARD",
+              "status": "ACTIVE",
+              "frequency": "MONTHLY",
+              "createdAt": "2024-12-06T20:00:00.000Z",
+              "updatedAt": "2024-12-06T20:00:05.000Z",
+              "canceledAt": null,
+              "cancelPolicy": null,
+              "cancelledDueTo": null
+            },
+            "customer": {
+              "id": "cust_def456",
+              "name": "Maria Santos",
+              "email": "maria@exemplo.com",
+              "taxId": "12.***.***/0001-**"
+            },
+            "payment": {
+              "id": "char_xyz789",
+              "externalId": "pedido-456",
+              "amount": 2990,
+              "paidAmount": 2990,
+              "platformFee": 100,
+              "status": "PAID",
+              "methods": ["CARD"],
+              "receiptUrl": "https://app.abacatepay.com/receipt/...",
+              "createdAt": "2024-12-06T20:00:00.000Z",
+              "updatedAt": "2024-12-06T20:00:05.000Z"
+            },
+            "payerInformation": {
+              "method": "CARD",
+              "CARD": {
+                "number": "1234",
+                "brand": "VISA"
+              }
+            },
+            "checkout": {
+              "id": "bill_jskd3TMfScHZDJe5NSZjTmQ4",
+              "externalId": null,
+              "url": "https://app.abacatepay.com/pay/bill_jskd3TMfScHZDJe5NSZjTmQ4",
+              "amount": 2990,
+              "paidAmount": 2990,
+              "platformFee": 100,
+              "frequency": "SUBSCRIPTION",
+              "items": [{ "id": "prod_bx4BstRWhQ2SUcKsPt4c6pmq", "quantity": 1 }],
+              "status": "PAID",
+              "methods": ["CARD"],
+              "customerId": "cust_def456",
+              "receiptUrl": "https://app.abacatepay.com/receipt/...",
+              "createdAt": "2024-12-06T19:59:57.819Z",
+              "updatedAt": "2024-12-06T20:00:05.000Z"
+            }
           }
-        },
-        "checkout": {
-          "id": "bill_jskd3TMfScHZDJe5NSZjTmQ4",
-          "externalId": null,
-          "url": "https://app.abacatepay.com/pay/bill_jskd3TMfScHZDJe5NSZjTmQ4",
-          "amount": 2990,
-          "paidAmount": 2990,
-          "platformFee": 100,
-          "frequency": "SUBSCRIPTION",
-          "items": [{ "id": "prod_bx4BstRWhQ2SUcKsPt4c6pmq", "quantity": 1 }],
-          "status": "PAID",
-          "methods": ["CARD"],
-          "customerId": "cust_def456",
-          "receiptUrl": "https://app.abacatepay.com/receipt/...",
-          "createdAt": "2024-12-06T19:59:57.819Z",
-          "updatedAt": "2024-12-06T20:00:05.000Z"
         }
-      }
-    }
-    ```
+        ```
+      </Tab>
+
+      <Tab title="PIX">
+        ```json
+        {
+          "id": "log_taQArRTApemxwcbw5EJeF3hS",
+          "event": "subscription.completed",
+          "apiVersion": 2,
+          "devMode": false,
+          "data": {
+            "subscription": {
+              "id": "subs_tAFqDWBhcEYTjQh2K0ZYDHau",
+              "amount": 2990,
+              "currency": "BRL",
+              "method": "PIX",
+              "status": "ACTIVE",
+              "frequency": "MONTHLY",
+              "createdAt": "2024-12-06T20:00:00.000Z",
+              "updatedAt": "2024-12-06T20:00:05.000Z",
+              "canceledAt": null,
+              "cancelPolicy": null,
+              "cancelledDueTo": null
+            },
+            "customer": {
+              "id": "cust_def456",
+              "name": "Maria Santos",
+              "email": "maria@exemplo.com",
+              "taxId": "12.***.***/0001-**"
+            },
+            "payment": {
+              "id": "char_xyz789",
+              "externalId": "pedido-456",
+              "amount": 2990,
+              "paidAmount": 2990,
+              "platformFee": 60,
+              "status": "PAID",
+              "methods": ["PIX"],
+              "receiptUrl": "https://app.abacatepay.com/receipt/...",
+              "createdAt": "2024-12-06T20:00:00.000Z",
+              "updatedAt": "2024-12-06T20:00:05.000Z"
+            },
+            "payerInformation": {
+              "method": "PIX",
+              "PIX": {
+                "name": "Maria Santos",
+                "taxId": "12.***.***/0001-**",
+                "isSameAsCustomer": true
+              }
+            },
+            "checkout": {
+              "id": "bill_jskd3TMfScHZDJe5NSZjTmQ4",
+              "externalId": null,
+              "url": "https://app.abacatepay.com/pay/bill_jskd3TMfScHZDJe5NSZjTmQ4",
+              "amount": 2990,
+              "paidAmount": 2990,
+              "platformFee": 60,
+              "frequency": "SUBSCRIPTION",
+              "items": [{ "id": "prod_bx4BstRWhQ2SUcKsPt4c6pmq", "quantity": 1 }],
+              "status": "PAID",
+              "methods": ["PIX"],
+              "customerId": "cust_def456",
+              "receiptUrl": "https://app.abacatepay.com/receipt/...",
+              "createdAt": "2024-12-06T19:59:57.819Z",
+              "updatedAt": "2024-12-06T20:00:05.000Z"
+            }
+          }
+        }
+        ```
+      </Tab>
+    </Tabs>
   </Tab>
 
   <Tab title="subscription.renewed">
     Disparado sempre que uma assinatura é renovada com sucesso.
 
-    ```json
-    {
-      "id": "log_abc123xyz",
-      "event": "subscription.renewed",
-      "apiVersion": 2,
-      "devMode": false,
-      "data": {
-        "subscription": {
-          "id": "subs_tAFqDWBhcEYTjQh2K0ZYDHau",
-          "amount": 2990,
-          "currency": "BRL",
-          "method": "CARD",
-          "status": "ACTIVE",
-          "frequency": "MONTHLY",
-          "createdAt": "2024-12-06T20:00:00.000Z",
-          "updatedAt": "2025-01-06T20:00:05.000Z",
-          "canceledAt": null,
-          "cancelPolicy": null,
-          "cancelledDueTo": null
-        },
-        "customer": {
-          "id": "cust_def456",
-          "name": "Maria Santos",
-          "email": "maria@exemplo.com",
-          "taxId": "12.***.***/0001-**"
-        },
-        "payment": {
-          "id": "char_xyz789",
-          "externalId": "pedido-456",
-          "amount": 2990,
-          "paidAmount": 2990,
-          "platformFee": 100,
-          "status": "PAID",
-          "methods": ["CARD"],
-          "receiptUrl": "https://app.abacatepay.com/receipt/...",
-          "createdAt": "2025-01-06T20:00:00.000Z",
-          "updatedAt": "2025-01-06T20:00:05.000Z"
-        },
-        "payerInformation": {
-          "method": "CARD",
-          "CARD": {
-            "number": "1234",
-            "brand": "VISA"
+    <Tabs>
+      <Tab title="Cartão">
+        ```json
+        {
+          "id": "log_abc123xyz",
+          "event": "subscription.renewed",
+          "apiVersion": 2,
+          "devMode": false,
+          "data": {
+            "subscription": {
+              "id": "subs_tAFqDWBhcEYTjQh2K0ZYDHau",
+              "amount": 2990,
+              "currency": "BRL",
+              "method": "CARD",
+              "status": "ACTIVE",
+              "frequency": "MONTHLY",
+              "createdAt": "2024-12-06T20:00:00.000Z",
+              "updatedAt": "2025-01-06T20:00:05.000Z",
+              "canceledAt": null,
+              "cancelPolicy": null,
+              "cancelledDueTo": null
+            },
+            "customer": {
+              "id": "cust_def456",
+              "name": "Maria Santos",
+              "email": "maria@exemplo.com",
+              "taxId": "12.***.***/0001-**"
+            },
+            "payment": {
+              "id": "char_xyz789",
+              "externalId": "pedido-456",
+              "amount": 2990,
+              "paidAmount": 2990,
+              "platformFee": 100,
+              "status": "PAID",
+              "methods": ["CARD"],
+              "receiptUrl": "https://app.abacatepay.com/receipt/...",
+              "createdAt": "2025-01-06T20:00:00.000Z",
+              "updatedAt": "2025-01-06T20:00:05.000Z"
+            },
+            "payerInformation": {
+              "method": "CARD",
+              "CARD": {
+                "number": "1234",
+                "brand": "VISA"
+              }
+            },
+            "checkout": {
+              "id": "bill_renewxyz789",
+              "externalId": null,
+              "url": "https://app.abacatepay.com/pay/bill_renewxyz789",
+              "amount": 2990,
+              "paidAmount": 2990,
+              "platformFee": 100,
+              "frequency": "SUBSCRIPTION",
+              "items": [{ "id": "prod_bx4BstRWhQ2SUcKsPt4c6pmq", "quantity": 1 }],
+              "status": "PAID",
+              "methods": ["CARD"],
+              "customerId": "cust_def456",
+              "receiptUrl": "https://app.abacatepay.com/receipt/...",
+              "createdAt": "2025-01-06T19:59:57.819Z",
+              "updatedAt": "2025-01-06T20:00:05.000Z"
+            }
           }
-        },
-        "checkout": {
-          "id": "bill_renewxyz789",
-          "externalId": null,
-          "url": "https://app.abacatepay.com/pay/bill_renewxyz789",
-          "amount": 2990,
-          "paidAmount": 2990,
-          "platformFee": 100,
-          "frequency": "SUBSCRIPTION",
-          "items": [{ "id": "prod_bx4BstRWhQ2SUcKsPt4c6pmq", "quantity": 1 }],
-          "status": "PAID",
-          "methods": ["CARD"],
-          "customerId": "cust_def456",
-          "receiptUrl": "https://app.abacatepay.com/receipt/...",
-          "createdAt": "2025-01-06T19:59:57.819Z",
-          "updatedAt": "2025-01-06T20:00:05.000Z"
         }
-      }
-    }
-    ```
+        ```
+      </Tab>
+
+      <Tab title="PIX">
+        ```json
+        {
+          "id": "log_abc123xyz",
+          "event": "subscription.renewed",
+          "apiVersion": 2,
+          "devMode": false,
+          "data": {
+            "subscription": {
+              "id": "subs_tAFqDWBhcEYTjQh2K0ZYDHau",
+              "amount": 2990,
+              "currency": "BRL",
+              "method": "PIX",
+              "status": "ACTIVE",
+              "frequency": "MONTHLY",
+              "createdAt": "2024-12-06T20:00:00.000Z",
+              "updatedAt": "2025-01-06T20:00:05.000Z",
+              "canceledAt": null,
+              "cancelPolicy": null,
+              "cancelledDueTo": null
+            },
+            "customer": {
+              "id": "cust_def456",
+              "name": "Maria Santos",
+              "email": "maria@exemplo.com",
+              "taxId": "12.***.***/0001-**"
+            },
+            "payment": {
+              "id": "char_xyz789",
+              "externalId": "pedido-456",
+              "amount": 2990,
+              "paidAmount": 2990,
+              "platformFee": 60,
+              "status": "PAID",
+              "methods": ["PIX"],
+              "receiptUrl": "https://app.abacatepay.com/receipt/...",
+              "createdAt": "2025-01-06T20:00:00.000Z",
+              "updatedAt": "2025-01-06T20:00:05.000Z"
+            },
+            "payerInformation": {
+              "method": "PIX",
+              "PIX": {
+                "name": "Maria Santos",
+                "taxId": "12.***.***/0001-**",
+                "isSameAsCustomer": true
+              }
+            },
+            "checkout": {
+              "id": "bill_renewxyz789",
+              "externalId": null,
+              "url": "https://app.abacatepay.com/pay/bill_renewxyz789",
+              "amount": 2990,
+              "paidAmount": 2990,
+              "platformFee": 60,
+              "frequency": "SUBSCRIPTION",
+              "items": [{ "id": "prod_bx4BstRWhQ2SUcKsPt4c6pmq", "quantity": 1 }],
+              "status": "PAID",
+              "methods": ["PIX"],
+              "customerId": "cust_def456",
+              "receiptUrl": "https://app.abacatepay.com/receipt/...",
+              "createdAt": "2025-01-06T19:59:57.819Z",
+              "updatedAt": "2025-01-06T20:00:05.000Z"
+            }
+          }
+        }
+        ```
+      </Tab>
+    </Tabs>
   </Tab>
 
   <Tab title="subscription.cancelled">
     Disparado quando uma assinatura é cancelada.
 
-    ```json
-    {
-      "id": "log_abc123xyz",
-      "event": "subscription.cancelled",
-      "apiVersion": 2,
-      "devMode": false,
-      "data": {
-        "subscription": {
-          "id": "subs_tAFqDWBhcEYTjQh2K0ZYDHau",
-          "amount": 2990,
-          "currency": "BRL",
-          "method": "CARD",
-          "status": "CANCELLED",
-          "frequency": "MONTHLY",
-          "createdAt": "2024-12-06T20:00:00.000Z",
-          "updatedAt": "2024-12-06T20:00:05.000Z",
-          "canceledAt": "2024-12-06T20:00:05.000Z",
-          "cancelPolicy": null,
-          "cancelledDueTo": null
-        },
-        "customer": {
-          "id": "cust_def456",
-          "name": "Maria Santos",
-          "email": "maria@exemplo.com",
-          "taxId": "12.***.***/0001-**"
-        },
-        "payment": {
-          "id": "char_xyz789",
-          "externalId": "pedido-456",
-          "amount": 2990,
-          "paidAmount": 2990,
-          "platformFee": 100,
-          "status": "PAID",
-          "methods": ["CARD"],
-          "receiptUrl": "https://app.abacatepay.com/receipt/...",
-          "createdAt": "2024-12-06T20:00:00.000Z",
-          "updatedAt": "2024-12-06T20:00:05.000Z"
-        },
-        "payerInformation": {
-          "method": "CARD",
-          "CARD": {
-            "number": "1234",
-            "brand": "VISA"
+    <Tabs>
+      <Tab title="Cartão">
+        ```json
+        {
+          "id": "log_abc123xyz",
+          "event": "subscription.cancelled",
+          "apiVersion": 2,
+          "devMode": false,
+          "data": {
+            "subscription": {
+              "id": "subs_tAFqDWBhcEYTjQh2K0ZYDHau",
+              "amount": 2990,
+              "currency": "BRL",
+              "method": "CARD",
+              "status": "CANCELLED",
+              "frequency": "MONTHLY",
+              "createdAt": "2024-12-06T20:00:00.000Z",
+              "updatedAt": "2024-12-06T20:00:05.000Z",
+              "canceledAt": "2024-12-06T20:00:05.000Z",
+              "cancelPolicy": null,
+              "cancelledDueTo": null
+            },
+            "customer": {
+              "id": "cust_def456",
+              "name": "Maria Santos",
+              "email": "maria@exemplo.com",
+              "taxId": "12.***.***/0001-**"
+            },
+            "payment": {
+              "id": "char_xyz789",
+              "externalId": "pedido-456",
+              "amount": 2990,
+              "paidAmount": 2990,
+              "platformFee": 100,
+              "status": "PAID",
+              "methods": ["CARD"],
+              "receiptUrl": "https://app.abacatepay.com/receipt/...",
+              "createdAt": "2024-12-06T20:00:00.000Z",
+              "updatedAt": "2024-12-06T20:00:05.000Z"
+            },
+            "payerInformation": {
+              "method": "CARD",
+              "CARD": {
+                "number": "1234",
+                "brand": "VISA"
+              }
+            },
+            "checkout": {
+              "id": "bill_jskd3TMfScHZDJe5NSZjTmQ4",
+              "externalId": null,
+              "url": "https://app.abacatepay.com/pay/bill_jskd3TMfScHZDJe5NSZjTmQ4",
+              "amount": 2990,
+              "paidAmount": 2990,
+              "platformFee": 100,
+              "frequency": "SUBSCRIPTION",
+              "items": [{ "id": "prod_bx4BstRWhQ2SUcKsPt4c6pmq", "quantity": 1 }],
+              "status": "PAID",
+              "methods": ["CARD"],
+              "customerId": "cust_def456",
+              "receiptUrl": "https://app.abacatepay.com/receipt/...",
+              "createdAt": "2024-12-06T19:59:57.819Z",
+              "updatedAt": "2024-12-06T20:00:05.000Z"
+            }
           }
-        },
-        "checkout": {
-          "id": "bill_jskd3TMfScHZDJe5NSZjTmQ4",
-          "externalId": null,
-          "url": "https://app.abacatepay.com/pay/bill_jskd3TMfScHZDJe5NSZjTmQ4",
-          "amount": 2990,
-          "paidAmount": 2990,
-          "platformFee": 100,
-          "frequency": "SUBSCRIPTION",
-          "items": [{ "id": "prod_bx4BstRWhQ2SUcKsPt4c6pmq", "quantity": 1 }],
-          "status": "PAID",
-          "methods": ["CARD"],
-          "customerId": "cust_def456",
-          "receiptUrl": "https://app.abacatepay.com/receipt/...",
-          "createdAt": "2024-12-06T19:59:57.819Z",
-          "updatedAt": "2024-12-06T20:00:05.000Z"
         }
-      }
-    }
-    ```
+        ```
+      </Tab>
+
+      <Tab title="PIX">
+        ```json
+        {
+          "id": "log_abc123xyz",
+          "event": "subscription.cancelled",
+          "apiVersion": 2,
+          "devMode": false,
+          "data": {
+            "subscription": {
+              "id": "subs_tAFqDWBhcEYTjQh2K0ZYDHau",
+              "amount": 2990,
+              "currency": "BRL",
+              "method": "PIX",
+              "status": "CANCELLED",
+              "frequency": "MONTHLY",
+              "createdAt": "2024-12-06T20:00:00.000Z",
+              "updatedAt": "2024-12-06T20:00:05.000Z",
+              "canceledAt": "2024-12-06T20:00:05.000Z",
+              "cancelPolicy": null,
+              "cancelledDueTo": null
+            },
+            "customer": {
+              "id": "cust_def456",
+              "name": "Maria Santos",
+              "email": "maria@exemplo.com",
+              "taxId": "12.***.***/0001-**"
+            },
+            "payment": {
+              "id": "char_xyz789",
+              "externalId": "pedido-456",
+              "amount": 2990,
+              "paidAmount": 2990,
+              "platformFee": 60,
+              "status": "PAID",
+              "methods": ["PIX"],
+              "receiptUrl": "https://app.abacatepay.com/receipt/...",
+              "createdAt": "2024-12-06T20:00:00.000Z",
+              "updatedAt": "2024-12-06T20:00:05.000Z"
+            },
+            "payerInformation": {
+              "method": "PIX",
+              "PIX": {
+                "name": "Maria Santos",
+                "taxId": "12.***.***/0001-**",
+                "isSameAsCustomer": true
+              }
+            },
+            "checkout": {
+              "id": "bill_jskd3TMfScHZDJe5NSZjTmQ4",
+              "externalId": null,
+              "url": "https://app.abacatepay.com/pay/bill_jskd3TMfScHZDJe5NSZjTmQ4",
+              "amount": 2990,
+              "paidAmount": 2990,
+              "platformFee": 60,
+              "frequency": "SUBSCRIPTION",
+              "items": [{ "id": "prod_bx4BstRWhQ2SUcKsPt4c6pmq", "quantity": 1 }],
+              "status": "PAID",
+              "methods": ["PIX"],
+              "customerId": "cust_def456",
+              "receiptUrl": "https://app.abacatepay.com/receipt/...",
+              "createdAt": "2024-12-06T19:59:57.819Z",
+              "updatedAt": "2024-12-06T20:00:05.000Z"
+            }
+          }
+        }
+        ```
+      </Tab>
+    </Tabs>
   </Tab>
 </Tabs>

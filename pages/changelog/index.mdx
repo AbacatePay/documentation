@@ -11,6 +11,34 @@ Feedbacks também são bem-vindos no nosso Discord (#dev).
 
 ## Atualizações Recentes
 
+<Update label="29 de Abr, 2026">
+## Webhooks de Assinatura: novos eventos `subscription.plan_changed` e `subscription.payment_failed`
+
+Dois novos eventos de webhook foram adicionados ao fluxo de assinaturas, dando mais visibilidade sobre o ciclo de vida das cobranças recorrentes dos seus clientes.
+
+**O que mudou:**
+
+- **`subscription.plan_changed`** — disparado quando o cliente muda de plano dentro de uma assinatura ativa (upgrade ou downgrade). O payload inclui o objeto `subscription` atualizado com o novo valor e frequência.
+- **`subscription.payment_failed`** — disparado quando uma tentativa de cobrança recorrente falha (ex: cartão recusado, saldo insuficiente). O payload inclui o objeto `payment` com o status `FAILED` e o campo `reason` indicando o motivo da falha.
+
+**Por que isso importa?**
+
+Antes, quando um pagamento falhava ou um plano era alterado, seu sistema dependia de consultas ativas à API para detectar a mudança. Agora você recebe a notificação automaticamente, podendo reagir em tempo real — enviar um e-mail de cobrança, pausar acesso, ou registrar a troca de plano sem nenhuma consulta adicional.
+
+**Eventos disponíveis em assinaturas:**
+
+| Evento | Quando é disparado |
+|---|---|
+| `subscription.completed` | Assinatura criada e ativada |
+| `subscription.renewed` | Cobrança recorrente paga com sucesso |
+| `subscription.cancelled` | Assinatura cancelada |
+| `subscription.plan_changed` | Plano da assinatura alterado |
+| `subscription.payment_failed` | Tentativa de cobrança recorrente falhou |
+
+---
+
+</Update>
+
 <Update label="20 de Abr, 2026">
 ## API v2 disponível para todos
 
