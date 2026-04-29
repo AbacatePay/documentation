@@ -1,6 +1,6 @@
 ---
 title: 'Checkout Transparente'
-description: 'Eventos disparados para pagamentos via Checkout Transparente (PIX e Cartão).'
+description: 'Eventos disparados para pagamentos via Checkout Transparente (PIX, Cartão e Boleto).'
 icon: 'credit-card'
 ---
 
@@ -83,6 +83,47 @@ icon: 'credit-card'
               "CARD": {
                 "number": "1234",
                 "brand": "VISA"
+              }
+            }
+          }
+        }
+        ```
+      </Tab>
+
+      <Tab title="Boleto">
+        ```json
+        {
+          "event": "transparent.completed",
+          "apiVersion": 2,
+          "devMode": false,
+          "data": {
+            "transparent": {
+              "id": "bole_k8pqr2mnvx",
+              "externalId": "pedido-456",
+              "amount": 25000,
+              "paidAmount": 25000,
+              "platformFee": 250,
+              "status": "PAID",
+              "frequency": "ONE_TIME",
+              "devMode": false,
+              "customerId": "cust_abc123",
+              "methods": ["BOLETO"],
+              "receiptUrl": "https://app.abacatepay.com/receipt/...",
+              "createdAt": "2024-11-04T14:22:10.381Z",
+              "updatedAt": "2024-11-04T14:22:15.000Z"
+            },
+            "customer": {
+              "id": "cust_def456",
+              "name": "Mariana Costa",
+              "email": "mariana.costa@empresa.com.br",
+              "taxId": "98*.***.***/0001-**"
+            },
+            "payerInformation": {
+              "method": "BOLETO",
+              "BOLETO": {
+                "name": "Mariana Costa",
+                "taxId": "98*.***.***/0001-**",
+                "isSameAsCustomer": true
               }
             }
           }
@@ -178,6 +219,48 @@ icon: 'credit-card'
         }
         ```
       </Tab>
+
+      <Tab title="Boleto">
+        ```json
+        {
+          "event": "transparent.disputed",
+          "apiVersion": 2,
+          "devMode": false,
+          "data": {
+            "transparent": {
+              "id": "bole_k8pqr2mnvx",
+              "externalId": "pedido-456",
+              "amount": 25000,
+              "paidAmount": 25000,
+              "platformFee": 250,
+              "status": "PAID",
+              "frequency": "ONE_TIME",
+              "devMode": false,
+              "customerId": "cust_abc123",
+              "methods": ["BOLETO"],
+              "receiptUrl": "https://app.abacatepay.com/receipt/...",
+              "createdAt": "2024-11-04T14:22:10.381Z",
+              "updatedAt": "2024-11-04T14:22:15.000Z"
+            },
+            "customer": {
+              "id": "cust_def456",
+              "name": "Mariana Costa",
+              "email": "mariana.costa@empresa.com.br",
+              "taxId": "98*.***.***/0001-**"
+            },
+            "payerInformation": {
+              "method": "BOLETO",
+              "BOLETO": {
+                "name": "Mariana Costa",
+                "taxId": "98*.***.***/0001-**",
+                "isSameAsCustomer": true
+              }
+            },
+            "reason": "requested_by_customer"
+          }
+        }
+        ```
+      </Tab>
     </Tabs>
   </Tab>
 
@@ -260,6 +343,48 @@ icon: 'credit-card'
               "CARD": {
                 "number": "1234",
                 "brand": "VISA"
+              }
+            },
+            "reason": "requested_by_customer"
+          }
+        }
+        ```
+      </Tab>
+
+      <Tab title="Boleto">
+        ```json
+        {
+          "event": "transparent.refunded",
+          "apiVersion": 2,
+          "devMode": false,
+          "data": {
+            "transparent": {
+              "id": "bole_k8pqr2mnvx",
+              "externalId": "pedido-456",
+              "amount": 25000,
+              "paidAmount": 25000,
+              "platformFee": 250,
+              "status": "PAID",
+              "frequency": "ONE_TIME",
+              "devMode": false,
+              "customerId": "cust_abc123",
+              "methods": ["BOLETO"],
+              "receiptUrl": "https://app.abacatepay.com/receipt/...",
+              "createdAt": "2024-11-04T14:22:10.381Z",
+              "updatedAt": "2024-11-04T14:22:15.000Z"
+            },
+            "customer": {
+              "id": "cust_def456",
+              "name": "Mariana Costa",
+              "email": "mariana.costa@empresa.com.br",
+              "taxId": "98*.***.***/0001-**"
+            },
+            "payerInformation": {
+              "method": "BOLETO",
+              "BOLETO": {
+                "name": "Mariana Costa",
+                "taxId": "98*.***.***/0001-**",
+                "isSameAsCustomer": true
               }
             },
             "reason": "requested_by_customer"
