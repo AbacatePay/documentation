@@ -3,6 +3,49 @@ title: 'Cancelar uma assinatura'
 openapi: "POST /subscriptions/cancel"
 ---
 
+Cancela uma assinatura ativa imediatamente. Parcelas futuras pendentes são canceladas junto.
+
 <Card horizontal>
   Requer a permissão `SUBSCRIPTION:DELETE`.
 </Card>
+
+## Corpo da requisição
+
+| Campo | Tipo   | Obrigatório | Descrição              |
+|-------|--------|-------------|------------------------|
+| `id`  | string | Sim         | ID da assinatura (`subs_...`) |
+
+**Exemplo:**
+```json
+{
+  "id": "subs_abc123xyz"
+}
+```
+
+## Resposta
+
+Retorna o objeto da assinatura com `status` atualizado para `CANCELLED`.
+
+```json
+{
+  "data": {
+    "id": "subs_abc123xyz",
+    "customerId": "cust_abc123xyz",
+    "amount": 2990,
+    "status": "CANCELLED",
+    "method": "CARD",
+    "coupons": [],
+    "devMode": false,
+    "trialDays": null,
+    "trialEndsAt": null,
+    "createdAt": "2024-12-06T20:00:00.000Z",
+    "updatedAt": "2024-12-06T20:00:05.000Z"
+  },
+  "success": true,
+  "error": null
+}
+```
+
+<Warning title="Cancelamento imediato" horizontal>
+  O cancelamento é aplicado na hora (`cancelPolicy: NOW`). Não há período de carência — o cliente perde o acesso imediatamente.
+</Warning>

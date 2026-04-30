@@ -11,6 +11,31 @@ Feedbacks também são bem-vindos no nosso Discord (#dev).
 
 ## Atualizações Recentes
 
+<Update label="4 de Mai, 2026">
+## Assinaturas: cancelar, alterar plano e registrar uso
+
+Três novos endpoints de gerenciamento de assinaturas foram adicionados à API v2, completando o ciclo de vida de cobranças recorrentes.
+
+**O que mudou:**
+
+- **`POST /v2/subscriptions/cancel`** — cancela uma assinatura ativa imediatamente, interrompendo todas as cobranças futuras
+- **`POST /v2/subscriptions/change-plan`** — troca o produto principal da assinatura (upgrade ou downgrade); o novo valor começa a ser cobrado no próximo ciclo
+- **`POST /v2/subscriptions/record-usage`** — registra unidades de uso de produtos pay-as-you-go vinculados à assinatura; o total é incluído na próxima cobrança do ciclo
+
+**Permissões necessárias:**
+
+| Endpoint | Permissão |
+|---|---|
+| `POST /subscriptions/cancel` | `SUBSCRIPTION:DELETE` |
+| `POST /subscriptions/change-plan` | `SUBSCRIPTION:CREATE` |
+| `POST /subscriptions/record-usage` | `SUBSCRIPTION:CREATE` |
+
+Consulte a [documentação de assinaturas](/pages/subscriptions/reference) para exemplos completos e detalhes de cada endpoint.
+
+---
+
+</Update>
+
 <Update label="29 de Abr, 2026">
 ## Webhooks de Assinatura: novos eventos `subscription.plan_changed` e `subscription.payment_failed`
 
