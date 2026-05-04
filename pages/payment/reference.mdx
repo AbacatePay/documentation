@@ -125,3 +125,80 @@ POST /checkouts/create
 ```
 
 O `upSellProductId` é retornado na resposta e ficará `null` caso nenhum produto de upsell tenha sido vinculado ao checkout.
+
+## Multa e juros no boleto
+
+Para cobranças com `methods: ["BOLETO"]`, você pode configurar **juros por atraso** (`interest`) e **multa por atraso** (`fine`) que serão aplicados se o cliente pagar após a data de vencimento. Ambos os campos são opcionais e independentes — pode-se enviar só `interest`, só `fine`, ambos ou nenhum.
+
+<Card title="Aplicação dos campos" horizontal>
+  Os campos só têm efeito quando o método de pagamento é `BOLETO`. Para `PIX` ou `CARD` são ignorados silenciosamente.
+</Card>
+
+### `interest` — juros por atraso / late interest
+
+| Campo | Tipo | Descrição |
+|---|---|---|
+| `value` | `integer ≥ 0` | Percentual de juros **ao mês**, em centésimos de percentual. `100` = 1% ao mês, `250` = 2,5% ao mês. Quando `0` ou omitido, não há juros. |
+
+Os juros seguem o padrão **percentual ao mês, calculados pro rata die** após o vencimento.
+
+> **EN:** `interest.value` is an integer in hundredths of a percent representing the **monthly** late interest rate (`100` = 1%/month, `250` = 2.5%/month). It accrues pro rata die after the due date. Omit or use `0` to disable.
+
+### `fine` — multa por atraso / late fine
+
+| Campo | Tipo | Descrição |
+|---|---|---|
+| `value` | `integer ≥ 0` | Quando `type = "PERCENTAGE"`: centésimos de percentual (`200` = 2%). Quando `type = "FIXED"`: valor em **centavos** (`1000` = R$ 10,00). Quando `0` ou omitido, sem multa. |
+| `type` | `"PERCENTAGE"` \| `"FIXED"` | `PERCENTAGE` aplica percentual sobre o valor do boleto. `FIXED` aplica um valor fixo em centavos. |
+
+A multa é uma **cobrança única** aplicada uma vez após o vencimento.
+
+> **EN:** `fine` is a one-time charge added after the due date. With `type: "PERCENTAGE"`, `value` is in hundredths of a percent (`200` = 2%). With `type: "FIXED"`, `value` is in **cents** (`1000` = R$ 10.00).
+
+<Note>
+**Unidades resumidas / unit cheat sheet:** `interest.value` e `fine.value` (quando `type = "PERCENTAGE"`) são sempre em centésimos de percentual — `100` = 1%. `fine.value` (quando `type = "FIXED"`) e `amount` seguem o restante da API e são em centavos — `1000` = R$ 10,00.
+</Note>
+
+**Exemplo — juros de 1% ao mês + multa de 2%:**
+```json
+POST /checkouts/create
+{
+  "methods": ["BOLETO"],
+  "items": [
+    { "id": "prod_abc123", "quantity": 1 }
+  ],
+  "interest": { "value": 100 },
+  "fine": { "value": 200, "type": "PERCENTAGE" }
+}
+```
+
+**Exemplo — só multa fixa de R$ 10,00:**
+```json
+POST /checkouts/create
+{
+  "methods": ["BOLETO"],
+  "items": [
+    { "id": "prod_abc123", "quantity": 1 }
+  ],
+  "fine": { "value": 1000, "type": "FIXED" }
+}
+```
+
+**Resposta:**
+
+Os mesmos objetos `interest` e `fine` constam na resposta de `GET /checkouts/get` e `GET /checkouts/list`, ou ficam `null` quando nenhum dos campos foi configurado.
+
+```json
+{
+  "data": {
+    "id": "bill_abc123xyz",
+    "amount": 10000,
+    "status": "PENDING",
+    "interest": { "value": 100 },
+    "fine": { "value": 200, "type": "PERCENTAGE" },
+    ...
+  },
+  "success": true,
+  "error": null
+}
+```
