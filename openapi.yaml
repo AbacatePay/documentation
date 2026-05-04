@@ -2912,6 +2912,180 @@ paths:
                     type: string
                     description: Mensagem de erro indicando que a assinatura não foi encontrada.
                     example: Subscription not found
+  /subscriptions/change-plan:
+    post:
+      summary: Alterar plano da assinatura
+      description: |
+        Altera o produto principal de uma assinatura ativa.
+
+        A mudança é agendada como `PENDING` e aplicada automaticamente no início do próximo ciclo de cobrança. Só pode existir uma alteração pendente por assinatura — uma nova chamada substitui a anterior ainda não aplicada.
+
+        O produto informado em `productId` deve ter um ciclo de cobrança definido. Produtos avulsos (sem ciclo) retornam erro.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - id
+                - productId
+                - quantity
+              additionalProperties: false
+              properties:
+                id:
+                  type: string
+                  description: Identificador único da assinatura a ser alterada.
+                  example: subs_abc123xyz
+                productId:
+                  type: string
+                  description: Identificador do novo produto. Deve ter ciclo de cobrança definido.
+                  example: prod_plano_pro
+                quantity:
+                  type: integer
+                  minimum: 1
+                  description: Quantidade do novo produto.
+                  example: 1
+      responses:
+        '200':
+          description: Alteração de plano agendada com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/SubscriptionUpdate'
+                  error:
+                    type: string
+                    nullable: true
+                    example: null
+                  success:
+                    $ref: '#/components/schemas/Success'
+        '401':
+          description: Não autorizado. Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Token de autenticação inválido ou ausente.
+        '404':
+          description: Assinatura ou produto não encontrado.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Subscription not found or not active
+        '422':
+          description: "Dados inválidos (ex: produto sem ciclo)."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Product must have a billing cycle
+  /subscriptions/record-usage:
+    post:
+      summary: Registrar uso
+      description: |
+        Registra unidades de uso de um produto avulso (pay-as-you-go) em uma assinatura ativa.
+
+        O registro é vinculado à próxima parcela pendente da assinatura e incluído na cobrança do ciclo atual. Use `action: "add"` para acrescentar unidades e `action: "subtract"` para estornar unidades já registradas.
+
+        O produto informado em `productId` **não** deve ter ciclo de cobrança. Produtos de assinatura (com ciclo) retornam erro.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - id
+                - productId
+                - units
+                - action
+              additionalProperties: false
+              properties:
+                id:
+                  type: string
+                  description: Identificador único da assinatura.
+                  example: subs_abc123xyz
+                productId:
+                  type: string
+                  description: Identificador do produto de uso. Não deve ter ciclo de cobrança.
+                  example: prod_api_calls
+                units:
+                  type: integer
+                  minimum: 1
+                  description: Quantidade de unidades a registrar.
+                  example: 50
+                action:
+                  type: string
+                  enum:
+                    - add
+                    - subtract
+                  description: >-
+                    `add` para acrescentar unidades à próxima cobrança;
+                    `subtract` para estornar unidades já registradas no ciclo.
+                  example: add
+      responses:
+        '200':
+          description: Uso registrado com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/SubscriptionUsageRecord'
+                  error:
+                    type: string
+                    nullable: true
+                    example: null
+                  success:
+                    $ref: '#/components/schemas/Success'
+        '401':
+          description: Não autorizado. Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Token de autenticação inválido ou ausente.
+        '404':
+          description: Assinatura ou produto não encontrado.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Subscription not found or not active
+        '422':
+          description: "Dados inválidos (ex: produto com ciclo enviado em vez de produto avulso)."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Product must not have a billing cycle
   /store/get:
     get:
       summary: Obter detalhes da loja
@@ -4334,6 +4508,102 @@ components:
           format: date-time
           description: Data de atualização da assinatura.
           example: '2024-11-04T18:38:28.573Z'
+    SubscriptionUpdate:
+      type: object
+      description: Atualização de plano pendente de uma assinatura.
+      required:
+        - id
+        - subscriptionId
+        - status
+        - productId
+        - quantity
+        - newAmount
+        - requestedAt
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          description: Identificador único da atualização de plano.
+          example: subu_abc123xyz
+        subscriptionId:
+          type: string
+          description: Identificador da assinatura associada.
+          example: subs_abc123xyz
+        status:
+          type: string
+          description: Status da atualização.
+          enum:
+            - PENDING
+            - APPLIED
+            - CANCELLED
+          example: PENDING
+        productId:
+          type: string
+          description: Identificador do novo produto.
+          example: prod_plano_pro
+        quantity:
+          type: integer
+          description: Quantidade do novo produto.
+          example: 1
+        newAmount:
+          type: integer
+          description: Novo valor a ser cobrado por ciclo, em centavos (preço × quantidade).
+          example: 4990
+        requestedAt:
+          type: string
+          format: date-time
+          description: Data e hora em que a alteração foi solicitada.
+          example: '2024-12-06T20:05:00.000Z'
+    SubscriptionUsageRecord:
+      type: object
+      description: Registro de uso de um produto avulso em uma assinatura.
+      required:
+        - id
+        - subscriptionId
+        - productId
+        - units
+        - unitPrice
+        - action
+        - installmentNumber
+        - recordedAt
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          description: Identificador único do registro de uso.
+          example: usgr_abc123xyz
+        subscriptionId:
+          type: string
+          description: Identificador da assinatura associada.
+          example: subs_abc123xyz
+        productId:
+          type: string
+          description: Identificador do produto de uso.
+          example: prod_api_calls
+        units:
+          type: integer
+          description: Quantidade de unidades registradas.
+          example: 50
+        unitPrice:
+          type: integer
+          description: Preço unitário em centavos no momento do registro.
+          example: 100
+        action:
+          type: string
+          description: Tipo de ação aplicada ao uso.
+          enum:
+            - add
+            - subtract
+          example: add
+        installmentNumber:
+          type: integer
+          description: Número da parcela em que este uso será cobrado.
+          example: 2
+        recordedAt:
+          type: string
+          format: date-time
+          description: Data e hora do registro.
+          example: '2024-12-06T20:10:00.000Z'
     WebhookCreateInput:
       type: object
       description: Dados para criação de um webhook.

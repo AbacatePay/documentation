@@ -1,0 +1,85 @@
+---
+title: 'Registrar uso'
+openapi: "POST /subscriptions/record-usage"
+---
+
+Registra unidades de uso de um produto avulso (pay-as-you-go) em uma assinatura ativa. O valor correspondente é incluído na próxima cobrança do ciclo.
+
+<Card horizontal>
+  Requer a permissão `SUBSCRIPTION:CREATE`.
+</Card>
+
+## Como funciona
+
+Diferente do produto principal da assinatura (que tem ciclo fixo), produtos de uso são cobrados de acordo com o consumo real registrado via este endpoint. Cada registro é vinculado à próxima parcela pendente da assinatura.
+
+Use `action: "add"` para adicionar unidades e `action: "subtract"` para estornar unidades já registradas no mesmo ciclo.
+
+## Corpo da requisição
+
+| Campo       | Tipo    | Obrigatório | Descrição                                                     |
+|-------------|---------|-------------|---------------------------------------------------------------|
+| `id`        | string  | Sim         | ID da assinatura (`subs_...`)                                 |
+| `productId` | string  | Sim         | ID do produto de uso (`prod_...`) — **não** deve ter ciclo    |
+| `units`     | integer | Sim         | Quantidade de unidades (mínimo `1`)                           |
+| `action`    | string  | Sim         | `"add"` para adicionar ou `"subtract"` para remover unidades  |
+
+<Note>
+  O produto em `productId` deve ser um produto **sem ciclo** (`cycle: null`). Produtos de assinatura (com ciclo) retornam erro.
+</Note>
+
+**Exemplo — adicionar 50 unidades de API calls:**
+```json
+{
+  "id": "subs_abc123xyz",
+  "productId": "prod_api_calls",
+  "units": 50,
+  "action": "add"
+}
+```
+
+**Exemplo — estornar 10 unidades:**
+```json
+{
+  "id": "subs_abc123xyz",
+  "productId": "prod_api_calls",
+  "units": 10,
+  "action": "subtract"
+}
+```
+
+## Resposta
+
+Retorna o registro de uso criado, já vinculado à próxima parcela do ciclo (`installmentNumber`).
+
+```json
+{
+  "data": {
+    "id": "usgr_abc123xyz",
+    "subscriptionId": "subs_abc123xyz",
+    "productId": "prod_api_calls",
+    "units": 50,
+    "unitPrice": 100,
+    "action": "add",
+    "installmentNumber": 2,
+    "recordedAt": "2024-12-06T20:10:00.000Z"
+  },
+  "success": true,
+  "error": null
+}
+```
+
+| Campo               | Tipo    | Descrição                                                      |
+|---------------------|---------|----------------------------------------------------------------|
+| `id`                | string  | ID do registro de uso (`usgr_...`)                             |
+| `subscriptionId`    | string  | ID da assinatura                                               |
+| `productId`         | string  | ID do produto                                                  |
+| `units`             | integer | Quantidade de unidades registradas                             |
+| `unitPrice`         | integer | Preço unitário em centavos no momento do registro              |
+| `action`            | string  | `"add"` ou `"subtract"`                                        |
+| `installmentNumber` | integer | Número da parcela onde este uso será cobrado                   |
+| `recordedAt`        | string  | Data/hora do registro                                          |
+
+<Tip title="Cobrança automática" horizontal>
+  O valor total cobrado na próxima parcela inclui todos os registros de uso com `action: "add"` menos os com `action: "subtract"` do mesmo ciclo: `Σ(add × unitPrice) − Σ(subtract × unitPrice)`.
+</Tip>

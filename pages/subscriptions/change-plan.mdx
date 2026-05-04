@@ -1,0 +1,69 @@
+---
+title: 'Alterar plano da assinatura'
+openapi: "POST /subscriptions/change-plan"
+---
+
+Altera o produto principal de uma assinatura ativa. O novo valor começa a ser cobrado no próximo ciclo de cobrança — o ciclo atual não é afetado.
+
+<Card horizontal>
+  Requer a permissão `SUBSCRIPTION:CREATE`.
+</Card>
+
+## Corpo da requisição
+
+| Campo       | Tipo    | Obrigatório | Descrição                                              |
+|-------------|---------|-------------|--------------------------------------------------------|
+| `id`        | string  | Sim         | ID da assinatura (`subs_...`)                          |
+| `productId` | string  | Sim         | ID do novo produto (`prod_...`) — deve ter ciclo definido |
+| `quantity`  | integer | Sim         | Quantidade do produto (mínimo `1`)                     |
+
+<Note>
+  O produto informado em `productId` precisa ter um `cycle` configurado (`WEEKLY`, `MONTHLY`, `SEMIANNUALLY` ou `ANNUALLY`). Produtos avulsos (sem ciclo) retornam erro.
+</Note>
+
+**Exemplo — upgrade de plano:**
+```json
+{
+  "id": "subs_abc123xyz",
+  "productId": "prod_plano_pro",
+  "quantity": 1
+}
+```
+
+## Resposta
+
+Retorna um objeto de atualização pendente (`status: "PENDING"`). A mudança é aplicada automaticamente no início do próximo ciclo.
+
+```json
+{
+  "data": {
+    "id": "subu_abc123xyz",
+    "subscriptionId": "subs_abc123xyz",
+    "status": "PENDING",
+    "productId": "prod_plano_pro",
+    "quantity": 1,
+    "newAmount": 4990,
+    "requestedAt": "2024-12-06T20:05:00.000Z"
+  },
+  "success": true,
+  "error": null
+}
+```
+
+| Campo           | Tipo    | Descrição                                               |
+|-----------------|---------|---------------------------------------------------------|
+| `id`            | string  | ID da atualização pendente (`subu_...`)                 |
+| `subscriptionId`| string  | ID da assinatura                                        |
+| `status`        | string  | `PENDING` até o próximo ciclo; `APPLIED` após aplicado  |
+| `productId`     | string  | ID do novo produto                                      |
+| `quantity`      | integer | Quantidade do produto                                   |
+| `newAmount`     | integer | Novo valor em centavos (`preço × quantidade`)           |
+| `requestedAt`   | string  | Data/hora da solicitação                                |
+
+<Tip title="Webhook subscription.plan_changed" horizontal>
+  Um evento `subscription.plan_changed` é disparado imediatamente após a solicitação, com os detalhes do novo plano e o ID da atualização pendente.
+</Tip>
+
+<Warning title="Uma alteração por vez" horizontal>
+  Só pode existir uma atualização `PENDING` por assinatura. Chamar o endpoint novamente sobrescreve a alteração anterior ainda não aplicada.
+</Warning>

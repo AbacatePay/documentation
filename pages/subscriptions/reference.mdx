@@ -91,6 +91,20 @@ Definido no produto ao criar na loja. Valores: **MONTHLY**, **YEARLY**, **WEEKLY
 
 Mesmos do Checkout: **PENDING**, **EXPIRED**, **CANCELLED**, **PAID**, **REFUNDED**.
 
+## Gerenciando assinaturas ativas
+
+Após uma assinatura ser criada e ativada, você pode gerenciá-la com os seguintes endpoints:
+
+| Endpoint | Descrição |
+|----------|-----------|
+| [Cancelar](/pages/subscriptions/cancel) | Cancela a assinatura imediatamente e interrompe cobranças futuras |
+| [Alterar plano](/pages/subscriptions/change-plan) | Troca o produto principal; novo valor começa no próximo ciclo |
+| [Registrar uso](/pages/subscriptions/record-usage) | Adiciona ou remove unidades de produtos pay-as-you-go para cobrança no próximo ciclo |
+
+### Produtos de uso (pay-as-you-go)
+
+Além do produto principal (com ciclo), uma assinatura pode acumular cobranças variáveis via [Registrar uso](/pages/subscriptions/record-usage). O produto referenciado precisa ser um produto **sem ciclo** — ele representa um item cobrado por unidade consumida (ex: chamadas de API, SMS, créditos).
+
 ## Segurança
 
 - Requisições autenticadas via Bearer Token
