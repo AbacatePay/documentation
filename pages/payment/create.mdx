@@ -46,8 +46,24 @@ Gera uma página de pagamento hospedada. Você envia os produtos; a API devolve 
 }
 ```
 
+**Exemplo com multa e juros (apenas BOLETO):**
+```json
+{
+  "methods": ["BOLETO"],
+  "items": [
+    { "id": "prod_abc123xyz", "quantity": 1 }
+  ],
+  "interest": { "value": 100 },
+  "fine": { "value": 200, "type": "PERCENTAGE" }
+}
+```
+
 <Tip title="Upsell" horizontal>
 Use `upSellProductId` para oferecer um produto adicional ao cliente após a conclusão do pagamento. O produto deve ser **avulso** (sem `cycle`) e estar com status `ACTIVE`. Veja a [referência completa de upsell](/pages/payment/reference#upsell).
+</Tip>
+
+<Tip title="Multa e juros no boleto" horizontal>
+Use `interest` e `fine` para configurar juros por atraso e multa caso o cliente pague depois do vencimento. Os campos só se aplicam a `methods: ["BOLETO"]` e são ignorados nos demais métodos. Veja a [referência completa](/pages/payment/reference#multa-e-juros-no-boleto).
 </Tip>
 
 <Tip title="Parcelamento no cartão" horizontal>

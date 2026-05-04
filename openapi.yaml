@@ -1089,6 +1089,22 @@ paths:
                     **Exemplo**: `"prod_bump456xyz"`
                   x-mint:
                     hidden: true
+                interest:
+                  description: >-
+                    Juros por atraso, aplicados apenas quando
+                    `methods` inclui `BOLETO`. Ignorado para PIX/CARD.
+                  allOf:
+                    - $ref: '#/components/schemas/BoletoInterest'
+                  x-mint:
+                    hidden: true
+                fine:
+                  description: >-
+                    Multa por atraso, aplicada apenas quando
+                    `methods` inclui `BOLETO`. Ignorado para PIX/CARD.
+                  allOf:
+                    - $ref: '#/components/schemas/BoletoFine'
+                  x-mint:
+                    hidden: true
                 metadata:
                   type: object
                   description: >
@@ -1299,6 +1315,22 @@ paths:
 
 
                     **Exemplo**: `"seu_id_123"`
+                  x-mint:
+                    hidden: true
+                interest:
+                  description: >-
+                    Juros por atraso, aplicados apenas quando
+                    `methods` inclui `BOLETO`. Ignorado para PIX/CARD.
+                  allOf:
+                    - $ref: '#/components/schemas/BoletoInterest'
+                  x-mint:
+                    hidden: true
+                fine:
+                  description: >-
+                    Multa por atraso, aplicada apenas quando
+                    `methods` inclui `BOLETO`. Ignorado para PIX/CARD.
+                  allOf:
+                    - $ref: '#/components/schemas/BoletoFine'
                   x-mint:
                     hidden: true
                 metadata:
@@ -1670,6 +1702,22 @@ paths:
                     externalId:
                       type: string
                       description: ID no seu sistema para idempotência.
+                      x-mint:
+                        hidden: true
+                    interest:
+                      description: >-
+                        BOLETO — juros por atraso. Ignorado quando
+                        `method` é `PIX`.
+                      allOf:
+                        - $ref: '#/components/schemas/BoletoInterest'
+                      x-mint:
+                        hidden: true
+                    fine:
+                      description: >-
+                        BOLETO — multa por atraso. Ignorado quando
+                        `method` é `PIX`.
+                      allOf:
+                        - $ref: '#/components/schemas/BoletoFine'
                       x-mint:
                         hidden: true
                     metadata:
@@ -3400,6 +3448,63 @@ components:
           type: string
           nullable: true
           description: Cursor para página anterior (usar em before).
+    BoletoInterest:
+      type: object
+      description: >-
+        Juros por atraso aplicados ao boleto após o vencimento. Late interest
+        applied to the boleto after the due date. Aplica-se apenas a
+        `method: "BOLETO"`; ignorado nos demais métodos.
+      additionalProperties: false
+      required:
+        - value
+      properties:
+        value:
+          type: integer
+          minimum: 0
+          description: >-
+            Percentual de juros ao mês em centésimos de percentual
+            (`100` = 1% ao mês, `250` = 2,5% ao mês). Quando `0` ou omitido,
+            sem juros. Calculado pro rata die após o vencimento.
+
+            EN: Monthly late-interest rate in hundredths of a percent
+            (`100` = 1%/month). Accrues pro rata die after the due date;
+            `0` or omitted disables interest.
+          example: 100
+    BoletoFine:
+      type: object
+      description: >-
+        Multa por atraso aplicada uma única vez após o vencimento do boleto.
+        One-time late fine applied after the due date. Aplica-se apenas a
+        `method: "BOLETO"`; ignorado nos demais métodos.
+      additionalProperties: false
+      required:
+        - value
+        - type
+      properties:
+        value:
+          type: integer
+          minimum: 0
+          description: >-
+            Quando `type = "PERCENTAGE"`: centésimos de percentual sobre o
+            valor do boleto (`200` = 2%). Quando `type = "FIXED"`: valor fixo
+            em centavos (`1000` = R$ 10,00). Quando `0` ou omitido, sem multa.
+
+            EN: With `type: "PERCENTAGE"`, value is in hundredths of a percent
+            (`200` = 2%). With `type: "FIXED"`, value is in cents
+            (`1000` = R$ 10.00). `0` or omitted disables the fine.
+          example: 200
+        type:
+          type: string
+          description: >-
+            Tipo da multa. `PERCENTAGE` aplica percentual sobre o valor do
+            boleto; `FIXED` aplica um valor fixo em centavos.
+
+            EN: Fine type. `PERCENTAGE` applies a percent of the boleto
+            amount; `FIXED` applies a fixed amount in cents.
+          enum:
+            - PERCENTAGE
+            - FIXED
+          example: PERCENTAGE
     Customer:
       type: object
       description: Os dados do seu cliente.
@@ -3736,6 +3841,20 @@ components:
             ID do produto de upsell vinculado ao Checkout. Null se
             nenhum produto de upsell foi informado na criação.
           example: prod_bump456xyz
+        interest:
+          nullable: true
+          description: >-
+            Juros por atraso configurados para o boleto. `null` quando não
+            foi configurado ou quando o método de pagamento não é BOLETO.
+          allOf:
+            - $ref: '#/components/schemas/BoletoInterest'
+        fine:
+          nullable: true
+          description: >-
+            Multa por atraso configurada para o boleto. `null` quando não
+            foi configurada ou quando o método de pagamento não é BOLETO.
+          allOf:
+            - $ref: '#/components/schemas/BoletoFine'
         metadata:
           type: object
           description: Metadados adicionais do Checkout.
@@ -3870,6 +3989,20 @@ components:
           type: number
           description: Taxa da plataforma em centavos.
           example: 250
+        interest:
+          nullable: true
+          description: >-
+            Juros por atraso configurados para o boleto. `null` para `method:
+            "PIX"` ou quando não foi configurado.
+          allOf:
+            - $ref: '#/components/schemas/BoletoInterest'
+        fine:
+          nullable: true
+          description: >-
+            Multa por atraso configurada para o boleto. `null` para `method:
+            "PIX"` ou quando não foi configurada.
+          allOf:
+            - $ref: '#/components/schemas/BoletoFine'
         expiresAt:
           type: string
           description: >-
@@ -3934,6 +4067,20 @@ components:
           type: number
           description: Taxa da plataforma em centavos.
           example: 250
+        interest:
+          nullable: true
+          description: >-
+            Juros por atraso configurados para o boleto. `null` quando não
+            foi configurado.
+          allOf:
+            - $ref: '#/components/schemas/BoletoInterest'
+        fine:
+          nullable: true
+          description: >-
+            Multa por atraso configurada para o boleto. `null` quando não
+            foi configurada.
+          allOf:
+            - $ref: '#/components/schemas/BoletoFine'
         expiresAt:
           type: string
           description: Data de vencimento do boleto (ISO 8601).
