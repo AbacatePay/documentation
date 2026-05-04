@@ -50,7 +50,71 @@ Cria um checkout transparente via **Boleto**. A API devolve a linha digitável (
 
 ---
 
+## Multa e juros por atraso
+
+Você pode configurar **juros** (`data.interest`) e **multa** (`data.fine`) que serão aplicados se o cliente pagar após a data de vencimento. Ambos os campos são opcionais e independentes — pode-se enviar só `interest`, só `fine`, ambos ou nenhum. Eles só têm efeito quando `method: "BOLETO"` e são ignorados nos demais métodos.
+
+### `data.interest` — juros por atraso / late interest
+
+| Campo | Tipo | Descrição |
+|---|---|---|
+| `value` | `integer ≥ 0` | Percentual de juros **ao mês**, em centésimos de percentual. `100` = 1% ao mês, `250` = 2,5% ao mês. Quando `0` ou omitido, não há juros. |
+
+Os juros seguem o padrão **percentual ao mês, calculados pro rata die** após o vencimento.
+
+> **EN:** `data.interest.value` is an integer in hundredths of a percent representing the **monthly** late interest rate (`100` = 1%/month). It accrues pro rata die after the due date. Omit or use `0` to disable.
+
+### `data.fine` — multa por atraso / late fine
+
+| Campo | Tipo | Descrição |
+|---|---|---|
+| `value` | `integer ≥ 0` | Quando `type = "PERCENTAGE"`: centésimos de percentual (`200` = 2%). Quando `type = "FIXED"`: valor em **centavos** (`1000` = R$ 10,00). Quando `0` ou omitido, sem multa. |
+| `type` | `"PERCENTAGE"` \| `"FIXED"` | `PERCENTAGE` aplica percentual sobre o valor do boleto. `FIXED` aplica um valor fixo em centavos. |
+
+A multa é uma **cobrança única** aplicada uma vez após o vencimento.
+
+> **EN:** `data.fine` is a one-time charge added after the due date. With `type: "PERCENTAGE"`, `value` is in hundredths of a percent. With `type: "FIXED"`, `value` is in cents.
+
+**Exemplo — juros de 1% ao mês + multa fixa de R$ 10,00:**
+```json
+{
+  "method": "BOLETO",
+  "data": {
+    "amount": 5000,
+    "customer": {
+      "name": "João Silva",
+      "taxId": "123.456.789-00"
+    },
+    "interest": { "value": 100 },
+    "fine": { "value": 1000, "type": "FIXED" }
+  }
+}
+```
+
+**Exemplo — multa percentual de 2%:**
+```json
+{
+  "method": "BOLETO",
+  "data": {
+    "amount": 25000,
+    "customer": {
+      "name": "Mariana Costa",
+      "taxId": "987.654.321-00"
+    },
+    "fine": { "value": 200, "type": "PERCENTAGE" }
+  }
+}
+```
+
+<Note>
+**Unidades / units:** `interest.value` e `fine.value` (com `type = "PERCENTAGE"`) estão em centésimos de percentual — `100` = 1%. `fine.value` (com `type = "FIXED"`) e `amount` estão em centavos — `1000` = R$ 10,00.
+</Note>
+
+---
+
 ## Resposta
+
+Os mesmos objetos `interest` e `fine` constam na resposta de `POST /transparents/create`, `GET /transparents/get` e `GET /transparents/list` (dentro do payload do boleto), ou ficam `null` quando nenhum dos campos foi configurado.
 
 ```json
 {
@@ -64,6 +128,8 @@ Cria um checkout transparente via **Boleto**. A API devolve a linha digitável (
     "brCode": "00020126580014BR.GOV.BCB.PIX0136d2b4e5f6-7890-abcd-ef12-34567890abcd5204000053039865802BR5913Mariana Costa6009SAO PAULO62070503***6304F1C2",
     "brCodeBase64": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...",
     "platformFee": 250,
+    "interest": { "value": 100 },
+    "fine": { "value": 1000, "type": "FIXED" },
     "expiresAt": "2024-11-07T03:00:00.000Z",
     "createdAt": "2024-11-04T14:22:10.381Z",
     "updatedAt": "2024-11-04T14:22:10.381Z",
