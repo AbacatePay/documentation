@@ -24,6 +24,49 @@ Cria um checkout transparente via **Boleto**. A API devolve a linha digitável (
 | `data.customer.name` | `string` | Nome completo do pagador |
 | `data.customer.taxId` | `string` | CPF ou CNPJ do pagador |
 
+### `data.utm` — campanha / UTM (opcional)
+
+No **`BoletoTransparentData`** (corpo `data` com `method: "BOLETO"`), você pode incluir o mesmo bloco opcional `utm`: objeto opcional com campos opcionais `source`, `medium`, `campaign`, `term` e `content` (`string`). Valores enviados podem ser vistos no **dashboard** e **não mudam** o fluxo da cobrança.
+
+---
+
+## Exemplos mínimos (BOLETO)
+
+Sem `utm`:
+
+```json
+{
+  "method": "BOLETO",
+  "data": {
+    "amount": 25000,
+    "customer": {
+      "name": "Mariana Costa",
+      "taxId": "987.654.321-00"
+    }
+  }
+}
+```
+
+Com `utm`:
+
+```json
+{
+  "method": "BOLETO",
+  "data": {
+    "amount": 25000,
+    "customer": {
+      "name": "Mariana Costa",
+      "taxId": "987.654.321-00"
+    },
+    "utm": {
+      "source": "google",
+      "medium": "cpc",
+      "campaign": "boleto_teste"
+    }
+  }
+}
+```
+
 ---
 
 ## Requisição

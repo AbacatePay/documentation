@@ -988,7 +988,7 @@ paths:
                 items:
                   - id: prod-1234
                     quantity: 2
-                methods: ["PIX", "CARD"]
+                methods: ['PIX', 'CARD']
               properties:
                 items:
                   type: array
@@ -1023,7 +1023,7 @@ paths:
                       - PIX
                       - CARD
                   minItems: 1
-                  default: ["PIX", "CARD"]
+                  default: ['PIX', 'CARD']
                   x-mint:
                     hidden: true
                 returnUrl:
@@ -1235,7 +1235,7 @@ paths:
                 items:
                   - id: prod-1234
                     quantity: 2
-                methods: ["PIX", "CARD"]
+                methods: ['PIX', 'CARD']
               properties:
                 frequency:
                   type: string
@@ -1277,7 +1277,7 @@ paths:
                       - PIX
                       - CARD
                   minItems: 1
-                  default: ["PIX", "CARD"]
+                  default: ['PIX', 'CARD']
                   x-mint:
                     hidden: true
                 returnUrl:
@@ -1725,6 +1725,13 @@ paths:
                       additionalProperties: true
                       x-mint:
                         hidden: true
+                    utm:
+                      description: >-
+                        Parâmetros opcionais de campanha (UTM). Objeto e campos internos
+                        opcionais; valores enviados podem ser vistos no
+                        dashboard.
+                      allOf:
+                        - $ref: '#/components/schemas/TransparentCreateUtm'
                   required:
                     - amount
                   additionalProperties: false
@@ -2635,7 +2642,7 @@ paths:
                   - id: prod-1234
                     quantity: 1
                 customerId: cust_abc123xyz
-                methods: ["CARD"]
+                methods: ['CARD']
               properties:
                 items:
                   type: array
@@ -2673,7 +2680,7 @@ paths:
                       - PIX
                       - CARD
                   minItems: 1
-                  default: ["CARD"]
+                  default: ['CARD']
                 returnUrl:
                   type: string
                   format: uri
@@ -2985,7 +2992,7 @@ paths:
                     type: string
                     example: Subscription not found or not active
         '422':
-          description: "Dados inválidos (ex: produto sem ciclo)."
+          description: 'Dados inválidos (ex: produto sem ciclo).'
           content:
             application/json:
               schema:
@@ -3077,7 +3084,7 @@ paths:
                     type: string
                     example: Subscription not found or not active
         '422':
-          description: "Dados inválidos (ex: produto com ciclo enviado em vez de produto avulso)."
+          description: 'Dados inválidos (ex: produto com ciclo enviado em vez de produto avulso).'
           content:
             application/json:
               schema:
@@ -4101,6 +4108,28 @@ components:
           type: object
           description: Metadados opcionais da cobrança.
           additionalProperties: true
+    TransparentCreateUtm:
+      type: object
+      description: >
+        Parâmetros UTM opcionais para campanha. Objeto inteiro e campos
+        internos opcionais; podem ser consultados no dashboard.
+      additionalProperties: false
+      properties:
+        source:
+          type: string
+          description: 'Opcional — ex.: origem ou fonte da campanha.'
+        medium:
+          type: string
+          description: 'Opcional — ex.: meio ou canal.'
+        campaign:
+          type: string
+          description: 'Opcional — nome ou identificador da campanha.'
+        term:
+          type: string
+          description: 'Opcional — ex.: palavras-chave de anúncio.'
+        content:
+          type: string
+          description: 'Opcional — ex.: variante criativa ou conteúdo.'
     TransparentCharge:
       type: object
       description: >-
