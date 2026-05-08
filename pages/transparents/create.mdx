@@ -24,6 +24,53 @@ Cria um checkout transparente via **PIX**. A API devolve o QR Code em imagem (`b
 
 Todos os outros campos são opcionais mas recomendados para melhor rastreabilidade.
 
+### `data.utm` — campanha / UTM (opcional)
+
+No corpo `data` com **`method`: `"PIX"`**, o objeto `utm` usa o mesmo esquema do **PIX QR Code v1 (`PixQrCodeV1`)**: objeto opcional; cada campo interno também é opcional (`string`).
+
+| Campo | Tipo | Descrição |
+|---|---|---|
+| `utm.source` | `string` | Opcional |
+| `utm.medium` | `string` | Opcional |
+| `utm.campaign` | `string` | Opcional |
+| `utm.term` | `string` | Opcional |
+| `utm.content` | `string` | Opcional |
+
+Quando enviados, podem ser **consultados no dashboard**. Não alteram valores, vencimento nem status da cobrança.
+
+---
+
+## Exemplos mínimos (PIX)
+
+Sem `utm`:
+
+```json
+{
+  "method": "PIX",
+  "data": {
+    "amount": 10000
+  }
+}
+```
+
+Com `utm`:
+
+```json
+{
+  "method": "PIX",
+  "data": {
+    "amount": 10000,
+    "utm": {
+      "source": "newsletter",
+      "medium": "email",
+      "campaign": "lancamento_q1",
+      "term": "pix",
+      "content": "cta_hero"
+    }
+  }
+}
+```
+
 ---
 
 ## Requisição

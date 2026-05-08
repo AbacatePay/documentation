@@ -8,26 +8,44 @@ O **checkout transparente** permite receber pagamentos diretamente no seu site o
 
 ## Métodos disponíveis
 
-| `method` | Descrição |
-|---|---|
-| `PIX` | Gera um QR Code e código copia e cola instantâneos |
+| `method` | Descrição                                            |
+| -------- | ---------------------------------------------------- |
+| `PIX`    | Gera um QR Code e código copia e cola instantâneos   |
 | `BOLETO` | Gera um boleto bancário com PIX alternativo incluído |
 
-Todos os métodos usam o mesmo endpoint: `POST /transparents/create`.
+Todos os métodos usam o mesmo endpoint: `POST /v2/transparents/create`.
+
+## Parâmetros UTM (`data.utm`)
+
+Objeto opcional em `data` para **`PIX`** e **`BOLETO`**:
+
+| Campo          | Tipo     | Descrição          |
+| -------------- | -------- | ------------------ |
+| `utm`          | objeto   | Opcional em `data` |
+| `utm.source`   | `string` | Opcional           |
+| `utm.medium`   | `string` | Opcional           |
+| `utm.campaign` | `string` | Opcional           |
+| `utm.term`     | `string` | Opcional           |
+| `utm.content`  | `string` | Opcional           |
+
+Quando há valores enviados, podem ser **vistos no dashboard**. Metadados de campanha — **não** mudam valores, datas ou regras de cobrança.
+
+Exemplos completos para copiar e colar: [Criar cobrança PIX](/pages/transparents/create) e [Criar cobrança Boleto](/pages/transparents/boleto).
 
 ---
 
 ## Receber via PIX
 
-Use `/transparents/create`. A API devolve o QR Code em imagem (`brCodeBase64`) e o código copia e cola (`brCode`).
+Use `POST /v2/transparents/create`. A API devolve o QR Code em imagem (`brCodeBase64`) e o código copia e cola (`brCode`).
 
 <Card title="Campos obrigatórios" horizontal>
   Só `data.amount` é obrigatório (valor em centavos). Envie `method: "PIX"`.
 </Card>
 
 **Exemplo de requisição:**
+
 ```json
-POST /transparents/create
+POST /v2/transparents/create
 {
   "method": "PIX",
   "data": {
@@ -48,6 +66,7 @@ POST /transparents/create
 ```
 
 **Exemplo de resposta:**
+
 ```json
 {
   "data": {
@@ -71,22 +90,24 @@ POST /transparents/create
 ```
 
 <Tip title="Usando a resposta" horizontal>
-Use `brCodeBase64` para exibir a imagem do QR Code ou `brCode` (copia e cola) para enviar por WhatsApp/Telegram ou integrar no seu checkout.
+  Use `brCodeBase64` para exibir a imagem do QR Code ou `brCode` (copia e cola) para enviar por WhatsApp/Telegram ou
+  integrar no seu checkout.
 </Tip>
 
 ---
 
 ## Receber via Boleto
 
-Use `/transparents/create` com `method: "BOLETO"`. A API devolve a linha digitável (`barCode`), uma URL para visualização e impressão do boleto (`url`), e um código PIX alternativo para a mesma cobrança.
+Use `POST /v2/transparents/create` com `method: "BOLETO"`. A API devolve a linha digitável (`barCode`), uma URL para visualização e impressão do boleto (`url`), e um código PIX alternativo para a mesma cobrança.
 
 <Card title="Campos obrigatórios" horizontal>
   `data.amount` e `data.customer` (com `name` e `taxId`) são obrigatórios para boleto.
 </Card>
 
 **Exemplo de requisição:**
+
 ```json
-POST /transparents/create
+POST /v2/transparents/create
 {
   "method": "BOLETO",
   "data": {
@@ -107,6 +128,7 @@ POST /transparents/create
 ```
 
 **Exemplo de resposta:**
+
 ```json
 {
   "data": {
@@ -135,7 +157,8 @@ POST /transparents/create
 ```
 
 <Tip title="Usando a resposta" horizontal>
-  Abra `url` para exibir o boleto para impressão. Use `barCode` para o cliente digitar a linha digitável no app do banco. O objeto `pix` permite oferecer PIX como alternativa sem nenhum esforço adicional.
+  Abra `url` para exibir o boleto para impressão. Use `barCode` para o cliente digitar a linha digitável no app do
+  banco. O objeto `pix` permite oferecer PIX como alternativa sem nenhum esforço adicional.
 </Tip>
 
 ---
