@@ -31,7 +31,23 @@ Cria um produto no seu catálogo para usar em checkouts, assinaturas e links de 
 }
 ```
 
+**Produto de assinatura com período de teste gratuito** (defina `trialDays`):
+```json
+{
+  "externalId": "plano-mensal-trial",
+  "name": "Plano Mensal com 7 dias grátis",
+  "price": 4990,
+  "currency": "BRL",
+  "cycle": "MONTHLY",
+  "trialDays": 7
+}
+```
+
 **Valores de `cycle`:** `WEEKLY` · `MONTHLY` · `SEMIANNUALLY` · `ANNUALLY`
+
+<Note title="trialDays" horizontal>
+  `trialDays` exige `cycle`. Valor inteiro entre 1 e 90. O cliente não é cobrado durante o período de teste — a primeira cobrança ocorre ao final do trial.
+</Note>
 
 <Tip title="ID retornado" horizontal>
 Guarde o `data.id` retornado — é ele que você passa como `items[].id` ao criar checkouts e assinaturas.

@@ -34,7 +34,7 @@ Produtos são itens do seu catálogo usados nas cobranças: nome, preço, descri
 Use `/products/create`. Moeda é sempre `BRL`.
 
 <Card title="Campos obrigatórios" horizontal>
-  Obrigatórios: `externalId` (único no seu sistema), `name`, `price`, `currency`. Opcionais: `description`, `imageUrl`, `cycle` (null/omitido = avulso).
+  Obrigatórios: `externalId` (único no seu sistema), `name`, `price`, `currency`. Opcionais: `description`, `imageUrl`, `cycle` (null/omitido = avulso), `trialDays` (requer `cycle`).
 </Card>
 
 **Exemplo (produto avulso):**
@@ -62,27 +62,41 @@ POST /products/create
 }
 ```
 
+**Exemplo (produto de assinatura com período de teste gratuito):**
+```json
+POST /products/create
+{
+  "externalId": "prod-assinatura-trial",
+  "name": "Plano Mensal com 7 dias grátis",
+  "price": 4990,
+  "currency": "BRL",
+  "cycle": "MONTHLY",
+  "trialDays": 7                         // opcional - inteiro 1–90; requer cycle
+}
+```
+
 **Resposta (modelo Product):**
 ```json
 {
   "data": {
-    "externalId": "prod-123",
-    "name": "Produto Exemplo",
-    "description": "Descrição do produto",
+    "externalId": "prod-assinatura-trial",
+    "name": "Plano Mensal com 7 dias grátis",
+    "description": null,
     "imageUrl": null,
-    "price": 10000,
+    "price": 4990,
     "devMode": false,
     "currency": "BRL",
     "createdAt": "2024-11-04T18:38:28.573Z",
     "updatedAt": "2024-11-04T18:38:28.573Z",
     "status": "ACTIVE",
     "id": "prod_abc123xyz",
-    "cycle": null
+    "cycle": "MONTHLY",
+    "trialDays": 7
   },
   "success": true,
   "error": null
 }
 ```
 
-O `data` retornado segue o modelo Product: `id`, `externalId`, `name`, `description`, `imageUrl`, `price`, `currency`, `status`, `cycle`, `createdAt`, `updatedAt`, etc.
+O `data` retornado segue o modelo Product: `id`, `externalId`, `name`, `description`, `imageUrl`, `price`, `currency`, `status`, `cycle`, `trialDays`, `createdAt`, `updatedAt`, etc.
 
