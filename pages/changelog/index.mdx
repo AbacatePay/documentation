@@ -11,6 +11,155 @@ Feedbacks também são bem-vindos no nosso Discord (#dev).
 
 ## Atualizações Recentes
 
+<Update label="16 de Mai, 2026">
+## Correção: `imageUrl` de produto agora funciona via API
+
+O campo `imageUrl` em `POST /v2/products/create` não estava sendo processado corretamente. A imagem era recebida mas ignorada — o produto era criado sem imagem mesmo quando uma URL válida era enviada.
+
+**O que foi corrigido:**
+
+- A API agora baixa a imagem da URL fornecida e a armazena internamente (assim como já ocorre com `fileUrl`)
+- O campo foi renomeado de `image` para `imageUrl` no contrato da API, corrigindo uma inconsistência que impedia o campo de ser reconhecido
+- Validações adicionadas: a URL deve apontar para um arquivo de imagem válido; tamanho máximo de **5 MB**
+
+Se você tentou criar produtos com imagem via API e o campo não era persistido, basta recriar ou atualizar o produto com `imageUrl`.
+
+---
+
+## Produtos digitais: arquivo para download
+
+Produtos agora suportam um **PDF vinculado para entrega digital**. Após o pagamento ser confirmado, o comprador recebe acesso automático ao arquivo — sem nenhuma etapa manual da sua parte.
+
+Casos de uso: e-books, ingressos, licenças de software, apostilas, certificados.
+
+**O que mudou:**
+
+- Novo campo opcional `fileUrl` em `POST /v2/products/create` — informe a URL pública de um PDF (máximo 20 MB); a AbacatePay baixa e armazena o arquivo de forma segura
+- Novo campo `hasFile` (boolean) no modelo `Product` — retornado em todos os endpoints de produto; indica se há arquivo vinculado
+- O URL real do arquivo **nunca é exposto** pela API — segurança por padrão
+
+**Exemplo:**
+
+```json
+POST /v2/products/create
+{
+  "externalId": "ebook-guia-completo",
+  "name": "E-book: Guia Completo de Vendas Online",
+  "price": 4990,
+  "currency": "BRL",
+  "fileUrl": "https://exemplo.com/guia-completo.pdf"
+}
+```
+
+```json
+// Resposta
+{
+  "data": {
+    "id": "prod_abc123xyz",
+    "name": "E-book: Guia Completo de Vendas Online",
+    "hasFile": true,
+    "price": 4990,
+    ...
+  },
+  "success": true,
+  "error": null
+}
+```
+
+Consulte a [documentação de produtos](/pages/products/reference) para mais detalhes.
+
+---
+
+</Update>
+
+<Update label="15 de Mai, 2026">
+## Assinaturas: novo ciclo trimestral (`QUARTERLY`) e PIX Automático
+
+Duas melhorias no fluxo de assinaturas foram lançadas hoje.
+
+### Ciclo trimestral
+
+O valor `QUARTERLY` foi adicionado ao campo `cycle` de produtos e ao campo `frequency.cycle` de assinaturas. Use para cobranças a cada 3 meses.
+
+**Ciclos disponíveis:** `WEEKLY` · `MONTHLY` · `QUARTERLY` · `SEMIANNUALLY` · `ANNUALLY`
+
+```json
+POST /v2/products/create
+{
+  "externalId": "plano-trimestral",
+  "name": "Plano Trimestral",
+  "price": 12990,
+  "currency": "BRL",
+  "cycle": "QUARTERLY"
+}
+```
+
+### PIX Automático para assinaturas
+
+Lojas com o recurso **PIX Automático** habilitado podem agora criar assinaturas com `methods: ["PIX"]`. Anteriormente, assinaturas aceitavam apenas cartão de crédito.
+
+```json
+POST /v2/checkouts/create
+{
+  "items": [{ "id": "prod_abc123", "quantity": 1 }],
+  "methods": ["PIX"],
+  ...
+}
+```
+
+<Note>
+  PIX Automático para assinaturas está disponível mediante habilitação no dashboard. Entre em contato com o suporte caso seu plano ainda não tenha acesso.
+</Note>
+
+---
+
+</Update>
+
+<Update label="14 de Mai, 2026">
+## Reembolsos via API
+
+Três novos endpoints permitem solicitar reembolso diretamente pela API, cobrindo os três fluxos de cobrança da plataforma.
+
+| Endpoint | Uso |
+|---|---|
+| `POST /v2/checkouts/refund` | Reembolsa uma cobrança de checkout único (`bill_`, `char_`, `pix_char_` ou `card_`) |
+| `POST /v2/payment-links/refund` | Reembolsa um pagamento de link de pagamento (`char_`, `pix_char_` ou `card_`) |
+| `POST /v2/transparents/refund` | Reembolsa uma cobrança de checkout transparente |
+
+**Permissão necessária:** `REFUND:CREATE`
+
+**Body (todos os endpoints):**
+```json
+{
+  "id": "char_abc123xyz",
+  "reason": "Solicitação do cliente"
+}
+```
+
+**Resposta:**
+```json
+{
+  "data": {
+    "id": "ref_abc123xyz",
+    "status": "PENDING",
+    "amount": 4990,
+    "reason": "Solicitação do cliente",
+    "originalId": "char_abc123xyz",
+    "createdAt": "2026-05-14T14:30:00.000Z"
+  },
+  "success": true,
+  "error": null
+}
+```
+
+<Note>
+  Use o `id` correto para cada rota: `bill_` refere-se ao checkout, enquanto `char_`, `pix_char_` e `card_` referem-se à cobrança individual. Passar o ID errado retorna uma mensagem de erro indicando qual rota usar.
+</Note>
+
+---
+
+</Update>
+
 <Update label="4 de Mai, 2026">
 ## Assinaturas: cancelar, alterar plano e registrar uso
 

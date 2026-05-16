@@ -702,6 +702,14 @@ paths:
                   nullable: true
                   description: URL da imagem do produto. Opcional.
                   example: null
+                fileUrl:
+                  type: string
+                  format: uri
+                  description: >
+                    URL pública de um PDF a ser vinculado ao produto. Opcional.
+                    O arquivo é baixado e armazenado pela AbacatePay — máximo 20 MB.
+                    Após o pagamento, o comprador recebe acesso ao download do arquivo.
+                  example: "https://exemplo.com/meu-ebook.pdf"
                 cycle:
                   type: string
                   nullable: true
@@ -3932,6 +3940,12 @@ components:
             - SEMIANNUALLY
             - ANNUALLY
           example: null
+        hasFile:
+          type: boolean
+          description: >
+            Indica se o produto possui um arquivo PDF vinculado para download.
+            Quando `true`, o comprador recebe acesso ao arquivo após o pagamento.
+          example: false
     Billing:
       type: object
       properties:
