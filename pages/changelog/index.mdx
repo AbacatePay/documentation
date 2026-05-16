@@ -11,21 +11,7 @@ Feedbacks também são bem-vindos no nosso Discord (#dev).
 
 ## Atualizações Recentes
 
-<Update label="16 de Mai, 2026">
-## Correção: `imageUrl` de produto agora funciona via API
-
-O campo `imageUrl` em `POST /v2/products/create` não estava sendo processado corretamente. A imagem era recebida mas ignorada — o produto era criado sem imagem mesmo quando uma URL válida era enviada.
-
-**O que foi corrigido:**
-
-- A API agora baixa a imagem da URL fornecida e a armazena internamente (assim como já ocorre com `fileUrl`)
-- O campo foi renomeado de `image` para `imageUrl` no contrato da API, corrigindo uma inconsistência que impedia o campo de ser reconhecido
-- Validações adicionadas: a URL deve apontar para um arquivo de imagem válido; tamanho máximo de **5 MB**
-
-Se você tentou criar produtos com imagem via API e o campo não era persistido, basta recriar ou atualizar o produto com `imageUrl`.
-
----
-
+<Update label="18 de Mai, 2026">
 ## Produtos digitais: arquivo para download
 
 Produtos agora suportam um **PDF vinculado para entrega digital**. Após o pagamento ser confirmado, o comprador recebe acesso automático ao arquivo — sem nenhuma etapa manual da sua parte.
@@ -67,6 +53,23 @@ POST /v2/products/create
 ```
 
 Consulte a [documentação de produtos](/pages/products/reference) para mais detalhes.
+
+---
+
+</Update>
+
+<Update label="16 de Mai, 2026">
+## Correção: `imageUrl` de produto agora funciona via API
+
+O campo `imageUrl` em `POST /v2/products/create` não estava sendo processado corretamente. A imagem era recebida mas ignorada — o produto era criado sem imagem mesmo quando uma URL válida era enviada.
+
+**O que foi corrigido:**
+
+- A API agora baixa a imagem da URL fornecida e a armazena internamente (assim como já ocorre com `fileUrl`)
+- O campo foi renomeado de `image` para `imageUrl` no contrato da API, corrigindo uma inconsistência que impedia o campo de ser reconhecido
+- Validações adicionadas: a URL deve apontar para um arquivo de imagem válido; tamanho máximo de **5 MB**
+
+Se você tentou criar produtos com imagem via API e o campo não era persistido, basta recriar ou atualizar o produto com `imageUrl`.
 
 ---
 
