@@ -645,7 +645,7 @@ paths:
 
         Produtos podem ser avulsos (pagamento único) ou de assinatura; use o
         campo opcional `cycle` para definir a recorrência (`WEEKLY`, `MONTHLY`,
-        `SEMIANNUALLY`, `ANNUALLY`). Quando `cycle` é omitido ou `null`, o
+        `QUARTERLY`, `SEMIANNUALLY`, `ANNUALLY`). Quando `cycle` é omitido ou `null`, o
         produto é avulso.
 
 
@@ -717,11 +717,12 @@ paths:
                     Opcional. Indica se o produto é uma assinatura. Quando omitido
                     ou `null`, o produto é avulso (pagamento único).
 
-                    Valores possíveis: `WEEKLY`, `MONTHLY`, `SEMIANNUALLY`,
+                    Valores possíveis: `WEEKLY`, `MONTHLY`, `QUARTERLY`, `SEMIANNUALLY`,
                     `ANNUALLY`.
                   enum:
                     - WEEKLY
                     - MONTHLY
+                    - QUARTERLY
                     - SEMIANNUALLY
                     - ANNUALLY
                   example: null
@@ -3937,6 +3938,7 @@ components:
           enum:
             - WEEKLY
             - MONTHLY
+            - QUARTERLY
             - SEMIANNUALLY
             - ANNUALLY
           example: null

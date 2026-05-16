@@ -27,7 +27,7 @@ icon: "book-open-cover"
         }}
       />
     </div> */}
-Produtos são itens do seu catálogo usados nas cobranças: nome, preço, descrição e opcionalmente ciclo de assinatura. **Avulso** = pagamento único (`cycle` omitido ou `null`). **Assinatura** = `cycle`: `WEEKLY`, `MONTHLY`, `SEMIANNUALLY` ou `ANNUALLY`.
+Produtos são itens do seu catálogo usados nas cobranças: nome, preço, descrição e opcionalmente ciclo de assinatura. **Avulso** = pagamento único (`cycle` omitido ou `null`). **Assinatura** = `cycle`: `WEEKLY`, `MONTHLY`, `QUARTERLY`, `SEMIANNUALLY` ou `ANNUALLY`.
 
 Produtos também podem ter um **arquivo para download** vinculado: um PDF que o comprador recebe acesso após o pagamento (e-books, ingressos, licenças, etc.).
 
@@ -60,7 +60,7 @@ POST /products/create
   "name": "Plano Mensal",
   "price": 4990,
   "currency": "BRL",
-  "cycle": "MONTHLY"                     // opcional - WEEKLY | MONTHLY | SEMIANNUALLY | ANNUALLY; omitir ou null = avulso
+  "cycle": "MONTHLY"                     // opcional - WEEKLY | MONTHLY | QUARTERLY | SEMIANNUALLY | ANNUALLY; omitir ou null = avulso
 }
 ```
 
