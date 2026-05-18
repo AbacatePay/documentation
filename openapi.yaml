@@ -4038,6 +4038,14 @@ components:
             ID do produto de upsell vinculado ao Checkout. Null se
             nenhum produto de upsell foi informado na criação.
           example: prod_bump456xyz
+        installmentsCount:
+          type: integer
+          nullable: true
+          description: >-
+            Número de parcelas do pagamento quando realizado via Cartão de crédito
+            com mais de uma parcela. `null` para pagamentos à vista ou realizados
+            por outros métodos (PIX, Boleto).
+          example: 3
         interest:
           nullable: true
           description: >-
