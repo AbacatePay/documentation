@@ -74,6 +74,7 @@ POST /checkouts/create
     "card": {
       "maxInstallments": 6
     },
+    "installmentsCount": null,
     "createdAt": "2025-04-17T12:00:00.000Z",
     "updatedAt": "2025-04-17T12:00:00.000Z"
   },
@@ -85,6 +86,26 @@ POST /checkouts/create
 <Tip title="Redirecione o cliente" horizontal>
 Use a `url` retornada para levar o cliente ao checkout. O seletor de parcelas aparece automaticamente na tela de pagamento quando `maxInstallments` for maior que 1.
 </Tip>
+
+## Confirmar as parcelas após o pagamento
+
+Após o pagamento, o campo `installmentsCount` no objeto do checkout passa a refletir o número de parcelas escolhido pelo cliente. Para pagamentos à vista ou via outros métodos (PIX, Boleto) o valor é sempre `null`.
+
+Use **GET /checkouts/get** para consultar o checkout após receber o [webhook `checkout.completed`](/pages/webhooks/events/checkout):
+
+```json
+{
+  "data": {
+    "id": "bill_abc123xyz",
+    "status": "PAID",
+    "methods": ["CARD"],
+    "installmentsCount": 6,
+    ...
+  },
+  "success": true,
+  "error": null
+}
+```
 
 ## Só aceitar cartão parcelado
 
