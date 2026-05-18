@@ -27,14 +27,16 @@ icon: "book-open-cover"
         }}
       />
     </div> */}
-Produtos são itens do seu catálogo usados nas cobranças: nome, preço, descrição e opcionalmente ciclo de assinatura. **Avulso** = pagamento único (`cycle` omitido ou `null`). **Assinatura** = `cycle`: `WEEKLY`, `MONTHLY`, `SEMIANNUALLY` ou `ANNUALLY`.
+Produtos são itens do seu catálogo usados nas cobranças: nome, preço, descrição e opcionalmente ciclo de assinatura. **Avulso** = pagamento único (`cycle` omitido ou `null`). **Assinatura** = `cycle`: `WEEKLY`, `MONTHLY`, `QUARTERLY`, `SEMIANNUALLY` ou `ANNUALLY`.
+
+Produtos também podem ter um **arquivo para download** vinculado: um PDF que o comprador recebe acesso após o pagamento (e-books, ingressos, licenças, etc.).
 
 ## Criar produto
 
 Use `/products/create`. Moeda é sempre `BRL`.
 
 <Card title="Campos obrigatórios" horizontal>
-  Obrigatórios: `externalId` (único no seu sistema), `name`, `price`, `currency`. Opcionais: `description`, `imageUrl`, `cycle` (null/omitido = avulso).
+  Obrigatórios: `externalId` (único no seu sistema), `name`, `price`, `currency`. Opcionais: `description`, `imageUrl`, `fileUrl`, `cycle` (null/omitido = avulso), `trialDays` (requer `cycle`).
 </Card>
 
 **Exemplo (produto avulso):**
@@ -58,7 +60,20 @@ POST /products/create
   "name": "Plano Mensal",
   "price": 4990,
   "currency": "BRL",
-  "cycle": "MONTHLY"                     // opcional - WEEKLY | MONTHLY | SEMIANNUALLY | ANNUALLY; omitir ou null = avulso
+  "cycle": "MONTHLY"                     // opcional - WEEKLY | MONTHLY | QUARTERLY | SEMIANNUALLY | ANNUALLY; omitir ou null = avulso
+}
+```
+
+**Exemplo (produto de assinatura com período de teste gratuito):**
+```json
+POST /products/create
+{
+  "externalId": "prod-assinatura-trial",
+  "name": "Plano Mensal com 7 dias grátis",
+  "price": 4990,
+  "currency": "BRL",
+  "cycle": "MONTHLY",
+  "trialDays": 7                         // opcional - inteiro 1–90; requer cycle
 }
 ```
 
@@ -66,23 +81,67 @@ POST /products/create
 ```json
 {
   "data": {
-    "externalId": "prod-123",
-    "name": "Produto Exemplo",
-    "description": "Descrição do produto",
+    "externalId": "prod-assinatura-trial",
+    "name": "Plano Mensal com 7 dias grátis",
+    "description": null,
     "imageUrl": null,
-    "price": 10000,
+    "hasFile": false,
+    "price": 4990,
     "devMode": false,
     "currency": "BRL",
     "createdAt": "2024-11-04T18:38:28.573Z",
     "updatedAt": "2024-11-04T18:38:28.573Z",
     "status": "ACTIVE",
     "id": "prod_abc123xyz",
-    "cycle": null
+    "cycle": "MONTHLY",
+    "trialDays": 7
   },
   "success": true,
   "error": null
 }
 ```
 
-O `data` retornado segue o modelo Product: `id`, `externalId`, `name`, `description`, `imageUrl`, `price`, `currency`, `status`, `cycle`, `createdAt`, `updatedAt`, etc.
+O `data` retornado segue o modelo Product: `id`, `externalId`, `name`, `description`, `imageUrl`, `hasFile`, `price`, `currency`, `status`, `cycle`, `trialDays`, `createdAt`, `updatedAt`, etc.
+
+## Arquivo para download
+
+Vincule um PDF ao produto passando `fileUrl` na criação. A AbacatePay baixa e armazena o arquivo internamente — o link original não é exposto.
+
+- `fileUrl` aceita qualquer URL pública de PDF. Tamanho máximo: **20 MB**.
+- Após o pagamento, o comprador recebe acesso ao download automaticamente.
+- O campo `hasFile` na resposta indica se o produto possui arquivo vinculado (`true` / `false`).
+
+**Exemplo (produto com arquivo):**
+```json
+POST /products/create
+{
+  "externalId": "ebook-001",
+  "name": "E-book: Guia Completo",
+  "price": 4990,
+  "currency": "BRL",
+  "fileUrl": "https://exemplo.com/guia-completo.pdf"
+}
+```
+
+**Resposta:**
+```json
+{
+  "data": {
+    "id": "prod_abc123xyz",
+    "externalId": "ebook-001",
+    "name": "E-book: Guia Completo",
+    "hasFile": true,
+    "price": 4990,
+    "currency": "BRL",
+    "status": "ACTIVE",
+    ...
+  },
+  "success": true,
+  "error": null
+}
+```
+
+<Note>
+  O URL do arquivo nunca é exposto pela API. Use `hasFile` para verificar se o produto tem um arquivo vinculado.
+</Note>
 

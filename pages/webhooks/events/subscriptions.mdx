@@ -5,6 +5,42 @@ icon: 'repeat'
 ---
 
 <Tabs>
+  <Tab title="subscription.trial_started">
+    Disparado quando uma assinatura com período de teste gratuito é criada. O cliente não é cobrado neste momento — a primeira cobrança pelo valor integral ocorre ao final do `trialDays`.
+
+    ```json
+    {
+      "id": "log_trialXYZ123abc",
+      "event": "subscription.trial_started",
+      "apiVersion": 2,
+      "devMode": false,
+      "data": {
+        "subscription": {
+          "id": "subs_tAFqDWBhcEYTjQh2K0ZYDHau",
+          "amount": 4990,
+          "currency": "BRL",
+          "method": "CARD",
+          "status": "ACTIVE",
+          "frequency": "MONTHLY",
+          "trialDays": 7,
+          "trialEndsAt": "2024-11-11T23:59:59.999Z",
+          "createdAt": "2024-11-04T18:38:28.573Z",
+          "updatedAt": "2024-11-04T18:38:28.573Z",
+          "canceledAt": null,
+          "cancelPolicy": null,
+          "cancelledDueTo": null
+        },
+        "customer": {
+          "id": "cust_def456",
+          "name": "Maria Santos",
+          "email": "maria@exemplo.com",
+          "taxId": "12.***.***/0001-**"
+        }
+      }
+    }
+    ```
+  </Tab>
+
   <Tab title="subscription.completed">
     Disparado quando uma assinatura se torna ativa.
 

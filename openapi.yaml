@@ -645,7 +645,7 @@ paths:
 
         Produtos podem ser avulsos (pagamento único) ou de assinatura; use o
         campo opcional `cycle` para definir a recorrência (`WEEKLY`, `MONTHLY`,
-        `SEMIANNUALLY`, `ANNUALLY`). Quando `cycle` é omitido ou `null`, o
+        `QUARTERLY`, `SEMIANNUALLY`, `ANNUALLY`). Quando `cycle` é omitido ou `null`, o
         produto é avulso.
 
 
@@ -702,6 +702,14 @@ paths:
                   nullable: true
                   description: URL da imagem do produto. Opcional.
                   example: null
+                fileUrl:
+                  type: string
+                  format: uri
+                  description: >
+                    URL pública de um PDF a ser vinculado ao produto. Opcional.
+                    O arquivo é baixado e armazenado pela AbacatePay — máximo 20 MB.
+                    Após o pagamento, o comprador recebe acesso ao download do arquivo.
+                  example: "https://exemplo.com/meu-ebook.pdf"
                 cycle:
                   type: string
                   nullable: true
@@ -709,11 +717,12 @@ paths:
                     Opcional. Indica se o produto é uma assinatura. Quando omitido
                     ou `null`, o produto é avulso (pagamento único).
 
-                    Valores possíveis: `WEEKLY`, `MONTHLY`, `SEMIANNUALLY`,
+                    Valores possíveis: `WEEKLY`, `MONTHLY`, `QUARTERLY`, `SEMIANNUALLY`,
                     `ANNUALLY`.
                   enum:
                     - WEEKLY
                     - MONTHLY
+                    - QUARTERLY
                     - SEMIANNUALLY
                     - ANNUALLY
                   example: null
@@ -3929,9 +3938,16 @@ components:
           enum:
             - WEEKLY
             - MONTHLY
+            - QUARTERLY
             - SEMIANNUALLY
             - ANNUALLY
           example: null
+        hasFile:
+          type: boolean
+          description: >
+            Indica se o produto possui um arquivo PDF vinculado para download.
+            Quando `true`, o comprador recebe acesso ao arquivo após o pagamento.
+          example: false
     Billing:
       type: object
       properties:

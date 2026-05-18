@@ -9,6 +9,21 @@ Cria um produto no seu catálogo para usar em checkouts, assinaturas e links de 
   `externalId` (único no seu sistema), `name`, `price` (em centavos) e `currency` (sempre `"BRL"`).
 </Card>
 
+**Produto digital com arquivo para download** (passe `fileUrl` com a URL pública de um PDF):
+```json
+{
+  "externalId": "ebook-001",
+  "name": "E-book: Guia Completo",
+  "price": 4990,
+  "currency": "BRL",
+  "fileUrl": "https://exemplo.com/guia-completo.pdf"
+}
+```
+
+<Note title="fileUrl" horizontal>
+  `fileUrl` deve apontar para um PDF público acessível. Tamanho máximo: 20 MB. O arquivo é armazenado pela AbacatePay e o comprador recebe acesso após o pagamento. O campo `hasFile: true` na resposta confirma o vínculo.
+</Note>
+
 **Produto avulso** (pagamento único — omita `cycle`):
 ```json
 {
@@ -31,7 +46,23 @@ Cria um produto no seu catálogo para usar em checkouts, assinaturas e links de 
 }
 ```
 
-**Valores de `cycle`:** `WEEKLY` · `MONTHLY` · `SEMIANNUALLY` · `ANNUALLY`
+**Produto de assinatura com período de teste gratuito** (defina `trialDays`):
+```json
+{
+  "externalId": "plano-mensal-trial",
+  "name": "Plano Mensal com 7 dias grátis",
+  "price": 4990,
+  "currency": "BRL",
+  "cycle": "MONTHLY",
+  "trialDays": 7
+}
+```
+
+**Valores de `cycle`:** `WEEKLY` · `MONTHLY` · `QUARTERLY` · `SEMIANNUALLY` · `ANNUALLY`
+
+<Note title="trialDays" horizontal>
+  `trialDays` exige `cycle`. Valor inteiro entre 1 e 90. O cliente não é cobrado durante o período de teste — a primeira cobrança ocorre ao final do trial.
+</Note>
 
 <Tip title="ID retornado" horizontal>
 Guarde o `data.id` retornado — é ele que você passa como `items[].id` ao criar checkouts e assinaturas.

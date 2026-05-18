@@ -85,11 +85,92 @@ Use a `url` retornada para levar o cliente ao checkout e concluir o pagamento.
 
 ## Ciclo de cobrança
 
-Definido no produto ao criar na loja. Valores: **MONTHLY**, **YEARLY**, **WEEKLY**.
+Definido no produto ao criar na loja. Valores: **WEEKLY**, **MONTHLY**, **SEMIANNUALLY**, **ANNUALLY**.
 
 ## Status
 
 Mesmos do Checkout: **PENDING**, **EXPIRED**, **CANCELLED**, **PAID**, **REFUNDED**.
+
+## Período de teste gratuito (Free Trial)
+
+Configure um período de teste no produto com o campo `trialDays` ao [criar o produto](/pages/products/create). Durante o trial, o cliente não é cobrado — a primeira cobrança ocorre somente ao final do período.
+
+### Como funciona
+
+1. **Criação do produto**: defina `trialDays` (inteiro de 1 a 90) junto com `cycle`.
+2. **Checkout**: o cliente insere o cartão normalmente, mas o valor cobrado é **R$ 0,00**. O cartão é apenas tokenizado para uso futuro.
+3. **Assinatura ativa imediatamente**: a assinatura é criada com `status: ACTIVE` e os campos `trialDays` e `trialEndsAt` preenchidos.
+4. **Fim do trial**: na data `trialEndsAt`, a primeira cobrança pelo valor integral é processada automaticamente.
+5. **Renovações**: seguem o ciclo normal do produto a partir do fim do trial.
+
+### Exemplo de produto com trial
+
+```json
+POST /products/create
+{
+  "externalId": "plano-pro-trial",
+  "name": "Plano Pro — 7 dias grátis",
+  "price": 4990,
+  "currency": "BRL",
+  "cycle": "MONTHLY",
+  "trialDays": 7
+}
+```
+
+### Objeto da assinatura com trial
+
+Após a ativação, a assinatura expõe `trialDays` e `trialEndsAt`:
+
+```json
+{
+  "data": {
+    "id": "subs_abc123xyz",
+    "customerId": "cust_abc123xyz",
+    "amount": 4990,
+    "status": "ACTIVE",
+    "method": "CARD",
+    "coupons": [],
+    "devMode": false,
+    "trialDays": 7,
+    "trialEndsAt": "2024-11-11T23:59:59.999Z",
+    "createdAt": "2024-11-04T18:38:28.573Z",
+    "updatedAt": "2024-11-04T18:38:28.573Z"
+  },
+  "success": true,
+  "error": null
+}
+```
+
+| Campo          | Tipo            | Descrição                                                            |
+|----------------|-----------------|----------------------------------------------------------------------|
+| `trialDays`    | integer \| null | Duração do período de teste em dias; `null` se não houver trial      |
+| `trialEndsAt`  | string \| null  | Data/hora (ISO 8601) em que o trial termina; `null` se não houver trial |
+
+### Webhook de início de trial
+
+Quando uma assinatura com trial é criada, o evento `subscription.trial_started` é disparado:
+
+```json
+{
+  "event": "subscription.trial_started",
+  "apiVersion": 2,
+  "data": {
+    "subscription": {
+      "id": "subs_abc123xyz",
+      "amount": 4990,
+      "status": "ACTIVE",
+      "method": "CARD",
+      "trialDays": 7,
+      "trialEndsAt": "2024-11-11T23:59:59.999Z",
+      "createdAt": "2024-11-04T18:38:28.573Z"
+    }
+  }
+}
+```
+
+### Cancelamento durante o trial
+
+Cancelar uma assinatura em período de trial tem o mesmo comportamento que cancelar uma assinatura normal: o cancelamento é imediato e nenhuma cobrança futura é processada. Veja [Cancelar assinatura](/pages/subscriptions/cancel).
 
 ## Gerenciando assinaturas ativas
 
