@@ -92,7 +92,7 @@
               },
               {
                 "group": "Cobrar com Checkout",
-                "pages": ["pages/payment/reference", "pages/payment/create", "pages/payment/installments", "pages/payment/list", "pages/payment/one"]
+                "pages": ["pages/payment/reference", "pages/payment/create", "pages/payment/installments", "pages/payment/list", "pages/payment/one", "pages/payment/refund"]
               },
               {
                 "group": "Links de pagamento",
@@ -100,7 +100,8 @@
                   "pages/payment-links/reference",
                   "pages/payment-links/create",
                   "pages/payment-links/list",
-                  "pages/payment-links/one"
+                  "pages/payment-links/one",
+                  "pages/payment-links/refund"
                 ]
               },
               {
@@ -121,7 +122,8 @@
                   "pages/transparents/boleto",
                   "pages/transparents/list",
                   "pages/transparents/simulate-payment",
-                  "pages/transparents/check"
+                  "pages/transparents/check",
+                  "pages/transparents/refund"
                 ]
               },
               {
