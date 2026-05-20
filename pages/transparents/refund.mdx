@@ -1,0 +1,106 @@
+---
+title: Reembolsar Checkout Transparente
+openapi: 'POST /transparents/refund'
+---
+
+Reembolsa integralmente um pagamento transparente (PIX QR Code ou Cartão). O valor reembolsado é igual ao valor original da transação — não há reembolso parcial.
+
+<Card title="Obrigatório" horizontal>
+  Apenas `id` é obrigatório — o ID público do recurso a reembolsar.
+</Card>
+
+O campo `id` aceita:
+
+| Prefixo | Recurso |
+|---|---|
+| `pix_char_...` | ID público da cobrança PIX transparente |
+| `card_...` | ID público da cobrança no cartão |
+| `char_...` | ID público do payment intent (genérico) |
+
+**Exemplo mínimo:**
+```json
+{
+  "id": "pix_char_abc123xyz"
+}
+```
+
+**Exemplo com motivo:**
+```json
+{
+  "id": "pix_char_abc123xyz",
+  "reason": "Cliente pagou em duplicidade."
+}
+```
+
+**Resposta:**
+```json
+{
+  "data": { "refundPublicId": "tran_refund789xyz" },
+  "success": true,
+  "error": null
+}
+```
+
+<Tip title="Idempotência" horizontal>
+Chamar o endpoint para o mesmo `id` retorna sempre o mesmo `refundPublicId` — não cria reembolsos duplicados.
+</Tip>
+
+---
+
+## Regras de negócio
+
+- **Reembolso total apenas** — o valor é sempre igual ao valor original da transação.
+- **Métodos suportados** — `PIX`, `PIX_QRCODE` e `CARD`. Boletos transparentes não são reembolsáveis via API.
+- **Estado exigido:**
+  - `PIX` / `PIX_QRCODE` — transação precisa estar `COMPLETE`.
+  - `CARD` — transação precisa estar `APPROVED` ou `COMPLETE`.
+- **Disputas** — transações em disputa (`UNDER_DISPUTE` ou `metadata.underDispute=true`) não podem ser reembolsadas por este endpoint.
+- **Saldo** — o valor é debitado do saldo `available` da loja (ou `pending`, em casos específicos de `CARD`). Sem saldo, retorna `INSUFFICIENT_FUNDS`.
+- **Modo dev (sandbox)** — em `devMode` o reembolso é confirmado instantaneamente, sem chamar o provider real.
+- **Status final após o reembolso:**
+  - A transação original vira `REFUNDED`.
+  - O payment intent vira `REFUNDED`.
+  - É criada uma nova transação `WITHDRAW` representando o reembolso (retornada em `refundPublicId`).
+
+<Note>
+Ao concluir, é disparado o webhook [`transparent.refunded`](/pages/webhooks/events/transparent) (ou [`checkout.refunded`](/pages/webhooks/events/checkout) quando houver um billing associado à cobrança). Configure seu endpoint em [Webhooks](/pages/webhooks/create) para receber a notificação.
+</Note>
+
+---
+
+## Códigos de erro
+
+| Código | Significado |
+|---|---|
+| `LOCK_NOT_ACQUIRED` | Outra operação está em andamento para esta loja — tente novamente em instantes. |
+| `TRANSACTION_NOT_FOUND` | O `id` informado não existe ou não pertence à loja. |
+| `TRANSACTION_NOT_REFUNDABLE` | A transação não está em um estado reembolsável (precisa estar `COMPLETE`, ou `APPROVED`/`COMPLETE` para `CARD`). |
+| `TRANSACTION_UNDER_DISPUTE` | Transação em disputa — não pode ser reembolsada. |
+| `INVALID_METHOD` | Apenas `PIX`, `PIX_QRCODE` e `CARD` podem ser reembolsados. |
+| `INSUFFICIENT_FUNDS` | Saldo da loja menor que o valor da transação. |
+| `STORE_NOT_FOUND` | Loja não encontrada. |
+| `REFUND_REQUEST_FAILED` | Falha ao criar a transação no ledger ou ao acionar o provider. |
+| `REFUND_CONFIRMATION_FAILED` | Falha ao confirmar o reembolso após a criação. |
+
+**Exemplo de erro:**
+```json
+{
+  "data": null,
+  "success": false,
+  "error": "TRANSACTION_NOT_REFUNDABLE"
+}
+```
+
+---
+
+## Exemplo cURL
+
+```bash
+curl -X POST https://api.abacatepay.com/v2/transparents/refund \
+  -H "Authorization: Bearer $ABACATE_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "id": "pix_char_abc123xyz",
+    "reason": "Cliente pagou em duplicidade."
+  }'
+```

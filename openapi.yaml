@@ -1222,6 +1222,45 @@ paths:
                       Mensagem de erro indicando que a cobrança não foi
                       encontrada.
                     example: Cobrança não encontrada.
+  /checkouts/refund:
+    post:
+      summary: Reembolsar um Checkout
+      description: >
+        Reembolsa integralmente um Checkout pago (PIX ou Cartão). O valor
+        reembolsado é igual ao valor original da transação — reembolsos
+        parciais não são suportados.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefundRequest'
+      responses:
+        '200':
+          description: Reembolso criado com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefundResponse'
+        '400':
+          description: Reembolso recusado por regra de negócio.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefundError'
+        '401':
+          description: Não autorizado. Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Motivo da falha na autenticação.
+                    example: Token de autenticação inválido ou ausente.
   /payment-links/create:
     post:
       summary: Criar um link de pagamento
@@ -1641,6 +1680,45 @@ paths:
                       Mensagem de erro indicando que o link de pagamento não foi
                       encontrado.
                     example: Link de pagamento não encontrado.
+  /payment-links/refund:
+    post:
+      summary: Reembolsar pagamento de link
+      description: >
+        Reembolsa um pagamento realizado em um link de pagamento. O valor
+        reembolsado é igual ao valor original da transação — reembolsos
+        parciais não são suportados.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefundRequest'
+      responses:
+        '200':
+          description: Reembolso criado com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefundResponse'
+        '400':
+          description: Reembolso recusado por regra de negócio.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefundError'
+        '401':
+          description: Não autorizado. Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Motivo da falha na autenticação.
+                    example: Token de autenticação inválido ou ausente.
   /transparents/create:
     post:
       summary: Criar Checkout Transparente
@@ -1999,6 +2077,45 @@ paths:
                     description: >-
                       Mensagem de erro descrevendo o motivo da falha na
                       autenticação.
+                    example: Token de autenticação inválido ou ausente.
+  /transparents/refund:
+    post:
+      summary: Reembolsar Checkout Transparente
+      description: >
+        Reembolsa integralmente um pagamento transparente (PIX ou Cartão). O
+        valor reembolsado é igual ao valor original da transação — reembolsos
+        parciais não são suportados.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefundRequest'
+      responses:
+        '200':
+          description: Reembolso criado com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefundResponse'
+        '400':
+          description: Reembolso recusado por regra de negócio.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefundError'
+        '401':
+          description: Não autorizado. Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Motivo da falha na autenticação.
                     example: Token de autenticação inválido ou ausente.
   /payouts/create:
     post:
@@ -3618,6 +3735,63 @@ components:
       type: boolean
       description: Se a requisição obteve sucesso ou não.
       example: true
+    RefundRequest:
+      type: object
+      required:
+        - id
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          description: >
+            ID público do recurso a reembolsar. Aceita os prefixos `char_` /
+            `pix_char_` / `card_` (payment intent) ou `bill_` (billing —
+            resolvido para o payment intent pago).
+          example: bill_abc123xyz
+        reason:
+          type: string
+          maxLength: 500
+          description: Motivo do reembolso. Aparece no histórico da transação.
+          example: Pedido cancelado pelo cliente.
+    RefundResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            refundPublicId:
+              type: string
+              description: ID público da transação de reembolso (WITHDRAW) criada.
+              example: tran_refund789xyz
+        error:
+          type: string
+          nullable: true
+          example: null
+        success:
+          $ref: '#/components/schemas/Success'
+    RefundError:
+      type: object
+      properties:
+        data:
+          nullable: true
+          example: null
+        error:
+          type: string
+          description: Código do erro de reembolso.
+          enum:
+            - LOCK_NOT_ACQUIRED
+            - TRANSACTION_NOT_FOUND
+            - TRANSACTION_NOT_REFUNDABLE
+            - TRANSACTION_UNDER_DISPUTE
+            - INVALID_METHOD
+            - INSUFFICIENT_FUNDS
+            - STORE_NOT_FOUND
+            - REFUND_REQUEST_FAILED
+            - REFUND_CONFIRMATION_FAILED
+          example: TRANSACTION_UNDER_DISPUTE
+        success:
+          type: boolean
+          example: false
     PaginationCursor:
       type: object
       description: Informações de paginação baseada em cursor.
