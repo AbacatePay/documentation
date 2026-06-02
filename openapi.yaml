@@ -4404,6 +4404,13 @@ components:
             "PIX"` ou quando não foi configurada.
           allOf:
             - $ref: '#/components/schemas/BoletoFine'
+        receiptUrl:
+          type: string
+          nullable: true
+          description: >-
+            URL do comprovante de pagamento. Preenchido após o pagamento ser
+            confirmado; `null` enquanto a cobrança estiver pendente.
+          example: null
         expiresAt:
           type: string
           description: >-
