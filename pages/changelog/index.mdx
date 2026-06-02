@@ -11,6 +11,35 @@ Feedbacks também são bem-vindos no nosso Discord (#dev).
 
 ## Atualizações Recentes
 
+<Update label="2 de Jun, 2026">
+## Checkout Transparente: campo `receiptUrl` na resposta
+
+Os endpoints de checkout transparente agora retornam o campo **`receiptUrl`** no objeto de resposta, em todos os métodos de pagamento (PIX, Boleto e Cartão).
+
+**O que mudou:**
+
+- Adicionado campo `receiptUrl` (`string | null`) às respostas de `POST /v2/transparents/create`, `GET /v2/transparents/get` e `GET /v2/transparents/list`
+- O campo é `null` enquanto a cobrança está pendente e é preenchido automaticamente com a URL do comprovante após o pagamento ser confirmado
+
+**Exemplo de resposta após pagamento confirmado:**
+
+```json
+{
+  "data": {
+    "id": "pix_char_abc123xyz",
+    "status": "PAID",
+    "receiptUrl": "https://app.abacatepay.com/receipts/pix_char_abc123xyz",
+    ...
+  },
+  "success": true,
+  "error": null
+}
+```
+
+---
+
+</Update>
+
 <Update label="18 de Mai, 2026">
 ## Produtos digitais: arquivo para download
 

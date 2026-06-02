@@ -1853,6 +1853,7 @@ paths:
                   brCode: 00020126580014BR.GOV.BCB.PIX0136d2b4e5f6-7890-abcd-ef12-34567890abcd5204000053039865802BR5914Mariana Costa6009SAO PAULO62070503***6304F1C2
                   brCodeBase64: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...
                   platformFee: 250
+                  receiptUrl: null
                   expiresAt: '2024-11-07T03:00:00.000Z'
                   createdAt: '2024-11-04T14:22:10.381Z'
                   updatedAt: '2024-11-04T14:22:10.381Z'
@@ -4290,6 +4291,14 @@ components:
           type: number
           description: Taxas da plataforma
           example: 80
+        receiptUrl:
+          type: string
+          format: uri
+          nullable: true
+          description: >-
+            URL do comprovante de pagamento. Preenchido após o pagamento ser
+            confirmado; `null` enquanto a cobrança estiver pendente.
+          example: null
         createdAt:
           type: string
           description: Data de criação do QRCode Pix.
@@ -4404,6 +4413,13 @@ components:
             "PIX"` ou quando não foi configurada.
           allOf:
             - $ref: '#/components/schemas/BoletoFine'
+        receiptUrl:
+          type: string
+          nullable: true
+          description: >-
+            URL do comprovante de pagamento. Preenchido após o pagamento ser
+            confirmado; `null` enquanto a cobrança estiver pendente.
+          example: null
         expiresAt:
           type: string
           description: >-
@@ -4468,6 +4484,14 @@ components:
           type: number
           description: Taxa da plataforma em centavos.
           example: 250
+        receiptUrl:
+          type: string
+          format: uri
+          nullable: true
+          description: >-
+            URL do comprovante de pagamento. Preenchido após o pagamento ser
+            confirmado; `null` enquanto a cobrança estiver pendente.
+          example: null
         interest:
           nullable: true
           description: >-
