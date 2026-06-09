@@ -11,6 +11,44 @@ Feedbacks também são bem-vindos no nosso Discord (#dev).
 
 ## Atualizações Recentes
 
+<Update label="9 de Jun, 2026">
+## Saques via API v1: validação de titularidade obrigatória
+
+A partir de hoje, saques criados via **API v1** passam a ter a **titularidade do destinatário validada**. Não será mais permitido enviar dinheiro para uma chave PIX cujo CPF/CNPJ seja diferente do CPF/CNPJ da sua conta AbacatePay.
+
+**O que mudou:**
+
+- Saques via `POST /v1/payouts/create` agora rejeitam chaves PIX cujo `taxId` do titular seja diferente do `taxId` da conta autenticada
+- Tentativas de saque para chaves de terceiros retornam erro `400` com a mensagem indicando a incompatibilidade de titularidade
+
+**O que fazer se você precisa enviar dinheiro a terceiros?**
+
+Use a rota de **Enviar PIX** da **API v2**, que foi projetada exatamente para esse caso de uso:
+
+```http
+POST /v2/pix/send
+```
+
+```json
+{
+  "amount": 10000,
+  "description": "Pagamento fornecedor #42",
+  "externalId": "pix-123",
+  "pixKey": "contato@fornecedor.com",
+  "pixKeyType": "EMAIL"
+}
+```
+
+Consulte a [documentação de Enviar PIX](/pages/pix/create) para mais detalhes e tipos de chave aceitos.
+
+<Warning>
+  Se o seu sistema usa `POST /v1/payouts/create` para transferir valores a terceiros, **a integração precisa ser atualizada para `POST /v2/pix/send`**. Chamadas que tentarem enviar para uma chave com `taxId` diferente passarão a falhar a partir de hoje.
+</Warning>
+
+---
+
+</Update>
+
 <Update label="2 de Jun, 2026">
 ## Checkout Transparente: campo `receiptUrl` na resposta
 
