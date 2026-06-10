@@ -14,16 +14,28 @@ Quando o pagamento é realizado, a assinatura se torna ativa.
 
 O `POST /subscriptions/create` usa os mesmos parâmetros do Checkout:
 
-| Parâmetro       | Obrigatório | Descrição |
-|-----------------|-------------|-----------|
-| `items`         | Sim         | Lista com **exatamente um** item (`id` e `quantity`); o produto deve ter sido criado com ciclo de assinatura |
-| `customerId`    | Não         | ID do cliente já cadastrado |
-| `externalId`    | Não         | ID da assinatura no seu sistema |
-| `returnUrl`     | Não         | URL de retorno ao clicar em "Voltar" |
-| `completionUrl` | Não         | URL após pagamento concluído |
-| `metadata`      | Não         | Metadados livres |
-| `coupons`       | Não         | Lista de cupons |
-| `methods`       | Não         | Lista de métodos (`PIX`, `CARD`). Padrão: `["CARD"]` para assinaturas |
+| Parâmetro              | Obrigatório | Descrição |
+|------------------------|-------------|-----------|
+| `items`                | Sim         | Lista com **exatamente um** item (`id` e `quantity`); o produto deve ter sido criado com ciclo de assinatura |
+| `customerId`           | Não         | ID do cliente já cadastrado |
+| `externalId`           | Não         | ID da assinatura no seu sistema |
+| `returnUrl`            | Não         | URL de retorno ao clicar em "Voltar" |
+| `completionUrl`        | Não         | URL após pagamento concluído |
+| `metadata`             | Não         | Metadados livres |
+| `coupons`              | Não         | Lista de cupons |
+| `methods`              | Não         | Lista de métodos (`PIX`, `CARD`). Padrão: `["CARD"]` para assinaturas |
+| `retryPolicy`          | Não         | Política de retentativa em caso de falha de cobrança (veja abaixo) |
+
+### retryPolicy
+
+Controla o comportamento automático de retentativas quando uma cobrança do ciclo falha (ex.: cartão sem saldo). Se não informado, os padrões são aplicados.
+
+| Campo        | Tipo    | Padrão | Min | Max | Descrição |
+|--------------|---------|--------|-----|-----|-----------|
+| `maxRetry`   | integer | `3`    | `1` | `10` | Número máximo de tentativas de cobrança antes do cancelamento automático da assinatura |
+| `retryEvery` | integer | `1`    | `1` | `30` | Dias entre cada tentativa |
+
+Após esgotar todas as tentativas sem sucesso, a assinatura é automaticamente cancelada com `cancelledDueTo: "max_payment_retries_exceeded"` e o evento `subscription.cancelled` é disparado.
 
 Exemplo (cada item só precisa de `id` e `quantity`; o ciclo vem do produto):
 
@@ -39,7 +51,11 @@ Exemplo (cada item só precisa de `id` e `quantity`; o ciclo vem do produto):
   "externalId": "subs-123",
   "returnUrl": "https://seusite.com/voltar",
   "completionUrl": "https://seusite.com/sucesso",
-  "methods": ["CARD"]
+  "methods": ["CARD"],
+  "retryPolicy": {
+    "maxRetry": 5,
+    "retryEvery": 3
+  }
 }
 ```
 
@@ -82,6 +98,39 @@ Create e list retornam o mesmo formato do Checkout (`id`, `url`, `amount`, `item
 <Tip title="Redirecione o cliente" icon="book" horizontal>
 Use a `url` retornada para levar o cliente ao checkout e concluir o pagamento.
 </Tip>
+
+### Objeto de assinatura ativa
+
+Após ativação, os endpoints de assinatura (`GET /subscriptions/get`, `GET /subscriptions/list`) retornam o objeto completo incluindo `retryPolicy`:
+
+```json
+{
+  "data": {
+    "id": "subs_abc123xyz",
+    "customerId": "cust_abc123xyz",
+    "amount": 10000,
+    "status": "ACTIVE",
+    "method": "CARD",
+    "coupons": [],
+    "devMode": false,
+    "trialDays": null,
+    "trialEndsAt": null,
+    "retryPolicy": {
+      "maxRetry": 5,
+      "retryEvery": 3
+    },
+    "createdAt": "2024-11-04T18:38:28.573Z",
+    "updatedAt": "2024-11-04T18:38:28.573Z"
+  },
+  "success": true,
+  "error": null
+}
+```
+
+| Campo                     | Tipo    | Descrição |
+|---------------------------|---------|-----------|
+| `retryPolicy.maxRetry`    | integer | Tentativas máximas antes do cancelamento automático |
+| `retryPolicy.retryEvery`  | integer | Dias entre cada tentativa |
 
 ## Ciclo de cobrança
 
