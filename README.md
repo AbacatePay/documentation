@@ -1,9 +1,5 @@
 <p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="logo/dark.svg"></source>
-    <source media="(prefers-color-scheme: light)" srcset="logo/light.svg"></source>
-    <img alt="AbacatePay Logo" src="logo/light.svg" width="300"></img>
-  </picture>
+  <img alt="AbacatePay Documentation Banner" src="images/banner.png" width="100%"></img>
 </p>
 
 # AbacatePay Documentation
