@@ -1,0 +1,94 @@
+---
+title: 'O que é o Checkout?'
+description: 'Entenda como funciona a cobrança por link e tela de pagamento da AbacatePay'
+icon: 'cart-shopping'
+---
+
+## A ideia simples
+
+Um **checkout** é a tela onde seu cliente finaliza o pagamento. É aquela página que aparece quando você clica em "Comprar" em uma loja online — com o resumo do pedido e as opções de pagamento.
+
+Na AbacatePay, você não precisa construir essa tela. A gente gera ela automaticamente. Você só precisa dizer **o que está sendo vendido** e **qual o valor**.
+
+---
+
+## Como funciona na prática
+
+<Steps>
+  <Step title="Você cria uma cobrança">
+    Pode ser pelo dashboard ou pela API. Você informa o produto e o valor.
+  </Step>
+  <Step title="A AbacatePay gera um link">
+    Um link único e seguro é criado. Ex: `https://app.abacatepay.com/pay/bill_abc123`
+  </Step>
+  <Step title="Você envia o link para o cliente">
+    Por WhatsApp, e-mail, Instagram — qualquer canal.
+  </Step>
+  <Step title="O cliente paga">
+    Ele escolhe PIX ou cartão e conclui o pagamento na tela da AbacatePay.
+  </Step>
+  <Step title="Você é notificado">
+    Recebe uma notificação imediata de que o pagamento foi confirmado.
+  </Step>
+</Steps>
+
+---
+
+## Dois tipos de checkout
+
+<CardGroup cols={2}>
+  <Card icon="arrow-up-right-from-square" title="Checkout Hospedado">
+    A tela de pagamento fica **no site da AbacatePay**. Você redireciona o cliente para lá e pronto. É o jeito mais rápido — zero configuração de interface.
+
+    **Ideal para:** quem quer começar rápido sem precisar de designer ou desenvolvedor.
+  </Card>
+
+  <Card icon="code" title="Checkout Transparente">
+    A tela de pagamento fica **dentro do seu site**. A AbacatePay processa nos bastidores, mas o cliente nunca sai da sua página.
+
+    **Ideal para:** quem quer uma experiência de compra mais profissional e integrada ao próprio site. Requer desenvolvimento.
+  </Card>
+</CardGroup>
+
+<Tip>
+  Se você está começando agora, use o **Checkout Hospedado**. É mais rápido e já funciona sem precisar de um desenvolvedor.
+</Tip>
+
+---
+
+## Formas de pagamento aceitas
+
+| Forma de pagamento | Disponível? |
+|--------------------|-------------|
+| PIX | ✅ Sim |
+| Cartão de crédito | ✅ Sim |
+| Boleto | ✅ Sim |
+| Parcelamento (até 12x) | ✅ Sim, no cartão |
+
+---
+
+## Perguntas comuns
+
+<AccordionGroup>
+  <Accordion title="O link de pagamento tem prazo de validade?">
+    Por padrão, o link não expira. Você pode configurar uma data de expiração ao criar a cobrança.
+  </Accordion>
+
+  <Accordion title="Meu cliente pode pagar mais de uma vez pelo mesmo link?">
+    Depende. Um link de pagamento comum (`ONE_TIME`) aceita apenas um pagamento. Se você quiser um link reutilizável, use um **Link de Pagamento** com `MULTIPLE_PAYMENTS` — ideal para doações ou pedidos avulsos.
+  </Accordion>
+
+  <Accordion title="Consigo personalizar a tela de pagamento com minha marca?">
+    Sim. Você pode configurar o nome, logo e cores da sua loja no dashboard, e eles aparecem automaticamente na tela de checkout.
+  </Accordion>
+
+  <Accordion title="O que acontece se o cliente não pagar?">
+    A cobrança fica com status `PENDING`. Você pode reenviar o link para o cliente a qualquer momento.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+<Card icon="rocket" title="Pronto para receber seu primeiro pagamento?" href="/pages/guides/primeiro-pagamento">
+  Siga o guia passo a passo e receba um pagamento real em minutos.
+</Card>

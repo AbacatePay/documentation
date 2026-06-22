@@ -1,0 +1,80 @@
+---
+title: 'O que é o PIX?'
+description: 'Como usar o PIX para receber pagamentos instantâneos pelo seu negócio'
+icon: 'qrcode'
+---
+
+## PIX: o que todo mundo já sabe
+
+O PIX é o sistema de pagamento instantâneo do Banco Central do Brasil. Funciona 24 horas por dia, 7 dias por semana, e o dinheiro cai na conta em segundos.
+
+Você já usa PIX no dia a dia. Na AbacatePay, a gente traz isso para o seu negócio de forma profissional.
+
+---
+
+## Como a AbacatePay usa o PIX
+
+A AbacatePay gera para você um **QR Code** ou um **código copia-e-cola** único para cada cobrança. Seu cliente escaneia ou cola no banco dele e o pagamento é confirmado em segundos.
+
+<CardGroup cols={2}>
+  <Card icon="qrcode" title="QR Code">
+    Uma imagem que o cliente escaneia com o aplicativo do banco. Ideal para cobranças em sites, landing pages ou imagens no WhatsApp.
+  </Card>
+  <Card icon="copy" title="Copia-e-cola">
+    Um código de texto que o cliente cola no app do banco. Funciona em qualquer canal de texto — SMS, e-mail, chat.
+  </Card>
+</CardGroup>
+
+---
+
+## Quando usar PIX vs outras formas de pagamento?
+
+| | PIX | Cartão | Boleto |
+|---|---|---|---|
+| **Confirmação** | Segundos | Minutos a horas | 1-3 dias úteis |
+| **Disponível** | 24/7 | 24/7 | Dias úteis |
+| **Parcelamento** | Não | Sim (até 12x) | Não |
+| **Taxa** | Menor | Maior | Média |
+| **Cancelamento fácil** | Sim | Sim | Sim |
+
+**Regra prática:**
+- Produto de baixo valor ou urgente → PIX
+- Produto de alto valor → cartão com parcelamento
+- Cliente sem cartão → boleto
+
+---
+
+## O que acontece depois que o cliente paga?
+
+1. O pagamento é confirmado em segundos
+2. O valor entra no seu **saldo na AbacatePay**
+3. Você recebe uma **notificação automática** (se tiver webhook configurado)
+4. Quando quiser, você **saca** o valor para sua conta bancária
+
+---
+
+## Perguntas comuns
+
+<AccordionGroup>
+  <Accordion title="O QR Code tem prazo de validade?">
+    Sim. Por padrão, o QR Code PIX expira em 30 minutos após a criação. Você pode configurar um prazo diferente ao criar a cobrança.
+  </Accordion>
+
+  <Accordion title="Posso cobrar qualquer valor via PIX?">
+    Sim, não há valor mínimo ou máximo definido pela AbacatePay. Limitações de valor do Banco Central podem se aplicar dependendo do banco do seu cliente.
+  </Accordion>
+
+  <Accordion title="Como sei se o pagamento foi confirmado?">
+    Você pode verificar o status da cobrança no dashboard. Se configurou webhooks, receberá uma notificação automática assim que o pagamento for confirmado.
+  </Accordion>
+
+  <Accordion title="E se o cliente errar o valor ao transferir?">
+    Se o cliente transferir um valor diferente do QR Code, o pagamento pode não ser confirmado automaticamente. Para evitar isso, sempre use o QR Code gerado pela AbacatePay — ele já tem o valor embutido.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+<Card icon="rocket" title="Quer gerar um PIX agora?" href="/pages/guides/primeiro-pagamento">
+  Siga o guia e gere seu primeiro QR Code em minutos.
+</Card>

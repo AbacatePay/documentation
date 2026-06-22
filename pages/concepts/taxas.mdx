@@ -1,0 +1,95 @@
+---
+title: 'Taxas e tarifas'
+description: 'Entenda quanto custa usar a AbacatePay — sem mensalidade, sem surpresas'
+icon: 'receipt'
+---
+
+<Tip>
+  A AbacatePay **não cobra mensalidade**. Você paga apenas quando recebe ou movimenta dinheiro — e as taxas já são descontadas automaticamente do valor antes de entrar no seu saldo.
+</Tip>
+
+---
+
+## Receber pagamentos
+
+| Forma de pagamento | Taxa |
+|--------------------|------|
+| PIX | R$ 0,80 por transação |
+| Cartão de crédito à vista | 3,50% + R$ 0,60 |
+| Cartão parcelado (2x a 6x) | 4,00% + R$ 0,60 |
+| Cartão parcelado (7x a 12x) | 4,50% + R$ 0,60 |
+| Boleto bancário | R$ 2,50 por boleto gerado |
+
+<Info>
+  As taxas de cartão incidem sobre o **valor total da transação**. O valor fixo de R$ 0,60 é cobrado independentemente do valor.
+</Info>
+
+---
+
+## Sacar dinheiro
+
+| Tipo de transferência | Custo |
+|-----------------------|-------|
+| PIX (primeiros 30 saques do mês) | R$ 0,80 por saque |
+| PIX (a partir do 31º saque no mês) | R$ 2,50 por saque |
+| TED | R$ 5,00 por transferência |
+
+<Card title="Limite diário de saque" horizontal>
+  O limite diário varia conforme a conta. Novas lojas começam com um limite menor que aumenta automaticamente após a verificação de conta. Consulte o dashboard para ver o limite atual da sua loja.
+</Card>
+
+---
+
+## Antecipação de recebíveis
+
+Recebíveis de cartão de crédito têm prazo de liquidação. Se você quiser antecipar e receber antes do prazo, é possível mediante taxa:
+
+| | Taxa |
+|--|------|
+| Antecipação de recebíveis de cartão | 1,50% ao mês |
+
+---
+
+## Como as taxas são cobradas
+
+Você **nunca paga separadamente**. O fluxo é sempre:
+
+```
+Cliente paga R$ 100,00 via PIX
+→ AbacatePay desconta R$ 0,80
+→ R$ 99,20 entra no seu saldo
+```
+
+O campo `platformFee` nas respostas da API mostra exatamente quanto foi descontado em cada transação, em centavos.
+
+---
+
+## Perguntas frequentes
+
+<AccordionGroup>
+  <Accordion title="Pago taxa sobre boletos não pagos?">
+    Não. A taxa do boleto (R$ 2,50) é cobrada apenas quando o boleto é **pago**. Se o cliente não pagar, nenhuma taxa é descontada.
+  </Accordion>
+
+  <Accordion title="Como funciona o parcelamento para mim como vendedor?">
+    Você recebe cada parcela individualmente conforme a operadora de cartão a liquida. Se o cliente parcelou em 10x, você recebe 10 créditos separados ao longo dos meses — não o valor total de uma vez.
+  </Accordion>
+
+  <Accordion title="O contador de saques mensais reinicia todo mês?">
+    Sim. O contador reinicia no início de cada mês calendário.
+  </Accordion>
+
+  <Accordion title="Existe taxa para criar uma conta ou usar o dashboard?">
+    Não. Criar conta, acessar o dashboard, criar produtos, cupons e links de pagamento são gratuitos. Você só paga quando há movimentação financeira.
+  </Accordion>
+
+  <Accordion title="Minhas taxas podem ser diferentes dessas?">
+    Sim. As taxas acima são as padrão. Dependendo do volume de transações da sua loja, as taxas podem ser negociadas. Entre em contato com o suporte para saber mais.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+<Card title="Dúvidas sobre as suas taxas?" icon="headset" color="#25c2a0">
+  Consulte as taxas da sua conta diretamente no dashboard em **Perfil → Taxas**, ou entre em contato: ajuda@abacatepay.com
+</Card>
