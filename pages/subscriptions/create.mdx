@@ -18,7 +18,11 @@ Cria um checkout de assinatura. O cliente paga uma vez e entra no ciclo de cobra
   "customerId": "cust_abc123xyz",
   "externalId": "subs-123",
   "completionUrl": "https://seusite.com/sucesso",
-  "methods": ["CARD"]
+  "methods": ["CARD"],
+  "retryPolicy": {
+    "maxRetry": 3,
+    "retryEvery": 2
+  }
 }
 ```
 

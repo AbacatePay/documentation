@@ -323,11 +323,46 @@ icon: 'repeat'
     </Tabs>
   </Tab>
 
+  <Tab title="subscription.payment_failed">
+    Disparado a cada falha de cobrança de um ciclo. O campo `retryNumber` indica quantas tentativas já foram feitas. Quando `retryNumber` atingir `maxRetry` (configurado em `retryPolicy` ao criar a assinatura), a assinatura é cancelada automaticamente e o evento `subscription.cancelled` é disparado logo em seguida com `cancelledDueTo: "max_payment_retries_exceeded"`.
+
+    ```json
+    {
+      "id": "log_abc123xyz",
+      "event": "subscription.payment_failed",
+      "apiVersion": 2,
+      "devMode": false,
+      "data": {
+        "subscription": {
+          "id": "subs_tAFqDWBhcEYTjQh2K0ZYDHau",
+          "amount": 2990,
+          "currency": "BRL",
+          "method": "CARD",
+          "status": "ACTIVE",
+          "frequency": "MONTHLY",
+          "retryPolicy": {
+            "maxRetry": 3,
+            "retryEvery": 2
+          },
+          "createdAt": "2024-12-06T20:00:00.000Z",
+          "updatedAt": "2025-01-06T20:00:05.000Z",
+          "canceledAt": null,
+          "cancelPolicy": null,
+          "cancelledDueTo": null
+        },
+        "installmentId": "intl_abc123xyz",
+        "installmentNumber": 2,
+        "retryNumber": 1
+      }
+    }
+    ```
+  </Tab>
+
   <Tab title="subscription.cancelled">
-    Disparado quando uma assinatura é cancelada.
+    Disparado quando uma assinatura é cancelada — seja via API ou automaticamente após esgotar todas as tentativas de cobrança. Nesse segundo caso, `cancelledDueTo` será `"max_payment_retries_exceeded"`.
 
     <Tabs>
-      <Tab title="Cartão">
+      <Tab title="Cancelamento manual">
         ```json
         {
           "id": "log_abc123xyz",
@@ -345,7 +380,7 @@ icon: 'repeat'
               "createdAt": "2024-12-06T20:00:00.000Z",
               "updatedAt": "2024-12-06T20:00:05.000Z",
               "canceledAt": "2024-12-06T20:00:05.000Z",
-              "cancelPolicy": null,
+              "cancelPolicy": "NOW",
               "cancelledDueTo": null
             },
             "customer": {
@@ -394,6 +429,44 @@ icon: 'repeat'
         ```
       </Tab>
 
+      <Tab title="Cancelamento automático (max retries)">
+        Disparado quando todas as tentativas de cobrança são esgotadas. `cancelledDueTo` identifica a causa e `cancelPolicy` é `"NOW"`, indicando que os ciclos futuros também foram cancelados.
+
+        ```json
+        {
+          "id": "log_abc123xyz",
+          "event": "subscription.cancelled",
+          "apiVersion": 2,
+          "devMode": false,
+          "data": {
+            "subscription": {
+              "id": "subs_tAFqDWBhcEYTjQh2K0ZYDHau",
+              "amount": 2990,
+              "currency": "BRL",
+              "method": "CARD",
+              "status": "CANCELLED",
+              "frequency": "MONTHLY",
+              "retryPolicy": {
+                "maxRetry": 3,
+                "retryEvery": 2
+              },
+              "createdAt": "2024-12-06T20:00:00.000Z",
+              "updatedAt": "2025-01-06T20:00:05.000Z",
+              "canceledAt": "2025-01-06T20:00:05.000Z",
+              "cancelPolicy": "NOW",
+              "cancelledDueTo": "max_payment_retries_exceeded"
+            },
+            "customer": {
+              "id": "cust_def456",
+              "name": "Maria Santos",
+              "email": "maria@exemplo.com",
+              "taxId": "12.***.***/0001-**"
+            }
+          }
+        }
+        ```
+      </Tab>
+
       <Tab title="PIX">
         ```json
         {
@@ -412,7 +485,7 @@ icon: 'repeat'
               "createdAt": "2024-12-06T20:00:00.000Z",
               "updatedAt": "2024-12-06T20:00:05.000Z",
               "canceledAt": "2024-12-06T20:00:05.000Z",
-              "cancelPolicy": null,
+              "cancelPolicy": "NOW",
               "cancelledDueTo": null
             },
             "customer": {
