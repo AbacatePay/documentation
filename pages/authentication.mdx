@@ -8,6 +8,8 @@ icon: 'key'
   A **chave de API** é sua credencial de acesso à AbacatePay. Ela identifica sua conta e autoriza cada requisição enviada para a nossa API. **Sem uma chave válida, nenhum pedido será aceito.**
 </Tip>
 
+Toda requisição para a API da AbacatePay deve incluir sua chave no header `Authorization`. A chave também define o ambiente — uma chave de Dev mode simula transações, uma chave de Produção processa valores reais. Você não muda de URL para mudar de ambiente; muda a chave.
+
 {/* <div style={{ 
   position: "relative", 
   paddingBottom: "56.25%", 
@@ -79,6 +81,33 @@ Ao criar ou gerenciar chaves no dashboard, você pode atribuir apenas as permiss
 | Connect   | `CONNECT:READ`, `CONNECT:CREATE`, `CONNECT:DELETE` |
 
 Cada endpoint da documentação indica qual permissão é necessária no topo da página.
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="401 Unauthorized — o que verificar">
+    Causas mais comuns, em ordem de frequência:
+
+    1. O header `Authorization: Bearer SUA_CHAVE` não está sendo enviado
+    2. A chave foi copiada com espaços extras ou caracteres invisíveis
+    3. A chave foi revogada no dashboard
+    4. Você está usando uma chave de Dev mode em uma URL que exige produção (ou vice-versa)
+
+    Para confirmar que a chave está funcionando, teste diretamente:
+    ```bash
+    curl https://api.abacatepay.com/v2/stores/get \
+      -H "Authorization: Bearer SUA_CHAVE"
+    ```
+  </Accordion>
+
+  <Accordion title="403 Forbidden — permissão ausente">
+    A chave existe e é válida, mas não tem a permissão para o recurso solicitado. Acesse o dashboard, edite a chave e adicione a permissão necessária. Consulte a tabela de permissões acima para saber qual adicionar.
+  </Accordion>
+
+  <Accordion title="Chave de Dev mode vs Produção — qual estou usando?">
+    No dashboard, as chaves de Dev mode têm um indicador visual. Se você não tem certeza, verifique o campo `devMode` em qualquer resposta da API — `true` significa Dev mode, `false` significa Produção.
+  </Accordion>
+</AccordionGroup>
 
 ## Boas práticas de segurança
 

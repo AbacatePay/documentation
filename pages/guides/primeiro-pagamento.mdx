@@ -1,0 +1,120 @@
+---
+title: 'Receba seu primeiro pagamento'
+description: 'Um guia passo a passo para você gerar um link de pagamento e receber sem escrever código'
+icon: 'rocket'
+---
+
+<Tip>
+  Este guia **não exige nenhum conhecimento técnico**. Você vai usar apenas o dashboard da AbacatePay. Em menos de 10 minutos, você terá um link de pagamento funcionando.
+</Tip>
+
+---
+
+## O que você vai precisar
+
+- Uma conta na AbacatePay ([criar conta grátis](https://app.abacatepay.com))
+- O produto ou serviço que você quer vender
+- 10 minutos
+
+---
+
+## Passo 1 — Crie sua conta
+
+Se você ainda não tem uma conta, acesse [app.abacatepay.com](https://app.abacatepay.com) e clique em **Criar conta**. O processo leva poucos minutos.
+
+<Card title="Conta verificada vs não verificada" horizontal>
+  Você pode testar tudo no **Dev mode** (ambiente de testes) antes de verificar sua conta. Mas para receber dinheiro real, sua conta precisa ser verificada. Acesse o dashboard e siga as instruções de verificação.
+</Card>
+
+---
+
+## Passo 2 — Crie um produto
+
+Um produto é o que você está vendendo. Pode ser um curso, um serviço, uma consultoria — qualquer coisa.
+
+1. No menu lateral, clique em **Produtos**
+2. Clique em **Novo Produto**
+3. Preencha:
+   - **Nome**: Ex.: "Mentoria 1h", "Acesso ao Curso", "Pacote Premium"
+   - **Preço**: O valor em reais que você quer cobrar
+   - **Descrição** (opcional): Uma breve descrição para aparecer na tela de pagamento
+4. Clique em **Salvar**
+
+Pronto. Seu produto está criado.
+
+---
+
+## Passo 3 — Gere um link de pagamento
+
+Agora você vai criar o link que vai enviar para seu cliente.
+
+1. No menu lateral, clique em **Links de Pagamento** (ou **Cobranças**)
+2. Clique em **Novo Link**
+3. Selecione o produto que você criou
+4. Configure as opções:
+   - **Formas de pagamento**: PIX, Cartão ou Boleto (pode selecionar mais de um)
+   - **URL de retorno** (opcional): Para onde o cliente vai depois de pagar
+5. Clique em **Gerar Link**
+
+O link ficará no formato: `https://app.abacatepay.com/pay/bill_...`
+
+---
+
+## Passo 4 — Envie para o seu cliente
+
+Copie o link e envie pelo canal de sua preferência:
+
+- **WhatsApp**: Cole o link direto na conversa
+- **E-mail**: Adicione ao corpo do e-mail com um botão "Clique aqui para pagar"
+- **Instagram**: Coloque no bio ou envie por direct
+- **Site**: Coloque um botão que abre o link
+
+Seu cliente vai clicar no link, escolher a forma de pagamento e concluir.
+
+---
+
+## Passo 5 — Acompanhe o pagamento
+
+Você pode acompanhar os pagamentos em tempo real:
+
+1. No dashboard, vá em **Cobranças**
+2. Veja o status de cada link: `Pendente`, `Pago`, `Expirado`
+
+Quando o cliente pagar, o status muda para **Pago** automaticamente.
+
+<Card title="Quer ser notificado automaticamente?" horizontal>
+  Configure webhooks para receber uma notificação no seu sistema quando um pagamento for confirmado. É opcional, mas útil se você quiser automatizar ações como "liberar acesso ao produto" ou "enviar e-mail de boas-vindas". Veja [como configurar webhooks](/pages/webhooks).
+</Card>
+
+---
+
+## Passo 6 — Saque seu dinheiro
+
+Quando quiser transferir o saldo para sua conta:
+
+1. Vá em **Saques** no menu lateral
+2. Informe o valor e os dados bancários
+3. Confirme
+
+O dinheiro chega no mesmo dia útil.
+
+---
+
+## Próximos passos
+
+Agora que você recebeu seu primeiro pagamento, pode explorar recursos mais avançados:
+
+<CardGroup cols={2}>
+  <Card icon="rotate" title="Cobranças recorrentes" href="/pages/concepts/subscriptions">
+    Configure assinaturas para cobrar clientes todo mês automaticamente.
+  </Card>
+  <Card icon="tag" title="Cupons de desconto" href="/pages/coupons/reference">
+    Crie promoções e aplique descontos nas suas cobranças.
+  </Card>
+  <Card icon="users" title="Cadastrar clientes" href="/pages/client/reference">
+    Mantenha um cadastro de clientes para facilitar cobranças futuras.
+  </Card>
+  <Card icon="terminal" title="Integrar via API" href="/pages/authentication">
+    Automatize tudo via código com a API da AbacatePay.
+  </Card>
+</CardGroup>

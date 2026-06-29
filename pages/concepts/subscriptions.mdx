@@ -1,0 +1,101 @@
+---
+title: 'O que são Assinaturas?'
+description: 'Entenda como cobrar seus clientes todo mês de forma automática'
+icon: 'rotate'
+---
+
+## A ideia
+
+Uma assinatura é uma **cobrança automática e recorrente**. Em vez de você precisar cobrar seu cliente toda vez, a AbacatePay faz isso automaticamente no intervalo que você definiu — mensal, semanal ou anual.
+
+Pense em como funciona o Netflix, Spotify ou qualquer academia: o cliente assina uma vez e é cobrado automaticamente todo mês. Você pode fazer exatamente isso para o seu negócio.
+
+---
+
+## Para que serve?
+
+<CardGroup cols={2}>
+  <Card icon="graduation-cap" title="Cursos e mentorias">
+    Cobranças mensais para alunos de um curso ou programa de mentoria continuada.
+  </Card>
+  <Card icon="briefcase" title="SaaS / software">
+    Plano mensal ou anual para o seu serviço ou ferramenta online.
+  </Card>
+  <Card icon="dumbbell" title="Comunidades e grupos">
+    Acesso a grupo exclusivo, comunidade ou clube de assinantes.
+  </Card>
+  <Card icon="box" title="Clube de assinaturas">
+    Produto ou serviço entregue periodicamente com cobrança automática.
+  </Card>
+</CardGroup>
+
+---
+
+## Como funciona o ciclo
+
+<Steps>
+  <Step title="Você cria um produto com recorrência">
+    No dashboard, você define o produto, o preço e o ciclo (mensal, anual, semanal).
+  </Step>
+  <Step title="Seu cliente assina">
+    Ele paga a primeira cobrança. A assinatura está ativa.
+  </Step>
+  <Step title="Cobranças automáticas">
+    No próximo ciclo (ex: daqui a 30 dias), a AbacatePay tenta cobrar o cliente automaticamente.
+  </Step>
+  <Step title="Você é notificado">
+    A cada pagamento confirmado ou falha, você recebe uma notificação.
+  </Step>
+  <Step title="Cancelamento fácil">
+    Você ou o cliente podem cancelar a assinatura a qualquer momento pelo dashboard ou pela API.
+  </Step>
+</Steps>
+
+---
+
+## O que acontece se o pagamento falhar?
+
+A AbacatePay tenta cobrar de novo automaticamente. Você pode configurar:
+
+- **Quantas tentativas** fazer (até 10)
+- **Quantos dias esperar** entre cada tentativa (1 a 30 dias)
+
+Se todas as tentativas falharem, a assinatura é marcada como `FAILED` e você é notificado.
+
+---
+
+## Ciclos disponíveis
+
+| Ciclo | Frequência |
+|-------|-----------|
+| `WEEKLY` | Toda semana |
+| `MONTHLY` | Todo mês |
+| `YEARLY` | Todo ano |
+
+---
+
+## Perguntas comuns
+
+<AccordionGroup>
+  <Accordion title="Posso oferecer período de teste gratuito?">
+    Essa funcionalidade está em nosso roadmap. Por enquanto, você pode oferecer um produto de teste separado com valor zerado, ou gerenciar o período de trial manualmente.
+  </Accordion>
+
+  <Accordion title="O cliente pode mudar de plano?">
+    Sim. Você pode alterar o plano de uma assinatura ativa a qualquer momento — o novo valor passa a valer no próximo ciclo.
+  </Accordion>
+
+  <Accordion title="Posso aplicar cupom de desconto em assinaturas?">
+    Sim. Você pode criar cupons e aplicá-los ao criar ou atualizar uma assinatura.
+  </Accordion>
+
+  <Accordion title="Como o cliente cancela a assinatura?">
+    Você pode cancelar pelo dashboard ou pela API. Se quiser que o próprio cliente cancele de forma self-service, você precisa criar essa funcionalidade no seu site usando a API da AbacatePay.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+<Card icon="rocket" title="Quer criar sua primeira assinatura?" href="/pages/guides/primeiro-pagamento">
+  Veja o guia completo para começar a receber mensalidades.
+</Card>

@@ -4,6 +4,22 @@ description: 'Base URL, autenticação, formato de resposta, códigos de status 
 icon: 'book-open'
 ---
 
+Esta seção documenta os endpoints da API da AbacatePay v2. Todos os recursos seguem as mesmas convenções de autenticação, formato de resposta e tratamento de erros descritas aqui. Leia esta página uma vez — ela evita a maioria dos erros de integração.
+
+<CardGroup cols={3}>
+  <Card title="Autenticação" icon="key" href="/pages/authentication">
+    Como gerar e usar suas chaves de API.
+  </Card>
+  <Card title="Dev mode" icon="code" href="/pages/devmode">
+    Testar sem risco antes de ir para produção.
+  </Card>
+  <Card title="Webhooks" icon="webhook" href="/pages/webhooks">
+    Receber notificações de eventos em tempo real.
+  </Card>
+</CardGroup>
+
+---
+
 ## Base URL
 
 Todas as requisições da v2 usam o seguinte endereço:
@@ -82,6 +98,30 @@ Cada chave de API pode ter permissões granulares por recurso. Se você receber 
 Endpoints de listagem retornam todos os registros disponíveis. Futuramente suportarão paginação via `limit` e `offset`.
 
 ---
+
+## Erros mais comuns
+
+<AccordionGroup>
+  <Accordion title="400 — os campos estão corretos mas a requisição é rejeitada">
+    Verifique o tipo dos valores. A API é tipada: `amount` é sempre inteiro em centavos (`1000` = R$ 10,00), não decimal. IDs de produtos e clientes são strings, não números.
+  </Accordion>
+
+  <Accordion title="401 — chave válida mas ainda recebo Unauthorized">
+    Confirme que o header está exatamente como `Authorization: Bearer SUA_CHAVE` — com espaço entre `Bearer` e a chave, sem aspas extras.
+  </Accordion>
+
+  <Accordion title="403 — tenho a chave mas não tenho acesso ao endpoint">
+    A chave existe mas não tem a permissão necessária. Vá no dashboard → Integração → edite a chave → adicione a permissão do recurso que está tentando acessar.
+  </Accordion>
+
+  <Accordion title="422 — dados válidos mas semanticamente errados">
+    Exemplo: criar uma assinatura com um produto que não tem `cycle` definido. Os campos estão corretos individualmente, mas a combinação não faz sentido. A mensagem de erro no campo `error` da resposta descreve o problema específico.
+  </Accordion>
+
+  <Accordion title="5xx — erro do servidor">
+    Erros `5xx` são temporários. Implemente retentativas com backoff exponencial (ex: aguarde 1s, depois 2s, depois 4s). Se persistir por mais de alguns minutos, entre em contato com o suporte.
+  </Accordion>
+</AccordionGroup>
 
 ## Dicas gerais
 

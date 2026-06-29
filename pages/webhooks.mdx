@@ -89,76 +89,52 @@ Webhooks precisam ser seguros — afinal, qualquer pessoa poderia tentar enviar 
 
 Por isso, recomendamos duas camadas de proteção:
 
----
+**1. Secret na URL** — cada webhook tem uma chave secreta que vai junto com a URL. Seu sistema verifica se essa chave está correta antes de processar o evento.
 
-### 🔐 1. Secret na URL  
-Cada webhook tem um secret único, que vai na query string.
+**2. Assinatura digital (HMAC)** — a AbacatePay assina cada evento que envia. Seu sistema pode confirmar que o evento realmente veio da AbacatePay e que não foi alterado no caminho. É o mesmo método usado por Stripe, PayPal, Shopify e GitHub.
 
-Ex.: https://meusite.com/webhook/abacatepay?webhookSecret=SEU_SECRET
+<Info>
+  A configuração de segurança é feita pelo seu desenvolvedor. Veja a documentação técnica completa na [página de segurança de webhooks](/pages/webhooks/security).
+</Info>
 
+<AccordionGroup>
+  <Accordion title="Ver implementação — Secret na URL (Node.js)">
+    Cada webhook tem um secret único, que vai na query string da URL:
 
-Seu backend confere:
+    `https://meusite.com/webhook/abacatepay?webhookSecret=SEU_SECRET`
 
-```js
-if (req.query.webhookSecret !== process.env.WEBHOOK_SECRET) {
-  return res.status(401).json({ error: "Unauthorized" });
-}
-```
+    ```js
+    if (req.query.webhookSecret !== process.env.WEBHOOK_SECRET) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    ```
+  </Accordion>
 
-### 🛡️ 2. Assinatura HMAC (verificação do corpo)
+  <Accordion title="Ver implementação — Validação HMAC (Node.js)">
+    Cada webhook enviado pela AbacatePay inclui uma assinatura no header `X-Webhook-Signature` gerada com HMAC-SHA256.
 
-Mesmo que alguém descubra sua URL e seu secret, ainda não consegue falsificar o evento.
+    ```typescript
+    import crypto from "node:crypto";
 
-**Por quê?**  
-Porque cada webhook enviado pela AbacatePay inclui uma assinatura no header:
+    const ABACATEPAY_PUBLIC_KEY =
+      "t9dXRhHHo3yDEj5pVDYz0frf7q6bMKyMRmxxCPIPp3RCplBfXRxqlC6ZpiWmOqj4L63qEaeUOtrCI8P0VMUgo6iIga2ri9ogaHFs0WIIywSMg0q7RmBfybe1E5XJcfC4IW3alNqym0tXoAKkzvfEjZxV6bE0oG2zJrNNYmUCKZyV0KZ3JS8Votf9EAWWYdiDkMkpbMdPggfh1EqHlVkMiTady6jOR3hyzGEHrIz2Ret0xHKMbiqkr9HS1JhNHDX9";
 
+    export function verifyAbacateSignature(rawBody: string, signatureFromHeader: string) {
+      const bodyBuffer = Buffer.from(rawBody, "utf8")
 
-Essa assinatura é gerada usando **HMAC-SHA256** e garante que:
+      const expectedSig = crypto
+        .createHmac("sha256", ABACATEPAY_PUBLIC_KEY)
+        .update(bodyBuffer)
+        .digest("base64");
 
-- o corpo da requisição **não foi alterado**
-- o evento realmente foi enviado pela AbacatePay
+      const A = Buffer.from(expectedSig);
+      const B = Buffer.from(signatureFromHeader);
 
-Seu backend deve recalcular a assinatura e comparar:
-
-- Se for igual → ✅ evento é legítimo  
-- Se for diferente → ❌ evento rejeitado  
-
-Esse é o mesmo método usado por **Stripe, PayPal, Shopify, GitHub**, etc.
-
----
-
-## 🔧 Exemplo de validação HMAC (Node.js)
-
-> Este exemplo mostra como validar a assinatura HMAC enviada no header  
-> `X-Webhook-Signature`.
-
-```typescript
-import crypto from "node:crypto";
-
-// Public HMAC key
-const ABACATEPAY_PUBLIC_KEY =
-  "t9dXRhHHo3yDEj5pVDYz0frf7q6bMKyMRmxxCPIPp3RCplBfXRxqlC6ZpiWmOqj4L63qEaeUOtrCI8P0VMUgo6iIga2ri9ogaHFs0WIIywSMg0q7RmBfybe1E5XJcfC4IW3alNqym0tXoAKkzvfEjZxV6bE0oG2zJrNNYmUCKZyV0KZ3JS8Votf9EAWWYdiDkMkpbMdPggfh1EqHlVkMiTady6jOR3hyzGEHrIz2Ret0xHKMbiqkr9HS1JhNHDX9";
-
-/**
- * Verifies if the webhook signature matches the expected HMAC.
- * @param rawBody Raw request body string.
- * @param signatureFromHeader The signature received from `X-Webhook-Signature`.
- * @returns true if the signature is valid, false otherwise.
- */
-export function verifyAbacateSignature(rawBody: string, signatureFromHeader: string) {
-  const bodyBuffer = Buffer.from(rawBody, "utf8")
-
-  const expectedSig = crypto
-    .createHmac("sha256", ABACATEPAY_PUBLIC_KEY)
-    .update(bodyBuffer)
-    .digest("base64");
-
-  const A = Buffer.from(expectedSig);
-  const B = Buffer.from(signatureFromHeader);
-
-  return A.length === B.length && crypto.timingSafeEqual(A, B);
-}
-```
+      return A.length === B.length && crypto.timingSafeEqual(A, B);
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
 
 ---
 
