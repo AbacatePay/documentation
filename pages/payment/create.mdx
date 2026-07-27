@@ -46,10 +46,22 @@ Gera uma página de pagamento hospedada. Você envia os produtos; a API devolve 
 }
 ```
 
+**Exemplo com vencimento customizado (apenas BOLETO):**
+```json
+{
+  "methods": ["BOLETO"],
+  "dueDate": "2026-08-15",
+  "items": [
+    { "id": "prod_abc123xyz", "quantity": 1 }
+  ]
+}
+```
+
 **Exemplo com multa e juros (apenas BOLETO):**
 ```json
 {
   "methods": ["BOLETO"],
+  "dueDate": "2026-08-15",
   "items": [
     { "id": "prod_abc123xyz", "quantity": 1 }
   ],
@@ -60,6 +72,10 @@ Gera uma página de pagamento hospedada. Você envia os produtos; a API devolve 
 
 <Tip title="Upsell" horizontal>
 Use `upSellProductId` para oferecer um produto adicional ao cliente após a conclusão do pagamento. O produto deve ser **avulso** (sem `cycle`) e estar com status `ACTIVE`. Veja a [referência completa de upsell](/pages/payment/reference#upsell).
+</Tip>
+
+<Tip title="Vencimento do boleto" horizontal>
+Use `dueDate` (`YYYY-MM-DD`) para definir a data de vencimento. Se omitido, o padrão é 3 dias úteis. Só se aplica a `methods: ["BOLETO"]`. Veja a [referência completa](/pages/payment/reference#data-de-vencimento-do-boleto).
 </Tip>
 
 <Tip title="Multa e juros no boleto" horizontal>

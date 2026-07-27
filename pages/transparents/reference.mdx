@@ -105,6 +105,8 @@ Use `POST /v2/transparents/create` com `method: "BOLETO"`. A API devolve a linha
   `data.amount` e `data.customer` (com `name` e `taxId`) são obrigatórios para boleto.
 </Card>
 
+Use `data.dueDate` (`YYYY-MM-DD`) para definir a data de vencimento. Se omitido, o padrão é **3 dias úteis**. Não pode ser data no passado; máximo de 365 dias no futuro. A resposta expõe `expiresAt` (ISO datetime no fim do dia do `dueDate`).
+
 **Exemplo de requisição:**
 
 ```json
@@ -112,7 +114,8 @@ POST /v2/transparents/create
 {
   "method": "BOLETO",
   "data": {
-    "amount": 25000,
+    "amount": 5000,
+    "dueDate": "2026-08-15",
     "description": "Fatura de serviço mensal",
     "customer": {
       "name": "Mariana Costa",
@@ -134,10 +137,10 @@ POST /v2/transparents/create
 {
   "data": {
     "id": "bole_k8pqr2mnvx",
-    "amount": 25000,
+    "amount": 5000,
     "status": "PENDING",
     "devMode": false,
-    "barCode": "23793.38128 60007.827263 37000.963779 4 10010000025000",
+    "barCode": "23793.38128 60007.827263 37000.963779 4 10010000005000",
     "url": "https://app.abacatepay.com/pay/bole_k8pqr2mnvx/boleto",
     "pix": {
       "brCode": "00020126580014BR.GOV.BCB.PIX0136d2b4e5f6-7890-abcd-ef12-34567890abcd5204000053039865802BR5913Mariana Costa6009SAO PAULO62070503***6304F1C2",
@@ -145,9 +148,9 @@ POST /v2/transparents/create
     },
     "platformFee": 250,
     "receiptUrl": null,
-    "expiresAt": "2024-11-07T03:00:00.000Z",
-    "createdAt": "2024-11-04T14:22:10.381Z",
-    "updatedAt": "2024-11-04T14:22:10.381Z",
+    "expiresAt": "2026-08-16T02:59:59.999Z",
+    "createdAt": "2026-07-27T14:22:10.381Z",
+    "updatedAt": "2026-07-27T14:22:10.381Z",
     "metadata": {
       "faturaId": "fatura-456",
       "plano": "pro"

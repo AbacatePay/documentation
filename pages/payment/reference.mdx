@@ -126,6 +126,50 @@ POST /checkouts/create
 
 O `upSellProductId` é retornado na resposta e ficará `null` caso nenhum produto de upsell tenha sido vinculado ao checkout.
 
+## Data de vencimento do boleto
+
+Para cobranças com `methods: ["BOLETO"]`, você pode definir a data de vencimento com o campo opcional `dueDate` (`YYYY-MM-DD`). Se omitido, o vencimento padrão é de **3 dias úteis**.
+
+| Campo | Tipo | Descrição |
+|---|---|---|
+| `dueDate` | `string` | Data de vencimento no formato `YYYY-MM-DD` (ex: `"2026-08-15"`). Opcional. |
+
+**Regras:**
+
+- Só é válido se `methods` incluir `BOLETO` (ignorado nos demais métodos)
+- Não pode ser data no passado
+- Máximo de 365 dias no futuro
+
+`dueDate` é a data de vencimento enviada ao provedor. Sem juros/multa, após o vencimento o boleto expira (`EXPIRED`) via webhook `PAYMENT_OVERDUE`. Com juros/multa, o boleto pode permanecer aberto para pagamento em atraso.
+
+**Exemplo:**
+```json
+POST /checkouts/create
+{
+  "methods": ["BOLETO"],
+  "dueDate": "2026-08-15",
+  "items": [
+    { "id": "prod_abc123", "quantity": 1 }
+  ]
+}
+```
+
+A resposta do checkout expõe `dueDate` (`string` ou `null`):
+
+```json
+{
+  "data": {
+    "id": "bill_abc123xyz",
+    "amount": 10000,
+    "status": "PENDING",
+    "dueDate": "2026-08-15",
+    ...
+  },
+  "success": true,
+  "error": null
+}
+```
+
 ## Multa e juros no boleto
 
 Para cobranças com `methods: ["BOLETO"]`, você pode configurar **juros por atraso** (`interest`) e **multa por atraso** (`fine`) que serão aplicados se o cliente pagar após a data de vencimento. Ambos os campos são opcionais e independentes — pode-se enviar só `interest`, só `fine`, ambos ou nenhum.
@@ -164,6 +208,7 @@ A multa é uma **cobrança única** aplicada uma vez após o vencimento.
 POST /checkouts/create
 {
   "methods": ["BOLETO"],
+  "dueDate": "2026-08-15",
   "items": [
     { "id": "prod_abc123", "quantity": 1 }
   ],
@@ -177,6 +222,7 @@ POST /checkouts/create
 POST /checkouts/create
 {
   "methods": ["BOLETO"],
+  "dueDate": "2026-08-15",
   "items": [
     { "id": "prod_abc123", "quantity": 1 }
   ],
@@ -186,7 +232,7 @@ POST /checkouts/create
 
 **Resposta:**
 
-Os mesmos objetos `interest` e `fine` constam na resposta de `GET /checkouts/get` e `GET /checkouts/list`, ou ficam `null` quando nenhum dos campos foi configurado.
+Os mesmos objetos `interest` e `fine` constam na resposta de `GET /checkouts/get` e `GET /checkouts/list`, ou ficam `null` quando nenhum dos campos foi configurado. O campo `dueDate` também é retornado (`string` ou `null`).
 
 ```json
 {
@@ -194,6 +240,7 @@ Os mesmos objetos `interest` e `fine` constam na resposta de `GET /checkouts/get
     "id": "bill_abc123xyz",
     "amount": 10000,
     "status": "PENDING",
+    "dueDate": "2026-08-15",
     "interest": { "value": 100 },
     "fine": { "value": 200, "type": "PERCENTAGE" },
     ...

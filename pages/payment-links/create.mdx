@@ -27,6 +27,7 @@ Cria um link de pagamento que pode ser pago por múltiplos clientes — ideal pa
 {
   "frequency": "MULTIPLE_PAYMENTS",
   "methods": ["BOLETO"],
+  "dueDate": "2026-08-15",
   "items": [
     { "id": "prod_abc123xyz", "quantity": 1 }
   ],
@@ -37,6 +38,10 @@ Cria um link de pagamento que pode ser pago por múltiplos clientes — ideal pa
 
 <Tip title="Use a url retornada" horizontal>
 Compartilhe `data.url` — cada cliente que acessar o link pode pagar de forma independente.
+</Tip>
+
+<Tip title="Vencimento do boleto" horizontal>
+Use `dueDate` (`YYYY-MM-DD`) para definir a data de vencimento. Se omitido, o padrão é 3 dias úteis. Só se aplica a `methods: ["BOLETO"]` — veja a [referência completa](/pages/payment/reference#data-de-vencimento-do-boleto).
 </Tip>
 
 <Tip title="Multa e juros no boleto" horizontal>

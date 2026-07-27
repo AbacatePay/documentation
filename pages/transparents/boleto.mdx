@@ -24,6 +24,21 @@ Cria um checkout transparente via **Boleto**. A API devolve a linha digitável (
 | `data.customer.name` | `string` | Nome completo do pagador |
 | `data.customer.taxId` | `string` | CPF ou CNPJ do pagador |
 
+### `data.dueDate` — vencimento (opcional)
+
+Data de vencimento do boleto no formato `YYYY-MM-DD` (ex: `"2026-08-15"`). Se omitido, o vencimento padrão é de **3 dias úteis**.
+
+| Campo | Tipo | Descrição |
+|---|---|---|
+| `dueDate` | `string` | Data de vencimento (`YYYY-MM-DD`). Opcional. |
+
+**Regras:**
+
+- Não pode ser data no passado
+- Máximo de 365 dias no futuro
+
+`dueDate` é a data enviada ao provedor. A resposta continua expondo `expiresAt` (ISO datetime no fim do dia do `dueDate`). Sem juros/multa, após o vencimento o boleto expira (`EXPIRED`) via webhook `PAYMENT_OVERDUE`. Com juros/multa, pode permanecer aberto para pagamento em atraso.
+
 ### `data.utm` — campanha / UTM (opcional)
 
 No **`BoletoTransparentData`** (corpo `data` com `method: "BOLETO"`), você pode incluir o mesmo bloco opcional `utm`: objeto opcional com campos opcionais `source`, `medium`, `campaign`, `term` e `content` (`string`). Valores enviados podem ser vistos no **dashboard** e **não mudam** o fluxo da cobrança.
@@ -32,7 +47,7 @@ No **`BoletoTransparentData`** (corpo `data` com `method: "BOLETO"`), você pode
 
 ## Exemplos mínimos (BOLETO)
 
-Sem `utm`:
+Sem `dueDate` (vencimento padrão de 3 dias úteis):
 
 ```json
 {
@@ -42,6 +57,23 @@ Sem `utm`:
     "customer": {
       "name": "Mariana Costa",
       "taxId": "987.654.321-00"
+    }
+  }
+}
+```
+
+Com `dueDate`:
+
+```json
+{
+  "method": "BOLETO",
+  "data": {
+    "amount": 5000,
+    "dueDate": "2026-08-15",
+    "customer": {
+      "name": "Cliente",
+      "taxId": "11144477735",
+      "email": "cliente@email.com"
     }
   }
 }
@@ -76,6 +108,7 @@ Com `utm`:
   "method": "BOLETO",
   "data": {
     "amount": 25000,
+    "dueDate": "2026-08-15",
     "description": "Fatura de serviço mensal",
     "customer": {
       "name": "Mariana Costa",
@@ -124,6 +157,7 @@ A multa é uma **cobrança única** aplicada uma vez após o vencimento.
   "method": "BOLETO",
   "data": {
     "amount": 5000,
+    "dueDate": "2026-08-15",
     "customer": {
       "name": "João Silva",
       "taxId": "123.456.789-00"
@@ -157,7 +191,7 @@ A multa é uma **cobrança única** aplicada uma vez após o vencimento.
 
 ## Resposta
 
-Os mesmos objetos `interest` e `fine` constam na resposta de `POST /transparents/create`, `GET /transparents/get` e `GET /transparents/list` (dentro do payload do boleto), ou ficam `null` quando nenhum dos campos foi configurado.
+Os mesmos objetos `interest` e `fine` constam na resposta de `POST /transparents/create`, `GET /transparents/get` e `GET /transparents/list` (dentro do payload do boleto), ou ficam `null` quando nenhum dos campos foi configurado. O campo `expiresAt` é o datetime ISO no fim do dia do `dueDate` (ou do vencimento padrão de 3 dias úteis).
 
 ```json
 {
@@ -174,9 +208,9 @@ Os mesmos objetos `interest` e `fine` constam na resposta de `POST /transparents
     "interest": { "value": 100 },
     "fine": { "value": 1000, "type": "FIXED" },
     "receiptUrl": null,
-    "expiresAt": "2024-11-07T03:00:00.000Z",
-    "createdAt": "2024-11-04T14:22:10.381Z",
-    "updatedAt": "2024-11-04T14:22:10.381Z",
+    "expiresAt": "2026-08-16T02:59:59.999Z",
+    "createdAt": "2026-07-27T14:22:10.381Z",
+    "updatedAt": "2026-07-27T14:22:10.381Z",
     "metadata": {
       "faturaId": "fatura-456",
       "plano": "pro"
