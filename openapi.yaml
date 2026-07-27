@@ -1031,6 +1031,7 @@ paths:
                     enum:
                       - PIX
                       - CARD
+                      - BOLETO
                   minItems: 1
                   default: ['PIX', 'CARD']
                   x-mint:
@@ -1096,6 +1097,20 @@ paths:
 
 
                     **Exemplo**: `"prod_bump456xyz"`
+                  x-mint:
+                    hidden: true
+                dueDate:
+                  type: string
+                  format: date
+                  description: >
+                    Data de vencimento do boleto no formato `YYYY-MM-DD`
+                    (ex: `"2026-08-15"`). Opcional. Só é válido quando
+                    `methods` inclui `BOLETO`; ignorado nos demais métodos.
+
+
+                    Se omitido, o vencimento padrão é de 3 dias úteis.
+                    Não pode ser data no passado. Máximo de 365 dias no futuro.
+                  example: '2026-08-15'
                   x-mint:
                     hidden: true
                 interest:
@@ -1324,6 +1339,7 @@ paths:
                     enum:
                       - PIX
                       - CARD
+                      - BOLETO
                   minItems: 1
                   default: ['PIX', 'CARD']
                   x-mint:
@@ -1363,6 +1379,20 @@ paths:
 
 
                     **Exemplo**: `"seu_id_123"`
+                  x-mint:
+                    hidden: true
+                dueDate:
+                  type: string
+                  format: date
+                  description: >
+                    Data de vencimento do boleto no formato `YYYY-MM-DD`
+                    (ex: `"2026-08-15"`). Opcional. Só é válido quando
+                    `methods` inclui `BOLETO`; ignorado nos demais métodos.
+
+
+                    Se omitido, o vencimento padrão é de 3 dias úteis.
+                    Não pode ser data no passado. Máximo de 365 dias no futuro.
+                  example: '2026-08-15'
                   x-mint:
                     hidden: true
                 interest:
@@ -1752,7 +1782,21 @@ paths:
                       description: Valor da cobrança em centavos.
                     expiresIn:
                       type: number
-                      description: PIX — expiração em segundos.
+                      description: >
+                        PIX — tempo de expiração em segundos. Não se aplica a
+                        `method: "BOLETO"` (use `dueDate`).
+                      x-mint:
+                        hidden: true
+                    dueDate:
+                      type: string
+                      format: date
+                      description: >
+                        BOLETO — data de vencimento no formato `YYYY-MM-DD`
+                        (ex: `"2026-08-15"`). Opcional. Se omitido, o vencimento
+                        padrão é de 3 dias úteis. Não pode ser data no passado.
+                        Máximo de 365 dias no futuro. Ignorado quando
+                        `method` é `PIX`.
+                      example: '2026-08-15'
                       x-mint:
                         hidden: true
                     description:
@@ -1845,18 +1889,18 @@ paths:
               example:
                 data:
                   id: bole_k8pqr2mnvx
-                  amount: 25000
+                  amount: 5000
                   status: PENDING
                   devMode: false
-                  barCode: 23793.38128 60007.827263 37000.963779 4 10010000025000
+                  barCode: 23793.38128 60007.827263 37000.963779 4 10010000005000
                   url: https://app.abacatepay.com/pay/bole_k8pqr2mnvx/boleto
                   brCode: 00020126580014BR.GOV.BCB.PIX0136d2b4e5f6-7890-abcd-ef12-34567890abcd5204000053039865802BR5914Mariana Costa6009SAO PAULO62070503***6304F1C2
                   brCodeBase64: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...
                   platformFee: 250
                   receiptUrl: null
-                  expiresAt: '2024-11-07T03:00:00.000Z'
-                  createdAt: '2024-11-04T14:22:10.381Z'
-                  updatedAt: '2024-11-04T14:22:10.381Z'
+                  expiresAt: '2026-08-16T02:59:59.999Z'
+                  createdAt: '2026-07-27T14:22:10.381Z'
+                  updatedAt: '2026-07-27T14:22:10.381Z'
                   metadata:
                     faturaId: fatura-456
                     plano: pro
@@ -4221,6 +4265,14 @@ components:
             com mais de uma parcela. `null` para pagamentos à vista ou realizados
             por outros métodos (PIX, Boleto).
           example: 3
+        dueDate:
+          type: string
+          format: date
+          nullable: true
+          description: >-
+            Data de vencimento do boleto (`YYYY-MM-DD`). `null` quando não
+            foi configurada ou quando o método de pagamento não é BOLETO.
+          example: '2026-08-15'
         interest:
           nullable: true
           description: >-
@@ -4423,8 +4475,9 @@ components:
         expiresAt:
           type: string
           description: >-
-            Data de expiração da cobrança (ISO 8601). Para boleto, representa
-            a data de vencimento.
+            Data de expiração da cobrança (ISO 8601). Para boleto, corresponde
+            ao fim do dia de `dueDate` (ou do vencimento padrão de 3 dias
+            úteis, se `dueDate` não foi informado).
           example: '2024-11-07T03:00:00.000Z'
         createdAt:
           type: string
@@ -4508,7 +4561,9 @@ components:
             - $ref: '#/components/schemas/BoletoFine'
         expiresAt:
           type: string
-          description: Data de vencimento do boleto (ISO 8601).
+          description: >-
+            Data de expiração do boleto (ISO 8601), correspondente ao fim do
+            dia de `dueDate` (ou do vencimento padrão de 3 dias úteis).
           example: '2024-11-07T03:00:00.000Z'
         createdAt:
           type: string

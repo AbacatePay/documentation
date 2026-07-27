@@ -11,6 +11,52 @@ Feedbacks também são bem-vindos no nosso Discord (#dev).
 
 ## Atualizações Recentes
 
+<Update label="27 de Jul, 2026">
+## Boleto: data de vencimento customizável (`dueDate`)
+
+Agora é possível definir a data de vencimento do boleto via API. Antes o vencimento era sempre de **3 dias úteis**.
+
+**O que mudou:**
+
+- Novo campo opcional `dueDate` (`YYYY-MM-DD`) em `POST /v2/checkouts/create` e `POST /v2/transparents/create` (com `method: "BOLETO"`)
+- Se omitido, o vencimento padrão continua sendo 3 dias úteis
+- Regras: só válido com boleto; não pode ser data no passado; máximo de 365 dias no futuro
+- A resposta do checkout expõe `dueDate` (`string | null`)
+- No transparente, a resposta continua com `expiresAt` (ISO datetime no fim do dia do `dueDate`)
+
+**Exemplo — Checkout:**
+
+```json
+{
+  "methods": ["BOLETO"],
+  "dueDate": "2026-08-15",
+  "items": [{ "id": "prod_abc123", "quantity": 1 }]
+}
+```
+
+**Exemplo — Transparente:**
+
+```json
+{
+  "method": "BOLETO",
+  "data": {
+    "amount": 5000,
+    "dueDate": "2026-08-15",
+    "customer": {
+      "name": "Cliente",
+      "taxId": "11144477735",
+      "email": "cliente@email.com"
+    }
+  }
+}
+```
+
+Consulte [Data de vencimento do boleto](/pages/payment/reference#data-de-vencimento-do-boleto) e [Criar cobrança Boleto](/pages/transparents/boleto).
+
+---
+
+</Update>
+
 <Update label="9 de Jun, 2026">
 ## Saques via API v1: validação de titularidade obrigatória
 
