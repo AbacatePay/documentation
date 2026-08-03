@@ -77,9 +77,57 @@ Cada chave de API pode ter permissões granulares por recurso. Se você receber 
 
 ---
 
-## Paginação
+## Paginação e filtro por data
 
-Endpoints de listagem retornam todos os registros disponíveis. Futuramente suportarão paginação via `limit` e `offset`.
+Endpoints de listagem suportam **paginação por cursor** e **filtro por intervalo de datas** de criação (`createdAt`).
+
+### Paginação por cursor
+
+| Param | Tipo | Descrição |
+|-------|------|-----------|
+| `limit` | `integer` | Itens por página (1–100, default `100`) |
+| `after` | `string` | Cursor — `publicId` do último item da página anterior |
+| `before` | `string` | Cursor — `publicId` do primeiro item da página seguinte |
+
+A resposta inclui metadados em `pagination`:
+
+```json
+{
+  "success": true,
+  "data": [ ... ],
+  "pagination": {
+    "hasMore": true,
+    "next": "cust_abc123",
+    "before": "cust_xyz789"
+  },
+  "error": null
+}
+```
+
+Para avançar, passe `after` com o valor de `pagination.next`:
+
+```bash
+GET /v2/customers/list?limit=20&after=cust_abc123
+```
+
+### Filtro por data
+
+| Param | Tipo | Descrição |
+|-------|------|-----------|
+| `startDate` | `string` | Data inicial inclusive (`YYYY-MM-DD`) |
+| `endDate` | `string` | Data final inclusive (`YYYY-MM-DD`) |
+
+Os dois parâmetros são opcionais e podem ser usados isoladamente ou combinados com `limit`, `after` e `before`.
+
+```bash
+GET /v2/customers/list?startDate=2026-01-01&endDate=2026-01-31&limit=50
+```
+
+<Info>
+  As datas são interpretadas no fuso horário **America/Sao_Paulo**. Por exemplo, `startDate=2026-01-15` inclui registros a partir de 15/01/2026 00:00 (horário de Brasília).
+</Info>
+
+Endpoints com suporte a paginação e filtro de data: clientes, cupons, produtos, checkouts, links de pagamento, assinaturas, webhooks, saques, PIX enviados, pagamentos transparentes e demais rotas `*/list` da v2.
 
 ---
 
