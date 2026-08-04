@@ -9,4 +9,4 @@ Retorna todas as transações PIX enviadas pela sua conta.
   Requer a permissão `WITHDRAW:READ`.
 </Card>
 
-Use `limit`, `after` e `before` para paginar. Cada item segue o mesmo formato da resposta do [Enviar PIX](/pages/pix/create), incluindo `status`, `amount`, `platformFee` e `receiptUrl`.
+Use `limit`, `after` e `before` para paginar e `startDate`/`endDate` (`YYYY-MM-DD`) para filtrar por data de criação. Consulte [Paginação e filtro por data](/pages/reference/introduction#paginação-e-filtro-por-data). Cada item segue o mesmo formato da resposta do [Enviar PIX](/pages/pix/create), incluindo `status`, `amount`, `platformFee` e `receiptUrl`.

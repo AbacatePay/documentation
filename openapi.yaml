@@ -130,28 +130,11 @@ paths:
       security:
         - bearerAuth: []
       parameters:
-        - name: after
-          in: query
-          description: Cursor para buscar itens após este ponto
-          required: false
-          schema:
-            type: string
-        - name: before
-          in: query
-          description: Cursor para buscar itens antes deste ponto
-          required: false
-          schema:
-            type: string
-        - name: limit
-          in: query
-          description: Quantidade de itens por página (1-100)
-          required: false
-          schema:
-            type: integer
-            minimum: 1
-            maximum: 100
-            default: 100
-            example: 100
+        - $ref: '#/components/parameters/QueryAfter'
+        - $ref: '#/components/parameters/QueryBefore'
+        - $ref: '#/components/parameters/QueryLimit'
+        - $ref: '#/components/parameters/QueryStartDate'
+        - $ref: '#/components/parameters/QueryEndDate'
         - name: id
           in: query
           description: Filtrar por identificador único do cliente
@@ -391,28 +374,11 @@ paths:
       security:
         - bearerAuth: []
       parameters:
-        - name: after
-          in: query
-          description: Cursor para buscar itens após este ponto
-          required: false
-          schema:
-            type: string
-        - name: before
-          in: query
-          description: Cursor para buscar itens antes deste ponto
-          required: false
-          schema:
-            type: string
-        - name: limit
-          in: query
-          description: Quantidade de itens por página (1-100)
-          required: false
-          schema:
-            type: integer
-            minimum: 1
-            maximum: 100
-            default: 100
-            example: 100
+        - $ref: '#/components/parameters/QueryAfter'
+        - $ref: '#/components/parameters/QueryBefore'
+        - $ref: '#/components/parameters/QueryLimit'
+        - $ref: '#/components/parameters/QueryStartDate'
+        - $ref: '#/components/parameters/QueryEndDate'
         - name: id
           in: query
           description: Filtrar por identificador único do cupom
@@ -772,28 +738,11 @@ paths:
       security:
         - bearerAuth: []
       parameters:
-        - name: after
-          in: query
-          description: Cursor para buscar itens após este ponto
-          required: false
-          schema:
-            type: string
-        - name: before
-          in: query
-          description: Cursor para buscar itens antes deste ponto
-          required: false
-          schema:
-            type: string
-        - name: limit
-          in: query
-          description: Quantidade de itens por página (1-100)
-          required: false
-          schema:
-            type: integer
-            minimum: 1
-            maximum: 100
-            default: 100
-            example: 100
+        - $ref: '#/components/parameters/QueryAfter'
+        - $ref: '#/components/parameters/QueryBefore'
+        - $ref: '#/components/parameters/QueryLimit'
+        - $ref: '#/components/parameters/QueryStartDate'
+        - $ref: '#/components/parameters/QueryEndDate'
         - name: id
           in: query
           description: Filtrar por identificador único do produto
@@ -1472,28 +1421,11 @@ paths:
       security:
         - bearerAuth: []
       parameters:
-        - name: after
-          in: query
-          description: Cursor para buscar itens após este ponto
-          required: false
-          schema:
-            type: string
-        - name: before
-          in: query
-          description: Cursor para buscar itens antes deste ponto
-          required: false
-          schema:
-            type: string
-        - name: limit
-          in: query
-          description: Quantidade de itens por página (1-100)
-          required: false
-          schema:
-            type: integer
-            minimum: 1
-            maximum: 100
-            default: 100
-            example: 100
+        - $ref: '#/components/parameters/QueryAfter'
+        - $ref: '#/components/parameters/QueryBefore'
+        - $ref: '#/components/parameters/QueryLimit'
+        - $ref: '#/components/parameters/QueryStartDate'
+        - $ref: '#/components/parameters/QueryEndDate'
         - name: id
           in: query
           description: Filtrar por identificador único do Checkout
@@ -1573,28 +1505,11 @@ paths:
       security:
         - bearerAuth: []
       parameters:
-        - name: after
-          in: query
-          description: Cursor para buscar itens após este ponto
-          required: false
-          schema:
-            type: string
-        - name: before
-          in: query
-          description: Cursor para buscar itens antes deste ponto
-          required: false
-          schema:
-            type: string
-        - name: limit
-          in: query
-          description: Quantidade de itens por página (1-100)
-          required: false
-          schema:
-            type: integer
-            minimum: 1
-            maximum: 100
-            default: 100
-            example: 100
+        - $ref: '#/components/parameters/QueryAfter'
+        - $ref: '#/components/parameters/QueryBefore'
+        - $ref: '#/components/parameters/QueryLimit'
+        - $ref: '#/components/parameters/QueryStartDate'
+        - $ref: '#/components/parameters/QueryEndDate'
         - name: id
           in: query
           description: Filtrar por identificador único do link de pagamento
@@ -2048,28 +1963,11 @@ paths:
       security:
         - bearerAuth: []
       parameters:
-        - name: after
-          in: query
-          description: Cursor para buscar itens após este ponto
-          required: false
-          schema:
-            type: string
-        - name: before
-          in: query
-          description: Cursor para buscar itens antes deste ponto
-          required: false
-          schema:
-            type: string
-        - name: limit
-          in: query
-          description: Quantidade de itens por página (1-100)
-          required: false
-          schema:
-            type: integer
-            minimum: 1
-            maximum: 100
-            default: 100
-            example: 100
+        - $ref: '#/components/parameters/QueryAfter'
+        - $ref: '#/components/parameters/QueryBefore'
+        - $ref: '#/components/parameters/QueryLimit'
+        - $ref: '#/components/parameters/QueryStartDate'
+        - $ref: '#/components/parameters/QueryEndDate'
         - name: id
           in: query
           description: Filtrar por identificador único do QRCode Pix
@@ -2414,28 +2312,11 @@ paths:
       security:
         - bearerAuth: []
       parameters:
-        - name: after
-          in: query
-          description: Cursor para buscar itens após este ponto
-          required: false
-          schema:
-            type: string
-        - name: before
-          in: query
-          description: Cursor para buscar itens antes deste ponto
-          required: false
-          schema:
-            type: string
-        - name: limit
-          in: query
-          description: Quantidade de itens por página (1-100)
-          required: false
-          schema:
-            type: integer
-            minimum: 1
-            maximum: 100
-            default: 100
-            example: 100
+        - $ref: '#/components/parameters/QueryAfter'
+        - $ref: '#/components/parameters/QueryBefore'
+        - $ref: '#/components/parameters/QueryLimit'
+        - $ref: '#/components/parameters/QueryStartDate'
+        - $ref: '#/components/parameters/QueryEndDate'
         - name: id
           in: query
           description: Filtrar por identificador único da transação
@@ -2696,28 +2577,11 @@ paths:
       security:
         - bearerAuth: []
       parameters:
-        - name: after
-          in: query
-          description: Cursor para buscar itens após este ponto
-          required: false
-          schema:
-            type: string
-        - name: before
-          in: query
-          description: Cursor para buscar itens antes deste ponto
-          required: false
-          schema:
-            type: string
-        - name: limit
-          in: query
-          description: Quantidade de itens por página (1-100)
-          required: false
-          schema:
-            type: integer
-            minimum: 1
-            maximum: 100
-            default: 100
-            example: 100
+        - $ref: '#/components/parameters/QueryAfter'
+        - $ref: '#/components/parameters/QueryBefore'
+        - $ref: '#/components/parameters/QueryLimit'
+        - $ref: '#/components/parameters/QueryStartDate'
+        - $ref: '#/components/parameters/QueryEndDate'
         - name: id
           in: query
           description: Filtrar por identificador único da transação PIX na AbacatePay
@@ -2929,28 +2793,11 @@ paths:
       security:
         - bearerAuth: []
       parameters:
-        - name: after
-          in: query
-          description: Cursor para buscar itens após este ponto
-          required: false
-          schema:
-            type: string
-        - name: before
-          in: query
-          description: Cursor para buscar itens antes deste ponto
-          required: false
-          schema:
-            type: string
-        - name: limit
-          in: query
-          description: Quantidade de itens por página (1-100)
-          required: false
-          schema:
-            type: integer
-            minimum: 1
-            maximum: 100
-            default: 100
-            example: 100
+        - $ref: '#/components/parameters/QueryAfter'
+        - $ref: '#/components/parameters/QueryBefore'
+        - $ref: '#/components/parameters/QueryLimit'
+        - $ref: '#/components/parameters/QueryStartDate'
+        - $ref: '#/components/parameters/QueryEndDate'
         - name: id
           in: query
           description: Filtrar por identificador único do Checkout de assinatura
@@ -3594,28 +3441,11 @@ paths:
           schema:
             type: string
             example: pagamentos
-        - name: after
-          in: query
-          description: Cursor para buscar itens após este ponto
-          required: false
-          schema:
-            type: string
-        - name: before
-          in: query
-          description: Cursor para buscar itens antes deste ponto
-          required: false
-          schema:
-            type: string
-        - name: limit
-          in: query
-          description: Quantidade de itens por página (1-100)
-          required: false
-          schema:
-            type: integer
-            minimum: 1
-            maximum: 100
-            default: 100
-            example: 100
+        - $ref: '#/components/parameters/QueryAfter'
+        - $ref: '#/components/parameters/QueryBefore'
+        - $ref: '#/components/parameters/QueryLimit'
+        - $ref: '#/components/parameters/QueryStartDate'
+        - $ref: '#/components/parameters/QueryEndDate'
         - name: id
           in: query
           description: Filtrar por identificador único do webhook
@@ -3775,6 +3605,56 @@ paths:
                     description: Mensagem de erro indicando que o webhook não foi encontrado.
                     example: Webhook não encontrado.
 components:
+  parameters:
+    QueryAfter:
+      name: after
+      in: query
+      description: Cursor para buscar itens após este ponto (use o `publicId` retornado em `pagination.next`).
+      required: false
+      schema:
+        type: string
+    QueryBefore:
+      name: before
+      in: query
+      description: Cursor para buscar itens antes deste ponto (use o `publicId` retornado em `pagination.before`).
+      required: false
+      schema:
+        type: string
+    QueryLimit:
+      name: limit
+      in: query
+      description: Quantidade de itens por página (1-100).
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 100
+        example: 100
+    QueryStartDate:
+      name: startDate
+      in: query
+      description: >
+        Filtra registros criados a partir desta data (inclusive). Formato
+        `YYYY-MM-DD`. O intervalo é interpretado no fuso horário
+        `America/Sao_Paulo` (00:00 do dia inicial).
+      required: false
+      schema:
+        type: string
+        format: date
+        example: '2026-01-01'
+    QueryEndDate:
+      name: endDate
+      in: query
+      description: >
+        Filtra registros criados até esta data (inclusive). Formato
+        `YYYY-MM-DD`. O intervalo é interpretado no fuso horário
+        `America/Sao_Paulo` (23:59:59.999 do dia final).
+      required: false
+      schema:
+        type: string
+        format: date
+        example: '2026-01-31'
   schemas:
     Success:
       type: boolean

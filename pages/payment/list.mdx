@@ -9,7 +9,7 @@ Retorna todos os checkouts da sua loja em ordem cronológica decrescente.
   Requer a permissão `CHECKOUT:READ`.
 </Card>
 
-Use os parâmetros de paginação `limit`, `after` e `before` para navegar pelos resultados. Cada item da lista segue o mesmo formato da resposta do [Criar Checkout](/pages/payment/create).
+Use os parâmetros de paginação `limit`, `after` e `before` para navegar pelos resultados, e `startDate`/`endDate` (`YYYY-MM-DD`) para filtrar por data de criação. Consulte [Paginação e filtro por data](/pages/reference/introduction#paginação-e-filtro-por-data). Cada item da lista segue o mesmo formato da resposta do [Criar Checkout](/pages/payment/create).
 
 <Tip title="Filtrando por status" horizontal>
 Combine com `status` para buscar só cobranças pendentes, pagas ou canceladas.

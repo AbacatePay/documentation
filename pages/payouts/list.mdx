@@ -9,4 +9,4 @@ Retorna todos os saques realizados pela sua conta.
   Requer a permissão `WITHDRAW:READ`.
 </Card>
 
-Use `limit`, `after` e `before` para paginar. Cada item segue o mesmo formato da resposta do [Criar Saque](/pages/payouts/create), incluindo `status`, `amount`, `platformFee` e `receiptUrl`.
+Use `limit`, `after` e `before` para paginar e `startDate`/`endDate` (`YYYY-MM-DD`) para filtrar por data de criação. Consulte [Paginação e filtro por data](/pages/reference/introduction#paginação-e-filtro-por-data). Cada item segue o mesmo formato da resposta do [Criar Saque](/pages/payouts/create), incluindo `status`, `amount`, `platformFee` e `receiptUrl`.
