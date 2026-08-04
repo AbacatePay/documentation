@@ -11,6 +11,50 @@ Feedbacks também são bem-vindos no nosso Discord (#dev).
 
 ## Atualizações Recentes
 
+<Update label="4 de Ago, 2026">
+## Listagem: filtro por data (`startDate` / `endDate`)
+
+Todos os endpoints de listagem da API v2 agora suportam filtro por intervalo de datas de criação, além da paginação por cursor já existente.
+
+**O que mudou:**
+
+- Novos query params opcionais `startDate` e `endDate` (`YYYY-MM-DD`) em todas as rotas `GET /v2/*/list`
+- Compatível com `limit`, `after` e `before` — paginação e filtro de data podem ser usados juntos
+- As datas são interpretadas no fuso horário `America/Sao_Paulo` (início do dia para `startDate`, fim do dia para `endDate`)
+- Validações aplicadas automaticamente:
+  - `startDate` não pode ser posterior a `endDate`
+  - Nenhuma data pode ser anterior a `2024-01-01`
+  - Nenhuma data pode ser superior a **1 ano no futuro** em relação à data atual
+
+**Endpoints afetados:**
+
+Clientes, cupons, produtos, checkouts, links de pagamento, assinaturas, webhooks, saques, PIX enviados, checkouts transparentes e demais rotas `*/list` da v2.
+
+**Exemplo:**
+
+```http
+GET /v2/customers/list?startDate=2026-01-01&endDate=2026-01-31&limit=50
+```
+
+```json
+{
+  "success": true,
+  "data": [ ... ],
+  "pagination": {
+    "hasMore": false,
+    "next": null,
+    "before": null
+  },
+  "error": null
+}
+```
+
+Consulte [Paginação e filtro por data](/pages/reference/introduction#paginação-e-filtro-por-data) para detalhes completos.
+
+---
+
+</Update>
+
 <Update label="27 de Jul, 2026">
 ## Boleto: data de vencimento customizável (`dueDate`)
 
