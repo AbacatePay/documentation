@@ -4,6 +4,30 @@ description: "Crie checkouts de assinatura e gerencie as existentes."
 icon: "book-open-cover"
 ---
 
+## Modelo mental
+
+Uma assinatura na AbacatePay tem três fases distintas:
+
+```
+Checkout (cliente paga) → Assinatura ACTIVE → Cobranças automáticas a cada ciclo
+```
+
+O `POST /subscriptions/create` **não cria uma assinatura diretamente** — ele cria um checkout de assinatura. A assinatura em si (com `id: subs_...`) só existe após o cliente concluir o pagamento. Esse detalhe muda como você lida com os webhooks: ouça `subscription.completed` para confirmar que a assinatura está ativa, não apenas que o checkout foi criado.
+
+<CardGroup cols={3}>
+  <Card title="Criar checkout" href="/pages/subscriptions/create" icon="plus">
+    Inicia o fluxo de assinatura.
+  </Card>
+  <Card title="Cancelar" href="/pages/subscriptions/cancel" icon="xmark">
+    Cancela imediatamente, sem cobranças futuras.
+  </Card>
+  <Card title="Alterar plano" href="/pages/subscriptions/change-plan" icon="arrows-rotate">
+    Muda o produto; novo valor no próximo ciclo.
+  </Card>
+</CardGroup>
+
+---
+
 Toda assinatura antes de ser iniciada, o seu cliente deve passar pelo [Checkout](/pages/payment/reference).
 
 A diferença é que um checkout de assinatura aceita **só um produto**, e esse produto precisa ter **ciclo (frequency)** definido na loja.

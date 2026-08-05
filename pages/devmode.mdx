@@ -91,6 +91,92 @@ Os números abaixo são sempre **rejeitados** no Dev mode, para você testar o f
 - `4000000000000069`
 - `4000000000000101`
 
+## Checklist antes de ir para produção
+
+Use esta lista para saber que sua integração está pronta. O progresso é salvo no seu navegador.
+
+<div id="abkt-checklist" style={{
+  borderRadius: "8px",
+  border: "1px solid rgba(255,255,255,0.1)",
+  overflow: "hidden",
+  marginBottom: "16px"
+}}>
+  {[
+    { id: "auth",       label: "Autenticação funcionando com chave de Dev mode" },
+    { id: "create",     label: <>Criação de cobrança retornando <code>success: true</code></> },
+    { id: "card",       label: <>Fluxo de pagamento testado com cartão <code>4242 4242 4242 4242</code></> },
+    { id: "pix",        label: <>Fluxo de pagamento PIX testado com <code>/transparents/simulate-payment</code></> },
+    { id: "webhook",    label: <>Webhook recebendo e processando <code>checkout.completed</code> (ou evento relevante)</> },
+    { id: "idempotent", label: "Idempotência implementada (verificação de IDs duplicados)" },
+    { id: "errors",     label: <>Tratamento de erros <code>4xx</code> e <code>5xx</code> implementado</> },
+    { id: "envvar",     label: "Chave de API armazenada em variável de ambiente (nunca no código)" },
+    { id: "failures",   label: "Cenários de falha testados (cartões rejeitados, dados inválidos)" },
+  ].map(({ id, label }, i) => (
+    <label
+      key={id}
+      htmlFor={`chk-${id}`}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: "12px",
+        padding: "12px 16px",
+        cursor: "pointer",
+        borderBottom: i < 8 ? "1px solid rgba(255,255,255,0.06)" : "none",
+        transition: "background 0.15s",
+      }}
+      onMouseEnter={e => e.currentTarget.style.background = "rgba(158,234,108,0.04)"}
+      onMouseLeave={e => e.currentTarget.style.background = "transparent"}
+    >
+      <input
+        type="checkbox"
+        id={`chk-${id}`}
+        style={{ width: "16px", height: "16px", accentColor: "#9EEA6C", cursor: "pointer", flexShrink: 0 }}
+        defaultChecked={typeof window !== "undefined" && localStorage.getItem(`abkt-devmode-${id}`) === "1"}
+        onChange={e => {
+          localStorage.setItem(`abkt-devmode-${id}`, e.target.checked ? "1" : "0");
+          const all = document.querySelectorAll("#abkt-checklist input[type=checkbox]");
+          const done = [...all].filter(c => c.checked).length;
+          const bar = document.getElementById("abkt-progress-bar");
+          const label = document.getElementById("abkt-progress-label");
+          if (bar) bar.style.width = `${(done / all.length) * 100}%`;
+          if (label) label.textContent = `${done} / ${all.length} concluídos`;
+        }}
+      />
+      <span style={{ fontSize: "14px", lineHeight: "1.5" }}>{label}</span>
+    </label>
+  ))}
+</div>
+
+<div style={{ marginBottom: "24px" }}>
+  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px" }}>
+    <span style={{ fontSize: "12px", color: "rgba(255,255,255,0.4)" }}>Progresso</span>
+    <span id="abkt-progress-label" style={{ fontSize: "12px", color: "rgba(255,255,255,0.4)" }}>0 / 9 concluídos</span>
+  </div>
+  <div style={{ background: "rgba(255,255,255,0.08)", borderRadius: "4px", height: "6px", overflow: "hidden" }}>
+    <div id="abkt-progress-bar" style={{ height: "100%", background: "#9EEA6C", borderRadius: "4px", width: "0%", transition: "width 0.3s" }} />
+  </div>
+</div>
+
+<script dangerouslySetInnerHTML={{ __html: `
+  (function() {
+    var ids = ["auth","create","card","pix","webhook","idempotent","errors","envvar","failures"];
+    var done = 0;
+    ids.forEach(function(id) {
+      var el = document.getElementById("chk-" + id);
+      if (el && localStorage.getItem("abkt-devmode-" + id) === "1") {
+        el.checked = true;
+        done++;
+      }
+    });
+    var bar = document.getElementById("abkt-progress-bar");
+    var lbl = document.getElementById("abkt-progress-label");
+    if (bar) bar.style.width = (done / ids.length * 100) + "%";
+    if (lbl) lbl.textContent = done + " / " + ids.length + " concluídos";
+  })();
+`}} />
+
+Quando todos os itens estiverem marcados, você está pronto para [ir para produção](/pages/production).
+
 ## <Icon icon="arrow-right" type="solid"/>  Próximos Passos
 
 Quando sua integração estiver funcionando:

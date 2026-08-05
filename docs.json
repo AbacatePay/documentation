@@ -41,6 +41,35 @@
             ]
           },
           {
+            "tab": "Para Lojistas",
+            "groups": [
+              {
+                "group": "Entenda o Produto",
+                "pages": [
+                  "pages/concepts/overview",
+                  "pages/concepts/checkout",
+                  "pages/concepts/pix",
+                  "pages/concepts/subscriptions",
+                  "pages/concepts/saques",
+                  "pages/concepts/taxas"
+                ]
+              },
+              {
+                "group": "Guias Rápidos",
+                "pages": [
+                  "pages/guides/primeiro-pagamento"
+                ]
+              },
+              {
+                "group": "Ajuda",
+                "pages": [
+                  "pages/faq/index",
+                  "pages/glossario"
+                ]
+              }
+            ]
+          },
+          {
             "tab": "Guias",
             "groups": [
               {

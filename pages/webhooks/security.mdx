@@ -4,6 +4,8 @@ description: 'Como validar a autenticidade dos webhooks e lidar com retentativas
 icon: 'shield-check'
 ---
 
+Sem validação, qualquer pessoa que descobrir sua URL de webhook pode forjar eventos e acionar lógica de negócio (ex: liberar acesso sem pagar). Os dois mecanismos abaixo — secret e HMAC — garantem que o evento veio da AbacatePay e que o corpo não foi alterado. Use ambos.
+
 Todo webhook enviado pela AbacatePay inclui dois mecanismos de segurança: um **secret na URL** e uma **assinatura HMAC** no header. Use os dois juntos.
 
 ---
