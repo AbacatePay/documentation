@@ -10,7 +10,7 @@ icon: 'gem'
 
 ## Pré-requisitos
 
-- Ruby 2.6+
+- Ruby 3.2+
 - Uma chave de API ([criar no dashboard](https://app.abacatepay.com))
 
 ## Instalação
@@ -21,6 +21,9 @@ icon: 'gem'
 gem 'abacatepay-ruby'
 # Depois execute:
 bundle install
+```
+```bash bundler
+bundle add abacatepay-ruby
 ```
 ```bash gem
 gem install abacatepay-ruby
@@ -34,36 +37,37 @@ Armazene sua chave de API em uma variável de ambiente e nunca no código:
 ```ruby
 # config/initializers/abacatepay.rb
 AbacatePay.configure do |config|
-  config.api_token   = ENV['ABACATEPAY_API_KEY']
-  config.environment = :sandbox # ou :production
+  config.api_token = ENV['ABACATEPAY_API_KEY']
+  config.timeout   = 30 # opcional, em segundos
 end
 ```
+
+<Card title="Dev mode x Produção" horizontal>
+  O ambiente é definido **pela chave utilizada**, não por configuração do SDK — chaves criadas em Dev mode geram transações simuladas. Saiba mais <a href="/pages/devmode">aqui</a>.
+</Card>
 
 ## Primeira cobrança
 
 ```ruby
-billing_client = AbacatePay::Clients::BillingClient.new
-
-billing = billing_client.create(
-  AbacatePay::Resources::Billing.new(
-    frequency: AbacatePay::Enums::Billing::Frequencies::ONE_TIME,
-    methods:   [AbacatePay::Enums::Billing::Methods::PIX],
+checkout = AbacatePay.checkouts.create(
+  AbacatePay::Resources::Checkouts.new(
+    methods: ['PIX'],
     products: [
-      AbacatePay::Resources::Billing::Product.new(
-        external_id: 'PRO-PLAN',
+      AbacatePay::Resources::Billings::Product.new(
+        external_id: 'prod_abc123xyz',
         name:        'Pro plan',
         quantity:    1,
-        price:       1000, # em centavos
+        price:       1000 # em centavos
       )
     ],
-    metadata: AbacatePay::Resources::Billing::Metadata.new(
+    metadata: AbacatePay::Resources::Billings::Metadata.new(
       return_url:     'https://meusite.com/app',
-      completion_url: 'https://meusite.com/pagamento/sucesso',
-    ),
+      completion_url: 'https://meusite.com/pagamento/sucesso'
+    )
   )
 )
 
-puts billing.url # URL de pagamento para o cliente
+puts checkout.url # URL de pagamento para o cliente
 ```
 
 **Resposta:**
@@ -78,10 +82,84 @@ puts billing.url # URL de pagamento para o cliente
     "amount": 1000,
     "status": "PENDING",
     "devMode": true,
-    "createdAt": "2024-11-04T18:38:28.573Z"
+    "createdAt": "2026-08-04T18:38:28.573Z"
   }
 }
 ```
+
+## Recursos disponíveis
+
+Todos os recursos são acessíveis pela fachada `AbacatePay.<recurso>`:
+
+| Recurso | Métodos |
+|---|---|
+| `customers` | `list` `get` `create` `delete` |
+| `products` | `list` `get` `create` `delete` |
+| `coupons` | `list` `get` `create` `delete` `toggle` |
+| `checkouts` | `list` `get` `create` `refund` |
+| `payment_links` | `list` `get` `create` `refund` |
+| `subscriptions` | `list` `create` `cancel` |
+| `transparents` | `list` `create` `check` `simulate_payment` `refund` |
+| `pix` | `list` `get` `send_pix` |
+| `payouts` | `list` `get` `create` |
+| `store` | `get` `merchant_info` `mrr` `revenue` |
+| `webhook_endpoints` | `list` `get` `create` `delete` |
+
+```ruby
+AbacatePay.customers.list(limit: 25)
+AbacatePay.products.get('prod_abc123xyz')
+AbacatePay.checkouts.refund('bill_abc123xyz')
+AbacatePay.subscriptions.cancel('subs_abc123xyz')
+```
+
+## Tratamento de erros
+
+O SDK de Ruby **levanta exceções** — ele não retorna `{ data, error, success }`. Toda falha herda de `AbacatePay::Error`:
+
+```ruby
+begin
+  checkout = AbacatePay.checkouts.create(data)
+rescue AbacatePay::ConfigurationError => e
+  # token ausente ou vazio
+rescue AbacatePay::ApiError => e
+  # erro da API, falha de rede ou timeout
+end
+```
+
+| Exceção | Quando acontece |
+|---|---|
+| `AbacatePay::ConfigurationError` | Token ausente ou vazio |
+| `AbacatePay::ApiError` | Erro da API, falha de rede ou timeout |
+| `AbacatePay::Webhooks::SignatureError` | Assinatura de webhook ausente, vazia ou inválida |
+| `AbacatePay::Webhooks::PayloadError` | Corpo do webhook malformado ou que não é um objeto JSON |
+
+## Webhooks
+
+Use `construct_event`, que verifica a assinatura **antes** de fazer o parse do corpo — é o único ponto de entrada que não permite agir sobre um payload não verificado:
+
+```ruby
+payload   = request.body.read
+signature = request.headers['X-Webhook-Signature']
+secret    = ENV['ABACATEPAY_WEBHOOK_SECRET']
+
+begin
+  event = AbacatePay::Webhooks.construct_event(
+    payload: payload, signature: signature, secret: secret
+  )
+rescue AbacatePay::Webhooks::SignatureError
+  return head :unauthorized
+rescue AbacatePay::Webhooks::PayloadError
+  return head :bad_request
+end
+
+case event.type
+when 'checkout.completed' then handle_payment(event.data)
+end
+```
+
+<Tip title="Assinatura ausente também é rejeitada" horizontal>
+Header ausente, secret vazio, assinatura forjada e corpo malformado levantam erro tipado em vez de derrubar o endpoint. A comparação é feita em tempo constante.
+</Tip>
 
 ## Próximos passos
 
