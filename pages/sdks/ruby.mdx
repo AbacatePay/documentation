@@ -11,6 +11,7 @@ icon: 'gem'
 ## Pré-requisitos
 
 - Ruby 3.2+
+- Gem `abacatepay-ruby` 1.2.2 ou superior
 - Uma chave de API ([criar no dashboard](https://app.abacatepay.com))
 
 ## Instalação
@@ -98,7 +99,7 @@ Todos os recursos são acessíveis pela fachada `AbacatePay.<recurso>`:
 | `coupons` | `list` `get` `create` `delete` `toggle` |
 | `checkouts` | `list` `get` `create` `refund` |
 | `payment_links` | `list` `get` `create` `refund` |
-| `subscriptions` | `list` `create` `cancel` |
+| `subscriptions` | `list` `create` `cancel` `change_plan` `record_usage` |
 | `transparents` | `list` `create` `check` `simulate_payment` `refund` |
 | `pix` | `list` `get` `send_pix` |
 | `payouts` | `list` `get` `create` |
@@ -135,16 +136,29 @@ end
 
 ## Webhooks
 
-Use `construct_event`, que verifica a assinatura **antes** de fazer o parse do corpo — é o único ponto de entrada que não permite agir sobre um payload não verificado:
+A AbacatePay usa **dois mecanismos** e a [documentação de segurança](/pages/webhooks/security) orienta usar os dois:
+
+| Mecanismo | O que garante |
+|---|---|
+| `webhookSecret` na query | autentica a **origem** |
+| Assinatura HMAC no header | integridade do **corpo** |
+
+A chave HMAC é pública e global, publicada na documentação, então a assinatura sozinha não prova origem.
 
 ```ruby
 payload   = request.body.read
 signature = request.headers['X-Webhook-Signature']
-secret    = ENV['ABACATEPAY_WEBHOOK_SECRET']
 
 begin
+  # 1. Autentica a origem com o secret definido ao criar o webhook.
+  AbacatePay::Webhooks.verify_secret!(
+    received: params[:webhookSecret],
+    expected: ENV['ABACATEPAY_WEBHOOK_SECRET']
+  )
+
+  # 2. Verifica a integridade do corpo antes de fazer o parse.
   event = AbacatePay::Webhooks.construct_event(
-    payload: payload, signature: signature, secret: secret
+    payload: payload, signature: signature
   )
 rescue AbacatePay::Webhooks::SignatureError
   return head :unauthorized
@@ -153,13 +167,66 @@ rescue AbacatePay::Webhooks::PayloadError
 end
 
 case event.type
-when 'checkout.completed' then handle_payment(event.data)
+when 'checkout.completed'          then handle_payment(event.data)
+when 'subscription.payment_failed' then handle_dunning(event.data)
 end
 ```
 
-<Tip title="Assinatura ausente também é rejeitada" horizontal>
-Header ausente, secret vazio, assinatura forjada e corpo malformado levantam erro tipado em vez de derrubar o endpoint. A comparação é feita em tempo constante.
+<Tip title="Idempotência é obrigatória" horizontal>
+A AbacatePay reentrega qualquer webhook que não responda 2xx. Guarde o `id` do evento com índice único no banco e responda 200 também para duplicatas, senão a reentrega não para.
 </Tip>
+
+<Warning>
+Em Rails, leia `request.query_parameters` em vez de `params` antes de validar. Tocar em `params` faz o framework parsear o corpo, e um corpo malformado estoura antes do seu código rodar.
+</Warning>
+
+## Boleto
+
+Boleto tem vencimento, juros e multa próprios. Valores em centavos.
+
+```ruby
+AbacatePay.checkouts.create(
+  AbacatePay::Resources::Checkouts.new(
+    methods: ['BOLETO'],
+    due_date: '2026-09-15',
+    interest: { value: 100 },
+    fine: { value: 200, type: 'PERCENTAGE' },
+    products: [
+      AbacatePay::Resources::Billings::Product.new(external_id: 'prod_abc123xyz', quantity: 1)
+    ]
+  )
+)
+```
+
+No checkout transparente, o boleto exige nome e CPF/CNPJ do pagador. O SDK valida isso localmente, antes de gastar uma chamada:
+
+```ruby
+boleto = AbacatePay.transparents.create(charge, method: 'BOLETO')
+boleto.bar_code   # linha digitável
+boleto.url        # PDF para impressão
+boleto.br_code    # PIX alternativo da mesma cobrança
+```
+
+## Paginação
+
+Listas retornam no máximo 100 itens. Para percorrer tudo sem lidar com cursor:
+
+```ruby
+AbacatePay.customers.auto_paging_each { |customer| puts customer.name }
+```
+
+## Resiliência
+
+O SDK já traz retry com backoff exponencial e jitter em 429 e 5xx. Escritas nunca são repetidas, porque refazer uma criação de cobrança após timeout poderia cobrar o cliente duas vezes.
+
+```ruby
+AbacatePay.configure do |config|
+  config.api_token   = ENV['ABACATEPAY_API_KEY']
+  config.timeout     = 30  # segundos
+  config.max_retries = 2   # 0 desliga
+  config.logger      = Rails.logger  # opcional, o token é redigido
+end
+```
 
 ## Próximos passos
 

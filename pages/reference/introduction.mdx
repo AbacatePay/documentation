@@ -105,22 +105,23 @@ Endpoints de listagem suportam **paginação por cursor** e **filtro por interva
 | `after` | `string` | Cursor — `publicId` do último item da página anterior |
 | `before` | `string` | Cursor — `publicId` do primeiro item da página seguinte |
 
-A resposta inclui metadados em `pagination`:
+<Warning>
+  A API **ainda não envia** o objeto `pagination` nas respostas de listagem. O
+  envelope retornado hoje é apenas `{ data, error, success }`. Para avançar,
+  use o `id` do último item da página como `after`.
+</Warning>
+
+Envelope retornado hoje:
 
 ```json
 {
   "success": true,
   "data": [ ... ],
-  "pagination": {
-    "hasMore": true,
-    "next": "cust_abc123",
-    "before": "cust_xyz789"
-  },
   "error": null
 }
 ```
 
-Para avançar, passe `after` com o valor de `pagination.next`:
+Para avançar, passe `after` com o `id` do último item recebido:
 
 ```bash
 GET /v2/customers/list?limit=20&after=cust_abc123
