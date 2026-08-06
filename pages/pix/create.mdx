@@ -13,20 +13,28 @@ Envia dinheiro para qualquer chave PIX de terceiros — fornecedores, parceiros 
 **PIX vs Saques:** use **PIX** para enviar a chaves de terceiros. Para sacar para a sua própria chave use [Saques](/pages/payouts/create).
 </Note>
 
-**Exemplo:**
+<Warning>
+  O destino é aninhado em `pix`, com as chaves `key` e `type`. Enviar
+  `pixKey`/`pixKeyType` no topo falha com `Property 'pix' is missing`, e
+  aninhar com esses nomes falha com `Property 'pix.type' is missing`.
+</Warning>
+
+**Formato aceito pela API:**
 ```json
 {
   "amount": 10000,
   "description": "Pagamento fornecedor #42",
   "externalId": "pix-123",
-  "pixKey": "contato@fornecedor.com",
-  "pixKeyType": "EMAIL"
+  "pix": {
+    "key": "contato@fornecedor.com",
+    "type": "EMAIL"
+  }
 }
 ```
 
 **Tipos de chave PIX aceitos:**
 
-| `pixKeyType` | Exemplo |
+| `pix.type` | Exemplo |
 |--------------|---------|
 | `CPF` | `12345678901` |
 | `CNPJ` | `12345678000190` |
