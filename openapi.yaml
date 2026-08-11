@@ -205,7 +205,7 @@ paths:
         - name: id
           in: query
           description: Identificador único público do cliente
-          required: false
+          required: true
           schema:
             type: string
             example: cust_aebxkhDZNaMmJeKsy0AHS0FQ
@@ -445,7 +445,7 @@ paths:
         - name: id
           in: query
           description: Identificador único do cupom
-          required: false
+          required: true
           schema:
             type: string
             example: MY_COUPON
