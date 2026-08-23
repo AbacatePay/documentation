@@ -99,7 +99,7 @@ Notas importantes:
 ## Loja
 
 - [Referência da Loja](https://docs.abacatepay.com/pages/store/reference): Dados da sua loja/conta na AbacatePay.
-- [GET /store/get](https://docs.abacatepay.com/pages/store/get): Retorna nome, configurações e informações gerais da loja autenticada.
+- [GET /stores/get](https://docs.abacatepay.com/pages/store/get): Retorna nome, configurações e informações gerais da loja autenticada.
 
 ## Optional
 

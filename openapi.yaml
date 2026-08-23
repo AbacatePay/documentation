@@ -156,6 +156,20 @@ paths:
           schema:
             type: string
             example: 123.456.789-01
+        - name: name
+          in: query
+          description: Filtrar por nome do cliente
+          required: false
+          schema:
+            type: string
+            example: Daniel Lima
+        - name: cellphone
+          in: query
+          description: Filtrar por telefone do cliente
+          required: false
+          schema:
+            type: string
+            example: (11) 4002-8922
       responses:
         '200':
           description: Lista de clientes retornada com sucesso.
@@ -205,10 +219,25 @@ paths:
         - name: id
           in: query
           description: Identificador único público do cliente
-          required: true
+          required: false
           schema:
             type: string
             example: cust_aebxkhDZNaMmJeKsy0AHS0FQ
+        - name: email
+          in: query
+          description: E-mail do cliente
+          required: false
+          schema:
+            type: string
+            format: email
+            example: daniel_lima@abacatepay.com
+        - name: taxId
+          in: query
+          description: CPF ou CNPJ do cliente
+          required: false
+          schema:
+            type: string
+            example: 123.456.789-01
       responses:
         '200':
           description: Cliente encontrado com sucesso.
@@ -449,6 +478,16 @@ paths:
           schema:
             type: string
             example: MY_COUPON
+        - name: status
+          in: query
+          description: Filtrar por status do cupom
+          required: false
+          schema:
+            type: string
+            enum:
+              - ACTIVE
+              - DISABLED
+              - DELETED
       responses:
         '200':
           description: Cupom encontrado com sucesso.
@@ -692,6 +731,19 @@ paths:
                     - SEMIANNUALLY
                     - ANNUALLY
                   example: null
+                image:
+                  type: string
+                  format: uri
+                  description: URL da imagem do produto.
+                  example: https://cdn.exemplo.com/produto.png
+                trialDays:
+                  type: integer
+                  description: >-
+                    Dias de teste gratuito antes da primeira cobrança. Só se aplica a produtos
+                    com `cycle` definido.
+                  minimum: 1
+                  maximum: 90
+                  example: 7
       responses:
         '200':
           description: Produto criado com sucesso.
@@ -766,6 +818,25 @@ paths:
             enum:
               - ACTIVE
               - INACTIVE
+        - name: keyword
+          in: query
+          description: Busca textual livre
+          required: false
+          schema:
+            type: string
+        - name: name
+          in: query
+          description: Filtrar por nome do produto
+          required: false
+          schema:
+            type: string
+        - name: currency
+          in: query
+          description: Filtrar por moeda do produto
+          required: false
+          schema:
+            type: string
+            example: BRL
       responses:
         '200':
           description: Lista de produtos retornada com sucesso.
@@ -826,6 +897,12 @@ paths:
           schema:
             type: string
             example: prod-123
+        - name: name
+          in: query
+          description: Nome do produto
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: Produto encontrado com sucesso.
@@ -1098,6 +1175,21 @@ paths:
                   additionalProperties: true
                   x-mint:
                     hidden: true
+                card:
+                  type: object
+                  description: >-
+                    Configuração do pagamento por cartão. Só tem efeito quando `methods` inclui
+                    `CARD`.
+                  additionalProperties: false
+                  required:
+                    - maxInstallments
+                  properties:
+                    maxInstallments:
+                      type: integer
+                      description: Número máximo de parcelas oferecidas no checkout.
+                      minimum: 1
+                      maximum: 12
+                      example: 12
       responses:
         '200':
           description: Cobrança criada com sucesso.
@@ -1140,10 +1232,34 @@ paths:
         - name: id
           in: query
           description: Identificador único do Checkout
-          required: true
+          required: false
           schema:
             type: string
             example: bill_abc123xyz
+        - name: externalId
+          in: query
+          description: Identificador do Checkout no seu sistema
+          required: false
+          schema:
+            type: string
+            example: pedido-123
+        - name: customerId
+          in: query
+          description: Identificador do cliente associado
+          required: false
+          schema:
+            type: string
+            example: cust_abc123xyz
+        - name: method
+          in: query
+          description: Método de pagamento
+          required: false
+          schema:
+            type: string
+            enum:
+              - PIX
+              - CARD
+              - BOLETO
       responses:
         '200':
           description: Cobrança encontrada com sucesso.
@@ -1225,6 +1341,50 @@ paths:
                     type: string
                     description: Motivo da falha na autenticação.
                     example: Token de autenticação inválido ou ausente.
+  /checkouts/delete:
+    post:
+      summary: Deletar um Checkout
+      description: >
+        Deleta um Checkout que ainda não foi pago.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: query
+          description: Identificador único do Checkout
+          required: true
+          schema:
+            type: string
+            example: bill_abc123xyz
+      responses:
+        '200':
+          description: Checkout deletado com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Billing'
+                  error:
+                    type: string
+                    nullable: true
+                    example: null
+                  success:
+                    $ref: '#/components/schemas/Success'
+        '401':
+          description: Não autorizado. Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: >-
+                      Mensagem de erro descrevendo o motivo da falha na
+                      autenticação.
+                    example: Token de autenticação inválido ou ausente.
   /payment-links/create:
     post:
       summary: Criar um link de pagamento
@@ -1243,19 +1403,11 @@ paths:
                 - items
               additionalProperties: false
               example:
-                frequency: MULTIPLE_PAYMENTS
                 items:
                   - id: prod-1234
                     quantity: 2
                 methods: ['PIX', 'CARD']
               properties:
-                frequency:
-                  type: string
-                  description: Tipo de cobrança fixo para links de pagamento.
-                  enum:
-                    - MULTIPLE_PAYMENTS
-                  default: MULTIPLE_PAYMENTS
-                  example: MULTIPLE_PAYMENTS
                 items:
                   type: array
                   description: >
@@ -1380,6 +1532,47 @@ paths:
                   additionalProperties: true
                   x-mint:
                     hidden: true
+                card:
+                  type: object
+                  description: >-
+                    Configuração do pagamento por cartão. Só tem efeito quando `methods` inclui
+                    `CARD`.
+                  additionalProperties: false
+                  required:
+                    - maxInstallments
+                  properties:
+                    maxInstallments:
+                      type: integer
+                      description: Número máximo de parcelas oferecidas no checkout.
+                      minimum: 1
+                      maximum: 12
+                      example: 12
+                customerId:
+                  type: string
+                  description: >
+                    ID de um cliente já cadastrado na sua loja.
+
+                    Se informado, o checkout será pré-preenchido com os dados
+                    deste cliente.
+
+
+                    **Exemplo**: `"cust_abcdefghij"`
+                  x-mint:
+                    hidden: true
+                upSellProductId:
+                  type: string
+                  description: >
+                    ID de um produto avulso (sem `cycle`) a ser ofertado como
+                    upsell após a conclusão do pagamento.
+
+
+                    O produto deve estar com `status: ACTIVE` e **não pode ter
+                    `cycle`** — apenas produtos de pagamento único são aceitos.
+
+
+                    **Exemplo**: `"prod_bump456xyz"`
+                  x-mint:
+                    hidden: true
       responses:
         '200':
           description: Link de pagamento criado com sucesso.
@@ -1452,20 +1645,29 @@ paths:
               - CANCELLED
               - PAID
               - REFUNDED
-        - name: email
+        - name: keyword
           in: query
-          description: Filtrar por e-mail do cliente associado
+          description: Busca textual livre
           required: false
           schema:
             type: string
-            example: daniel_lima@abacatepay.com
-        - name: taxId
+        - name: customerId
           in: query
-          description: Filtrar por CPF ou CNPJ do cliente associado
+          description: Filtrar pelo identificador do cliente associado
           required: false
           schema:
             type: string
-            example: 123.456.789-01
+            example: cust_abc123xyz
+        - name: method
+          in: query
+          description: Filtrar por método de pagamento
+          required: false
+          schema:
+            type: string
+            enum:
+              - PIX
+              - CARD
+              - BOLETO
       responses:
         '200':
           description: Checkouts listados com sucesso.
@@ -1536,6 +1738,29 @@ paths:
               - CANCELLED
               - PAID
               - REFUNDED
+        - name: keyword
+          in: query
+          description: Busca textual livre
+          required: false
+          schema:
+            type: string
+        - name: customerId
+          in: query
+          description: Filtrar pelo identificador do cliente associado
+          required: false
+          schema:
+            type: string
+            example: cust_abc123xyz
+        - name: method
+          in: query
+          description: Filtrar por método de pagamento
+          required: false
+          schema:
+            type: string
+            enum:
+              - PIX
+              - CARD
+              - BOLETO
       responses:
         '200':
           description: Links de pagamento listados com sucesso.
@@ -1579,10 +1804,34 @@ paths:
         - name: id
           in: query
           description: Identificador único do link de pagamento
-          required: true
+          required: false
           schema:
             type: string
             example: bill_abc123xyz
+        - name: externalId
+          in: query
+          description: Identificador do Checkout no seu sistema
+          required: false
+          schema:
+            type: string
+            example: pedido-123
+        - name: customerId
+          in: query
+          description: Identificador do cliente associado
+          required: false
+          schema:
+            type: string
+            example: cust_abc123xyz
+        - name: method
+          in: query
+          description: Método de pagamento
+          required: false
+          schema:
+            type: string
+            enum:
+              - PIX
+              - CARD
+              - BOLETO
       responses:
         '200':
           description: Link de pagamento encontrado com sucesso.
@@ -1663,6 +1912,50 @@ paths:
                   error:
                     type: string
                     description: Motivo da falha na autenticação.
+                    example: Token de autenticação inválido ou ausente.
+  /payment-links/delete:
+    post:
+      summary: Deletar um link de pagamento
+      description: >
+        Deleta um link de pagamento que ainda não foi pago.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: query
+          description: Identificador único do link de pagamento
+          required: true
+          schema:
+            type: string
+            example: bill_abc123xyz
+      responses:
+        '200':
+          description: Link de pagamento deletado com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Billing'
+                  error:
+                    type: string
+                    nullable: true
+                    example: null
+                  success:
+                    $ref: '#/components/schemas/Success'
+        '401':
+          description: Não autorizado. Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: >-
+                      Mensagem de erro descrevendo o motivo da falha na
+                      autenticação.
                     example: Token de autenticação inválido ou ausente.
   /transparents/create:
     post:
@@ -1832,6 +2125,50 @@ paths:
                   error:
                     type: string
                     example: Token de autenticação inválido ou ausente.
+  /transparents/get:
+    get:
+      summary: Buscar um Checkout Transparente
+      description: >
+        Retorna os dados de um Checkout Transparente específico usando o ID.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: query
+          description: Identificador único do Checkout Transparente
+          required: true
+          schema:
+            type: string
+            example: pix_char_z2rSk6042t1mCKgGgeBpJe1u
+      responses:
+        '200':
+          description: Checkout Transparente encontrado com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/PixQRCode'
+                  error:
+                    type: string
+                    nullable: true
+                    example: null
+                  success:
+                    $ref: '#/components/schemas/Success'
+        '401':
+          description: Não autorizado. Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: >-
+                      Mensagem de erro descrevendo o motivo da falha na
+                      autenticação.
+                    example: Token de autenticação inválido ou ausente.
   /transparents/check:
     get:
       summary: Checar Status
@@ -1903,17 +2240,6 @@ paths:
       description: Simula o pagamento de um QRCode Pix criado no modo de desenvolvimento.
       security:
         - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                metadata:
-                  type: object
-                  description: Metadados opcionais para a requisição
-                  default: {}
       responses:
         '200':
           description: Pagamento ralizado com sucesso
@@ -1987,6 +2313,23 @@ paths:
               - CANCELLED
               - PAID
               - REFUNDED
+        - name: externalId
+          in: query
+          description: Filtrar por identificador do Checkout Transparente no seu sistema
+          required: false
+          schema:
+            type: string
+        - name: method
+          in: query
+          description: Filtrar por método de pagamento
+          required: false
+          schema:
+            type: string
+            enum:
+              - PIX
+              - CARD
+              - PIX_QRCODE
+              - BOLETO
       responses:
         '200':
           description: Checkouts transparentes listados com sucesso.
@@ -2094,10 +2437,12 @@ paths:
               required:
                 - amount
                 - externalId
+                - pix
               additionalProperties: false
               example:
                 amount: 10000
                 externalId: saque-123
+                pix: {key: '11987654321', type: PHONE}
               properties:
                 amount:
                   type: number
@@ -2114,6 +2459,29 @@ paths:
                   type: string
                   description: Identificador único do payout em seu sistema.
                   example: saque-123
+                pix:
+                  type: object
+                  description: Chave PIX de destino do payout.
+                  required:
+                    - key
+                    - type
+                  additionalProperties: false
+                  properties:
+                    key:
+                      type: string
+                      description: Chave PIX de destino.
+                      example: '11987654321'
+                    type:
+                      type: string
+                      description: Tipo da chave PIX.
+                      enum:
+                        - CPF
+                        - CNPJ
+                        - PHONE
+                        - EMAIL
+                        - RANDOM
+                        - BR_CODE
+                      example: PHONE
       responses:
         '200':
           description: Payout criado com sucesso.
@@ -2205,10 +2573,17 @@ paths:
         - name: externalId
           in: query
           description: Identificador único do payout em seu sistema.
-          required: true
+          required: false
           schema:
             type: string
             example: saque-123
+        - name: id
+          in: query
+          description: Identificador único do payout
+          required: false
+          schema:
+            type: string
+            example: payout_abc123xyz
       responses:
         '200':
           description: Detalhes do payout retornados com sucesso.
@@ -2324,25 +2699,6 @@ paths:
           schema:
             type: string
             example: tran_123456
-        - name: externalId
-          in: query
-          description: Filtrar por identificador do payout no seu sistema
-          required: false
-          schema:
-            type: string
-            example: saque-123
-        - name: status
-          in: query
-          description: Filtrar por status da transação
-          required: false
-          schema:
-            type: string
-            enum:
-              - PENDING
-              - EXPIRED
-              - CANCELLED
-              - COMPLETE
-              - REFUNDED
       responses:
         '200':
           description: Lista de payouts retornada com sucesso.
@@ -2422,7 +2778,7 @@ paths:
                 amount:
                   type: number
                   description: Valor do PIX em centavos.
-                  minimum: 1
+                  minimum: 100
                   example: 10000
                 externalId:
                   type: string
@@ -2509,7 +2865,7 @@ paths:
         - name: id
           in: query
           description: Identificador único da transação PIX na AbacatePay.
-          required: false
+          required: true
           schema:
             type: string
             example: txn_abc123xyz
@@ -2568,46 +2924,24 @@ paths:
     get:
       summary: Listar PIX
       description: |
-        Permite que você recupere uma lista de transações PIX criadas.
-
-        Você pode filtrar usando:
-        - `id`: Identificador único da transação PIX na AbacatePay
-        - `externalId`: Identificador único do PIX em seu sistema
-        - `status`: Status da transação
+        Consulta um envio de PIX pelo `id`. Apesar do nome, esta rota não pagina nem aceita filtros: `id` é obrigatório e o contrato é o mesmo de `/pix/get`.
       security:
         - bearerAuth: []
       parameters:
-        - $ref: '#/components/parameters/QueryAfter'
-        - $ref: '#/components/parameters/QueryBefore'
-        - $ref: '#/components/parameters/QueryLimit'
-        - $ref: '#/components/parameters/QueryStartDate'
-        - $ref: '#/components/parameters/QueryEndDate'
         - name: id
           in: query
-          description: Filtrar por identificador único da transação PIX na AbacatePay
-          required: false
+          description: Identificador único do PIX enviado
+          required: true
           schema:
             type: string
-            example: txn_abc123xyz
+            example: pix_out_abc123xyz
         - name: externalId
           in: query
-          description: Filtrar por identificador do PIX em seu sistema
+          description: Identificador do PIX no seu sistema
           required: false
           schema:
             type: string
             example: pix-123
-        - name: status
-          in: query
-          description: Filtrar por status da transação
-          required: false
-          schema:
-            type: string
-            enum:
-              - PENDING
-              - EXPIRED
-              - CANCELLED
-              - COMPLETE
-              - REFUNDED
       responses:
         '200':
           description: Lista de PIX retornada com sucesso.
@@ -2750,6 +3084,88 @@ paths:
                   type: object
                   description: Metadados adicionais. Campo livre para a sua aplicação.
                   additionalProperties: true
+                card:
+                  type: object
+                  description: >-
+                    Configuração do pagamento por cartão. Só tem efeito quando `methods` inclui
+                    `CARD`.
+                  additionalProperties: false
+                  required:
+                    - maxInstallments
+                  properties:
+                    maxInstallments:
+                      type: integer
+                      description: Número máximo de parcelas oferecidas no checkout.
+                      minimum: 1
+                      maximum: 12
+                      example: 12
+                upSellProductId:
+                  type: string
+                  description: >
+                    ID de um produto avulso (sem `cycle`) a ser ofertado como
+                    upsell após a conclusão do pagamento.
+
+
+                    O produto deve estar com `status: ACTIVE` e **não pode ter
+                    `cycle`** — apenas produtos de pagamento único são aceitos.
+
+
+                    **Exemplo**: `"prod_bump456xyz"`
+                  x-mint:
+                    hidden: true
+                dueDate:
+                  type: string
+                  format: date
+                  description: >
+                    Data de vencimento do boleto no formato `YYYY-MM-DD`
+                    (ex: `"2026-08-15"`). Opcional. Só é válido quando
+                    `methods` inclui `BOLETO`; ignorado nos demais métodos.
+
+
+                    Se omitido, o vencimento padrão é de 3 dias úteis.
+                    Não pode ser data no passado. Máximo de 365 dias no futuro.
+                  example: '2026-08-15'
+                  x-mint:
+                    hidden: true
+                interest:
+                  description: >-
+                    Juros por atraso, aplicados apenas quando
+                    `methods` inclui `BOLETO`. Ignorado para PIX/CARD.
+                  allOf:
+                    - $ref: '#/components/schemas/BoletoInterest'
+                  x-mint:
+                    hidden: true
+                fine:
+                  description: >-
+                    Multa por atraso, aplicada apenas quando
+                    `methods` inclui `BOLETO`. Ignorado para PIX/CARD.
+                  allOf:
+                    - $ref: '#/components/schemas/BoletoFine'
+                  x-mint:
+                    hidden: true
+                retryPolicy:
+                  type: object
+                  description: >-
+                    Política de novas tentativas quando uma cobrança da assinatura falha. Se
+                    omitida, a assinatura usa 3 tentativas com 1 dia de intervalo.
+                  additionalProperties: false
+                  properties:
+                    maxRetry:
+                      type: integer
+                      description: >-
+                        Número máximo de tentativas de cobrança antes de a assinatura ser
+                        cancelada automaticamente.
+                      minimum: 1
+                      maximum: 10
+                      default: 3
+                      example: 3
+                    retryEvery:
+                      type: integer
+                      description: Dias entre cada tentativa.
+                      minimum: 1
+                      maximum: 30
+                      default: 1
+                      example: 1
       responses:
         '200':
           description: >-
@@ -2798,20 +3214,6 @@ paths:
         - $ref: '#/components/parameters/QueryLimit'
         - $ref: '#/components/parameters/QueryStartDate'
         - $ref: '#/components/parameters/QueryEndDate'
-        - name: id
-          in: query
-          description: Filtrar por identificador único do Checkout de assinatura
-          required: false
-          schema:
-            type: string
-            example: bill_abc123xyz
-        - name: externalId
-          in: query
-          description: Filtrar por identificador da assinatura no seu sistema
-          required: false
-          schema:
-            type: string
-            example: subs-123
         - name: status
           in: query
           description: Filtrar por status do Checkout de assinatura
@@ -2824,20 +3226,6 @@ paths:
               - CANCELLED
               - PAID
               - REFUNDED
-        - name: email
-          in: query
-          description: Filtrar por e-mail do cliente associado
-          required: false
-          schema:
-            type: string
-            example: daniel_lima@abacatepay.com
-        - name: taxId
-          in: query
-          description: Filtrar por CPF ou CNPJ do cliente associado
-          required: false
-          schema:
-            type: string
-            example: 123.456.789-01
       responses:
         '200':
           description: Lista de Checkouts de assinatura retornada com sucesso.
@@ -2861,6 +3249,74 @@ paths:
                     example: null
                   pagination:
                     $ref: '#/components/schemas/PaginationCursor'
+        '401':
+          description: Não autorizado. Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: >-
+                      Mensagem de erro descrevendo o motivo da falha na
+                      autenticação.
+                    example: Token de autenticação inválido ou ausente.
+  /subscriptions/get:
+    get:
+      summary: Buscar uma assinatura
+      description: >
+        Retorna os dados de uma assinatura específica. Aceita os mesmos filtros de
+        `/checkouts/get`, todos opcionais.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: query
+          description: Identificador único da assinatura
+          required: false
+          schema:
+            type: string
+            example: bill_abc123xyz
+        - name: externalId
+          in: query
+          description: Identificador da assinatura no seu sistema
+          required: false
+          schema:
+            type: string
+            example: assinatura-123
+        - name: customerId
+          in: query
+          description: Identificador do cliente associado
+          required: false
+          schema:
+            type: string
+            example: cust_abc123xyz
+        - name: method
+          in: query
+          description: Método de pagamento
+          required: false
+          schema:
+            type: string
+            enum:
+              - PIX
+              - CARD
+      responses:
+        '200':
+          description: Assinatura encontrada com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Billing'
+                  error:
+                    type: string
+                    nullable: true
+                    example: null
+                  success:
+                    $ref: '#/components/schemas/Success'
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -2956,8 +3412,6 @@ paths:
               type: object
               required:
                 - id
-                - productId
-                - quantity
               additionalProperties: false
               properties:
                 id:
@@ -2973,6 +3427,26 @@ paths:
                   minimum: 1
                   description: Quantidade do novo produto.
                   example: 1
+                items:
+                  type: array
+                  description: >-
+                    Lista de produtos do novo plano. Alternativa a `productId`/`quantity` quando
+                    a assinatura passa a ter mais de um produto.
+                  minItems: 1
+                  items:
+                    type: object
+                    additionalProperties: false
+                    required:
+                      - productId
+                      - quantity
+                    properties:
+                      productId:
+                        type: string
+                        example: prod_abc123xyz
+                      quantity:
+                        type: integer
+                        minimum: 1
+                        example: 1
       responses:
         '200':
           description: Alteração de plano agendada com sucesso.
@@ -3111,7 +3585,7 @@ paths:
                   error:
                     type: string
                     example: Product must not have a billing cycle
-  /store/get:
+  /stores/get:
     get:
       summary: Obter detalhes da loja
       description: >-
@@ -3135,6 +3609,65 @@ paths:
                     example: null
                   success:
                     $ref: '#/components/schemas/Success'
+        '401':
+          description: Não autorizado. Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: >-
+                      Mensagem de erro descrevendo o motivo da falha na
+                      autenticação.
+                    example: Token de autenticação inválido ou ausente.
+  /stores/list:
+    get:
+      summary: Listar lojas
+      description: >
+        Retorna as lojas visíveis para a sua chave de API.
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/QueryAfter'
+        - $ref: '#/components/parameters/QueryBefore'
+        - $ref: '#/components/parameters/QueryLimit'
+        - $ref: '#/components/parameters/QueryStartDate'
+        - $ref: '#/components/parameters/QueryEndDate'
+        - name: id
+          in: query
+          description: Filtrar por identificador único da loja
+          required: false
+          schema:
+            type: string
+        - name: name
+          in: query
+          description: Filtrar por nome da loja
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lojas listadas com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    description: Lista de lojas.
+                    items:
+                      $ref: '#/components/schemas/Store'
+                  success:
+                    $ref: '#/components/schemas/Success'
+                  error:
+                    type: string
+                    nullable: true
+                    example: null
+                  pagination:
+                    $ref: '#/components/schemas/PaginationCursor'
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -3852,6 +4385,7 @@ components:
         - code
         - discount
         - discountKind
+        - maxRedeems
       additionalProperties: false
       properties:
         code:
@@ -3878,10 +4412,20 @@ components:
         discount:
           type: number
           description: Valor de desconto a ser aplicado
-        metadata:
-          type: object
-          description: Objeto chave valor para metadados do cupom
-          default: {}
+        startsAt:
+          type: string
+          format: date-time
+          description: >-
+            Início da validade do cupom. Se omitido, o cupom vale imediatamente. Precisa
+            ser posterior a hoje.
+          example: '2026-09-01T00:00:00.000Z'
+        expiresAt:
+          type: string
+          format: date-time
+          description: >-
+            Fim da validade do cupom. Se omitido, o cupom não expira. Precisa ser
+            posterior a hoje e a `startsAt`.
+          example: '2026-12-31T23:59:59.000Z'
     CouponResponse:
       type: object
       description: Os dados do seu cupom.
