@@ -13,14 +13,22 @@ Saca saldo da sua conta para uma chave PIX de sua titularidade.
 **Saques vs PIX:** use **Saques** para sua própria chave PIX. Para enviar a terceiros use [Enviar PIX](/pages/pix/create).
 </Note>
 
-**Exemplo:**
+<Warning>
+  O destino é aninhado em `pix`, com as chaves `key` e `type`. Enviar
+  `pixKey`/`pixKeyType` no topo falha com `Property 'pix' is missing`, e
+  aninhar com esses nomes falha com `Property 'pix.type' is missing`.
+</Warning>
+
+**Formato aceito pela API:**
 ```json
 {
   "amount": 10000,
   "description": "Saque semanal",
   "externalId": "saque-123",
-  "pixKey": "sua-chave@email.com",
-  "pixKeyType": "EMAIL"
+  "pix": {
+    "key": "sua-chave@email.com",
+    "type": "EMAIL"
+  }
 }
 ```
 
