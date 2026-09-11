@@ -11,6 +11,42 @@ Feedbacks também são bem-vindos no nosso Discord (#dev).
 
 ## Atualizações Recentes
 
+<Update label="11 de Set, 2026">
+## PIX transparente: travar o pagador (`ensureSameTaxId`)
+
+Agora é possível exigir que o PIX seja pago pelo **mesmo CPF/CNPJ** informado no cliente da cobrança. Se outra pessoa tentar pagar o QR Code, o pagamento é recusado.
+
+**O que mudou:**
+
+- Novo campo opcional `ensureSameTaxId` (`boolean`, padrão `false`) em `POST /v2/transparents/create` com `method: "PIX"`
+- Exige `customer` com `taxId`; sem isso a API retorna `ensureSameTaxId requires a customer with taxId`
+- Depende do provedor de PIX da conta — se o provedor ativo não suportar a trava, a API retorna `ensureSameTaxId is not supported by the current PIX provider`
+- Ignorado em boleto e não aplicado em `devMode`
+
+**Exemplo:**
+
+```json
+{
+  "method": "PIX",
+  "data": {
+    "amount": 10000,
+    "ensureSameTaxId": true,
+    "customer": {
+      "name": "Daniel Lima",
+      "email": "daniel_lima@abacatepay.com",
+      "taxId": "123.456.789-01",
+      "cellphone": "(11) 4002-8922"
+    }
+  }
+}
+```
+
+Consulte [Criar cobrança PIX](/pages/transparents/create) para detalhes completos.
+
+---
+
+</Update>
+
 <Update label="4 de Ago, 2026">
 ## Listagem: filtro por data (`startDate` / `endDate`)
 

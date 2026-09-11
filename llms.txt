@@ -41,7 +41,7 @@ Notas importantes:
 ## Checkout Transparente (PIX e Boleto embutidos)
 
 - [Referência do Checkout Transparente](https://docs.abacatepay.com/pages/transparents/reference): Gera cobranças via PIX ou Boleto diretamente no seu site/app sem redirecionar o usuário.
-- [POST /transparents/create (PIX)](https://docs.abacatepay.com/pages/transparents/create): Cria uma cobrança PIX. Retorna `brCode` (copia-e-cola) e `brCodeBase64` (imagem PNG base64). Campo obrigatório: `data.amount` (em centavos) e `method` como `"PIX"`.
+- [POST /transparents/create (PIX)](https://docs.abacatepay.com/pages/transparents/create): Cria uma cobrança PIX. Retorna `brCode` (copia-e-cola) e `brCodeBase64` (imagem PNG base64). Campo obrigatório: `data.amount` (em centavos) e `method` como `"PIX"`. Suporta `data.ensureSameTaxId` para exigir que o pagador tenha o mesmo CPF/CNPJ do `customer.taxId`.
 - [POST /transparents/create (Boleto)](https://docs.abacatepay.com/pages/transparents/boleto): Cria uma cobrança via Boleto bancário. Retorna `barCode` (linha digitável), `url` do boleto para impressão e PIX alternativo. Campos obrigatórios: `method` como `"BOLETO"`, `data.amount`, `data.customer.name` e `data.customer.taxId`. Suporta juros (`interest`) e multa (`fine`).
 - [GET /transparents/list](https://docs.abacatepay.com/pages/transparents/list): Lista as cobranças transparentes criadas.
 - [POST /transparents/simulate-payment](https://docs.abacatepay.com/pages/transparents/simulate-payment): Simula um pagamento (ambiente sandbox/devMode).

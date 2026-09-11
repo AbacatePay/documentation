@@ -24,6 +24,41 @@ Cria um checkout transparente via **PIX**. A API devolve o QR Code em imagem (`b
 
 Todos os outros campos são opcionais mas recomendados para melhor rastreabilidade.
 
+### `data.ensureSameTaxId` — travar o pagador (opcional)
+
+Quando `ensureSameTaxId` é `true`, o PIX só é aceito se o **CPF/CNPJ de quem paga** for igual ao `customer.taxId` enviado na criação da cobrança. Se outra pessoa tentar pagar o QR Code, o pagamento é recusado pelo banco.
+
+| Campo | Tipo | Padrão | Descrição |
+|---|---|---|---|
+| `data.ensureSameTaxId` | `boolean` | `false` | Recusa o pagamento quando o CPF/CNPJ do pagador é diferente do `customer.taxId` |
+
+Regras:
+
+- Exige `customer` com `taxId` preenchido. Sem isso, a API responde com erro `ensureSameTaxId requires a customer with taxId`
+- Disponível apenas com `method: "PIX"` — é ignorado no boleto
+- Depende do provedor de PIX da sua conta. Se o provedor ativo não suportar a trava, a API responde com `ensureSameTaxId is not supported by the current PIX provider`
+- Em `devMode` a trava não é aplicada
+
+```json
+{
+  "method": "PIX",
+  "data": {
+    "amount": 10000,
+    "ensureSameTaxId": true,
+    "customer": {
+      "name": "Daniel Lima",
+      "email": "daniel_lima@abacatepay.com",
+      "taxId": "123.456.789-01",
+      "cellphone": "(11) 4002-8922"
+    }
+  }
+}
+```
+
+<Note>
+  Use essa trava em cobranças nominais (assinaturas, mensalidades, faturas) para evitar que o QR Code seja pago por terceiros.
+</Note>
+
 ### `data.utm` — campanha / UTM (opcional)
 
 No corpo `data` com **`method`: `"PIX"`**, o objeto `utm` usa o mesmo esquema do **PIX QR Code v1 (`PixQrCodeV1`)**: objeto opcional; cada campo interno também é opcional (`string`).
