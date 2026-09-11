@@ -2038,6 +2038,17 @@ paths:
                         cellphone:
                           type: string
                           example: (11) 4002-8922
+                    ensureSameTaxId:
+                      type: boolean
+                      default: false
+                      description: >
+                        PIX — quando `true`, o pagamento só é aceito se o CPF/CNPJ
+                        do pagador for igual ao `customer.taxId` informado.
+                        Exige `customer.taxId`. Ignorado quando `method` é
+                        `BOLETO`.
+                      example: false
+                      x-mint:
+                        hidden: true
                     externalId:
                       type: string
                       description: ID no seu sistema para idempotência.
