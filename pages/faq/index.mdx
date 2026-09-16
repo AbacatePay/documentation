@@ -86,7 +86,7 @@ icon: 'circle-question'
   </Accordion>
 
   <Accordion title="A AbacatePay tenta reenviar eventos se meu endpoint estiver fora do ar?">
-    Sim. Em caso de falha (timeout ou resposta não-2xx), a AbacatePay realiza novas tentativas com backoff progressivo. Implemente idempotência usando o campo `id` do evento para evitar processamento duplicado.
+    Sim. Se o endpoint não responder em 30 segundos, estiver fora do ar ou responder `5xx`, `408` ou `429`, a AbacatePay tenta de novo em 5s, 5min, 30min, 2h, 5h e 10h — até 7 tentativas em cerca de 18 horas. Outros `4xx` não são retentados. Todas as tentativas usam o mesmo `id` do evento: use-o para evitar processamento duplicado. Veja [Entrega e retentativas](/pages/webhooks#entrega-e-retentativas).
   </Accordion>
 
   <Accordion title="Como validar que um webhook veio da AbacatePay?">

@@ -64,6 +64,17 @@ Um fluxo típico:
 3. Em seguida, valida a assinatura HMAC do corpo (caso esteja habilitada)
 4. Só depois disso você processa o evento e responde com `200 OK`
 
+## Retentativas (v1)
+
+Os webhooks v1 seguem a mesma política de entrega da v2: qualquer `2xx` em até
+30 segundos conta como entregue, e falhas temporárias (timeout, erro de conexão,
+`5xx`, `408` ou `429`) são reenviadas automaticamente em 5s, 5min, 30min, 2h, 5h
+e 10h — até 7 tentativas em cerca de 18 horas.
+
+Todas as tentativas chegam com o mesmo `id` no corpo. Use esse campo para não
+processar o mesmo evento duas vezes. Veja os detalhes na página
+[Webhooks](/pages/webhooks#entrega-e-retentativas) da v2.
+
 ## Eventos comuns na v1
 
 A nomenclatura e a granularidade dos eventos na v1 podem ser um pouco diferentes.

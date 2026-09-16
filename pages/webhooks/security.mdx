@@ -109,22 +109,24 @@ func VerifySignature(rawBody []byte, signatureFromHeader string) bool {
 
 ## Retentativas
 
-Se seu endpoint não retornar `2xx` dentro do timeout, a AbacatePay tenta reenviar o evento automaticamente com backoff progressivo.
+Se seu endpoint não responder `2xx` em até 30 segundos por um motivo temporário, a AbacatePay tenta reenviar o evento automaticamente: até 7 tentativas ao longo de cerca de 18 horas.
 
-**O que pode causar retentativa:**
-- Timeout na conexão
+**O que causa retentativa:**
+- Timeout (30 segundos), erro de conexão, DNS ou TLS
 - Resposta com status `5xx`
-- Resposta com status `4xx` (exceto `200`)
+- Resposta com status `408` ou `429`
+
+Outros `4xx` e `3xx` não são retentados, e `410 Gone` desativa o webhook. Veja os intervalos completos em [Entrega e retentativas](/pages/webhooks#entrega-e-retentativas).
 
 **Boas práticas para lidar com retentativas:**
 
 <Card title="Idempotência é obrigatória" horizontal>
-  Armazene o campo `id` de cada evento recebido. Antes de processar, verifique se esse ID já foi tratado anteriormente. Eventos duplicados são raros mas acontecem.
+  Armazene o campo `id` de cada evento recebido. Todas as retentativas de um evento chegam com o mesmo `id`: antes de processar, verifique se ele já foi tratado.
 </Card>
 
 ```ts
 // Exemplo de controle de idempotência
-const eventId = req.body.id; // ex: "log_abc123xyz"
+const eventId = req.body.id; // ex: "log_abc123xyz", igual em todas as tentativas
 
 const alreadyProcessed = await db.events.findOne({ id: eventId });
 if (alreadyProcessed) {
