@@ -11,6 +11,47 @@ Feedbacks também são bem-vindos no nosso Discord (#dev).
 
 ## Atualizações Recentes
 
+<Update label="18 de Set, 2026">
+## Webhooks: retentativas automáticas
+
+Quando seu endpoint de webhook fica fora do ar ou responde com erro temporário, a AbacatePay agora **reenvia o evento automaticamente** até ele ser entregue.
+
+**O que mudou:**
+
+- Falhas temporárias são retentadas em **5s, 5min, 30min, 2h, 5h e 10h** — até 7 tentativas em cerca de 18 horas
+- Geram retentativa: timeout de **30 segundos**, erro de conexão/DNS/TLS, `5xx`, `408` e `429`
+- Não geram retentativa: `3xx` e os demais `4xx` (ex.: `400`, `401`, `404`). `410 Gone` continua desativando o webhook
+- **Todas as tentativas de um evento chegam com o mesmo `id`** no corpo, para você ignorar duplicatas
+- Cada tentativa aparece nos logs do webhook no dashboard
+- Desativar ou excluir o webhook descarta as retentativas pendentes
+- O reenvio manual pelo dashboard continua fazendo uma única tentativa
+- Vale para webhooks v1 e v2, em Dev mode e em Produção
+
+<Warning>
+  **Ação recomendada:** se seu endpoint ainda não trata eventos repetidos, passe a guardar o `id` de cada evento processado e responda `200 OK` sem reprocessar quando ele chegar de novo. Sem isso, um endpoint que voltou do ar pode processar o mesmo pagamento mais de uma vez.
+</Warning>
+
+**Exemplo:**
+
+```ts
+const eventId = req.body.id; // o mesmo em todas as tentativas
+
+if (await db.events.findOne({ id: eventId })) {
+  return res.status(200).json({ ok: true });
+}
+
+await processEvent(req.body);
+await db.events.insert({ id: eventId, processedAt: new Date() });
+
+return res.status(200).json({ ok: true });
+```
+
+Consulte [Entrega e retentativas](/pages/webhooks#entrega-e-retentativas) para detalhes completos.
+
+---
+
+</Update>
+
 <Update label="11 de Set, 2026">
 ## PIX transparente: travar o pagador (`ensureSameTaxId`)
 

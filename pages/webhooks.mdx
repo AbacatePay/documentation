@@ -218,6 +218,67 @@ Se não houver cliente vinculado ao checkout, pagamento ou assinatura, o objeto 
 
 ---
 
+## Entrega e retentativas
+
+A AbacatePay considera um webhook **entregue** quando seu endpoint responde com qualquer status `2xx` em até **30 segundos**. O corpo da resposta é ignorado.
+
+Se a entrega falhar por um motivo temporário, a AbacatePay tenta de novo automaticamente, com intervalos cada vez maiores:
+
+| Tentativa | Quando acontece |
+|-----------|-----------------|
+| 1ª (original) | Assim que o evento acontece |
+| 2ª | 5 segundos após a falha anterior |
+| 3ª | 5 minutos após a falha anterior |
+| 4ª | 30 minutos após a falha anterior |
+| 5ª | 2 horas após a falha anterior |
+| 6ª | 5 horas após a falha anterior |
+| 7ª (última) | 10 horas após a falha anterior |
+
+No total, são até **7 tentativas ao longo de cerca de 18 horas**. Assim que uma delas recebe `2xx`, as próximas são canceladas.
+
+### Quais respostas geram retentativa
+
+| Resposta do seu endpoint | O que a AbacatePay faz |
+|--------------------------|------------------------|
+| `2xx` | Considera entregue |
+| Sem resposta em 30s, erro de conexão, DNS ou TLS | Tenta de novo |
+| `5xx` | Tenta de novo |
+| `408 Request Timeout` ou `429 Too Many Requests` | Tenta de novo |
+| `410 Gone` | **Desativa o webhook** e não tenta de novo |
+| `3xx` ou outros `4xx` (ex.: `400`, `401`, `404`) | Não tenta de novo |
+
+<Warning>
+  Redirecionamentos (`3xx`) não são seguidos. Cadastre a URL final do seu endpoint. Respostas `4xx` normalmente indicam URL errada ou falha na validação do secret/assinatura, então repetir o envio não resolveria.
+</Warning>
+
+### O mesmo evento pode chegar mais de uma vez
+
+Todas as tentativas de um mesmo evento chegam com o **mesmo `id`** no corpo. Use esse campo para ignorar duplicatas: se o `id` já foi processado, responda `200 OK` sem processar de novo.
+
+Isso também protege seu sistema quando ele processa o evento mas a resposta não chega à AbacatePay (por exemplo, por timeout).
+
+```ts
+const eventId = req.body.id; // o mesmo em todas as tentativas
+
+if (await db.events.findOne({ id: eventId })) {
+  return res.status(200).json({ ok: true }); // já processado
+}
+
+await processEvent(req.body);
+await db.events.insert({ id: eventId, processedAt: new Date() });
+
+return res.status(200).json({ ok: true });
+```
+
+### Outros detalhes
+
+- Cada tentativa aparece nos **logs do webhook** no dashboard, com o status e o tempo de resposta.
+- Se você **desativar ou excluir** o webhook, as retentativas pendentes são descartadas.
+- O **reenvio manual** de um log pelo dashboard faz uma única tentativa, sem retentativas automáticas, e gera um novo `id`.
+- As retentativas funcionam igual em **Dev mode** e em **Produção**.
+
+---
+
 ## Boas práticas
 
 <Card title="Recomendações importantes" horizontal>
@@ -225,7 +286,8 @@ Se não houver cliente vinculado ao checkout, pagamento ou assinatura, o objeto 
   * Valide o **secret** e a **assinatura HMAC**  
   * Registre cada evento recebido — processe cada um **uma única vez**  
   * Responda **200 OK** somente após concluir o processamento  
-  * Implemente **retentativas com idempotência**
+  * Use o campo `id` para **ignorar eventos repetidos** — retentativas reenviam o mesmo `id`
+  * Responda rápido: acima de **30 segundos** a entrega é considerada falha
   * **Não realize validação do payload inteiro** dos webhooks (como com Zod), **evitando que mudanças futuras não quebrem seu endpoint**
 </Card>
 
