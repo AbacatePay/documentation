@@ -2,6 +2,18 @@
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
   "name": "AbacatePay",
+  "redirects": [
+    { "source": "/pages/pix-qrcode/*", "destination": "/pages/pix/*" },
+    { "source": "/pages/withdraw/*", "destination": "/pages/payouts/*" },
+    { "source": "/pages/coupon/*", "destination": "/pages/coupons/*" },
+    { "source": "/pages/cupom/*", "destination": "/pages/coupons/*" },
+    { "source": "/withdraw", "destination": "/pages/payouts/reference" },
+    { "source": "/coupons/list", "destination": "/pages/coupons/list" },
+    { "source": "/pages/start/quickstart", "destination": "/pages/start/welcome" },
+    { "source": "/pages/zod", "destination": "/pages/ecosystem/zod" },
+    { "source": "/glossario", "destination": "/pages/glossario" },
+    { "source": "/subscriptions/reference", "destination": "/pages/subscriptions/reference" }
+  ],
   "colors": {
     "primary": "#9EEA6C",
     "light": "#9EEA6C",
