@@ -5,6 +5,10 @@ openapi: 'POST /checkouts/refund'
 
 Reembolsa integralmente um Checkout pago. O valor reembolsado é igual ao valor original da transação — não há reembolso parcial.
 
+<Warning>
+  Cobranças de assinatura (checkout `bill_...` ou pagamento de uma assinatura) não podem ser reembolsadas pela API v2. A API retorna `Cobranças de assinatura não podem ser reembolsadas pela API v2.`
+</Warning>
+
 <Card title="Obrigatório" horizontal>
   Apenas `id` é obrigatório — o ID público do recurso a reembolsar.
 </Card>

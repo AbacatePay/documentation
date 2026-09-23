@@ -11,6 +11,12 @@ Retorna os dados completos de um checkout pelo seu `id`.
 
 Use este endpoint para verificar o `status` de uma cobrança após o cliente retornar ao seu site, ou ao receber um [webhook](/pages/webhooks) de pagamento.
 
+Informe ao menos um entre `id`, `externalId` e `customerId`. Sem nenhum deles, a API retorna `Provide id, externalId or customerId`.
+
+<Warning>
+  Checkouts de assinatura (`frequency: SUBSCRIPTION`) não são retornados por esta rota. Use [Buscar checkout de assinatura](/pages/subscriptions/checkouts-get). Um `id` de checkout de assinatura retorna `This is a subscription checkout. Use /v2/subscriptions/checkouts/get`.
+</Warning>
+
 **Valores de `status`:**
 
 | Valor | Significado |

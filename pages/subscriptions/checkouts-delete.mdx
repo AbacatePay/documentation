@@ -1,0 +1,18 @@
+---
+title: 'Deletar um checkout de assinatura'
+openapi: "POST /subscriptions/checkouts/delete"
+---
+
+Exclui um checkout de assinatura (`bill_...` com `frequency: SUBSCRIPTION`). Depois da exclusão, ele deixa de aparecer em [Listar checkouts de assinatura](/pages/subscriptions/checkouts-list).
+
+<Card horizontal>
+  Requer a permissão `SUBSCRIPTION:DELETE`.
+</Card>
+
+<Warning>
+  Excluir o checkout **não cancela** as assinaturas que ele já gerou. Para encerrá-las, use [Cancelar uma assinatura](/pages/subscriptions/cancel) em cada `subs_...`. Para encontrá-las, use [Listar assinaturas](/pages/subscriptions/list) com `checkoutId`.
+</Warning>
+
+<Info>
+  Até 23/09/2026, checkouts de assinatura também eram excluídos pelo `POST /checkouts/delete` e pelo `POST /payment-links/delete`. Essas rotas agora recusam checkout de assinatura. Veja o [changelog](/pages/changelog/index).
+</Info>

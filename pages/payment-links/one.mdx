@@ -10,3 +10,5 @@ Retorna os dados de um link de pagamento pelo seu `id`.
 </Card>
 
 O campo `frequency` virá como `MULTIPLE_PAYMENTS`. Use `paidAmount` para acompanhar o total arrecadado via esse link ao longo do tempo.
+
+Informe ao menos um entre `id`, `externalId` e `customerId`. Checkouts de assinatura não são retornados por esta rota; use [Buscar checkout de assinatura](/pages/subscriptions/checkouts-get).

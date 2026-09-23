@@ -5,6 +5,10 @@ openapi: 'POST /payment-links/refund'
 
 Reembolsa integralmente um pagamento realizado em um link de pagamento. O valor reembolsado é igual ao valor original da transação — não há reembolso parcial.
 
+<Warning>
+  Cobranças de assinatura (checkout `bill_...` ou pagamento de uma assinatura) não podem ser reembolsadas pela API v2. A API retorna `Cobranças de assinatura não podem ser reembolsadas pela API v2.`
+</Warning>
+
 <Card title="Obrigatório" horizontal>
   Apenas `id` é obrigatório — o ID público do pagamento (não do link). Use o ID da cobrança/transação gerada quando o cliente pagou.
 </Card>

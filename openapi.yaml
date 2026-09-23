@@ -1226,6 +1226,14 @@ paths:
 
         Você pode usar essa rota para buscar um Checkout por ID e visualizar
         seus detalhes, status e informações relacionadas.
+
+
+        Informe ao menos um entre `id`, `externalId` e `customerId`. Sem
+        nenhum deles, a API retorna `Provide id, externalId or customerId`.
+
+
+        Checkouts de assinatura (`frequency: SUBSCRIPTION`) não são retornados
+        por esta rota. Use `GET /subscriptions/checkouts/get`.
       security:
         - bearerAuth: []
       parameters:
@@ -1252,7 +1260,9 @@ paths:
             example: cust_abc123xyz
         - name: method
           in: query
-          description: Método de pagamento
+          description: >-
+            Método de pagamento. Casa o checkout que oferece este método,
+            mesmo que ofereça outros também.
           required: false
           schema:
             type: string
@@ -1301,7 +1311,7 @@ paths:
                     description: >-
                       Mensagem de erro indicando que a cobrança não foi
                       encontrada.
-                    example: Cobrança não encontrada.
+                    example: Billing not found
   /checkouts/refund:
     post:
       summary: Reembolsar um Checkout
@@ -1309,6 +1319,9 @@ paths:
         Reembolsa integralmente um Checkout pago (PIX ou Cartão). O valor
         reembolsado é igual ao valor original da transação — reembolsos
         parciais não são suportados.
+
+
+        Cobranças de assinatura não podem ser reembolsadas pela API v2.
       security:
         - bearerAuth: []
       requestBody:
@@ -1346,6 +1359,10 @@ paths:
       summary: Deletar um Checkout
       description: >
         Deleta um Checkout que ainda não foi pago.
+
+
+        Checkouts de assinatura não são excluídos por esta rota; use
+        `POST /subscriptions/checkouts/delete`.
       security:
         - bearerAuth: []
       parameters:
@@ -1606,11 +1623,13 @@ paths:
     get:
       summary: Listar Checkouts
       description: >
-        Retorna todos os Checkouts que você criou.
+        Retorna os Checkouts de pagamento único (`frequency: ONE_TIME`) que
+        você criou.
 
 
-        Você pode usar essa rota para listar todos seus Checkouts e visualizar
-        seus status, valores e informações relacionadas.
+        Links de pagamento (`MULTIPLE_PAYMENTS`) e checkouts de assinatura
+        (`SUBSCRIPTION`) não entram nesta lista: use `GET /payment-links/list`
+        e `GET /subscriptions/checkouts/list`.
       security:
         - bearerAuth: []
       parameters:
@@ -1660,7 +1679,9 @@ paths:
             example: cust_abc123xyz
         - name: method
           in: query
-          description: Filtrar por método de pagamento
+          description: >-
+            Filtrar por método de pagamento. Traz todo checkout que oferece
+            este método, mesmo que ofereça outros também.
           required: false
           schema:
             type: string
@@ -1753,7 +1774,9 @@ paths:
             example: cust_abc123xyz
         - name: method
           in: query
-          description: Filtrar por método de pagamento
+          description: >-
+            Filtrar por método de pagamento. Traz todo checkout que oferece
+            este método, mesmo que ofereça outros também.
           required: false
           schema:
             type: string
@@ -1798,6 +1821,11 @@ paths:
       description: >
         Retorna os dados de um link de pagamento específico (checkout com
         frequency MULTIPLE_PAYMENTS) usando o ID.
+
+
+        Informe ao menos um entre `id`, `externalId` e `customerId`. Checkouts
+        de assinatura não são retornados por esta rota; use
+        `GET /subscriptions/checkouts/get`.
       security:
         - bearerAuth: []
       parameters:
@@ -1824,7 +1852,9 @@ paths:
             example: cust_abc123xyz
         - name: method
           in: query
-          description: Método de pagamento
+          description: >-
+            Método de pagamento. Casa o checkout que oferece este método,
+            mesmo que ofereça outros também.
           required: false
           schema:
             type: string
@@ -1881,6 +1911,9 @@ paths:
         Reembolsa um pagamento realizado em um link de pagamento. O valor
         reembolsado é igual ao valor original da transação — reembolsos
         parciais não são suportados.
+
+
+        Cobranças de assinatura não podem ser reembolsadas pela API v2.
       security:
         - bearerAuth: []
       requestBody:
@@ -1918,6 +1951,10 @@ paths:
       summary: Deletar um link de pagamento
       description: >
         Deleta um link de pagamento que ainda não foi pago.
+
+
+        Checkouts de assinatura não são excluídos por esta rota; use
+        `POST /subscriptions/checkouts/delete`.
       security:
         - bearerAuth: []
       parameters:
@@ -3210,13 +3247,21 @@ paths:
                     example: Token de autenticação inválido ou ausente.
   /subscriptions/list:
     get:
-      summary: Listar assinaturas (Checkouts de assinatura)
+      summary: Listar assinaturas
       description: >
-        Retorna todos os Checkouts de assinatura que você criou, com suporte a
-        paginação baseada em cursor.
+        Retorna as assinaturas (`subs_...`) da sua loja, com paginação por
+        cursor.
 
-        Cada item possui o mesmo formato de um Checkout: `id`, `url`,
-        `amount`, `items`, `status`, etc.
+
+        A assinatura só existe depois que o cliente paga o checkout de
+        assinatura. Para listar os checkouts de assinatura (`bill_...`),
+        inclusive os que ainda não foram pagos, use
+        `GET /subscriptions/checkouts/list`.
+
+
+        Cada assinatura traz o `checkoutId` do checkout que a originou. Um
+        mesmo checkout pode gerar várias assinaturas, uma por cliente que o
+        pagou; use o filtro `checkoutId` para encontrá-las.
       security:
         - bearerAuth: []
       parameters:
@@ -3227,19 +3272,25 @@ paths:
         - $ref: '#/components/parameters/QueryEndDate'
         - name: status
           in: query
-          description: Filtrar por status do Checkout de assinatura
+          description: Filtrar por status da assinatura
           required: false
           schema:
             type: string
             enum:
-              - PENDING
-              - EXPIRED
+              - ACTIVE
               - CANCELLED
-              - PAID
-              - REFUNDED
+        - name: checkoutId
+          in: query
+          description: >-
+            Filtrar pelo checkout de assinatura que originou a assinatura. Um
+            checkout inexistente retorna lista vazia.
+          required: false
+          schema:
+            type: string
+            example: bill_abc123xyz
       responses:
         '200':
-          description: Lista de Checkouts de assinatura retornada com sucesso.
+          description: Lista de assinaturas retornada com sucesso.
           content:
             application/json:
               schema:
@@ -3247,11 +3298,9 @@ paths:
                 properties:
                   data:
                     type: array
-                    description: >-
-                      Lista de Checkouts de assinatura (mesmo payload de
-                      Checkout).
+                    description: Lista de assinaturas.
                     items:
-                      $ref: '#/components/schemas/Billing'
+                      $ref: '#/components/schemas/Subscription'
                   success:
                     $ref: '#/components/schemas/Success'
                   error:
@@ -3277,8 +3326,17 @@ paths:
     get:
       summary: Buscar uma assinatura
       description: >
-        Retorna os dados de uma assinatura específica. Aceita os mesmos filtros de
-        `/checkouts/get`, todos opcionais.
+        Retorna os dados de uma assinatura (`subs_...`).
+
+
+        Informe ao menos um entre `id`, `externalId` e `customerId`. Sem
+        nenhum deles, a API retorna `Provide id, externalId or customerId`.
+        Quando o filtro casa mais de uma assinatura (por exemplo, um cliente
+        com várias), a mais recente é retornada.
+
+
+        Para buscar o checkout de assinatura (`bill_...`), use
+        `GET /subscriptions/checkouts/get`.
       security:
         - bearerAuth: []
       parameters:
@@ -3288,10 +3346,85 @@ paths:
           required: false
           schema:
             type: string
+            example: subs_abc123xyz
+        - name: externalId
+          in: query
+          description: >-
+            `externalId` informado ao criar o checkout de assinatura que
+            originou a assinatura
+          required: false
+          schema:
+            type: string
+            example: assinatura-123
+        - name: customerId
+          in: query
+          description: Identificador do cliente dono da assinatura
+          required: false
+          schema:
+            type: string
+            example: cust_abc123xyz
+      responses:
+        '200':
+          description: Assinatura encontrada com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Subscription'
+                  error:
+                    type: string
+                    nullable: true
+                    example: null
+                  success:
+                    $ref: '#/components/schemas/Success'
+        '401':
+          description: Não autorizado. Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: >-
+                      Mensagem de erro descrevendo o motivo da falha na
+                      autenticação.
+                    example: Token de autenticação inválido ou ausente.
+        '404':
+          description: Assinatura não encontrada.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Subscription not found
+  /subscriptions/checkouts/get:
+    get:
+      summary: Buscar um checkout de assinatura
+      description: >
+        Retorna um checkout de assinatura (`bill_...` com
+        `frequency: SUBSCRIPTION`), criado via `POST /subscriptions/create`.
+        O formato é o mesmo do `GET /checkouts/get`.
+
+
+        Informe ao menos um entre `id`, `externalId` e `customerId`.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: query
+          description: Identificador único do checkout de assinatura
+          required: false
+          schema:
+            type: string
             example: bill_abc123xyz
         - name: externalId
           in: query
-          description: Identificador da assinatura no seu sistema
+          description: Identificador do checkout no seu sistema
           required: false
           schema:
             type: string
@@ -3305,7 +3438,9 @@ paths:
             example: cust_abc123xyz
         - name: method
           in: query
-          description: Método de pagamento
+          description: >-
+            Método de pagamento. Casa o checkout que oferece este método,
+            mesmo que ofereça outros também.
           required: false
           schema:
             type: string
@@ -3314,7 +3449,7 @@ paths:
               - CARD
       responses:
         '200':
-          description: Assinatura encontrada com sucesso.
+          description: Checkout de assinatura encontrado com sucesso.
           content:
             application/json:
               schema:
@@ -3337,9 +3472,158 @@ paths:
                 properties:
                   error:
                     type: string
-                    description: >-
-                      Mensagem de erro descrevendo o motivo da falha na
-                      autenticação.
+                    example: Token de autenticação inválido ou ausente.
+        '404':
+          description: Checkout de assinatura não encontrado.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Billing not found
+  /subscriptions/checkouts/list:
+    get:
+      summary: Listar checkouts de assinatura
+      description: >
+        Retorna os checkouts de assinatura (`bill_...` com
+        `frequency: SUBSCRIPTION`) da sua loja, pagos ou não, com paginação
+        por cursor. O formato de cada item é o mesmo do `GET /checkouts/list`.
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/QueryAfter'
+        - $ref: '#/components/parameters/QueryBefore'
+        - $ref: '#/components/parameters/QueryLimit'
+        - $ref: '#/components/parameters/QueryStartDate'
+        - $ref: '#/components/parameters/QueryEndDate'
+        - name: id
+          in: query
+          description: Filtrar por identificador único do checkout
+          required: false
+          schema:
+            type: string
+            example: bill_abc123xyz
+        - name: externalId
+          in: query
+          description: Filtrar por identificador do checkout no seu sistema
+          required: false
+          schema:
+            type: string
+            example: assinatura-123
+        - name: status
+          in: query
+          description: Filtrar por status do checkout
+          required: false
+          schema:
+            type: string
+            enum:
+              - PENDING
+              - EXPIRED
+              - CANCELLED
+              - PAID
+              - REFUNDED
+        - name: keyword
+          in: query
+          description: Busca textual livre
+          required: false
+          schema:
+            type: string
+        - name: customerId
+          in: query
+          description: Filtrar pelo identificador do cliente associado
+          required: false
+          schema:
+            type: string
+            example: cust_abc123xyz
+        - name: method
+          in: query
+          description: >-
+            Filtrar por método de pagamento. Traz todo checkout que oferece
+            este método, mesmo que ofereça outros também.
+          required: false
+          schema:
+            type: string
+            enum:
+              - PIX
+              - CARD
+      responses:
+        '200':
+          description: Checkouts de assinatura listados com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    description: Lista de checkouts de assinatura.
+                    items:
+                      $ref: '#/components/schemas/Billing'
+                  success:
+                    $ref: '#/components/schemas/Success'
+                  error:
+                    type: string
+                    nullable: true
+                    example: null
+                  pagination:
+                    $ref: '#/components/schemas/PaginationCursor'
+        '401':
+          description: Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Token de autenticação inválido ou ausente.
+  /subscriptions/checkouts/delete:
+    post:
+      summary: Deletar um checkout de assinatura
+      description: >
+        Exclui um checkout de assinatura (`bill_...` com
+        `frequency: SUBSCRIPTION`), que deixa de aparecer nas listagens.
+
+
+        As assinaturas que o checkout já gerou continuam ativas. Para
+        encerrá-las, use `POST /subscriptions/cancel`.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: query
+          description: Identificador único do checkout de assinatura
+          required: true
+          schema:
+            type: string
+            example: bill_abc123xyz
+      responses:
+        '200':
+          description: Checkout de assinatura excluído com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Billing'
+                  error:
+                    type: string
+                    nullable: true
+                    example: null
+                  success:
+                    $ref: '#/components/schemas/Success'
+        '401':
+          description: Não autorizado. Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
                     example: Token de autenticação inválido ou ausente.
   /subscriptions/cancel:
     post:
@@ -5178,18 +5462,21 @@ components:
               example: 0
     Subscription:
       type: object
-      description: Dados de uma assinatura (subscription).
+      description: >-
+        Dados de uma assinatura (`subs_...`). Existe a partir do pagamento do
+        checkout de assinatura que a originou (`checkoutId`).
       required:
         - id
-        - name
-        - description
-        - amount
-        - currency
-        - method
-        - status
+        - checkoutId
         - customerId
+        - amount
+        - status
+        - method
+        - coupons
         - devMode
-        - events
+        - trialDays
+        - trialEndsAt
+        - retryPolicy
         - createdAt
         - updatedAt
       additionalProperties: false
@@ -5198,29 +5485,21 @@ components:
           type: string
           description: Identificador único da assinatura.
           example: subs_abc123xyz
-        name:
+        checkoutId:
           type: string
-          description: Nome da assinatura.
-          example: Plano Premium Mensal
-        description:
+          nullable: true
+          description: >-
+            Checkout de assinatura (`bill_...`) que originou a assinatura. Um
+            checkout pode originar várias assinaturas, uma por cliente pagante.
+          example: bill_abc123xyz
+        customerId:
           type: string
-          description: Descrição da assinatura.
-          example: Assinatura mensal do plano premium
+          description: Identificador do cliente que possui a assinatura.
+          example: cust_abc123xyz
         amount:
           type: number
           description: Valor da assinatura em centavos.
           example: 10000
-        currency:
-          type: string
-          description: Moeda da assinatura.
-          example: BRL
-        method:
-          type: string
-          description: Método de pagamento da assinatura.
-          enum:
-            - PIX
-            - CARD
-          example: PIX
         status:
           type: string
           description: Status atual da assinatura.
@@ -5228,17 +5507,45 @@ components:
             - PENDING
             - ACTIVE
             - CANCELLED
-            - EXPIRED
-            - FAILED
-          example: PENDING
-        customerId:
+          example: ACTIVE
+        method:
           type: string
-          description: Identificador do cliente que possui a assinatura.
-          example: cust_abc123xyz
+          description: Método de pagamento da assinatura.
+          enum:
+            - PIX
+            - CARD
+          example: CARD
+        coupons:
+          type: array
+          items:
+            type: string
+          description: Cupons aplicados.
+          example: []
         devMode:
           type: boolean
           description: Indica se a assinatura foi criada em ambiente de testes.
           example: false
+        trialDays:
+          type: integer
+          nullable: true
+          description: Duração do período de teste em dias; `null` sem trial.
+          example: null
+        trialEndsAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: Fim do período de teste; `null` sem trial.
+          example: null
+        retryPolicy:
+          type: object
+          description: Política de retentativa de cobrança.
+          properties:
+            maxRetry:
+              type: integer
+              example: 3
+            retryEvery:
+              type: integer
+              example: 1
         createdAt:
           type: string
           format: date-time

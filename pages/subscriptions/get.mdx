@@ -1,0 +1,26 @@
+---
+title: 'Buscar uma assinatura'
+openapi: "GET /subscriptions/get"
+---
+
+Retorna os dados de uma assinatura (`subs_...`).
+
+<Card horizontal>
+  Requer a permissão `SUBSCRIPTION:READ`.
+</Card>
+
+Informe ao menos um destes filtros:
+
+| Parâmetro    | Descrição |
+|--------------|-----------|
+| `id`         | ID da assinatura (`subs_...`) |
+| `externalId` | O `externalId` que você informou ao criar o checkout de assinatura |
+| `customerId` | ID do cliente (`cust_...`) |
+
+Sem nenhum deles, a API retorna `Provide id, externalId or customerId`. Quando o filtro casa mais de uma assinatura (por exemplo, um cliente com várias), a mais recente é retornada.
+
+O campo `checkoutId` da resposta aponta o checkout de assinatura (`bill_...`) que originou a assinatura.
+
+<Tip title="Procurando o checkout?" horizontal>
+  Para buscar o checkout de assinatura (`bill_...`), antes ou depois do pagamento, use [Buscar checkout de assinatura](/pages/subscriptions/checkouts-get).
+</Tip>
