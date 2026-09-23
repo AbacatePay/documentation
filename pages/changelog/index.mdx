@@ -12,61 +12,65 @@ Feedbacks também são bem-vindos no nosso Discord (#dev).
 ## Atualizações Recentes
 
 <Update label="23 de Set, 2026">
-## Assinaturas: checkout e assinatura com rotas próprias
+## Assinaturas: checkout e assinatura agora têm rotas separadas
 
-O checkout de assinatura (`bill_...`, criado pelo `POST /v2/subscriptions/create`) saía pelo `GET /v2/checkouts/get`, mas por nenhuma listagem: o `GET /v2/checkouts/list` só lista checkouts de pagamento único, e o `GET /v2/subscriptions/list` lista as assinaturas (`subs_...`), não os checkouts. Agora cada recurso tem rota própria, e a assinatura aponta o checkout que a originou.
+Quando você cria uma assinatura, existem dois objetos:
 
-**Novidades:**
+| Objeto | ID | Quando passa a existir |
+|---|---|---|
+| Checkout de assinatura | `bill_...` | Ao chamar `POST /v2/subscriptions/create` |
+| Assinatura | `subs_...` | Quando o cliente paga o checkout |
 
-- Novo [`GET /v2/subscriptions/checkouts/get`](/pages/subscriptions/checkouts-get) e [`GET /v2/subscriptions/checkouts/list`](/pages/subscriptions/checkouts-list): buscam e listam checkouts de assinatura, pagos ou não, no mesmo formato do `/v2/checkouts`. Requerem `SUBSCRIPTION:READ`
-- Novo [`POST /v2/subscriptions/checkouts/delete`](/pages/subscriptions/checkouts-delete): exclui um checkout de assinatura. Requer `SUBSCRIPTION:DELETE`. As assinaturas que ele já gerou continuam ativas
-- Novo campo `checkoutId` nas respostas de `GET /v2/subscriptions/get`, `GET /v2/subscriptions/list` e `POST /v2/subscriptions/cancel`
-- Novo filtro `checkoutId` no `GET /v2/subscriptions/list`. Um checkout pode gerar várias assinaturas (uma por cliente que o pagou), e um `checkoutId` inexistente retorna lista vazia
+Até agora, o checkout de assinatura não aparecia em nenhuma listagem. A partir de hoje, ele tem rotas próprias.
 
 <Warning>
-  **Mudança incompatível:** `GET /v2/checkouts/get` e `GET /v2/payment-links/get` **não retornam mais checkouts de assinatura**. Buscar um `bill_...` de assinatura por essas rotas retorna `This is a subscription checkout. Use /v2/subscriptions/checkouts/get`. Troque a chamada por [`GET /v2/subscriptions/checkouts/get`](/pages/subscriptions/checkouts-get); os parâmetros e o formato da resposta são os mesmos.
+**Ação necessária** se você busca ou exclui checkouts de assinatura pelas rotas de checkout. Essas rotas passam a retornar erro para checkout de assinatura:
 
-  Da mesma forma, `POST /v2/checkouts/delete` e `POST /v2/payment-links/delete` **não excluem mais checkouts de assinatura**. Use [`POST /v2/subscriptions/checkouts/delete`](/pages/subscriptions/checkouts-delete).
+| Antes | Agora |
+|---|---|
+| `GET /v2/checkouts/get` | `GET /v2/subscriptions/checkouts/get` |
+| `GET /v2/payment-links/get` | `GET /v2/subscriptions/checkouts/get` |
+| `POST /v2/checkouts/delete` | `POST /v2/subscriptions/checkouts/delete` |
+| `POST /v2/payment-links/delete` | `POST /v2/subscriptions/checkouts/delete` |
+
+Os parâmetros e o formato da resposta não mudam.
 </Warning>
 
-**Correções:**
+**Novas rotas:**
 
-- `GET /v2/subscriptions/get`: os filtros `externalId` e `customerId` não funcionavam. Agora `externalId` busca pelo `externalId` do checkout de assinatura que originou a assinatura, e `customerId` aceita o `cust_...`. O parâmetro `method` foi removido, porque não se aplica à assinatura. Quando o filtro casa mais de uma assinatura, a mais recente é retornada
-- `GET /v2/checkouts/get`, `GET /v2/payment-links/get` e `GET /v2/subscriptions/get` exigem ao menos um entre `id`, `externalId` e `customerId`. Antes, sem nenhum deles, a rota retornava um registro qualquer da loja; agora retorna `Provide id, externalId or customerId`
-- Um `customerId` inexistente no get e no list de checkouts retornava erro 500. Agora retorna `Billing not found` no get e lista vazia no list
-- As respostas do get de checkouts, links de pagamento, assinaturas e checkouts transparentes (`GET /v2/transparents/get`) ficavam em cache por até 1 hora, então o `status` podia aparecer desatualizado logo depois de um pagamento ou cancelamento. O cache agora dura 60 segundos, igual ao das listagens
-- Filtro `method` no get e no list de checkouts, links de pagamento e checkouts de assinatura: `method=PIX` só trazia checkouts que ofereciam **apenas** PIX. Agora traz todo checkout que oferece PIX, mesmo que ofereça outros métodos
-- Reembolso de cobrança de assinatura: `POST /v2/checkouts/refund` mandava usar `/v2/payment-links/refund`, e o `POST /v2/payment-links/refund` mandava usar `/v2/checkouts/refund`. As duas rotas agora retornam `Cobranças de assinatura não podem ser reembolsadas pela API v2.`
+- [Buscar checkout de assinatura](/pages/subscriptions/checkouts-get): `GET /v2/subscriptions/checkouts/get`
+- [Listar checkouts de assinatura](/pages/subscriptions/checkouts-list): `GET /v2/subscriptions/checkouts/list`
+- [Deletar checkout de assinatura](/pages/subscriptions/checkouts-delete): `POST /v2/subscriptions/checkouts/delete` (não cancela as assinaturas já criadas)
 
-**Exemplo:**
+**Da assinatura para o checkout:**
 
-```http
-# Checkouts de assinatura criados em agosto
-GET /v2/subscriptions/checkouts/list?startDate=2026-08-01&endDate=2026-08-31
-
-# Assinaturas geradas por um checkout
-GET /v2/subscriptions/list?checkoutId=bill_abc123xyz
-```
+- Toda assinatura agora traz o campo `checkoutId`.
+- Um checkout pode gerar várias assinaturas, uma por cliente que pagou. Para encontrá-las, use `GET /v2/subscriptions/list?checkoutId=bill_...`.
 
 ```json
 {
-  "success": true,
-  "data": [
-    {
-      "id": "subs_abc123xyz",
-      "checkoutId": "bill_abc123xyz",
-      "customerId": "cust_abc123xyz",
-      "amount": 2490,
-      "status": "ACTIVE",
-      "method": "CARD"
-    }
-  ],
-  "error": null,
-  "pagination": { "hasMore": false, "next": null, "before": null }
+  "id": "subs_abc123xyz",
+  "checkoutId": "bill_abc123xyz",
+  "customerId": "cust_abc123xyz",
+  "status": "ACTIVE"
 }
 ```
 
-Consulte a [referência de assinaturas](/pages/subscriptions/reference) para o modelo completo.
+Veja a [referência de assinaturas](/pages/subscriptions/reference) para o fluxo completo.
+
+---
+
+</Update>
+
+<Update label="23 de Set, 2026">
+## Correções em checkouts e assinaturas
+
+- **`GET /v2/subscriptions/get`:** os filtros `externalId` e `customerId` agora funcionam.
+- **Rotas de busca exigem um identificador:** `/checkouts/get`, `/payment-links/get` e `/subscriptions/get` pedem `id`, `externalId` ou `customerId`. Antes, sem nenhum deles, retornavam um registro qualquer.
+- **`customerId` inexistente** não retorna mais erro 500.
+- **Filtro `method`:** `method=PIX` agora também traz checkouts que aceitam PIX junto com outros métodos.
+- **Status atualizado mais rápido:** o cache das rotas de busca caiu de 1 hora para 60 segundos.
+- **Reembolso de assinatura:** a mensagem de erro agora diz que esse reembolso não é suportado pela API v2, em vez de indicar outra rota.
 
 ---
 
