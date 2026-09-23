@@ -16,15 +16,15 @@ O `POST /subscriptions/create` **não cria uma assinatura diretamente** — ele 
 
 São dois recursos, com IDs e rotas próprias:
 
-| Recurso | ID | Quando existe | Buscar | Listar |
-|---------|----|---------------|--------|--------|
-| Checkout de assinatura | `bill_...` | Desde o `POST /subscriptions/create` | [`GET /subscriptions/checkouts/get`](/pages/subscriptions/checkouts-get) | [`GET /subscriptions/checkouts/list`](/pages/subscriptions/checkouts-list) |
-| Assinatura | `subs_...` | Depois do pagamento do checkout | [`GET /subscriptions/get`](/pages/subscriptions/get) | [`GET /subscriptions/list`](/pages/subscriptions/list) |
+| Recurso | ID | Quando existe | Buscar | Listar | Encerrar |
+|---------|----|---------------|--------|--------|----------|
+| Checkout de assinatura | `bill_...` | Desde o `POST /subscriptions/create` | [`GET /subscriptions/checkouts/get`](/pages/subscriptions/checkouts-get) | [`GET /subscriptions/checkouts/list`](/pages/subscriptions/checkouts-list) | [`POST /subscriptions/checkouts/delete`](/pages/subscriptions/checkouts-delete) |
+| Assinatura | `subs_...` | Depois do pagamento do checkout | [`GET /subscriptions/get`](/pages/subscriptions/get) | [`GET /subscriptions/list`](/pages/subscriptions/list) | [`POST /subscriptions/cancel`](/pages/subscriptions/cancel) |
 
 A assinatura aponta o checkout que a originou no campo `checkoutId`. Um mesmo checkout pode gerar **várias** assinaturas, uma por cliente que o pagou; para encontrá-las, use `GET /subscriptions/list?checkoutId=bill_...`.
 
 <Warning>
-  Checkouts de assinatura não saem mais pelo `GET /checkouts/get` nem pelo `GET /payment-links/get` desde 23/09/2026. Veja o [changelog](/pages/changelog/index).
+  Desde 23/09/2026, checkouts de assinatura não saem mais pelo `GET /checkouts/get` nem pelo `GET /payment-links/get`, e não são excluídos pelo `POST /checkouts/delete` nem pelo `POST /payment-links/delete`. Veja o [changelog](/pages/changelog/index).
 </Warning>
 
 <CardGroup cols={3}>
