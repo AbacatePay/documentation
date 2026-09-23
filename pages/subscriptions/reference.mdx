@@ -14,6 +14,19 @@ Checkout (cliente paga) → Assinatura ACTIVE → Cobranças automáticas a cada
 
 O `POST /subscriptions/create` **não cria uma assinatura diretamente** — ele cria um checkout de assinatura. A assinatura em si (com `id: subs_...`) só existe após o cliente concluir o pagamento. Esse detalhe muda como você lida com os webhooks: ouça `subscription.completed` para confirmar que a assinatura está ativa, não apenas que o checkout foi criado.
 
+São dois recursos, com IDs e rotas próprias:
+
+| Recurso | ID | Quando existe | Buscar | Listar |
+|---------|----|---------------|--------|--------|
+| Checkout de assinatura | `bill_...` | Desde o `POST /subscriptions/create` | [`GET /subscriptions/checkouts/get`](/pages/subscriptions/checkouts-get) | [`GET /subscriptions/checkouts/list`](/pages/subscriptions/checkouts-list) |
+| Assinatura | `subs_...` | Depois do pagamento do checkout | [`GET /subscriptions/get`](/pages/subscriptions/get) | [`GET /subscriptions/list`](/pages/subscriptions/list) |
+
+A assinatura aponta o checkout que a originou no campo `checkoutId`. Um mesmo checkout pode gerar **várias** assinaturas, uma por cliente que o pagou; para encontrá-las, use `GET /subscriptions/list?checkoutId=bill_...`.
+
+<Warning>
+  Checkouts de assinatura não saem mais pelo `GET /checkouts/get` nem pelo `GET /payment-links/get` desde 23/09/2026. Veja o [changelog](/pages/changelog/index).
+</Warning>
+
 <CardGroup cols={3}>
   <Card title="Criar checkout" href="/pages/subscriptions/create" icon="plus">
     Inicia o fluxo de assinatura.
@@ -85,7 +98,7 @@ Exemplo (cada item só precisa de `id` e `quantity`; o ciclo vem do produto):
 
 ## Resposta
 
-Create e list retornam o mesmo formato do Checkout (`id`, `url`, `amount`, `items`, `status`, etc.).
+O `POST /subscriptions/create`, o `GET /subscriptions/checkouts/get` e o `GET /subscriptions/checkouts/list` retornam o checkout de assinatura, no mesmo formato do Checkout (`id`, `url`, `amount`, `items`, `status`, etc.).
 
 **Resposta:**
 
@@ -125,12 +138,13 @@ Use a `url` retornada para levar o cliente ao checkout e concluir o pagamento.
 
 ### Objeto de assinatura ativa
 
-Após ativação, os endpoints de assinatura (`GET /subscriptions/get`, `GET /subscriptions/list`) retornam o objeto completo incluindo `retryPolicy`:
+Após ativação, os endpoints de assinatura (`GET /subscriptions/get`, `GET /subscriptions/list`, `POST /subscriptions/cancel`) retornam o objeto da assinatura, com `checkoutId` e `retryPolicy`:
 
 ```json
 {
   "data": {
     "id": "subs_abc123xyz",
+    "checkoutId": "bill_abc123xyz",
     "customerId": "cust_abc123xyz",
     "amount": 10000,
     "status": "ACTIVE",
@@ -153,6 +167,7 @@ Após ativação, os endpoints de assinatura (`GET /subscriptions/get`, `GET /su
 
 | Campo                     | Tipo    | Descrição |
 |---------------------------|---------|-----------|
+| `checkoutId`              | string \| null | Checkout de assinatura (`bill_...`) que originou a assinatura |
 | `retryPolicy.maxRetry`    | integer | Tentativas máximas antes do cancelamento automático |
 | `retryPolicy.retryEvery`  | integer | Dias entre cada tentativa |
 
@@ -162,7 +177,8 @@ Definido no produto ao criar na loja. Valores: **WEEKLY**, **MONTHLY**, **SEMIAN
 
 ## Status
 
-Mesmos do Checkout: **PENDING**, **EXPIRED**, **CANCELLED**, **PAID**, **REFUNDED**.
+- **Checkout de assinatura** (`bill_...`): mesmos do Checkout — **PENDING**, **EXPIRED**, **CANCELLED**, **PAID**, **REFUNDED**.
+- **Assinatura** (`subs_...`): **ACTIVE** ou **CANCELLED**.
 
 ## Período de teste gratuito (Free Trial)
 
@@ -198,6 +214,7 @@ Após a ativação, a assinatura expõe `trialDays` e `trialEndsAt`:
 {
   "data": {
     "id": "subs_abc123xyz",
+    "checkoutId": "bill_abc123xyz",
     "customerId": "cust_abc123xyz",
     "amount": 4990,
     "status": "ACTIVE",

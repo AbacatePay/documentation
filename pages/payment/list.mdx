@@ -3,13 +3,17 @@ title: 'Listar Checkouts'
 openapi: "GET /checkouts/list"
 ---
 
-Retorna todos os checkouts da sua loja em ordem cronológica decrescente.
+Retorna os checkouts de pagamento único (`frequency: ONE_TIME`) da sua loja, em ordem cronológica decrescente.
 
 <Card horizontal>
   Requer a permissão `CHECKOUT:READ`.
 </Card>
 
 Use os parâmetros de paginação `limit`, `after` e `before` para navegar pelos resultados, e `startDate`/`endDate` (`YYYY-MM-DD`) para filtrar por data de criação. Consulte [Paginação e filtro por data](/pages/reference/introduction#paginação-e-filtro-por-data). Cada item da lista segue o mesmo formato da resposta do [Criar Checkout](/pages/payment/create).
+
+<Info>
+  Links de pagamento e checkouts de assinatura não entram nesta lista. Use [Listar links de pagamento](/pages/payment-links/list) e [Listar checkouts de assinatura](/pages/subscriptions/checkouts-list).
+</Info>
 
 <Tip title="Filtrando por status" horizontal>
 Combine com `status` para buscar só cobranças pendentes, pagas ou canceladas.

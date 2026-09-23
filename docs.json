@@ -203,6 +203,9 @@
                 "pages": [
                   "pages/subscriptions/reference",
                   "pages/subscriptions/create",
+                  "pages/subscriptions/checkouts-get",
+                  "pages/subscriptions/checkouts-list",
+                  "pages/subscriptions/get",
                   "pages/subscriptions/list",
                   "pages/subscriptions/cancel",
                   "pages/subscriptions/change-plan",

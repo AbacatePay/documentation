@@ -1,22 +1,40 @@
 ---
-title: 'Listar Checkouts de assinatura'
+title: 'Listar assinaturas'
 openapi: "GET /subscriptions/list"
 ---
 
-Retorna todos os checkouts de assinatura da sua loja.
+Retorna as assinaturas (`subs_...`) da sua loja.
 
 <Card horizontal>
-  Requer a permissão `CHECKOUT:READ`.
+  Requer a permissão `SUBSCRIPTION:READ`.
 </Card>
 
-Use `limit`, `after` e `before` para paginar e `startDate`/`endDate` (`YYYY-MM-DD`) para filtrar por data de criação. Consulte [Paginação e filtro por data](/pages/reference/introduction#paginação-e-filtro-por-data). Cada item segue o mesmo formato da resposta do [Criar Checkout de assinatura](/pages/subscriptions/create), incluindo `status`, `url`, `amount` e `items`.
+Use `limit`, `after` e `before` para paginar e `startDate`/`endDate` (`YYYY-MM-DD`) para filtrar por data de criação. Consulte [Paginação e filtro por data](/pages/reference/introduction#paginação-e-filtro-por-data).
+
+<Warning>
+  Esta rota lista **assinaturas**, não checkouts. A assinatura só passa a existir depois que o cliente paga o checkout de assinatura. Para listar os checkouts de assinatura (`bill_...`), inclusive os que ainda não foram pagos, use [Listar checkouts de assinatura](/pages/subscriptions/checkouts-list).
+</Warning>
+
+## Encontrar as assinaturas de um checkout
+
+Cada assinatura traz o `checkoutId` do checkout de assinatura que a originou. Um mesmo checkout pode gerar várias assinaturas, uma por cliente que o pagou. Para encontrá-las, filtre por `checkoutId`:
+
+```http
+GET /v2/subscriptions/list?checkoutId=bill_abc123xyz
+```
+
+Um `checkoutId` que não existe retorna lista vazia.
+
+## Filtros
+
+| Parâmetro    | Descrição |
+|--------------|-----------|
+| `status`     | `ACTIVE` ou `CANCELLED` |
+| `checkoutId` | Checkout de assinatura (`bill_...`) que originou a assinatura |
 
 **Valores de `status`:**
 
 | Valor | Significado |
 |-------|-------------|
-| `PENDING` | Aguardando o primeiro pagamento |
-| `PAID` | Assinatura ativa |
-| `EXPIRED` | Expirado sem pagamento |
-| `CANCELLED` | Cancelado |
-| `REFUNDED` | Reembolsado |
+| `ACTIVE` | Assinatura ativa, com cobranças automáticas a cada ciclo |
+| `CANCELLED` | Cancelada; nenhuma cobrança futura é gerada |
