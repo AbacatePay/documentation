@@ -19,11 +19,14 @@ O checkout de assinatura (`bill_...`, criado pelo `POST /v2/subscriptions/create
 **Novidades:**
 
 - Novo [`GET /v2/subscriptions/checkouts/get`](/pages/subscriptions/checkouts-get) e [`GET /v2/subscriptions/checkouts/list`](/pages/subscriptions/checkouts-list): buscam e listam checkouts de assinatura, pagos ou não, no mesmo formato do `/v2/checkouts`. Requerem `SUBSCRIPTION:READ`
+- Novo [`POST /v2/subscriptions/checkouts/delete`](/pages/subscriptions/checkouts-delete): exclui um checkout de assinatura. Requer `SUBSCRIPTION:DELETE`. As assinaturas que ele já gerou continuam ativas
 - Novo campo `checkoutId` nas respostas de `GET /v2/subscriptions/get`, `GET /v2/subscriptions/list` e `POST /v2/subscriptions/cancel`
 - Novo filtro `checkoutId` no `GET /v2/subscriptions/list`. Um checkout pode gerar várias assinaturas (uma por cliente que o pagou), e um `checkoutId` inexistente retorna lista vazia
 
 <Warning>
   **Mudança incompatível:** `GET /v2/checkouts/get` e `GET /v2/payment-links/get` **não retornam mais checkouts de assinatura**. Buscar um `bill_...` de assinatura por essas rotas retorna `This is a subscription checkout. Use /v2/subscriptions/checkouts/get`. Troque a chamada por [`GET /v2/subscriptions/checkouts/get`](/pages/subscriptions/checkouts-get); os parâmetros e o formato da resposta são os mesmos.
+
+  Da mesma forma, `POST /v2/checkouts/delete` e `POST /v2/payment-links/delete` **não excluem mais checkouts de assinatura**. Use [`POST /v2/subscriptions/checkouts/delete`](/pages/subscriptions/checkouts-delete).
 </Warning>
 
 **Correções:**
@@ -31,7 +34,9 @@ O checkout de assinatura (`bill_...`, criado pelo `POST /v2/subscriptions/create
 - `GET /v2/subscriptions/get`: os filtros `externalId` e `customerId` não funcionavam. Agora `externalId` busca pelo `externalId` do checkout de assinatura que originou a assinatura, e `customerId` aceita o `cust_...`. O parâmetro `method` foi removido, porque não se aplica à assinatura. Quando o filtro casa mais de uma assinatura, a mais recente é retornada
 - `GET /v2/checkouts/get`, `GET /v2/payment-links/get` e `GET /v2/subscriptions/get` exigem ao menos um entre `id`, `externalId` e `customerId`. Antes, sem nenhum deles, a rota retornava um registro qualquer da loja; agora retorna `Provide id, externalId or customerId`
 - Um `customerId` inexistente no get e no list de checkouts retornava erro 500. Agora retorna `Billing not found` no get e lista vazia no list
-- As respostas do get de checkouts, links de pagamento e assinaturas ficavam em cache por até 1 hora, então o `status` podia aparecer desatualizado logo depois de um pagamento ou cancelamento. O cache agora dura 60 segundos, igual ao das listagens
+- As respostas do get de checkouts, links de pagamento, assinaturas e checkouts transparentes (`GET /v2/transparents/get`) ficavam em cache por até 1 hora, então o `status` podia aparecer desatualizado logo depois de um pagamento ou cancelamento. O cache agora dura 60 segundos, igual ao das listagens
+- Filtro `method` no get e no list de checkouts, links de pagamento e checkouts de assinatura: `method=PIX` só trazia checkouts que ofereciam **apenas** PIX. Agora traz todo checkout que oferece PIX, mesmo que ofereça outros métodos
+- Reembolso de cobrança de assinatura: `POST /v2/checkouts/refund` mandava usar `/v2/payment-links/refund`, e o `POST /v2/payment-links/refund` mandava usar `/v2/checkouts/refund`. As duas rotas agora retornam `Cobranças de assinatura não podem ser reembolsadas pela API v2.`
 
 **Exemplo:**
 
