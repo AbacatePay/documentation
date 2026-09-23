@@ -1260,7 +1260,9 @@ paths:
             example: cust_abc123xyz
         - name: method
           in: query
-          description: Método de pagamento
+          description: >-
+            Método de pagamento. Casa o checkout que oferece este método,
+            mesmo que ofereça outros também.
           required: false
           schema:
             type: string
@@ -1317,6 +1319,9 @@ paths:
         Reembolsa integralmente um Checkout pago (PIX ou Cartão). O valor
         reembolsado é igual ao valor original da transação — reembolsos
         parciais não são suportados.
+
+
+        Cobranças de assinatura não podem ser reembolsadas pela API v2.
       security:
         - bearerAuth: []
       requestBody:
@@ -1354,6 +1359,10 @@ paths:
       summary: Deletar um Checkout
       description: >
         Deleta um Checkout que ainda não foi pago.
+
+
+        Checkouts de assinatura não são excluídos por esta rota; use
+        `POST /subscriptions/checkouts/delete`.
       security:
         - bearerAuth: []
       parameters:
@@ -1670,7 +1679,9 @@ paths:
             example: cust_abc123xyz
         - name: method
           in: query
-          description: Filtrar por método de pagamento
+          description: >-
+            Filtrar por método de pagamento. Traz todo checkout que oferece
+            este método, mesmo que ofereça outros também.
           required: false
           schema:
             type: string
@@ -1763,7 +1774,9 @@ paths:
             example: cust_abc123xyz
         - name: method
           in: query
-          description: Filtrar por método de pagamento
+          description: >-
+            Filtrar por método de pagamento. Traz todo checkout que oferece
+            este método, mesmo que ofereça outros também.
           required: false
           schema:
             type: string
@@ -1839,7 +1852,9 @@ paths:
             example: cust_abc123xyz
         - name: method
           in: query
-          description: Método de pagamento
+          description: >-
+            Método de pagamento. Casa o checkout que oferece este método,
+            mesmo que ofereça outros também.
           required: false
           schema:
             type: string
@@ -1896,6 +1911,9 @@ paths:
         Reembolsa um pagamento realizado em um link de pagamento. O valor
         reembolsado é igual ao valor original da transação — reembolsos
         parciais não são suportados.
+
+
+        Cobranças de assinatura não podem ser reembolsadas pela API v2.
       security:
         - bearerAuth: []
       requestBody:
@@ -1933,6 +1951,10 @@ paths:
       summary: Deletar um link de pagamento
       description: >
         Deleta um link de pagamento que ainda não foi pago.
+
+
+        Checkouts de assinatura não são excluídos por esta rota; use
+        `POST /subscriptions/checkouts/delete`.
       security:
         - bearerAuth: []
       parameters:
@@ -3416,7 +3438,9 @@ paths:
             example: cust_abc123xyz
         - name: method
           in: query
-          description: Método de pagamento
+          description: >-
+            Método de pagamento. Casa o checkout que oferece este método,
+            mesmo que ofereça outros também.
           required: false
           schema:
             type: string
@@ -3515,7 +3539,9 @@ paths:
             example: cust_abc123xyz
         - name: method
           in: query
-          description: Filtrar por método de pagamento
+          description: >-
+            Filtrar por método de pagamento. Traz todo checkout que oferece
+            este método, mesmo que ofereça outros também.
           required: false
           schema:
             type: string
@@ -3545,6 +3571,52 @@ paths:
                     $ref: '#/components/schemas/PaginationCursor'
         '401':
           description: Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Token de autenticação inválido ou ausente.
+  /subscriptions/checkouts/delete:
+    post:
+      summary: Deletar um checkout de assinatura
+      description: >
+        Exclui um checkout de assinatura (`bill_...` com
+        `frequency: SUBSCRIPTION`), que deixa de aparecer nas listagens.
+
+
+        As assinaturas que o checkout já gerou continuam ativas. Para
+        encerrá-las, use `POST /subscriptions/cancel`.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: query
+          description: Identificador único do checkout de assinatura
+          required: true
+          schema:
+            type: string
+            example: bill_abc123xyz
+      responses:
+        '200':
+          description: Checkout de assinatura excluído com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Billing'
+                  error:
+                    type: string
+                    nullable: true
+                    example: null
+                  success:
+                    $ref: '#/components/schemas/Success'
+        '401':
+          description: Não autorizado. Falha na autenticação.
           content:
             application/json:
               schema:
