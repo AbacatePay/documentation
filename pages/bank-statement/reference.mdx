@@ -1,0 +1,129 @@
+---
+title: "Referência"
+description: "Consulte todas as movimentações de saldo da sua conta"
+icon: "book-open-cover"
+---
+
+O **extrato** reúne todas as transações que movimentaram o saldo da sua conta: pagamentos recebidos (PIX, cartão, boleto), saques, envios de PIX, estornos, taxas, antecipações e bloqueios por disputa. É o mesmo extrato que você vê no dashboard.
+
+Cada item do extrato é uma transação, e cada transação traz uma ou mais **movimentações** (`movements`). Um pagamento recebido, por exemplo, gera duas: a entrada do valor e a saída da taxa.
+
+## Estrutura
+
+Exemplo de resposta do [Listar extrato](/pages/bank-statement/list):
+
+```json
+{
+  "data": [
+    {
+      "id": "tran_abc123xyz",
+      "movements": [
+        {
+          "amount": 10000,
+          "kind": "DEPOSIT",
+          "method": "PIX",
+          "description": "Pagamento PIX",
+          "category": "transaction",
+          "balanceEffect": "credit"
+        },
+        {
+          "amount": 80,
+          "kind": "WITHDRAW",
+          "method": "INTERNAL",
+          "description": "Taxa da transação",
+          "category": "fee",
+          "balanceEffect": "debit"
+        }
+      ],
+      "currency": "BRL",
+      "createdAt": "2026-09-29T14:32:10.000Z",
+      "checkoutId": "bill_abc123xyz",
+      "paymentIntentId": "char_abc123xyz",
+      "referenceId": null,
+      "customer": {
+        "publicId": "cust_abc123xyz",
+        "name": "Maria Silva",
+        "email": "maria@exemplo.com",
+        "taxId": "123.456.789-01",
+        "cellphone": "(11) 99999-9999",
+        "zipCode": "01310-100"
+      }
+    }
+  ],
+  "pagination": {
+    "hasMore": true,
+    "next": "tran_abc123xyz",
+    "before": null
+  },
+  "success": true,
+  "error": null
+}
+```
+
+## Atributos
+
+| Atributo          | Tipo            | Descrição |
+| ----------------- | --------------- | --------- |
+| `id`              | string          | ID da transação na AbacatePay |
+| `movements`       | array           | Movimentações de saldo geradas pela transação (veja abaixo) |
+| `currency`        | string          | Moeda da transação (ex.: `BRL`) |
+| `createdAt`       | string          | Data/hora de criação (ISO 8601) |
+| `checkoutId`      | string \| null  | Checkout de origem, quando a transação veio de um pagamento; `null` em saques |
+| `paymentIntentId` | string \| null  | Cobrança de origem, quando existe; `null` em saques |
+| `referenceId`     | string \| null  | O `externalId` que você informou ao criar a operação (ex.: um saque ou PIX) |
+| `customer`        | object \| null  | Dados do cliente ou pagador, quando disponíveis (veja abaixo) |
+
+### Movimentações
+
+| Atributo        | Tipo   | Descrição |
+| --------------- | ------ | --------- |
+| `amount`        | number | Valor em centavos, sempre positivo (ex.: 10000 = R$ 100,00). O sentido vem de `balanceEffect` |
+| `kind`          | string | Tipo da movimentação (ex.: `DEPOSIT`, `WITHDRAW`, `CARD_APPROVED`) |
+| `method`        | string | Meio da transação: `PIX`, `PIX_QRCODE`, `CARD`, `BOLETO`, `TED` ou `INTERNAL` |
+| `description`   | string | Descrição legível, a mesma exibida no dashboard |
+| `category`      | string | Categoria da movimentação (veja valores abaixo) |
+| `balanceEffect` | string | Efeito no saldo disponível (veja valores abaixo) |
+
+**Valores de `category`:**
+
+| Valor         | Significado |
+| ------------- | ----------- |
+| `transaction` | Entrada ou movimentação ligada a um pagamento |
+| `withdrawal`  | Saque ou envio de PIX |
+| `refund`      | Estorno de um pagamento ao cliente |
+| `fee`         | Taxa cobrada pela AbacatePay |
+| `reversal`    | Desfazimento de uma movimentação anterior |
+
+**Valores de `balanceEffect`:**
+
+| Valor    | Significado |
+| -------- | ----------- |
+| `credit` | Soma ao saldo disponível |
+| `debit`  | Subtrai do saldo disponível |
+| `none`   | Não altera o saldo disponível. É o caso do recebível de cartão aprovado (`CARD_APPROVED`): o valor só entra no saldo disponível na liquidação, que aparece como outra transação |
+
+<Tip>
+  Para calcular o efeito de uma transação no seu saldo disponível, some os `amount` com `balanceEffect` igual a `credit` e subtraia os que têm `debit`.
+</Tip>
+
+### Cliente
+
+O objeto `customer` traz os dados do cliente vinculado à cobrança. Quando não há cliente cadastrado (por exemplo, um PIX recebido na sua chave), traz apenas `name` e `taxId` de quem pagou. Qualquer campo pode estar ausente, e o objeto é `null` quando não há nenhum dado.
+
+| Atributo    | Tipo   | Descrição |
+| ----------- | ------ | --------- |
+| `publicId`  | string | ID do cliente na AbacatePay |
+| `name`      | string | Nome |
+| `email`     | string | E-mail |
+| `taxId`     | string | CPF ou CNPJ |
+| `cellphone` | string | Celular |
+| `zipCode`   | string | CEP |
+
+## O que aparece no extrato
+
+Por padrão, o extrato mostra apenas transações que já afetaram o saldo:
+
+- Transações com status `PENDING` ficam de fora. Um PIX aguardando pagamento, por exemplo, só aparece depois de pago.
+- Movimentações internas que não alteram o saldo disponível, como a solicitação de antecipação, também não aparecem. A antecipação creditada aparece normalmente.
+
+A ordem é da transação mais recente para a mais antiga.

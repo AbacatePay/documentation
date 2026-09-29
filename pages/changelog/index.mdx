@@ -11,6 +11,19 @@ Feedbacks também são bem-vindos no nosso Discord (#dev).
 
 ## Atualizações Recentes
 
+<Update label="29 de Set, 2026">
+## Extrato na API
+
+A rota que traz todas as transações da conta agora está documentada: [Listar extrato](/pages/bank-statement/list), `GET /v2/bank-statement/list`.
+
+- Retorna tudo o que movimentou o saldo: pagamentos recebidos, saques, PIX enviados, estornos, taxas, antecipações e bloqueios por disputa.
+- Cada transação traz suas movimentações em `movements`, com `balanceEffect` (`credit`, `debit` ou `none`) indicando o efeito no saldo disponível.
+- Filtros: `status`, `method`, `kind`, `search` e período com `startDate`/`endDate`.
+- Requer a permissão `BANK_STATEMENT:READ` na chave de API.
+
+Veja a [referência do extrato](/pages/bank-statement/reference) para o formato completo.
+</Update>
+
 <Update label="23 de Set, 2026">
 ## Assinaturas: checkout e assinatura agora têm rotas separadas
 

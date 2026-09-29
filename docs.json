@@ -222,6 +222,10 @@
                 "pages": ["pages/pix/reference", "pages/pix/create", "pages/pix/get", "pages/pix/list"]
               },
               {
+                "group": "Extrato",
+                "pages": ["pages/bank-statement/reference", "pages/bank-statement/list"]
+              },
+              {
                 "group": "Loja",
                 "pages": ["pages/store/reference", "pages/store/get"]
               },

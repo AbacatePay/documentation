@@ -3024,6 +3024,106 @@ paths:
                       Mensagem de erro descrevendo o motivo da falha na
                       autenticação.
                     example: Token de autenticação inválido ou ausente.
+  /bank-statement/list:
+    get:
+      summary: Listar extrato
+      description: |
+        Retorna as transações que movimentaram o saldo da conta, da mais recente para a mais antiga. Cada item traz as movimentações geradas pela transação, como a entrada do valor e a saída da taxa.
+
+        Sem `status`, transações `PENDING` ficam de fora. Sem `kind`, movimentações internas que não alteram o saldo disponível ficam de fora. Informar um desses filtros substitui a regra padrão correspondente.
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/QueryAfter'
+        - $ref: '#/components/parameters/QueryBefore'
+        - $ref: '#/components/parameters/QueryLimit'
+        - $ref: '#/components/parameters/QueryStartDate'
+        - $ref: '#/components/parameters/QueryEndDate'
+        - name: status
+          in: query
+          description: Filtrar pelo status da transação.
+          required: false
+          schema:
+            type: string
+            enum:
+              - PENDING
+              - APPROVED
+              - EXPIRED
+              - CANCELLED
+              - COMPLETE
+              - REFUNDED
+              - REDEEMED
+              - UNDER_DISPUTE
+              - FAILED
+            example: COMPLETE
+        - name: method
+          in: query
+          description: Filtrar pelo meio da transação.
+          required: false
+          schema:
+            type: string
+            enum:
+              - PIX
+              - PIX_QRCODE
+              - CARD
+              - BOLETO
+              - TED
+              - INTERNAL
+            example: PIX
+        - name: kind
+          in: query
+          description: >-
+            Filtrar pelo tipo da transação. Os mais comuns são `DEPOSIT`
+            (pagamento recebido), `WITHDRAW` (saque ou PIX enviado), `REFUND`
+            (estorno), `CARD_APPROVED` (recebível de cartão aprovado),
+            `SWAP_INTERNAL_CREDIT_CARD_RECEIVED` (liquidação do cartão),
+            `ANTICIPATION_CREDITED` (antecipação creditada) e `PLUGIN_FEE`
+            (taxa de plugin).
+          required: false
+          schema:
+            type: string
+            example: DEPOSIT
+        - name: search
+          in: query
+          description: Busca pelo ID da transação. Aceita parte do ID e não diferencia maiúsculas de minúsculas.
+          required: false
+          schema:
+            type: string
+            example: tran_abc123
+      responses:
+        '200':
+          description: Extrato retornado com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    description: Transações do extrato.
+                    items:
+                      $ref: '#/components/schemas/BankStatementItem'
+                  success:
+                    $ref: '#/components/schemas/Success'
+                  error:
+                    type: string
+                    nullable: true
+                    example: null
+                  pagination:
+                    $ref: '#/components/schemas/PaginationCursor'
+        '401':
+          description: Não autorizado. Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: >-
+                      Mensagem de erro descrevendo o motivo da falha na
+                      autenticação.
+                    example: Token de autenticação inválido ou ausente.
   /subscriptions/create:
     post:
       summary: Criar uma nova assinatura (Checkout de assinatura)
@@ -4565,6 +4665,138 @@ components:
           type: string
           nullable: true
           description: Cursor para página anterior (usar em before).
+    BankStatementItem:
+      type: object
+      description: Transação do extrato com as movimentações de saldo que ela gerou.
+      additionalProperties: false
+      required:
+        - id
+        - movements
+        - currency
+        - createdAt
+        - checkoutId
+        - paymentIntentId
+        - referenceId
+        - customer
+      properties:
+        id:
+          type: string
+          description: ID da transação na AbacatePay.
+          example: tran_abc123xyz
+        movements:
+          type: array
+          description: Movimentações de saldo geradas pela transação. Um pagamento recebido gera a entrada do valor e a saída da taxa.
+          items:
+            $ref: '#/components/schemas/BankStatementMovement'
+        currency:
+          type: string
+          description: Moeda da transação.
+          example: BRL
+        createdAt:
+          type: string
+          format: date-time
+          description: Data/hora de criação (ISO 8601).
+          example: '2026-09-29T14:32:10.000Z'
+        checkoutId:
+          type: string
+          nullable: true
+          description: Checkout de origem, quando a transação veio de um pagamento. `null` em saques.
+          example: bill_abc123xyz
+        paymentIntentId:
+          type: string
+          nullable: true
+          description: Cobrança de origem, quando existe. `null` em saques.
+          example: char_abc123xyz
+        referenceId:
+          type: string
+          nullable: true
+          description: 'O `externalId` informado ao criar a operação (ex.: um saque ou PIX).'
+          example: null
+        customer:
+          type: object
+          nullable: true
+          description: >-
+            Cliente vinculado à cobrança. Sem cliente cadastrado, traz apenas
+            `name` e `taxId` de quem pagou. `null` quando não há nenhum dado.
+          additionalProperties: false
+          properties:
+            publicId:
+              type: string
+              description: ID do cliente na AbacatePay.
+              example: cust_abc123xyz
+            name:
+              type: string
+              example: Maria Silva
+            email:
+              type: string
+              example: maria@exemplo.com
+            taxId:
+              type: string
+              description: CPF ou CNPJ.
+              example: 123.456.789-01
+            cellphone:
+              type: string
+              example: (11) 99999-9999
+            zipCode:
+              type: string
+              example: 01310-100
+    BankStatementMovement:
+      type: object
+      description: Uma movimentação de saldo dentro de uma transação do extrato.
+      additionalProperties: false
+      required:
+        - amount
+        - kind
+        - method
+        - description
+        - category
+        - balanceEffect
+      properties:
+        amount:
+          type: integer
+          description: Valor em centavos, sempre positivo. O sentido vem de `balanceEffect`.
+          example: 10000
+        kind:
+          type: string
+          description: 'Tipo da movimentação (ex.: `DEPOSIT`, `WITHDRAW`, `CARD_APPROVED`).'
+          example: DEPOSIT
+        method:
+          type: string
+          enum:
+            - PIX
+            - PIX_QRCODE
+            - CARD
+            - BOLETO
+            - TED
+            - INTERNAL
+          example: PIX
+        description:
+          type: string
+          description: Descrição legível, a mesma exibida no dashboard.
+          example: Pagamento PIX
+        category:
+          type: string
+          enum:
+            - transaction
+            - withdrawal
+            - refund
+            - fee
+            - reversal
+          description: >-
+            `transaction` para entradas e movimentações de pagamento,
+            `withdrawal` para saques e PIX enviados, `refund` para estornos,
+            `fee` para taxas e `reversal` para desfazimentos.
+          example: transaction
+        balanceEffect:
+          type: string
+          enum:
+            - credit
+            - debit
+            - none
+          description: >-
+            Efeito no saldo disponível. `none` aparece no recebível de cartão
+            aprovado, que só entra no saldo disponível na liquidação.
+          example: credit
     BoletoInterest:
       type: object
       description: >-
