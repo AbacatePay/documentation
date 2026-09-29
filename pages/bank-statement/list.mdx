@@ -1,0 +1,18 @@
+---
+title: 'Listar extrato'
+openapi: 'GET /bank-statement/list'
+---
+
+Retorna todas as transações que movimentaram o saldo da sua conta, da mais recente para a mais antiga.
+
+<Card horizontal>
+  Requer a permissão `BANK_STATEMENT:READ`.
+</Card>
+
+Use `limit`, `after` e `before` para paginar e `startDate`/`endDate` (`YYYY-MM-DD`) para filtrar por data de criação. Consulte [Paginação e filtro por data](/pages/reference/introduction#paginação-e-filtro-por-data). O formato de cada item está na [referência do extrato](/pages/bank-statement/reference).
+
+Os filtros `status`, `method` e `kind` aceitam um valor por vez e se aplicam à transação, não às movimentações dentro dela.
+
+<Warning>
+  Sem `status`, o extrato esconde transações `PENDING`. Sem `kind`, esconde movimentações internas que não alteram o saldo disponível. Ao informar um desses filtros, a regra padrão correspondente deixa de valer: `status=PENDING`, por exemplo, retorna as transações pendentes.
+</Warning>
