@@ -26,7 +26,14 @@ Por baixo, o comando chama a mesma rota documentada em [Simular pagamento](/page
 POST /v2/transparents/simulate-payment?id=<charge-id>
 ```
 
-No output `text` e `table`, a CLI mostra `ID`, `Status` e `DevMode` da cobrança. Com `-o json`, ela imprime a resposta completa da API.
+```text
+🥑 Payment Simulated
+ID: pix_char_123456
+Status: PAID
+DevMode: true
+```
+
+Com `-v`, a CLI também mostra a requisição e a resposta completas da API.
 
 <Info>
 Depois da simulação, a cobrança passa para pago e os webhooks da sua conta são disparados normalmente — inclusive para quem estiver rodando `abacatepay listen`.

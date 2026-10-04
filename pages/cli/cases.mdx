@@ -48,22 +48,21 @@ Se sua aplicação rejeita a assinatura, confira se você está calculando o HMA
 
 ### Automação em CI/CD
 
-Em CI, use `--key` para autenticar sem navegador e `-o json` para ter output parseável.
+Em CI, use `--key` para autenticar sem navegador e confie no código de saída de cada comando.
 
 ```bash
+set -e
+
 # Autentica com a chave de dev mode guardada nos secrets do CI
 abacatepay login --key "$ABACATEPAY_DEV_API_KEY"
 
-# Cria a cobrança pela API (ex.: com o seu SDK ou curl) e simula o pagamento
-STATUS=$(abacatepay -o json payments simulate "$CHARGE_ID" | jq -r '.data.status')
-
-if [ "$STATUS" = "PAID" ]; then
-  echo "Pagamento simulado!"
-fi
+# Cria a cobrança pela API (ex.: com o seu SDK ou curl) e simula o pagamento.
+# Se a simulação falhar, o comando sai com código 1 e o job para aqui.
+abacatepay payments simulate "$CHARGE_ID"
 ```
 
 <Tip>
-Em scripts, sempre use `-o json`. O formato `text` pode mudar entre versões. Em caso de erro, o JSON tem o campo `error` e o processo sai com código `1`.
+Não interprete o texto da CLI em scripts — ele é feito para leitura humana e pode mudar entre versões. Para conferir o status da cobrança depois da simulação, consulte a API em [Checar status](/pages/transparents/check).
 </Tip>
 
 ---

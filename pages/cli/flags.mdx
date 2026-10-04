@@ -1,7 +1,7 @@
 ---
 title: 'Configuração'
 icon: 'sliders'
-description: 'Flags globais, formatos de output, credenciais e logs da AbacatePay CLI.'
+description: 'Flags globais, saída no terminal, credenciais e logs da AbacatePay CLI.'
 ---
 
 ## Flags globais
@@ -11,7 +11,6 @@ Flags disponíveis em todos os comandos:
 | Flag | Alias | Tipo | Padrão | Descrição |
 |------|-------|------|--------|-----------|
 | `--verbose` | `-v` | bool | `false` | Habilita logging detalhado (nível debug) e mostra requisições e respostas da API |
-| `--output` | `-o` | string | `text` | Formato de saída: `text`, `json`, `table` |
 | `--version` | - | bool | - | Mostra a versão instalada |
 | `--help` | `-h` | bool | - | Mostra a ajuda do comando |
 
@@ -21,48 +20,36 @@ A flag `--local` (`-l`) está obsoleta e não tem efeito. O ambiente (dev mode o
 
 ---
 
-## Formatos de output
+## Saída no terminal
 
-### text (padrão)
+A CLI é 100% TUI. Enquanto um comando roda, ela mostra um spinner com o que está fazendo; no fim, o spinner dá lugar ao resultado:
 
-Formato para uso interativo: mostra um indicador de progresso enquanto o comando roda e um resumo formatado no final.
-
-```bash
-abacatepay payments simulate pix_char_abc123xyz
+```text
+⠋ Simulating payment...
 ```
 
-### json
-
-Formato estruturado para scripts, pipelines e CI/CD. Sem animações nem cores.
-
-```bash
-abacatepay -o json logout
+```text
+🥑 Payment Simulated
+ID: pix_char_abc123xyz
+Status: PAID
+DevMode: true
 ```
 
-```json
-{
-  "title": "Signed out successfully",
-  "fields": {
-    "Profile": "default"
-  }
-}
+Erros aparecem no mesmo lugar, e o processo sai com código `1`:
+
+```text
+⚠️  Error: no active profile found
 ```
 
-Em caso de erro, o JSON tem o campo `error` e o processo sai com código `1`:
+O `listen` abre um painel interativo próprio. Veja [Painel interativo](./webhooks#painel-interativo).
 
-```json
-{
-  "error": "no active profile found"
-}
-```
+### Fora de um terminal
 
-### table
+Quando a saída não é um terminal (pipe, CI), a CLI não anima nada: imprime a mensagem de progresso uma vez e o resultado em linhas simples, com o mesmo conteúdo.
 
-Mostra o resultado como tabela.
-
-```bash
-abacatepay -o table payments simulate pix_char_abc123xyz
-```
+<Tip>
+Em scripts, use o código de saída do comando (`0` para sucesso, `1` para erro) em vez de interpretar o texto, que pode mudar entre versões.
+</Tip>
 
 ---
 

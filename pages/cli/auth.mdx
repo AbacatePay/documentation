@@ -42,23 +42,21 @@ Se o navegador não abrir sozinho, a CLI mostra o link de aprovação no termina
 
 A credencial é validada contra a API antes de ser salva. O perfil usado no login passa a ser o **perfil ativo**.
 
+Enquanto aguarda a aprovação (ou valida a chave), a CLI mostra um spinner. No fim, mostra o resultado:
+
 <CodeGroup>
-```json json
-{
-  "title": "Authenticated",
-  "fields": {
-    "Profile": "default",
-    "User": "Minha Loja"
-  }
-}
+```text Sucesso
+🥑 Authenticated
+Profile: default
+User: Minha Loja
 ```
 
-```json erro
-{
-  "error": "invalid API key"
-}
+```text Erro
+⚠️  Error: invalid API key
 ```
 </CodeGroup>
+
+Com `--key`, o título é `Welcome back`.
 
 <Note>
 O ambiente (dev mode ou produção) é definido pela API key, não por uma flag da CLI. Para testar com `listen` e `payments simulate`, use uma chave de dev mode.
@@ -76,16 +74,10 @@ abacatepay logout
 
 Alias: `abacatepay signout`.
 
-<CodeGroup>
-```json json
-{
-  "title": "Signed out successfully",
-  "fields": {
-    "Profile": "default"
-  }
-}
+```text
+🥑 Signed out successfully
+Profile: default
 ```
-</CodeGroup>
 
 Se houver outros perfis salvos, um deles passa a ser o perfil ativo. Se não houver, você precisa rodar `abacatepay login` de novo para usar os outros comandos.
 

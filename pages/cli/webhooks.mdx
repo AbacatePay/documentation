@@ -54,7 +54,19 @@ O secret na URL (`?webhookSecret=...`) não é adicionado pela CLI. Se sua rota 
 
 ### Painel interativo
 
-Em um terminal interativo com o output padrão (`text`), o `listen` abre um painel que mostra o status da conexão e a lista de eventos recebidos, com o status HTTP que sua aplicação devolveu.
+Em um terminal interativo, o `listen` abre um painel que mostra o status da conexão e a lista de eventos recebidos, com o status HTTP que sua aplicação devolveu.
+
+```text
+🥑 abacatepay listen
+● connected  forwarding to http://localhost:3000/webhooks/abacatepay
+
+14:32:07  --> transparent.completed
+14:32:07  <-- [200] transparent.completed
+
+↑/k up • ↓/j down • G latest • q quit
+```
+
+Cada evento gera duas linhas: `-->` quando chega da AbacatePay e `<--` com o status HTTP que sua aplicação devolveu (verde para `2xx`, vermelho para o resto). O painel guarda os últimos 500 eventos.
 
 | Tecla | Ação |
 |-------|------|
@@ -65,7 +77,7 @@ Em um terminal interativo com o output padrão (`text`), o `listen` abre um pain
 
 Com `-v`, o painel também mostra o JSON de cada evento.
 
-Quando a saída não é um terminal (pipe, CI) ou quando você usa `-o json` / `-o table`, o `listen` imprime uma linha por evento recebido e por encaminhamento, sem painel (com `-v`, também o JSON do evento). As mensagens de status vão para o `stderr`.
+Quando a saída não é um terminal (pipe, CI), o `listen` imprime uma linha por evento recebido e por encaminhamento, sem painel (com `-v`, também o JSON do evento). As mensagens de status vão para o `stderr`.
 
 ---
 
