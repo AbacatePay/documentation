@@ -1,293 +1,113 @@
 ---
 title: 'Autenticação & Perfis'
 icon: 'key'
-description: 'Comandos de login, logout, perfis múltiplos e gerenciamento de autenticação na AbacatePay CLI.'
+description: 'Login, logout e múltiplos perfis na AbacatePay CLI.'
 ---
 
-Comandos para gerenciar a autenticação e sessão na AbacatePay CLI.
+Comandos para autenticar a CLI na sua conta AbacatePay.
 
 ---
 
 ### `abacatepay login`
 
-Realiza a autenticação na AbacatePay. Abre o navegador para login via OAuth ou permite autenticação direta com API key.
+Autentica a CLI. Sem flags, abre o navegador para você aprovar o acesso; com `--key`, valida a API key informada direto.
 
 ```bash
 abacatepay login [flags]
 ```
 
-| Flag | Alias | Descrição | Padrão |
-|------|-------|-----------|--------|
-| `--name` | - | Nome do perfil a ser criado | `""` |
-| `--key` | - | Sua API key da AbacatePay | `""` |
-| `--local` | `-l` | Usa servidor de teste | `false` |
+| Flag | Descrição | Padrão |
+|------|-----------|--------|
+| `--name` | Nome do perfil onde a credencial será salva | `default` |
+| `--key` | API key da AbacatePay (pula o fluxo pelo navegador) | - |
 
-<Tip>
-Use `--name` para criar múltiplos perfis e alternar entre diferentes contas ou ambientes.
-</Tip>
+Alias: `abacatepay signin`.
 
 **Exemplos:**
 
 ```bash
-# Login interativo via navegador
+# Login pelo navegador
 abacatepay login
 
-# Login com API key específica
-abacatepay login --key "abc_prod_xxxxx"
+# Login com API key (útil em CI ou máquinas sem navegador)
+abacatepay login --key "sua_api_key"
 
-# Login criando um perfil nomeado
-abacatepay login --name producao --key "abc_prod_xxxxx"
+# Salvar em um perfil nomeado
+abacatepay login --name loja-teste --key "sua_api_key"
 ```
+
+<Info>
+Se o navegador não abrir sozinho, a CLI mostra o link de aprovação no terminal. Abra-o em qualquer navegador logado na sua conta e a CLI continua sozinha depois que você aprovar.
+</Info>
+
+A credencial é validada contra a API antes de ser salva. O perfil usado no login passa a ser o **perfil ativo**.
 
 <CodeGroup>
-```text text
-╭────────────────────────────╮
-│                            │
-│  🥑 Signed in successfully │
-│                            │
-│  Profile: default          │
-│  User: João Silva          │
-│  Email: joao@empresa.com   │
-│                            │
-╰────────────────────────────╯
-```
-
 ```json json
 {
-  "profile": "default",
-  "user": "João Silva",
-  "email": "joao@empresa.com",
-  "status": "authenticated"
+  "title": "Authenticated",
+  "fields": {
+    "Profile": "default",
+    "User": "Minha Loja"
+  }
 }
 ```
 
-```text table
-┌─────────┬──────────────────┐
-│ Profile │ default          │
-│ User    │ João Silva       │
-│ Email   │ joao@empresa.com │
-│ Status  │ Authenticated    │
-└─────────┴──────────────────┘
+```json erro
+{
+  "error": "invalid API key"
+}
 ```
 </CodeGroup>
+
+<Note>
+O ambiente (dev mode ou produção) é definido pela API key, não por uma flag da CLI. Para testar com `listen` e `payments simulate`, use uma chave de dev mode.
+</Note>
 
 ---
 
 ### `abacatepay logout`
 
-Encerra a sessão atual e remove as credenciais do perfil ativo.
+Remove a credencial do perfil ativo.
 
 ```bash
 abacatepay logout
 ```
 
-<CodeGroup>
-```text text
-╭─────────────────────────────╮
-│                             │
-│  🥑 Signed out successfully │
-│                             │
-│  Profile: default           │
-│                             │
-╰─────────────────────────────╯
-```
+Alias: `abacatepay signout`.
 
+<CodeGroup>
 ```json json
 {
   "title": "Signed out successfully",
-  "profile": "default"
+  "fields": {
+    "Profile": "default"
+  }
 }
 ```
 </CodeGroup>
 
-<Warning>
-Após o logout, você precisará fazer login novamente para usar comandos que requerem autenticação.
-</Warning>
-
----
-
-### `abacatepay whoami`
-
-Exibe informações do usuário autenticado e o perfil ativo.
-
-```bash
-abacatepay whoami
-```
-
-<CodeGroup>
-```text text
-╭───────────────────────────╮
-│                           │
-│  🥑 User Information      │
-│                           │
-│  Status: Authenticated    │
-│  Profile: salve3          │
-│  User: Mock User          │
-│  Email: mock@example.com  │
-│                           │
-│                           │
-╰───────────────────────────╯
-```
-
-```json json
-{
-  "profile": "salve3",
-  "user": "Mock User",
-  "email": "mock@example.com",
-  "status": "authenticated"
-}
-```
-
-```text table
-┌─────────┬──────────────────┐
-│ Profile │ salve3           │
-│ User    │ Mock User        │
-│ Email   │ mock@example.com │
-│ Status  │ Authenticated    │
-└─────────┴──────────────────┘
-```
-</CodeGroup>
-
----
-
-### `abacatepay status`
-
-Verifica o status da conexão e autenticação com a AbacatePay.
-
-```bash
-abacatepay status
-```
-
-<Tip>
-Use `abacatepay status` como diagnóstico rápido quando encontrar problemas de conectividade.
-</Tip>
-
-<CodeGroup>
-```text text
-╭────────────────────────────╮
-│                            │
-│  🥑 Connected successfully │
-│                            │
-│  Profile: default          │
-│  Status: Online            │
-│                            │
-╰────────────────────────────╯
-```
-
-```json json
-{
-  "profile": "default",
-  "status": "online"
-}
-```
-
-```text table
-┌─────────┬─────────┐
-│ Profile │ default │
-|─────────|─────────|
-│ Status  │ Online  │
-└─────────┴─────────┘
-```
-</CodeGroup>
+Se houver outros perfis salvos, um deles passa a ser o perfil ativo. Se não houver, você precisa rodar `abacatepay login` de novo para usar os outros comandos.
 
 ---
 
 ## Perfis
 
-Comandos para gerenciar múltiplos perfis de autenticação.
-
----
-
-### `abacatepay profile list`
-
-Lista todos os perfis configurados na máquina.
+Cada login fica salvo em um perfil. Use `--name` para manter mais de uma conta na mesma máquina:
 
 ```bash
-abacatepay profile list
+abacatepay login --name loja-a --key "chave_loja_a"
+abacatepay login --name loja-b --key "chave_loja_b"
 ```
 
-<CodeGroup>
-```text text
-✓ Configured Profiles
-
-  * default (active)
-    producao
-    staging
-```
-
-```json json
-{
-  "profiles": [
-    {
-      "name": "default",
-      "key": "abc_prod..."
-    },
-    {
-      "name": "producao",
-      "key": "abc_prod..."
-    },
-    {
-      "name": "staging",
-      "key": "abc_dev..."
-    }
-  ],
-  "active": "default"
-}
-```
-
-```text table
-┌───────────┬────────────┬────────┐
-│ Name      │ API Key    │ Active │
-├───────────┼────────────┼────────┤
-│ default   │ abc_prod...│ 🥑     │
-│ producao  │ abc_prod...│        │
-│ staging   │ abc_dev... │        │
-└───────────┴────────────┴────────┘
-```
-</CodeGroup>
-
----
-
-### `abacatepay profile delete`
-
-Remove um perfil salvo. Não é possível remover o perfil ativo.
+Os comandos sempre usam o **perfil ativo**, que é o do último login. Para voltar a usar outro perfil, faça login nele de novo:
 
 ```bash
-abacatepay profile delete <name>
-```
-
-```bash
-abacatepay profile delete staging
-```
-
-```text
-Profile 'staging' successfully removed.
-```
-
-<Warning>
-Não é possível deletar o perfil ativo. Use `abacatepay switch` para mudar para outro perfil antes de deletar.
-</Warning>
-
----
-
-### `abacatepay switch`
-
-Alterna para outro perfil existente.
-
-```bash
-abacatepay switch <name>
+abacatepay login --name loja-a --key "chave_loja_a"
 ```
 
 <Tip>
-Requer conexão com a internet para verificar o status online.
+Fazer login em um perfil que já existe substitui a credencial salva nele.
 </Tip>
 
-```bash
-abacatepay switch producao
-```
-
-```text
-Now using profile: producao
-```
-
----
+As credenciais ficam no keyring do sistema operacional. Veja [Configuração](./flags#credenciais) para detalhes.
