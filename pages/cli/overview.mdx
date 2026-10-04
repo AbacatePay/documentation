@@ -1,40 +1,40 @@
 ---
 title: 'Visão Geral'
 icon: 'terminal'
-description: 'Ferramenta oficial de linha de comando da AbacatePay para desenvolvimento, testes e automações.'
+description: 'Ferramenta oficial de linha de comando da AbacatePay para autenticar, receber webhooks e simular pagamentos em dev mode.'
 ---
 
-A **AbacatePay CLI** é a ferramenta oficial de linha de comando para interagir com a plataforma AbacatePay diretamente do terminal.
+A **AbacatePay CLI** é a ferramenta oficial de linha de comando para testar sua integração com a AbacatePay direto do terminal.
 
-Projetada para **desenvolvedores**, permite criar cobranças, escutar webhooks, simular pagamentos e automatizar fluxos — tudo sem sair do terminal.
+Com ela você recebe na sua máquina os webhooks da sua conta em dev mode e simula o pagamento de cobranças — sem precisar expor sua aplicação local na internet.
 
 ---
 
 ## Principais Capacidades
 
-<CardGroup cols={3}>
+<CardGroup cols={2}>
   <Card title="Autenticação" icon="key" href="./auth">
-    Login via OAuth, múltiplos perfis e gerenciamento de sessões.
+    Login pelo navegador ou com API key, com múltiplos perfis.
   </Card>
 
   <Card title="Webhooks" icon="webhook" href="./webhooks">
-    Escute, encaminhe e depure webhooks em tempo real.
+    Receba eventos de dev mode e encaminhe para sua aplicação local.
   </Card>
 
   <Card title="Pagamentos" icon="wallet" href="./payments">
-    Crie, consulte e simule cobranças pelo terminal.
-  </Card>
-
-  <Card title="Automação" icon="gear" href="./cases">
-    Output em JSON, não-interativo e scriptável.
+    Simule o pagamento de cobranças transparentes em dev mode.
   </Card>
 
   <Card title="Configuração" icon="sliders" href="./flags">
-    Flags globais, formatos de output e ambientes.
+    Flags globais, saída no terminal, credenciais e logs.
   </Card>
 
   <Card title="Utilitários" icon="wrench" href="./utils">
-    Verificação de webhooks, atualização e debugging.
+    Versão instalada e atualização da CLI.
+  </Card>
+
+  <Card title="Casos de Uso" icon="gear" href="./cases">
+    Fluxos práticos de desenvolvimento e automação.
   </Card>
 </CardGroup>
 
@@ -42,17 +42,31 @@ Projetada para **desenvolvedores**, permite criar cobranças, escutar webhooks, 
 
 ## Instalação
 
-### Go (recomendado)
+### Script de instalação (Linux e macOS)
 
 ```bash
-go install github.com/AbacatePay/abacatepay-cli@latest
+curl -fsSL https://abacatepay.com/install.sh | sh
 ```
 
-### Homebrew (macOS / Linux)
+Baixa o binário `abacatepay` do último release publicado, valida o checksum e instala em `/usr/local/bin`. Para instalar em outro diretório, use `ABACATEPAY_INSTALL_DIR`:
 
 ```bash
-brew install --build-from-source github.com/AbacatePay/abacatepay-cli
+curl -fsSL https://abacatepay.com/install.sh | ABACATEPAY_INSTALL_DIR="$HOME/.local/bin" sh
 ```
+
+### Go
+
+```bash
+go install github.com/AbacatePay/abacatepay-cli/cmd/abacatepay@latest
+```
+
+<Note>
+Use o caminho `.../cmd/abacatepay`. O comando `go install github.com/AbacatePay/abacatepay-cli@latest` também funciona, mas instala o binário com o nome `abacatepay-cli`.
+</Note>
+
+### Binários prontos
+
+Os [releases no GitHub](https://github.com/AbacatePay/abacatepay-cli/releases) publicam binários para Linux, macOS e Windows, nas arquiteturas `amd64` e `arm64`.
 
 **Verificar instalação:**
 
@@ -60,72 +74,60 @@ brew install --build-from-source github.com/AbacatePay/abacatepay-cli
 abacatepay --version
 ```
 
+---
 
+## Primeiros passos
 
 <Steps>
   <Step title="Autentique-se">
     ```bash
     abacatepay login
     ```
-    O navegador abrirá para autenticação OAuth. Após autorizar, informe a URL do seu servidor local para receber webhooks.
+    O navegador abrirá para você aprovar o acesso da CLI na sua conta.
   </Step>
 
   <Step title="Inicie o listener">
     ```bash
     abacatepay listen --forward-to http://localhost:3000/webhooks/abacatepay
     ```
-    Você também pode rodar apenas `abacatepay listen` para configurar o encaminhamento via menu interativo.
+    Se você rodar apenas `abacatepay listen`, a CLI pergunta para qual URL encaminhar os eventos.
   </Step>
 
   <Step title="Crie uma cobrança de teste">
+    Crie uma [cobrança transparente](/pages/transparents/create) com uma chave de dev mode — pela API ou por um dos [SDKs](/pages/sdks/sdks) — e anote o `id` retornado.
+  </Step>
+
+  <Step title="Simule o pagamento">
     Em outro terminal:
     ```bash
-    abacatepay payments create pix
+    abacatepay payments simulate <charge-id>
     ```
-    Você também pode rodar apenas `abacatepay payments create` para escolher via menu, ou usar a flag `-i` para preencher os dados manualmente.
+    O webhook do pagamento aparece no terminal do `listen` e é encaminhado para sua aplicação.
   </Step>
 </Steps>
 
 ---
 
-## Design & Filosofia
+## Escopo atual
 
-A AbacatePay CLI foi projetada para ser:
+A CLI cobre o ciclo de desenvolvimento local com a API v2:
 
-- **Explícita** — Nada de mágica escondida
-- **Scriptável** — Output estruturado e previsível
-- **Compatível com CI/CD** — Totalmente não-interativa com flags
-- **Rápida** — Inicialização rápida e footprint mínimo
+- login e logout;
+- receber webhooks de dev mode e encaminhar para sua aplicação;
+- simular o pagamento de cobranças transparentes em dev mode;
+- atualizar a própria CLI.
 
-<CardGroup cols={2}>
-  <Card title="Unix-friendly" icon="terminal">
-    Output simples, fácil de parsear e integrar.
-  </Card>
-  <Card title="Sem dependências pesadas" icon="feather">
-    Binário único, sem runtime adicional.
-  </Card>
-</CardGroup>
+<Info>
+A CLI só recebe eventos de dev mode. Eventos de produção nunca são enviados para a CLI.
+</Info>
 
-
+---
 
 <CardGroup cols={2}>
-  <Card title="REST Client" icon="repeat" href="../ecosystem/rest">
-    Camada HTTP leve e tipada para integrações avançadas.
-  </Card>
-  <Card title="SDKs Oficiais" icon="boxes-stacked" href="../sdks">
+  <Card title="SDKs Oficiais" icon="boxes-stacked" href="/pages/sdks/sdks">
     Bibliotecas oficiais para diferentes linguagens.
   </Card>
-</CardGroup>
-
-<CardGroup cols={2}>
-  <Card title="Repositório Open Source" icon="github" href="https://github.com/abacatepay/abacatepay-cli">
+  <Card title="Repositório Open Source" icon="github" href="https://github.com/AbacatePay/abacatepay-cli">
     Código-fonte, issues e contribuições.
   </Card>
-  <Card title="Ecossistema AbacatePay" icon="boxes-stacked" href="../ecosystem">
-    Veja o ecossistema completo da AbacatePay.
-  </Card>
 </CardGroup>
-
-<Card title="Open source de verdade" icon="heart">
-A AbacatePay CLI é mantida pela equipe AbacatePay e pela comunidade.
-</Card>
