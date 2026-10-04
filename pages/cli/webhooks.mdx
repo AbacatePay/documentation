@@ -60,13 +60,13 @@ Em um terminal interativo, o `listen` abre um painel que mostra o status da cone
 🥑 abacatepay listen
 ● connected  forwarding to http://localhost:3000/webhooks/abacatepay
 
-14:32:07  --> transparent.completed
+14:32:07  --> transparent.completed [char_xyz789]
 14:32:07  <-- [200] transparent.completed
 
 ↑/k up • ↓/j down • G latest • q quit
 ```
 
-Cada evento gera duas linhas: `-->` quando chega da AbacatePay e `<--` com o status HTTP que sua aplicação devolveu (verde para `2xx`, vermelho para o resto). O painel guarda os últimos 500 eventos.
+Cada evento gera duas linhas: `-->` quando chega da AbacatePay, com o ID do recurso (cobrança, checkout, assinatura etc.), e `<--` com o status HTTP que sua aplicação devolveu (verde para `2xx`, vermelho para o resto). O painel guarda os últimos 500 eventos.
 
 | Tecla | Ação |
 |-------|------|
