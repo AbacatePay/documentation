@@ -9,11 +9,11 @@ icon: 'apple'
 </Card>
 
 <Warning>
-  **SDK legado (API v1).** Este SDK fala com a API v1 e só funciona com uma chave criada na versão **v1**, que o dashboard marca como "Indisponível em breve". Com uma chave v2, que é a padrão, toda chamada recebe `401` com `API key version mismatch`. Para integrar com a API v2, use os SDKs de [Node.js](/pages/sdks/nodejs) ou [Ruby](/pages/sdks/ruby), ou chame a [API](/pages/reference/introduction) direto.
+  Este SDK usa a API v1 e precisa de uma chave da v1. Para a API v2, use o SDK de [Node.js](/pages/sdks/nodejs) ou [Ruby](/pages/sdks/ruby).
 </Warning>
 
 <Warning>
-  **Use só no servidor.** A chave de API é secreta e pode ter permissão para sacar dinheiro da conta (`WITHDRAW:CREATE`). Nunca a coloque dentro de um app Android ou iOS: quem descompilar o app consegue extrair a chave. Rode o SDK no seu backend e faça o app conversar com ele.
+  Use este SDK só no servidor: a chave de API é secreta e não pode ir dentro de um app iOS.
 </Warning>
 
 ## Pré-requisitos
