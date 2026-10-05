@@ -122,7 +122,7 @@ Notas importantes:
 
 ## Optional
 
-- [Public MRR – Referência](https://docs.abacatepay.com/pages/trustMRR/reference): Métricas de receita da loja da credencial (TrustMRR). Autenticação: na v2, chave de API com `STORE:READ`; na v1, o token `mrr_` do app Trust MRR.
+- [Public MRR – Referência](https://docs.abacatepay.com/pages/trustMRR/reference): Métricas de receita da loja (TrustMRR), na v1 e na v2. Autenticação: o token `mrr_` gerado no app Trust MRR.
 - [GET /public-mrr/mrr](https://docs.abacatepay.com/pages/trustMRR/mrr): Retorna o MRR (Monthly Recurring Revenue) e o total de assinaturas ativas, como objetos `{ currency, value }`.
 - [GET /public-mrr/merchant-info](https://docs.abacatepay.com/pages/trustMRR/get): Retorna id, nome, site, data de criação e país da loja.
 - [GET /public-mrr/revenue](https://docs.abacatepay.com/pages/trustMRR/list): Retorna a receita da loja por período (`startDate` e `endDate` obrigatórios).
