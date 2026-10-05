@@ -727,7 +727,7 @@ paths:
   /public-mrr/merchant-info:
     get:
       summary: Obter informações do merchant
-      description: Retorna informações básicas da loja (nome, website e data de criação).
+      description: Retorna informações básicas da loja (ID, nome, website, data de criação e país). Aceita o token `mrr_` do app Trust MRR ou uma chave de API da v1 com a permissão `STORE:READ`.
       security:
         - bearerAuth: []
       responses:
@@ -758,7 +758,11 @@ paths:
                         format: date-time
                         description: Data de criação da loja
                         example: '2024-12-06T18:53:31.756Z'
-                    required: ['id', 'name', 'website', 'createdAt']
+                      country:
+                        type: string
+                        description: País da loja
+                        example: BR
+                    required: ['id', 'name', 'website', 'createdAt', 'country']
                     additionalProperties: false
                   error:
                     type: 'null'
@@ -773,11 +777,11 @@ paths:
                   error:
                     type: string
                     description: Mensagem de erro descrevendo o motivo da falha na autenticação.
-                    example: 'Token de autenticação inválido ou ausente.'
+                    example: 'Unauthorized'
   /public-mrr/mrr:
     get:
       summary: Obter MRR (Monthly Recurring Revenue)
-      description: Retorna o MRR (receita recorrente mensal) e o total de assinaturas ativas da loja.
+      description: Retorna o MRR (receita recorrente mensal) e o total de assinaturas ativas da loja. Aceita o token `mrr_` do app Trust MRR ou uma chave de API da v1 com a permissão `STORE:READ`.
       security:
         - bearerAuth: []
       responses:
@@ -793,7 +797,7 @@ paths:
                     properties:
                       mrr:
                         type: object
-                        description: Receita recorrente mensal. O valor em centavos fica em `value` (0 indica que não há receita recorrente).
+                        description: Receita recorrente mensal das assinaturas pagantes. O valor em centavos fica em `value`; cada assinatura entra com o valor de um mês (a anual conta 1/12, a trimestral 1/3). 0 indica que não há receita recorrente.
                         required: ['currency', 'value']
                         properties:
                           currency:
@@ -804,7 +808,7 @@ paths:
                             example: 129900
                       totalActiveSubscriptions:
                         type: object
-                        description: Total de assinaturas ativas. A quantidade fica em `value`.
+                        description: Assinaturas ativas, incluindo as em período de teste. A quantidade fica em `value`.
                         required: ['currency', 'value']
                         properties:
                           currency:
@@ -828,11 +832,11 @@ paths:
                   error:
                     type: string
                     description: Mensagem de erro descrevendo o motivo da falha na autenticação.
-                    example: 'Token de autenticação inválido ou ausente.'
+                    example: 'Unauthorized'
   /public-mrr/revenue:
     get:
       summary: Obter receita por período
-      description: Retorna a receita total, total de transações e transações por dia em um período específico. Os dados são cacheados por 1 hora (3600 segundos) para melhor performance. A data de fim deve ser posterior à data de início.
+      description: Retorna a receita total, total de transações e transações por dia em um período específico. Os dados são cacheados por 60 segundos. A data de fim deve ser posterior à data de início.
       security:
         - bearerAuth: []
       parameters:
@@ -909,7 +913,7 @@ paths:
                   error:
                     type: string
                     description: Mensagem de erro descrevendo o problema de validação.
-                    example: 'Start date and end date are required'
+                    example: 'End date must be after start date'
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -920,7 +924,7 @@ paths:
                   error:
                     type: string
                     description: Mensagem de erro descrevendo o motivo da falha na autenticação.
-                    example: 'Token de autenticação inválido ou ausente.'
+                    example: 'Unauthorized'
 components:
   schemas:
     Customer:

@@ -231,7 +231,7 @@
               },
               {
                 "group": "Public MRR",
-                "pages": ["pages/trustMRR/reference", "pages/trustMRR/mrr", "pages/trustMRR/get", "pages/trustMRR/list"]
+                "pages": ["pages/trustMRR/reference", "pages/trustMRR/mrr", "pages/trustMRR/mrr-by-day", "pages/trustMRR/get", "pages/trustMRR/list"]
               }
             ]
           },
