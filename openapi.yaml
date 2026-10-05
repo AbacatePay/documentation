@@ -2541,13 +2541,9 @@ paths:
                         type: string
                         description: Status atual da transação.
                         enum:
-                          - PENDING
-                          - EXPIRED
-                          - CANCELLED
                           - COMPLETE
-                          - REFUNDED
                           - FAILED
-                        example: PENDING
+                        example: COMPLETE
                       devMode:
                         type: boolean
                         description: >-
@@ -2557,9 +2553,8 @@ paths:
                       receiptUrl:
                         type: string
                         format: uri
-                        nullable: true
                         description: URL do comprovante da transação.
-                        example: null
+                        example: 'https://app.abacatepay.com/receipt/tran_abc123xyz'
                       amount:
                         type: number
                         description: Valor da transação em centavos.
@@ -2644,11 +2639,7 @@ paths:
                         type: string
                         description: Status atual da transação.
                         enum:
-                          - PENDING
-                          - EXPIRED
-                          - CANCELLED
                           - COMPLETE
-                          - REFUNDED
                           - FAILED
                         example: COMPLETE
                       devMode:
@@ -2660,7 +2651,6 @@ paths:
                       receiptUrl:
                         type: string
                         format: uri
-                        nullable: true
                         description: URL do comprovante da transação.
                         example: 'https://app.abacatepay.com/receipt/tran_abc123xyz'
                       amount:
@@ -5608,13 +5598,9 @@ components:
           type: string
           description: Status atual da transação.
           enum:
-            - PENDING
-            - EXPIRED
-            - CANCELLED
             - COMPLETE
-            - REFUNDED
             - FAILED
-          example: PENDING
+          example: COMPLETE
         devMode:
           type: boolean
           description: Indica se a transação foi criada em ambiente de testes.
@@ -5676,13 +5662,9 @@ components:
           type: string
           description: Status atual da transação.
           enum:
-            - PENDING
-            - EXPIRED
-            - CANCELLED
             - COMPLETE
-            - REFUNDED
             - FAILED
-          example: PENDING
+          example: COMPLETE
         devMode:
           type: boolean
           description: Indica se a transação foi criada em ambiente de testes.

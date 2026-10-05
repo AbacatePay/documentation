@@ -85,8 +85,8 @@ Notas importantes:
 ## Saques (Payouts)
 
 - [Referência de Saques](https://docs.abacatepay.com/pages/payouts/reference): Saque do saldo da conta para chave PIX de sua titularidade. Mínimo: R$ 3,50. Taxa: R$ 0,80 por saque. Limite: 1 saque/minuto. Processamento instantâneo 24/7.
-- [POST /payouts/create](https://docs.abacatepay.com/pages/payouts/create): Inicia um saque. Status inicial: PENDING.
-- [GET /payouts/get](https://docs.abacatepay.com/pages/payouts/get): Busca um saque pelo ID. `receiptUrl` disponível quando status é COMPLETE.
+- [POST /payouts/create](https://docs.abacatepay.com/pages/payouts/create): Cria um saque. Status: `COMPLETE` na criação; `FAILED` se o envio falhar (o valor volta para o saldo).
+- [GET /payouts/get](https://docs.abacatepay.com/pages/payouts/get): Busca um saque pelo ID. O comprovante fica em `receiptUrl`.
 - [GET /payouts/list](https://docs.abacatepay.com/pages/payouts/list): Lista os saques.
 
 ## Transferências PIX (enviar)
