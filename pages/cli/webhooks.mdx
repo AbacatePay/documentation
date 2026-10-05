@@ -32,6 +32,12 @@ abacatepay listen
 A CLI só recebe eventos de **dev mode**. Eventos de produção nunca chegam no `listen`. Para testar, use uma API key de dev mode e gere eventos com [`payments simulate`](./payments) ou pela API.
 </Warning>
 
+<Warning>
+O `listen` só recebe eventos que têm um **webhook de dev mode cadastrado** na sua conta. Antes de testar, crie no dashboard, com o Modo Teste ligado, um [webhook](/pages/webhooks) na versão **v2** assinando os eventos que você quer receber. A URL pode ser qualquer endereço HTTPS público: ela não precisa ser a sua aplicação local.
+
+O evento chega no `listen` depois da primeira tentativa de entrega para essa URL: na hora, se ela responder rápido, ou em até 30 segundos, se não responder. Se houver mais de um webhook de dev mode assinando o mesmo evento, o `listen` recebe o evento uma vez para cada um.
+</Warning>
+
 O `listen` precisa de uma sessão ativa — rode [`abacatepay login`](./auth) antes.
 
 ---

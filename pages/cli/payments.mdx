@@ -36,7 +36,7 @@ DevMode: true
 Com `-v`, a CLI também mostra a requisição e a resposta completas da API.
 
 <Info>
-Depois da simulação, a cobrança passa para pago e os webhooks da sua conta são disparados normalmente — inclusive para quem estiver rodando `abacatepay listen`.
+Depois da simulação, a cobrança passa para pago e os webhooks da sua conta são disparados normalmente. O evento também aparece para quem estiver rodando `abacatepay listen`, desde que exista um webhook de dev mode cadastrado assinando esse evento (veja [Webhooks](./webhooks)).
 </Info>
 
 <Warning>

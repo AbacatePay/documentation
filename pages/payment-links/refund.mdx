@@ -10,31 +10,38 @@ Reembolsa integralmente um pagamento realizado em um link de pagamento. O valor 
 </Warning>
 
 <Card title="Obrigatório" horizontal>
-  Apenas `id` é obrigatório — o ID público do pagamento (não do link). Use o ID da cobrança/transação gerada quando o cliente pagou.
+  Apenas `id` é obrigatório: o ID da cobrança de um pagamento específico, não o `bill_...` do link.
 </Card>
 
 O campo `id` aceita:
 
 | Prefixo | Recurso |
 |---|---|
-| `bill_...` | ID público do pagamento (billing gerado quando o cliente pagou) |
-| `char_...`, `pix_char_...`, `card_...` | ID público do payment intent (charge) |
+| `pix_char_...` | Pagamento do link feito via PIX |
+| `card_...` | Pagamento do link feito no cartão |
+| `char_...` | Cobrança (formato genérico) |
+
+<Warning>
+  O `bill_...` do link é recusado com `Use o publicId da cobrança individual (char_, pix_char_ ou card_), não do link de pagamento.`
+</Warning>
 
 <Note>
-Reembolsos atuam sobre uma **transação específica**, não sobre o link como um todo. Se o mesmo link recebeu múltiplos pagamentos, cada um precisa ser reembolsado individualmente.
+Reembolsos atuam sobre um **pagamento específico**, não sobre o link como um todo. Se o mesmo link recebeu vários pagamentos, cada um precisa ser reembolsado individualmente.
+
+O ID de cada pagamento aparece no dashboard, em **Links de pagamento** → o link → transações. Por lá você também pode reembolsar direto. Hoje esse ID não vem no webhook `checkout.completed`.
 </Note>
 
 **Exemplo mínimo:**
 ```json
 {
-  "id": "bill_link789xyz"
+  "id": "pix_char_abc123xyz"
 }
 ```
 
 **Exemplo com motivo:**
 ```json
 {
-  "id": "bill_link789xyz",
+  "id": "pix_char_abc123xyz",
   "reason": "Cobrança duplicada."
 }
 ```
@@ -42,14 +49,23 @@ Reembolsos atuam sobre uma **transação específica**, não sobre o link como u
 **Resposta:**
 ```json
 {
-  "data": { "refundPublicId": "tran_refund789xyz" },
+  "data": {
+    "id": "tran_abc123xyz",
+    "status": "COMPLETE",
+    "amount": 10000,
+    "reason": "Cobrança duplicada.",
+    "originalId": "pix_char_abc123xyz",
+    "createdAt": "2026-10-05T14:30:00.000Z"
+  },
   "success": true,
   "error": null
 }
 ```
 
+`id` é a transação de reembolso, `originalId` repete o `id` enviado e `reason` vem `null` quando não é informado.
+
 <Tip title="Idempotência" horizontal>
-Chamar o endpoint para o mesmo `id` retorna sempre o mesmo `refundPublicId` — não cria reembolsos duplicados.
+Uma nova chamada para um pagamento já reembolsado não cria outro reembolso: a API retorna o erro `Esta cobrança já foi reembolsada.` (HTTP 400). Trate esse erro como "já reembolsado".
 </Tip>
 
 ---
@@ -68,7 +84,7 @@ Chamar o endpoint para o mesmo `id` retorna sempre o mesmo `refundPublicId` — 
   - A transação original vira `REFUNDED`.
   - O billing daquele pagamento vira `REFUNDED`.
   - O payment intent vira `REFUNDED`.
-  - É criada uma nova transação `WITHDRAW` representando o reembolso (retornada em `refundPublicId`).
+  - É criada uma nova transação que representa o reembolso; o ID dela volta no campo `id` da resposta.
 
 <Note>
 Ao concluir, é disparado o webhook [`checkout.refunded`](/pages/webhooks/events/checkout). Configure seu endpoint em [Webhooks](/pages/webhooks/create) para receber a notificação.
@@ -108,7 +124,7 @@ curl -X POST https://api.abacatepay.com/v2/payment-links/refund \
   -H "Authorization: Bearer $ABACATE_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "id": "bill_link789xyz",
+    "id": "pix_char_abc123xyz",
     "reason": "Cobrança duplicada."
   }'
 ```

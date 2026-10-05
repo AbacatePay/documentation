@@ -24,6 +24,27 @@ icon: 'receipt'
   As taxas de cartão incidem sobre o **valor total da transação**. O valor fixo de R$ 0,60 é cobrado independentemente do valor.
 </Info>
 
+### Cartão de crédito no plano de recebimento em D+1
+
+Ao ativar o cartão hoje, sua conta entra no plano de recebimento em **D+1**: você recebe o valor total da venda em D+1, mesmo quando ela é parcelada. Nesse plano, além da taxa da tabela acima, cada venda paga a **antecipação de 1,99% ao mês** pelos meses de recebimento adiantados. A taxa efetiva fica assim:
+
+| Parcelas | Taxa efetiva |
+|----------|--------------|
+| 1x | 5,42% + R$ 0,60 |
+| 2x | 6,92% + R$ 0,60 |
+| 3x | 7,91% + R$ 0,60 |
+| 4x | 8,91% + R$ 0,60 |
+| 5x | 9,90% + R$ 0,60 |
+| 6x | 10,90% + R$ 0,60 |
+| 7x | 12,39% + R$ 0,60 |
+| 8x | 13,39% + R$ 0,60 |
+| 9x | 14,38% + R$ 0,60 |
+| 10x | 15,38% + R$ 0,60 |
+| 11x | 16,37% + R$ 0,60 |
+| 12x | 17,37% + R$ 0,60 |
+
+Contas com outro plano de recebimento, ativadas antes dos planos, pagam outra combinação de taxa e antecipação. A taxa exata da sua conta aparece no dashboard em **Perfil → Taxas**.
+
 ---
 
 ## Sacar dinheiro
@@ -46,11 +67,11 @@ icon: 'receipt'
 
 ## Antecipação de recebíveis
 
-Recebíveis de cartão de crédito têm prazo de liquidação. Se você quiser antecipar e receber antes do prazo, é possível mediante taxa:
+No plano de recebimento em D+1, a antecipação já é automática e está na taxa efetiva acima. Em contas fora desse plano, os recebíveis de cartão têm prazo de liquidação, e você pode antecipar manualmente mediante taxa:
 
 | | Taxa |
 |--|------|
-| Antecipação de recebíveis de cartão | 1,50% ao mês |
+| Antecipação manual de recebíveis de cartão | 1,50% ao mês |
 
 ---
 
@@ -76,7 +97,7 @@ O campo `platformFee` nas respostas da API mostra exatamente quanto foi desconta
   </Accordion>
 
   <Accordion title="Como funciona o parcelamento para mim como vendedor?">
-    Você recebe cada parcela individualmente conforme a operadora de cartão a liquida. Se o cliente parcelou em 10x, você recebe 10 créditos separados ao longo dos meses — não o valor total de uma vez.
+    Depende do plano de recebimento. No plano em D+1, padrão das ativações novas, você recebe o valor total da venda em D+1, com a antecipação já descontada (veja a tabela de taxa efetiva). Nos outros planos, cada parcela é liquidada no seu prazo, a menos que você antecipe.
   </Accordion>
 
   <Accordion title="O contador de saques mensais reinicia todo mês?">

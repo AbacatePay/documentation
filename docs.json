@@ -243,20 +243,20 @@
                 "pages": ["pages/sdks/sdks"]
               },
               {
-                "group": "Backend",
+                "group": "API v2",
                 "pages": [
                   "pages/sdks/nodejs",
+                  "pages/sdks/ruby"
+                ]
+              },
+              {
+                "group": "API v1 (legado)",
+                "pages": [
                   "pages/sdks/python",
                   "pages/sdks/go",
                   "pages/sdks/java",
                   "pages/sdks/php",
-                  "pages/sdks/ruby",
-                  "pages/sdks/rust"
-                ]
-              },
-              {
-                "group": "Mobile",
-                "pages": [
+                  "pages/sdks/rust",
                   "pages/sdks/kotlin",
                   "pages/sdks/swift"
                 ]

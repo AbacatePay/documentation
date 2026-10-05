@@ -792,13 +792,27 @@ paths:
                     type: object
                     properties:
                       mrr:
-                        type: number
-                        description: Receita recorrente mensal em centavos. Valor 0 indica que não há receita recorrente no momento.
-                        example: 0
+                        type: object
+                        description: Receita recorrente mensal. O valor em centavos fica em `value` (0 indica que não há receita recorrente).
+                        required: ['currency', 'value']
+                        properties:
+                          currency:
+                            type: string
+                            example: BRL
+                          value:
+                            type: number
+                            example: 129900
                       totalActiveSubscriptions:
-                        type: integer
-                        description: Total de assinaturas ativas. Valor 0 indica que não há assinaturas ativas no momento.
-                        example: 0
+                        type: object
+                        description: Total de assinaturas ativas. A quantidade fica em `value`; o campo `currency` também vem preenchido.
+                        required: ['currency', 'value']
+                        properties:
+                          currency:
+                            type: string
+                            example: BRL
+                          value:
+                            type: integer
+                            example: 12
                     required: ['mrr', 'totalActiveSubscriptions']
                     additionalProperties: false
                   error:

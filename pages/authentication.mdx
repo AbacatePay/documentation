@@ -66,7 +66,7 @@ Além de identificar sua conta, a chave de API define **quais recursos** você p
 
 Ao criar ou gerenciar chaves no dashboard, você pode atribuir apenas as permissões necessárias para cada integração — por exemplo, uma chave só para leitura de clientes ou outra só para criar cobranças. Isso melhora a segurança e o princípio do menor privilégio.
 
-**Exceção:** o endpoint de **MRR** (`/public-mrr/mrr`) é público e não exige permissão de chave.
+As rotas de **Public MRR** (`/public-mrr/*`) seguem a mesma regra: na v2 elas exigem a permissão `STORE:READ`. Veja os detalhes em [Public MRR](/pages/trustMRR/reference#autenticação).
 
 ### Permissões disponíveis
 

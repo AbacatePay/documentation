@@ -11,7 +11,7 @@ Notas importantes:
 - Clientes são únicos por CPF/CNPJ — criar um cliente com taxId já existente retorna o existente.
 - Assinaturas exigem produto com `cycle` definido (`WEEKLY`, `MONTHLY`, `SEMIANNUALLY`, `ANNUALLY`).
 - Checkout Transparente gera PIX ou Boleto imediatamente sem redirecionar o usuário; retorna `brCode` (copia-e-cola) e `brCodeBase64` (imagem PNG) para PIX, e `barCode` (linha digitável) e `url` para Boleto.
-- Webhooks precisam de URL HTTPS pública; payloads são assinados via HMAC com o `secret` informado.
+- Webhooks precisam de URL HTTPS pública. O `secret` informado na criação chega em cada entrega no parâmetro `webhookSecret` da URL e é o que prova a origem; o header `X-Webhook-Signature` (HMAC-SHA256 com uma chave pública) só garante a integridade do corpo.
 
 ## Checkout (cobrar com página hospedada)
 
@@ -103,10 +103,10 @@ Notas importantes:
 
 ## Optional
 
-- [Public MRR – Referência](https://docs.abacatepay.com/pages/trustMRR/reference): API pública (sem autenticação) para exibir métricas de receita de um merchant de forma transparente (TrustMRR).
-- [GET /trustMRR/mrr](https://docs.abacatepay.com/pages/trustMRR/mrr): Retorna o MRR (Monthly Recurring Revenue) público de um merchant pelo slug.
-- [GET /trustMRR/get](https://docs.abacatepay.com/pages/trustMRR/get): Retorna informações públicas do merchant (nome, avatar, etc.).
-- [GET /trustMRR/list](https://docs.abacatepay.com/pages/trustMRR/list): Retorna a receita por período de um merchant.
+- [Public MRR – Referência](https://docs.abacatepay.com/pages/trustMRR/reference): Métricas de receita da loja da credencial (TrustMRR). Na v2, exige chave de API com a permissão `STORE:READ`; o token `mrr_` do app Trust MRR só funciona nas rotas da v1.
+- [GET /public-mrr/mrr](https://docs.abacatepay.com/pages/trustMRR/mrr): Retorna o MRR (Monthly Recurring Revenue) e o total de assinaturas ativas, como objetos `{ currency, value }`.
+- [GET /public-mrr/merchant-info](https://docs.abacatepay.com/pages/trustMRR/get): Retorna id, nome, site, data de criação e país da loja.
+- [GET /public-mrr/revenue](https://docs.abacatepay.com/pages/trustMRR/list): Retorna a receita da loja por período (`startDate` e `endDate` obrigatórios).
 
 ## Outros Recursos
 

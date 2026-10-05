@@ -90,7 +90,7 @@ icon: 'circle-question'
   </Accordion>
 
   <Accordion title="Como validar que um webhook veio da AbacatePay?">
-    Cada requisição inclui o header `X-Webhook-Signature` com uma assinatura HMAC-SHA256. Consulte a [página de segurança de webhooks](/pages/webhooks/security) para exemplos em Node.js, Python e Go.
+    Confira o parâmetro `webhookSecret` da URL: ele precisa ser igual ao secret que você definiu ao criar o webhook. É ele que prova que o evento veio da AbacatePay. Depois, valide o header `X-Webhook-Signature` (HMAC-SHA256 do corpo) para garantir que o corpo não foi alterado; a chave dessa assinatura é pública, então ela sozinha não prova a origem. Consulte a [página de segurança de webhooks](/pages/webhooks/security) para exemplos em Node.js, Python e Go.
   </Accordion>
 </AccordionGroup>
 

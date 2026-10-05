@@ -3,10 +3,14 @@ title: Listar PIX
 openapi: 'GET /pix/list'
 ---
 
-Retorna todas as transações PIX enviadas pela sua conta.
+Busca transações da sua conta pelo `id`.
+
+<Warning>
+  Apesar do nome, esta rota não lista os seus envios. O `id` é obrigatório, e a busca devolve as transações cujo `id` **contém** o valor informado, de qualquer tipo: não só PIX enviados, mas também pagamentos recebidos e estornos. Os itens não indicam o tipo da transação, e `limit`, `after`, `before` e `externalId` são ignorados. Para acompanhar seus envios, guarde o `id` retornado em [Enviar PIX](/pages/pix/create), consulte com [Buscar PIX](/pages/pix/get) e use os [webhooks de transferências](/pages/webhooks/events/transfers).
+</Warning>
 
 <Card horizontal>
   Requer a permissão `WITHDRAW:READ`.
 </Card>
 
-Use `limit`, `after` e `before` para paginar e `startDate`/`endDate` (`YYYY-MM-DD`) para filtrar por data de criação. Consulte [Paginação e filtro por data](/pages/reference/introduction#paginação-e-filtro-por-data). Cada item segue o mesmo formato da resposta do [Enviar PIX](/pages/pix/create), incluindo `status`, `amount`, `platformFee` e `receiptUrl`.
+Cada item segue o mesmo formato da resposta do [Enviar PIX](/pages/pix/create), incluindo `status`, `amount`, `platformFee` e `receiptUrl`.

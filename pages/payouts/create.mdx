@@ -32,7 +32,11 @@ Saca saldo da sua conta para uma chave PIX de sua titularidade.
 }
 ```
 
+**O que acontece depois:**
+- O saque é criado com `status: "COMPLETE"`, que significa que o provedor aceitou o envio. Se o provedor recusar depois, o status passa a `FAILED` e o valor volta para o seu saldo. Confirme o resultado pelos webhooks.
+- O `externalId` é opcional e define quais webhooks você recebe: **sem** `externalId`, chegam `payout.completed` e `payout.failed`; **com** `externalId`, chegam `transfer.completed` e `transfer.failed`. Se não tiver certeza, assine os quatro eventos.
+
 **Limites:**
 - Valor mínimo: R$ 3,50
-- Taxa: R$ 0,80 por saque
+- Taxa: R$ 0,80 por saque, descontada do `amount`. Num saque de R$ 100,00 (`"amount": 10000`), chegam R$ 99,20 na chave de destino, e o seu saldo precisa cobrir os R$ 100,00.
 - Limite de frequência: 1 saque por minuto (HTTP 429 se excedido)

@@ -9,13 +9,13 @@ Retorna os dados de um saque pelo seu `id`.
   Requer a permissão `WITHDRAW:READ`.
 </Card>
 
-Use para verificar o `status` de um saque após criá-lo. Quando `status` for `COMPLETE`, o campo `receiptUrl` estará disponível com o comprovante.
+Use para verificar o `status` de um saque após criá-lo.
 
 **Valores de `status`:**
 
 | Valor | Significado |
 |-------|-------------|
-| `PENDING` | Aguardando processamento |
-| `COMPLETE` | Concluído — `receiptUrl` disponível |
-| `CANCELLED` | Cancelado |
-| `REFUNDED` | Reembolsado |
+| `COMPLETE` | Saque aceito pelo provedor. Todo saque já é criado com esse status. |
+| `FAILED` | O provedor recusou o envio depois de aceito. O valor volta para o seu saldo. |
+
+Como um saque `COMPLETE` ainda pode passar para `FAILED`, prefira confirmar o resultado pelos webhooks de [saques](/pages/webhooks/events/payouts) ou de [transferências](/pages/webhooks/events/transfers) (quando o saque tem `externalId`).

@@ -3,7 +3,11 @@ title: 'Listar Saques'
 openapi: "GET /payouts/list"
 ---
 
-Retorna todos os saques realizados pela sua conta.
+Lista as transações da sua conta.
+
+<Warning>
+  Hoje esta rota não filtra só saques: ela devolve também pagamentos recebidos, estornos e outras movimentações, e os itens não indicam o tipo da transação. Não use a lista para conciliar saques. Guarde o `id` retornado em [Criar um Saque](/pages/payouts/create), consulte com [Buscar saque](/pages/payouts/get) e acompanhe o resultado pelos [webhooks de saques](/pages/webhooks/events/payouts).
+</Warning>
 
 <Card horizontal>
   Requer a permissão `WITHDRAW:READ`.

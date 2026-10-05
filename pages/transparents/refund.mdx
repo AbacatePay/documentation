@@ -35,14 +35,23 @@ O campo `id` aceita:
 **Resposta:**
 ```json
 {
-  "data": { "refundPublicId": "tran_refund789xyz" },
+  "data": {
+    "id": "tran_abc123xyz",
+    "status": "COMPLETE",
+    "amount": 10000,
+    "reason": "Cliente pagou em duplicidade.",
+    "originalId": "pix_char_abc123xyz",
+    "createdAt": "2026-10-05T14:30:00.000Z"
+  },
   "success": true,
   "error": null
 }
 ```
 
+`id` é a transação de reembolso, `originalId` repete o `id` enviado e `reason` vem `null` quando não é informado.
+
 <Tip title="Idempotência" horizontal>
-Chamar o endpoint para o mesmo `id` retorna sempre o mesmo `refundPublicId` — não cria reembolsos duplicados.
+Uma nova chamada para uma cobrança já reembolsada não cria outro reembolso: a API retorna o erro `Esta cobrança já foi reembolsada.` (HTTP 400). Trate esse erro como "já reembolsado".
 </Tip>
 
 ---
@@ -60,7 +69,7 @@ Chamar o endpoint para o mesmo `id` retorna sempre o mesmo `refundPublicId` — 
 - **Status final após o reembolso:**
   - A transação original vira `REFUNDED`.
   - O payment intent vira `REFUNDED`.
-  - É criada uma nova transação `WITHDRAW` representando o reembolso (retornada em `refundPublicId`).
+  - É criada uma nova transação que representa o reembolso; o ID dela volta no campo `id` da resposta.
 
 <Note>
 Ao concluir, é disparado o webhook [`transparent.refunded`](/pages/webhooks/events/transparent) (ou [`checkout.refunded`](/pages/webhooks/events/checkout) quando houver um billing associado à cobrança). Configure seu endpoint em [Webhooks](/pages/webhooks/create) para receber a notificação.

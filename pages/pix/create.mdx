@@ -43,6 +43,14 @@ Envia dinheiro para qualquer chave PIX de terceiros — fornecedores, parceiros 
 | `RANDOM` | UUID aleatório |
 | `BR_CODE` | Código completo do QR |
 
+<Warning title="A taxa sai do valor enviado" horizontal>
+A taxa da plataforma é descontada do `amount`: com `"amount": 10000` e taxa de R$ 0,80, o destinatário recebe R$ 99,20. Para pagar exatamente R$ 100,00 a um fornecedor, envie o valor somado à taxa (`"amount": 10080`). O seu saldo precisa cobrir o `amount` inteiro.
+</Warning>
+
+<Note>
+O envio é criado com `status: "COMPLETE"`, que significa que o provedor aceitou o PIX. Se o provedor recusar depois, o status passa a `FAILED` e o valor volta para o seu saldo. Como `externalId` é obrigatório aqui, o resultado chega pelos webhooks `transfer.completed` e `transfer.failed`.
+</Note>
+
 <Tip title="Limites" horizontal>
 Valor mínimo: R$ 1,00. O processamento é instantâneo e disponível 24/7.
 </Tip>

@@ -12,6 +12,8 @@ Cenários práticos usando a AbacatePay CLI.
 
 Teste o fluxo de pagamento e o seu endpoint de webhook antes de ir para produção.
 
+Antes, cadastre no dashboard, com o Modo Teste ligado, um webhook v2 assinando `transparent.completed` (qualquer URL HTTPS pública serve). Sem um webhook de dev mode cadastrado, o `listen` não recebe nada.
+
 ```bash
 # 1. Autentique com uma conta em dev mode
 abacatepay login

@@ -1929,7 +1929,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RefundRequest'
+              $ref: '#/components/schemas/RefundRequestPaymentLink'
       responses:
         '200':
           description: Reembolso criado com sucesso.
@@ -2434,7 +2434,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RefundRequest'
+              $ref: '#/components/schemas/RefundRequestTransparent'
       responses:
         '200':
           description: Reembolso criado com sucesso.
@@ -2463,24 +2463,23 @@ paths:
     post:
       summary: Criar um payout
       description: >
-        Permite que você crie um novo payout para transferir valores da sua
-        conta AbacatePay.
+        Saca o saldo da sua conta AbacatePay para uma chave PIX do mesmo
+        CPF/CNPJ da conta. Para enviar dinheiro a terceiros, use `POST /pix/send`.
 
 
-        Você pode usar esta rota para:
-
-        - **Realizar saques** da sua conta para sua própria chave PIX
-
-        - **Enviar dinheiro** para outras contas
-
-        - **Realizar pagamentos** diretamente pela API
-
-        - **Efetuar transferências** para fornecedores, parceiros ou terceiros
+        **Taxa**: a taxa da plataforma é descontada do `amount`. Num saque de
+        R$ 100,00 com taxa de R$ 0,80, chegam R$ 99,20 na chave de destino.
 
 
-        **Importante**: A chave PIX de destino não precisa ter a mesma
-        titularidade do CNPJ da sua conta. Você pode realizar payouts para
-        qualquer chave PIX válida.
+        **Status**: o saque é criado com `status: COMPLETE`, que significa que o
+        provedor aceitou o envio. Se o provedor recusar depois, o status passa a
+        `FAILED` e o valor volta para o seu saldo. Confirme o resultado pelos
+        webhooks.
+
+
+        **Webhooks**: sem `externalId`, o resultado chega em `payout.completed`
+        ou `payout.failed`. Com `externalId`, chega em `transfer.completed` ou
+        `transfer.failed`.
       security:
         - bearerAuth: []
       requestBody:
@@ -2492,7 +2491,6 @@ paths:
               description: Dados necessários para criar um payout.
               required:
                 - amount
-                - externalId
                 - pix
               additionalProperties: false
               example:
@@ -2502,7 +2500,10 @@ paths:
               properties:
                 amount:
                   type: number
-                  description: Valor do payout em centavos.
+                  description: >-
+                    Valor debitado do seu saldo, em centavos. A taxa da plataforma
+                    é descontada deste valor: a chave de destino recebe
+                    `amount` − `platformFee`.
                   minimum: 350
                   example: 10000
                 description:
@@ -2513,7 +2514,10 @@ paths:
                     hidden: true
                 externalId:
                   type: string
-                  description: Identificador único do payout em seu sistema.
+                  description: >-
+                    Identificador do payout no seu sistema. Opcional. Com
+                    `externalId`, o resultado chega nos webhooks `transfer.*`;
+                    sem ele, nos webhooks `payout.*`.
                   example: saque-123
                 pix:
                   type: object
@@ -2553,17 +2557,22 @@ paths:
                       id:
                         type: string
                         description: Identificador único da transação.
-                        example: txn_abc123xyz
+                        example: tran_abc123xyz
                       status:
                         type: string
-                        description: Status atual da transação.
+                        description: >-
+                          Status atual da transação. O payout é criado com
+                          `COMPLETE` (aceito pelo provedor) e pode passar a
+                          `FAILED` se o provedor recusar depois; nesse caso o
+                          valor volta para o seu saldo.
                         enum:
                           - PENDING
                           - EXPIRED
                           - CANCELLED
                           - COMPLETE
                           - REFUNDED
-                        example: PENDING
+                          - FAILED
+                        example: COMPLETE
                       devMode:
                         type: boolean
                         description: >-
@@ -2575,15 +2584,15 @@ paths:
                         format: uri
                         nullable: true
                         description: URL do comprovante da transação.
-                        example: null
+                        example: 'https://app.abacatepay.com/receipt/tran_abc123xyz'
                       amount:
                         type: number
-                        description: Valor da transação em centavos.
+                        description: Valor debitado do seu saldo, em centavos.
                         example: 10000
                       platformFee:
                         type: number
-                        description: Taxa da plataforma em centavos.
-                        example: 100
+                        description: Taxa da plataforma em centavos, descontada do `amount`.
+                        example: 80
                       externalId:
                         type: string
                         description: Identificador externo da transação.
@@ -2655,16 +2664,20 @@ paths:
                       id:
                         type: string
                         description: Identificador único da transação.
-                        example: txn_abc123xyz
+                        example: tran_abc123xyz
                       status:
                         type: string
-                        description: Status atual da transação.
+                        description: >-
+                          Status atual da transação. Um payout `COMPLETE` ainda
+                          pode passar a `FAILED` se o provedor recusar o envio;
+                          nesse caso o valor volta para o seu saldo.
                         enum:
                           - PENDING
                           - EXPIRED
                           - CANCELLED
                           - COMPLETE
                           - REFUNDED
+                          - FAILED
                         example: COMPLETE
                       devMode:
                         type: boolean
@@ -2677,15 +2690,15 @@ paths:
                         format: uri
                         nullable: true
                         description: URL do comprovante da transação.
-                        example: 'https://app.abacatepay.com/receipt/txn_abc123xyz'
+                        example: 'https://app.abacatepay.com/receipt/tran_abc123xyz'
                       amount:
                         type: number
-                        description: Valor da transação em centavos.
+                        description: Valor debitado do seu saldo, em centavos.
                         example: 10000
                       platformFee:
                         type: number
-                        description: Taxa da plataforma em centavos.
-                        example: 100
+                        description: Taxa da plataforma em centavos, descontada do `amount`.
+                        example: 80
                       externalId:
                         type: string
                         description: Identificador externo da transação.
@@ -2738,8 +2751,13 @@ paths:
     get:
       summary: Listar payouts
       description: >
-        Permite que você recupere uma lista de todos os payouts criados com
-        suporte a paginação.
+        Lista as transações da sua conta, com paginação.
+
+
+        **Atenção**: hoje esta rota não filtra só payouts. Ela devolve também
+        pagamentos recebidos, estornos e outras movimentações, e os itens não
+        indicam o tipo da transação. Para acompanhar seus payouts, guarde o `id`
+        retornado na criação e consulte com `GET /payouts/get`, ou use os webhooks.
       security:
         - bearerAuth: []
       parameters:
@@ -2765,7 +2783,9 @@ paths:
                 properties:
                   data:
                     type: array
-                    description: Lista de saques criados.
+                    description: >-
+                      Transações da conta. Inclui outros tipos além de payouts,
+                      sem indicar o tipo de cada item.
                     items:
                       $ref: '#/components/schemas/Transaction'
                   success:
@@ -2809,6 +2829,18 @@ paths:
         **Importante**: Esta funcionalidade é diferente dos payouts, pois
         permite enviar dinheiro para chaves PIX que não pertencem ao titular da
         conta. Use payouts quando quiser enviar para sua própria chave PIX.
+
+
+        **Taxa**: a taxa da plataforma é descontada do `amount`. Com `amount`
+        10000 e taxa de R$ 0,80, o destinatário recebe R$ 99,20. Para entregar
+        um valor exato, some a taxa ao `amount`.
+
+
+        **Status e webhooks**: o envio é criado com `status: COMPLETE` (aceito
+        pelo provedor) e pode passar a `FAILED` se o provedor recusar depois;
+        nesse caso o valor volta para o seu saldo. Como o `externalId` é
+        obrigatório, o resultado chega em `transfer.completed` ou
+        `transfer.failed`.
       security:
         - bearerAuth: []
       requestBody:
@@ -2833,7 +2865,10 @@ paths:
               properties:
                 amount:
                   type: number
-                  description: Valor do PIX em centavos.
+                  description: >-
+                    Valor debitado do seu saldo, em centavos. A taxa da plataforma
+                    é descontada deste valor: o destinatário recebe `amount` −
+                    `platformFee`.
                   minimum: 100
                   example: 10000
                 externalId:
@@ -2981,6 +3016,8 @@ paths:
       summary: Listar PIX
       description: |
         Consulta um envio de PIX pelo `id`. Apesar do nome, esta rota não pagina nem aceita filtros: `id` é obrigatório e o contrato é o mesmo de `/pix/get`.
+
+        A busca é parcial: devolve as transações cujo `id` contém o valor informado, de qualquer tipo (não só PIX enviados), e os itens não indicam o tipo. Use o `id` completo retornado em `POST /pix/send`.
       security:
         - bearerAuth: []
       parameters:
@@ -3805,6 +3842,8 @@ paths:
         A mudança é agendada como `PENDING` e aplicada automaticamente no início do próximo ciclo de cobrança. Só pode existir uma alteração pendente por assinatura — uma nova chamada substitui a anterior ainda não aplicada.
 
         O produto informado em `productId` deve ter um ciclo de cobrança definido. Produtos avulsos (sem ciclo) retornam erro.
+
+        **Atenção**: use um produto com o mesmo ciclo da assinatura atual. A troca muda só o valor cobrado, não o ciclo: trocar uma assinatura mensal por um produto anual faz o preço anual ser cobrado todo mês. A API ainda não bloqueia ciclos diferentes.
       security:
         - bearerAuth: []
       requestBody:
@@ -4150,7 +4189,8 @@ paths:
       summary: Obter MRR (Monthly Recurring Revenue)
       description: >-
         Retorna o MRR (receita recorrente mensal) e o total de assinaturas
-        ativas da loja.
+        ativas da loja. Exige uma chave de API com a permissão `STORE:READ`.
+        Os dois campos são objetos: o número fica em `value`.
       security:
         - bearerAuth: []
       responses:
@@ -4165,17 +4205,35 @@ paths:
                     type: object
                     properties:
                       mrr:
-                        type: number
+                        type: object
                         description: >-
-                          Receita recorrente mensal em centavos. Valor 0 indica
-                          que não há receita recorrente no momento.
-                        example: 0
+                          Receita recorrente mensal. O valor em centavos fica em
+                          `value` (0 indica que não há receita recorrente).
+                        required:
+                          - currency
+                          - value
+                        properties:
+                          currency:
+                            type: string
+                            example: BRL
+                          value:
+                            type: number
+                            example: 129900
                       totalActiveSubscriptions:
-                        type: integer
+                        type: object
                         description: >-
-                          Total de assinaturas ativas. Valor 0 indica que não há
-                          assinaturas ativas no momento.
-                        example: 0
+                          Total de assinaturas ativas. A quantidade fica em
+                          `value`; o campo `currency` também vem preenchido.
+                        required:
+                          - currency
+                          - value
+                        properties:
+                          currency:
+                            type: string
+                            example: BRL
+                          value:
+                            type: integer
+                            example: 12
                     required:
                       - mrr
                       - totalActiveSubscriptions
@@ -4597,25 +4655,82 @@ components:
         id:
           type: string
           description: >
-            ID público do recurso a reembolsar. Aceita os prefixos `char_` /
-            `pix_char_` / `card_` (payment intent) ou `bill_` (billing —
-            resolvido para o payment intent pago).
+            ID público do checkout a reembolsar. Aceita o `bill_` do checkout
+            (resolvido para a cobrança paga) ou o ID da cobrança (`char_`,
+            `pix_char_` ou `card_`).
           example: bill_abc123xyz
         reason:
           type: string
           maxLength: 500
           description: Motivo do reembolso. Aparece no histórico da transação.
           example: Pedido cancelado pelo cliente.
+    RefundRequestPaymentLink:
+      type: object
+      required:
+        - id
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          description: >
+            ID da cobrança de um pagamento específico do link (`pix_char_`,
+            `card_` ou `char_`). O `bill_` do link é recusado. O ID de cada
+            pagamento aparece no dashboard, no detalhe das transações do link.
+          example: pix_char_abc123xyz
+        reason:
+          type: string
+          maxLength: 500
+          description: Motivo do reembolso. Aparece no histórico da transação.
+          example: Cobrança duplicada.
+    RefundRequestTransparent:
+      type: object
+      required:
+        - id
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          description: >
+            ID da cobrança transparente (`pix_char_`, `card_` ou `char_`). O
+            `bill_` de checkouts e links é recusado nesta rota.
+          example: pix_char_abc123xyz
+        reason:
+          type: string
+          maxLength: 500
+          description: Motivo do reembolso. Aparece no histórico da transação.
+          example: Cliente pagou em duplicidade.
     RefundResponse:
       type: object
       properties:
         data:
           type: object
           properties:
-            refundPublicId:
+            id:
               type: string
-              description: ID público da transação de reembolso (WITHDRAW) criada.
-              example: tran_refund789xyz
+              description: ID da transação de reembolso criada.
+              example: tran_abc123xyz
+            status:
+              type: string
+              description: Status da transação de reembolso.
+              example: COMPLETE
+            amount:
+              type: number
+              description: Valor reembolsado, em centavos.
+              example: 10000
+            reason:
+              type: string
+              nullable: true
+              description: Motivo informado na requisição; `null` quando não enviado.
+              example: Pedido cancelado pelo cliente.
+            originalId:
+              type: string
+              description: O `id` enviado na requisição.
+              example: bill_abc123xyz
+            createdAt:
+              type: string
+              format: date-time
+              description: Data de criação do reembolso.
+              example: '2026-10-05T14:30:00.000Z'
         error:
           type: string
           nullable: true
@@ -4656,15 +4771,19 @@ components:
       properties:
         hasMore:
           type: boolean
-          description: Indica se existe mais itens para carregar.
+          description: >-
+            `true` quando existe outra página em qualquer direção (anterior ou
+            seguinte). Na última página continua `true` se houver página
+            anterior: para percorrer a lista, avance enquanto `next` não for
+            `null`.
         next:
           type: string
           nullable: true
-          description: Cursor para próxima página (usar em after).
+          description: Cursor da próxima página (usar em `after`). `null` na última página.
         before:
           type: string
           nullable: true
-          description: Cursor para página anterior (usar em before).
+          description: Cursor da página anterior (usar em `before`). `null` na primeira página.
     BankStatementItem:
       type: object
       description: Transação do extrato com as movimentações de saldo que ela gerou.
@@ -5537,7 +5656,9 @@ components:
           additionalProperties: true
     Transaction:
       type: object
-      description: Dados de uma transação (pagamento ou saque).
+      description: >-
+        Dados de uma transação. A resposta não indica o tipo (pagamento, saque,
+        estorno etc.).
       properties:
         id:
           type: string
@@ -5545,14 +5666,17 @@ components:
           example: tran_123456
         status:
           type: string
-          description: Status atual da transação.
+          description: >-
+            Status atual da transação. Payouts são criados com `COMPLETE` e
+            podem passar a `FAILED` se o provedor recusar o envio.
           enum:
             - PENDING
             - EXPIRED
             - CANCELLED
             - COMPLETE
             - REFUNDED
-          example: PENDING
+            - FAILED
+          example: COMPLETE
         devMode:
           type: boolean
           description: Indica se a transação foi criada em ambiente de testes.
@@ -5561,15 +5685,7 @@ components:
           type: string
           format: uri
           description: URL do comprovante da transação.
-          example: 'https://abacatepay.com/receipt/tran_123456'
-        kind:
-          type: string
-          description: Tipo da transação.
-          enum:
-            - PAYMENT
-            - WITHDRAW
-          example: WITHDRAW
-          default: WITHDRAW
+          example: 'https://app.abacatepay.com/receipt/tran_123456'
         amount:
           type: number
           description: Valor da transação em centavos.
@@ -5597,7 +5713,6 @@ components:
         - status
         - devMode
         - receiptUrl
-        - kind
         - amount
         - platformFee
         - createdAt
@@ -5609,17 +5724,21 @@ components:
         id:
           type: string
           description: Identificador único da transação PIX.
-          example: txn_abc123xyz
+          example: tran_abc123xyz
         status:
           type: string
-          description: Status atual da transação.
+          description: >-
+            Status atual da transação. O envio é criado com `COMPLETE` (aceito
+            pelo provedor) e pode passar a `FAILED` se o provedor recusar depois;
+            nesse caso o valor volta para o seu saldo.
           enum:
             - PENDING
             - EXPIRED
             - CANCELLED
             - COMPLETE
             - REFUNDED
-          example: PENDING
+            - FAILED
+          example: COMPLETE
         devMode:
           type: boolean
           description: Indica se a transação foi criada em ambiente de testes.
@@ -5628,15 +5747,15 @@ components:
           type: string
           format: uri
           description: URL do comprovante da transação.
-          example: 'https://app.abacatepay.com/receipt/txn_abc123xyz'
+          example: 'https://app.abacatepay.com/receipt/tran_abc123xyz'
         amount:
           type: number
-          description: Valor da transação em centavos.
+          description: Valor debitado do seu saldo, em centavos.
           example: 10000
         platformFee:
           type: number
-          description: Taxa da plataforma em centavos.
-          example: 100
+          description: Taxa da plataforma em centavos, descontada do `amount`.
+          example: 80
         externalId:
           type: string
           nullable: true
