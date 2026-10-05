@@ -727,7 +727,7 @@ paths:
   /public-mrr/merchant-info:
     get:
       summary: Obter informações do merchant
-      description: Retorna informações básicas da loja (ID, nome, website, data de criação e país). Aceita o token `mrr_` do app Trust MRR ou uma chave de API da v1 com a permissão `STORE:READ`.
+      description: Retorna informações básicas da loja (ID, nome, website, data de criação e país). Use o token `mrr_` gerado no app Trust MRR.
       security:
         - bearerAuth: []
       responses:
@@ -781,7 +781,7 @@ paths:
   /public-mrr/mrr:
     get:
       summary: Obter MRR (Monthly Recurring Revenue)
-      description: Retorna o MRR (receita recorrente mensal) e o total de assinaturas ativas da loja. Aceita o token `mrr_` do app Trust MRR ou uma chave de API da v1 com a permissão `STORE:READ`.
+      description: Retorna o MRR (receita recorrente mensal) e o total de assinaturas ativas da loja. Use o token `mrr_` gerado no app Trust MRR.
       security:
         - bearerAuth: []
       responses:

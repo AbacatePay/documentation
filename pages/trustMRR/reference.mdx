@@ -8,10 +8,7 @@ As rotas **Public MRR** expõem métricas de receita da loja para integração c
 
 ## Autenticação
 
-Toda chamada precisa de uma credencial no header `Authorization: Bearer`. As rotas aceitam:
-
-- o token `mrr_...` gerado no app **Trust MRR** do dashboard, que só dá acesso às rotas de Public MRR. É ele que você entrega a uma plataforma de terceiros;
-- uma chave de API com a permissão `STORE:READ`, da mesma versão da rota.
+Toda chamada usa o token `mrr_...` gerado no app **Trust MRR** do dashboard, no header `Authorization: Bearer`. O token só dá acesso às rotas de Public MRR, na v1 e na v2, e é ele que você entrega a uma plataforma de terceiros.
 
 ## Estrutura
 

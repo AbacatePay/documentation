@@ -4064,7 +4064,7 @@ paths:
       summary: Obter informações do merchant
       description: >-
         Retorna informações básicas da loja (ID, nome, website, data de criação
-        e país). Aceita o token `mrr_` do app Trust MRR ou uma chave de API com a permissão `STORE:READ`.
+        e país). Use o token `mrr_` gerado no app Trust MRR.
       security:
         - bearerAuth: []
       responses:
@@ -4131,7 +4131,7 @@ paths:
       description: >-
         Retorna o MRR (receita recorrente mensal) e o total de assinaturas
         ativas da loja. Os dois campos são objetos: o número fica em `value`.
-        Aceita o token `mrr_` do app Trust MRR ou uma chave de API com a permissão `STORE:READ`.
+        Use o token `mrr_` gerado no app Trust MRR.
       security:
         - bearerAuth: []
       responses:
@@ -4202,7 +4202,7 @@ paths:
       description: >-
         Retorna o MRR do fim de cada dia (horário de Brasília) entre `startDate`
         e `endDate`, com a mesma conta de `/public-mrr/mrr`. O período pode ter
-        até 366 dias. Aceita o token `mrr_` do app Trust MRR ou uma chave de API com a permissão `STORE:READ`.
+        até 366 dias. Use o token `mrr_` gerado no app Trust MRR.
       security:
         - bearerAuth: []
       parameters:
@@ -4284,7 +4284,7 @@ paths:
         Retorna a receita total, total de transações e transações por dia em um
         período específico. Os dados são cacheados por 1 hora (3600 segundos)
         para melhor performance. A data de fim deve ser posterior à data de
-        início. Aceita o token `mrr_` do app Trust MRR ou uma chave de API com a permissão `STORE:READ`.
+        início. Use o token `mrr_` gerado no app Trust MRR.
       security:
         - bearerAuth: []
       parameters:
