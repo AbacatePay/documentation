@@ -15,7 +15,8 @@ Use para acompanhar o `status` de um envio após criar a transação.
 
 | Valor | Significado |
 |-------|-------------|
-| `COMPLETE` | Envio aceito pelo provedor. Todo PIX enviado já é criado com esse status. |
-| `FAILED` | O provedor recusou o envio depois de aceito. O valor volta para o seu saldo. |
-
-Como um envio `COMPLETE` ainda pode passar para `FAILED`, prefira confirmar o resultado pelos webhooks `transfer.completed` e `transfer.failed` (veja [Transferências](/pages/webhooks/events/transfers)).
+| `PENDING` | Aguardando processamento |
+| `COMPLETE` | Enviado com sucesso — `receiptUrl` disponível |
+| `CANCELLED` | Cancelado |
+| `REFUNDED` | Reembolsado |
+| `FAILED` | O envio falhou; o valor volta para o seu saldo |

@@ -103,15 +103,8 @@ Exemplo de resposta do [Listar extrato](/pages/bank-statement/list):
 | `none`   | Não altera o saldo disponível. É o caso do recebível de cartão aprovado (`CARD_APPROVED`): o valor só entra no saldo disponível na liquidação, que aparece como outra transação |
 
 <Tip>
-  Para calcular o efeito de uma transação no seu saldo disponível, some os `amount` com `balanceEffect` igual a `credit` e subtraia os que têm `debit`, com os ajustes do aviso abaixo.
+  Para calcular o efeito de uma transação no seu saldo disponível, some os `amount` com `balanceEffect` igual a `credit` e subtraia os que têm `debit`.
 </Tip>
-
-<Warning>
-  Hoje o `balanceEffect` vem errado em dois tipos de movimentação. Ajuste no seu cálculo:
-
-  - **`BOLETO_APPROVED`** (boleto pago) vem como `credit`, mas o valor ainda não está disponível: ele só entra no saldo disponível na liquidação, que aparece depois como `SWAP_INTERNAL_BOLETO_SETTLED`. Trate o `BOLETO_APPROVED` como `none`, senão o mesmo boleto entra duas vezes.
-  - **`DISPUTE_REVENUE_LOCK`** (reserva de valor por disputa) vem como `credit`, mas tira o valor do saldo disponível. Trate como `debit`.
-</Warning>
 
 ### Cliente
 

@@ -86,12 +86,6 @@ abacatepay --version
     O navegador abrirá para você aprovar o acesso da CLI na sua conta.
   </Step>
 
-  <Step title="Cadastre um webhook de dev mode">
-    No dashboard, com o Modo Teste ligado, crie um [webhook](/pages/webhooks) na versão **v2** assinando os eventos que você quer testar (por exemplo, `transparent.completed`). Use qualquer URL HTTPS pública: ela não precisa ser a sua aplicação local.
-
-    O `listen` só recebe eventos que têm um webhook de dev mode cadastrado. Sem ele, nada aparece no terminal.
-  </Step>
-
   <Step title="Inicie o listener">
     ```bash
     abacatepay listen --forward-to http://localhost:3000/webhooks/abacatepay

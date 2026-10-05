@@ -6,10 +6,6 @@ icon: 'arrow-right-arrow-left'
 
 Usados para notificar o status de **transferências** (envio de valores para contas externas).
 
-<Warning>
-  Quem decide o evento é o `externalId`. Todo envio pelo [Enviar PIX](/pages/pix/create) (que exige `externalId`) e todo [saque](/pages/payouts/create) criado **com** `externalId` disparam `transfer.completed` ou `transfer.failed`. Saques **sem** `externalId` disparam `payout.*` (veja [Saques](/pages/webhooks/events/payouts)).
-</Warning>
-
 <Tabs>
   <Tab title="transfer.completed">
     Disparado quando uma transferência é concluída com sucesso.

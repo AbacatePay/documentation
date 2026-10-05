@@ -8,16 +8,12 @@ As rotas **Public MRR** expõem métricas de receita da loja para integração c
 
 ## Autenticação
 
-Apesar do nome, as rotas não são públicas: toda chamada precisa de uma credencial no header `Authorization: Bearer`.
+Toda chamada precisa de uma credencial no header `Authorization: Bearer`:
 
 | Versão | Credencial aceita |
 | ------ | ----------------- |
 | v2 (`https://api.abacatepay.com/v2/public-mrr/...`) | Chave de API (`abc_...`) com a permissão `STORE:READ` |
 | v1 (`https://api.abacatepay.com/v1/public-mrr/...`) | Token `mrr_...` gerado no app **Trust MRR** do dashboard (ou chave de API da v1) |
-
-<Warning>
-  Uma chave da v2 com `STORE:READ` também lê o saldo da loja em [`/stores/get`](/pages/store/get). Não a coloque no front-end nem a entregue a uma plataforma de terceiros. Para integrações de terceiros, use o token `mrr_...` com as rotas da v1, sempre chamadas pelo servidor.
-</Warning>
 
 ## Estrutura
 
@@ -86,8 +82,6 @@ Totais e transações por dia:
 | -------------------------- | ------- | --------- |
 | `mrr`                      | object  | Receita recorrente mensal: o valor em centavos fica em `mrr.value` (0 = nenhuma) |
 | `totalActiveSubscriptions` | object  | Assinaturas ativas: a quantidade fica em `totalActiveSubscriptions.value` (0 = nenhuma) |
-
-Os dois campos são objetos `{ currency, value }`, não números. Leia sempre o `.value`.
 
 **Receita (revenue):**
 

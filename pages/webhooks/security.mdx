@@ -32,10 +32,6 @@ if (req.query.webhookSecret !== process.env.WEBHOOK_SECRET) {
 
 A assinatura HMAC garante que o **corpo da requisição não foi alterado** no caminho.
 
-<Warning>
-  A assinatura sozinha não prova que o evento veio da AbacatePay: a chave usada é a mesma para todos os lojistas e é pública (é a que aparece nos exemplos abaixo). Quem prova a origem é o secret da seção 1. Valide sempre os dois.
-</Warning>
-
 O header enviado é:
 
 ```

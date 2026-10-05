@@ -2465,21 +2465,6 @@ paths:
       description: >
         Saca o saldo da sua conta AbacatePay para uma chave PIX do mesmo
         CPF/CNPJ da conta. Para enviar dinheiro a terceiros, use `POST /pix/send`.
-
-
-        **Taxa**: a taxa da plataforma é descontada do `amount`. Num saque de
-        R$ 100,00 com taxa de R$ 0,80, chegam R$ 99,20 na chave de destino.
-
-
-        **Status**: o saque é criado com `status: COMPLETE`, que significa que o
-        provedor aceitou o envio. Se o provedor recusar depois, o status passa a
-        `FAILED` e o valor volta para o seu saldo. Confirme o resultado pelos
-        webhooks.
-
-
-        **Webhooks**: sem `externalId`, o resultado chega em `payout.completed`
-        ou `payout.failed`. Com `externalId`, chega em `transfer.completed` ou
-        `transfer.failed`.
       security:
         - bearerAuth: []
       requestBody:
@@ -2500,10 +2485,7 @@ paths:
               properties:
                 amount:
                   type: number
-                  description: >-
-                    Valor debitado do seu saldo, em centavos. A taxa da plataforma
-                    é descontada deste valor: a chave de destino recebe
-                    `amount` − `platformFee`.
+                  description: Valor do payout em centavos.
                   minimum: 350
                   example: 10000
                 description:
@@ -2514,10 +2496,7 @@ paths:
                     hidden: true
                 externalId:
                   type: string
-                  description: >-
-                    Identificador do payout no seu sistema. Opcional. Com
-                    `externalId`, o resultado chega nos webhooks `transfer.*`;
-                    sem ele, nos webhooks `payout.*`.
+                  description: Identificador do payout no seu sistema.
                   example: saque-123
                 pix:
                   type: object
@@ -2560,11 +2539,7 @@ paths:
                         example: tran_abc123xyz
                       status:
                         type: string
-                        description: >-
-                          Status atual da transação. O payout é criado com
-                          `COMPLETE` (aceito pelo provedor) e pode passar a
-                          `FAILED` se o provedor recusar depois; nesse caso o
-                          valor volta para o seu saldo.
+                        description: Status atual da transação.
                         enum:
                           - PENDING
                           - EXPIRED
@@ -2572,7 +2547,7 @@ paths:
                           - COMPLETE
                           - REFUNDED
                           - FAILED
-                        example: COMPLETE
+                        example: PENDING
                       devMode:
                         type: boolean
                         description: >-
@@ -2584,14 +2559,14 @@ paths:
                         format: uri
                         nullable: true
                         description: URL do comprovante da transação.
-                        example: 'https://app.abacatepay.com/receipt/tran_abc123xyz'
+                        example: null
                       amount:
                         type: number
-                        description: Valor debitado do seu saldo, em centavos.
+                        description: Valor da transação em centavos.
                         example: 10000
                       platformFee:
                         type: number
-                        description: Taxa da plataforma em centavos, descontada do `amount`.
+                        description: Taxa da plataforma em centavos.
                         example: 80
                       externalId:
                         type: string
@@ -2667,10 +2642,7 @@ paths:
                         example: tran_abc123xyz
                       status:
                         type: string
-                        description: >-
-                          Status atual da transação. Um payout `COMPLETE` ainda
-                          pode passar a `FAILED` se o provedor recusar o envio;
-                          nesse caso o valor volta para o seu saldo.
+                        description: Status atual da transação.
                         enum:
                           - PENDING
                           - EXPIRED
@@ -2693,11 +2665,11 @@ paths:
                         example: 'https://app.abacatepay.com/receipt/tran_abc123xyz'
                       amount:
                         type: number
-                        description: Valor debitado do seu saldo, em centavos.
+                        description: Valor da transação em centavos.
                         example: 10000
                       platformFee:
                         type: number
-                        description: Taxa da plataforma em centavos, descontada do `amount`.
+                        description: Taxa da plataforma em centavos.
                         example: 80
                       externalId:
                         type: string
@@ -2751,13 +2723,8 @@ paths:
     get:
       summary: Listar payouts
       description: >
-        Lista as transações da sua conta, com paginação.
-
-
-        **Atenção**: hoje esta rota não filtra só payouts. Ela devolve também
-        pagamentos recebidos, estornos e outras movimentações, e os itens não
-        indicam o tipo da transação. Para acompanhar seus payouts, guarde o `id`
-        retornado na criação e consulte com `GET /payouts/get`, ou use os webhooks.
+        Permite que você recupere uma lista de todos os payouts criados com
+        suporte a paginação.
       security:
         - bearerAuth: []
       parameters:
@@ -2783,9 +2750,7 @@ paths:
                 properties:
                   data:
                     type: array
-                    description: >-
-                      Transações da conta. Inclui outros tipos além de payouts,
-                      sem indicar o tipo de cada item.
+                    description: Lista de saques criados.
                     items:
                       $ref: '#/components/schemas/Transaction'
                   success:
@@ -2829,18 +2794,6 @@ paths:
         **Importante**: Esta funcionalidade é diferente dos payouts, pois
         permite enviar dinheiro para chaves PIX que não pertencem ao titular da
         conta. Use payouts quando quiser enviar para sua própria chave PIX.
-
-
-        **Taxa**: a taxa da plataforma é descontada do `amount`. Com `amount`
-        10000 e taxa de R$ 0,80, o destinatário recebe R$ 99,20. Para entregar
-        um valor exato, some a taxa ao `amount`.
-
-
-        **Status e webhooks**: o envio é criado com `status: COMPLETE` (aceito
-        pelo provedor) e pode passar a `FAILED` se o provedor recusar depois;
-        nesse caso o valor volta para o seu saldo. Como o `externalId` é
-        obrigatório, o resultado chega em `transfer.completed` ou
-        `transfer.failed`.
       security:
         - bearerAuth: []
       requestBody:
@@ -2865,10 +2818,7 @@ paths:
               properties:
                 amount:
                   type: number
-                  description: >-
-                    Valor debitado do seu saldo, em centavos. A taxa da plataforma
-                    é descontada deste valor: o destinatário recebe `amount` −
-                    `platformFee`.
+                  description: Valor do PIX em centavos.
                   minimum: 100
                   example: 10000
                 externalId:
@@ -3016,8 +2966,6 @@ paths:
       summary: Listar PIX
       description: |
         Consulta um envio de PIX pelo `id`. Apesar do nome, esta rota não pagina nem aceita filtros: `id` é obrigatório e o contrato é o mesmo de `/pix/get`.
-
-        A busca é parcial: devolve as transações cujo `id` contém o valor informado, de qualquer tipo (não só PIX enviados), e os itens não indicam o tipo. Use o `id` completo retornado em `POST /pix/send`.
       security:
         - bearerAuth: []
       parameters:
@@ -3841,9 +3789,7 @@ paths:
 
         A mudança é agendada como `PENDING` e aplicada automaticamente no início do próximo ciclo de cobrança. Só pode existir uma alteração pendente por assinatura — uma nova chamada substitui a anterior ainda não aplicada.
 
-        O produto informado em `productId` deve ter um ciclo de cobrança definido. Produtos avulsos (sem ciclo) retornam erro.
-
-        **Atenção**: use um produto com o mesmo ciclo da assinatura atual. A troca muda só o valor cobrado, não o ciclo: trocar uma assinatura mensal por um produto anual faz o preço anual ser cobrado todo mês. A API ainda não bloqueia ciclos diferentes.
+        O produto informado em `productId` deve ter um ciclo de cobrança definido, igual ao da assinatura. Produtos avulsos (sem ciclo) retornam erro.
       security:
         - bearerAuth: []
       requestBody:
@@ -4223,7 +4169,7 @@ paths:
                         type: object
                         description: >-
                           Total de assinaturas ativas. A quantidade fica em
-                          `value`; o campo `currency` também vem preenchido.
+                          `value`.
                         required:
                           - currency
                           - value
@@ -4771,11 +4717,7 @@ components:
       properties:
         hasMore:
           type: boolean
-          description: >-
-            `true` quando existe outra página em qualquer direção (anterior ou
-            seguinte). Na última página continua `true` se houver página
-            anterior: para percorrer a lista, avance enquanto `next` não for
-            `null`.
+          description: Indica se existe uma próxima página.
         next:
           type: string
           nullable: true
@@ -5656,9 +5598,7 @@ components:
           additionalProperties: true
     Transaction:
       type: object
-      description: >-
-        Dados de uma transação. A resposta não indica o tipo (pagamento, saque,
-        estorno etc.).
+      description: Dados de uma transação (pagamento ou saque).
       properties:
         id:
           type: string
@@ -5666,9 +5606,7 @@ components:
           example: tran_123456
         status:
           type: string
-          description: >-
-            Status atual da transação. Payouts são criados com `COMPLETE` e
-            podem passar a `FAILED` se o provedor recusar o envio.
+          description: Status atual da transação.
           enum:
             - PENDING
             - EXPIRED
@@ -5676,7 +5614,7 @@ components:
             - COMPLETE
             - REFUNDED
             - FAILED
-          example: COMPLETE
+          example: PENDING
         devMode:
           type: boolean
           description: Indica se a transação foi criada em ambiente de testes.
@@ -5686,6 +5624,14 @@ components:
           format: uri
           description: URL do comprovante da transação.
           example: 'https://app.abacatepay.com/receipt/tran_123456'
+        kind:
+          type: string
+          description: Tipo da transação.
+          enum:
+            - PAYMENT
+            - WITHDRAW
+          example: WITHDRAW
+          default: WITHDRAW
         amount:
           type: number
           description: Valor da transação em centavos.
@@ -5713,6 +5659,7 @@ components:
         - status
         - devMode
         - receiptUrl
+        - kind
         - amount
         - platformFee
         - createdAt
@@ -5727,10 +5674,7 @@ components:
           example: tran_abc123xyz
         status:
           type: string
-          description: >-
-            Status atual da transação. O envio é criado com `COMPLETE` (aceito
-            pelo provedor) e pode passar a `FAILED` se o provedor recusar depois;
-            nesse caso o valor volta para o seu saldo.
+          description: Status atual da transação.
           enum:
             - PENDING
             - EXPIRED
@@ -5738,7 +5682,7 @@ components:
             - COMPLETE
             - REFUNDED
             - FAILED
-          example: COMPLETE
+          example: PENDING
         devMode:
           type: boolean
           description: Indica se a transação foi criada em ambiente de testes.
@@ -5750,11 +5694,11 @@ components:
           example: 'https://app.abacatepay.com/receipt/tran_abc123xyz'
         amount:
           type: number
-          description: Valor debitado do seu saldo, em centavos.
+          description: Valor da transação em centavos.
           example: 10000
         platformFee:
           type: number
-          description: Taxa da plataforma em centavos, descontada do `amount`.
+          description: Taxa da plataforma em centavos.
           example: 80
         externalId:
           type: string

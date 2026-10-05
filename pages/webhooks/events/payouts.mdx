@@ -6,10 +6,6 @@ icon: 'money-bill-transfer'
 
 Usados para notificar o status de **saques** (retirada de saldo da plataforma).
 
-<Warning>
-  Quem decide o evento é o `externalId`. Um saque criado **sem** `externalId` dispara `payout.completed` ou `payout.failed`. Com `externalId`, o mesmo saque dispara `transfer.completed` ou `transfer.failed` (veja [Transferências](/pages/webhooks/events/transfers)). O [Enviar PIX](/pages/pix/create) exige `externalId`, então sempre dispara `transfer.*`. Se você cria saques dos dois jeitos, assine os quatro eventos.
-</Warning>
-
 <Tabs>
   <Tab title="payout.completed">
     Disparado quando um saque é concluído com sucesso. O campo `endToEndIdentifier` está presente apenas em saques concluídos.

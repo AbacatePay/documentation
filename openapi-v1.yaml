@@ -804,7 +804,7 @@ paths:
                             example: 129900
                       totalActiveSubscriptions:
                         type: object
-                        description: Total de assinaturas ativas. A quantidade fica em `value`; o campo `currency` também vem preenchido.
+                        description: Total de assinaturas ativas. A quantidade fica em `value`.
                         required: ['currency', 'value']
                         properties:
                           currency:

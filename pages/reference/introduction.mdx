@@ -126,11 +126,7 @@ As respostas de listagem trazem o objeto `pagination` junto do envelope:
 |-------|-----------|
 | `next` | Cursor da próxima página. Vem `null` na última página. |
 | `before` | Cursor da página anterior. Vem `null` na primeira página. |
-| `hasMore` | `true` quando existe outra página em **qualquer** direção, anterior ou seguinte. |
-
-<Warning>
-  Para percorrer a lista, avance enquanto `pagination.next` não for `null`. Não use `hasMore` como condição de parada: na última página ele continua `true` (porque existe página anterior), e um laço `while (hasMore)` volta para a primeira página e não termina.
-</Warning>
+| `hasMore` | `true` quando existe uma próxima página. |
 
 Para avançar, passe `after` com o valor de `pagination.next`:
 

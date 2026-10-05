@@ -18,12 +18,8 @@ Altera o produto principal de uma assinatura ativa. O novo valor começa a ser c
 | `quantity`  | integer | Sim         | Quantidade do produto (mínimo `1`)                     |
 
 <Note>
-  O produto informado em `productId` precisa ter um `cycle` configurado. Produtos avulsos (sem ciclo) retornam erro.
+  O produto informado em `productId` precisa ter um `cycle` configurado, igual ao da assinatura. Produtos avulsos (sem ciclo) retornam erro.
 </Note>
-
-<Warning>
-  Use um produto com o **mesmo ciclo** da assinatura atual. A troca muda só o valor cobrado, não o ciclo: se você trocar uma assinatura mensal por um produto anual de R$ 1.200,00, a assinatura continua mensal e passa a cobrar R$ 1.200,00 por mês. Hoje a API não bloqueia ciclos diferentes, então confira antes de chamar.
-</Warning>
 
 **Exemplo — upgrade de plano:**
 ```json

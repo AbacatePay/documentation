@@ -18,7 +18,7 @@ Exemplo de resposta de uma transação PIX:
 {
   "data": {
     "id": "tran_abc123xyz",
-    "status": "COMPLETE",
+    "status": "PENDING",
     "devMode": false,
     "receiptUrl": "https://app.abacatepay.com/receipt/tran_abc123xyz",
     "amount": 10000,
@@ -40,8 +40,8 @@ Exemplo de resposta de uma transação PIX:
 | `status`     | string  | Status da transação (veja valores abaixo) |
 | `devMode`    | boolean | `true` se criado em sandbox |
 | `receiptUrl` | string  | URL do comprovante; disponível quando `status` é `COMPLETE` |
-| `amount`     | number  | Valor debitado do seu saldo, em centavos (ex.: 10000 = R$ 100,00) |
-| `platformFee` | number | Taxa da plataforma em centavos, descontada do `amount` |
+| `amount`     | number  | Valor em centavos (ex.: 10000 = R$ 100,00) |
+| `platformFee` | number | Taxa da plataforma em centavos |
 | `externalId` | string \| null | ID no seu sistema; pode ser `null` |
 | `createdAt`  | string  | Data/hora de criação (ISO 8601) |
 | `updatedAt`  | string  | Data/hora da última atualização |
@@ -50,12 +50,12 @@ Exemplo de resposta de uma transação PIX:
 
 | Valor        | Significado |
 | ------------ | ----------- |
-| `COMPLETE`   | Envio aceito pelo provedor. Todo PIX enviado já é criado com esse status. |
-| `FAILED`     | O provedor recusou o envio depois de aceito. O valor volta para o seu saldo. |
-
-<Warning>
-  `COMPLETE` na criação não garante que o dinheiro chegou: o envio ainda pode passar para `FAILED`. Confirme o resultado pelos webhooks `transfer.completed` e `transfer.failed` (veja [Transferências](/pages/webhooks/events/transfers)).
-</Warning>
+| `PENDING`    | Criado, aguardando processamento |
+| `EXPIRED`    | Expirado |
+| `CANCELLED`  | Cancelado |
+| `COMPLETE`   | Concluído com sucesso |
+| `REFUNDED`   | Reembolsado |
+| `FAILED`     | O envio falhou; o valor volta para o seu saldo |
 
 ## Tipos de chave PIX
 
@@ -73,7 +73,7 @@ Ao criar um PIX, informe o tipo da chave de destino:
 ## Limites e taxas
 
 - **Mínimo:** R$ 1,00
-- **Taxa:** ver [termos de uso](https://abacatepay.com/termos). A taxa é descontada do `amount`: num envio de R$ 100,00, o destinatário recebe R$ 99,20 (com a taxa de R$ 0,80). Para entregar um valor exato, some a taxa ao `amount`.
+- **Taxa:** ver [termos de uso](https://abacatepay.com/termos)
 - **Processamento:** instantâneo; disponível 24/7
 - **Limite:** consulte o dashboard; excesso pode retornar HTTP 429
 
