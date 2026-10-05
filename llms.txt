@@ -9,9 +9,10 @@ Notas importantes:
 - Respostas seguem o envelope `{ "data": {...}, "success": true, "error": null }`.
 - Produtos precisam existir antes de criar Checkouts; use `externalId` como referência ao seu catálogo.
 - Clientes são únicos por CPF/CNPJ — criar um cliente com taxId já existente retorna o existente.
-- Assinaturas exigem produto com `cycle` definido (`WEEKLY`, `MONTHLY`, `SEMIANNUALLY`, `ANNUALLY`).
-- Checkout Transparente gera PIX ou Boleto imediatamente sem redirecionar o usuário; retorna `brCode` (copia-e-cola) e `brCodeBase64` (imagem PNG) para PIX, e `barCode` (linha digitável) e `url` para Boleto.
+- Assinaturas exigem produto com `cycle` definido (`WEEKLY`, `MONTHLY`, `QUARTERLY`, `SEMIANNUALLY`, `ANNUALLY`).
+- Checkout Transparente gera PIX ou Boleto imediatamente sem redirecionar o usuário; retorna `brCode` (copia-e-cola) e `brCodeBase64` (imagem PNG) para PIX, e `barCode` (código de barras), `identificationNumber` (linha digitável) e `url` para Boleto.
 - Webhooks precisam de URL HTTPS pública. O `secret` informado na criação chega em cada entrega no parâmetro `webhookSecret` da URL e é o que prova a origem; o header `X-Webhook-Signature` (HMAC-SHA256 com uma chave pública) só garante a integridade do corpo.
+- Permissões: cada rota exige uma permissão da chave de API (ex.: `CHECKOUT:CREATE`); sem ela, a API responde 401 com `Insufficient permissions`. A tabela completa está em [Autenticação](https://docs.abacatepay.com/pages/authentication#permissões-da-chave-de-api).
 
 ## Checkout (cobrar com página hospedada)
 
@@ -19,16 +20,16 @@ Notas importantes:
 - [POST /checkouts/create](https://docs.abacatepay.com/pages/payment/create): Cria um Checkout e retorna a `url` para redirecionar o cliente. Campo obrigatório: `items` (array com `id` do produto e `quantity`). Opcionais: `methods` (PIX/CARD), `customerId`, `returnUrl`, `completionUrl`, `coupons`, `externalId`, `metadata`.
 - [Receber parcelado (Cartão)](https://docs.abacatepay.com/pages/payment/installments): Permite cobrar parcelado no cartão de crédito (de 1x até 12x) definindo `card.maxInstallments`. Requer valor total correspondente a pelo menos R$ 10,00 por parcela.
 - [GET /checkouts/list](https://docs.abacatepay.com/pages/payment/list): Lista todos os Checkouts da loja.
-- [GET /checkouts/one](https://docs.abacatepay.com/pages/payment/one): Busca um Checkout pelo ID.
-- [POST /checkouts/refund](https://docs.abacatepay.com/pages/payment/refund): Reembolsa integralmente um Checkout pago pelo ID do checkout (`bill_...`) ou da transação.
+- [GET /checkouts/get](https://docs.abacatepay.com/pages/payment/one): Busca um Checkout pelo ID.
+- [POST /checkouts/refund](https://docs.abacatepay.com/pages/payment/refund): Reembolsa integralmente um Checkout pago pelo ID do checkout (`bill_...`) ou da cobrança (`pix_char_...`, `card_...` ou `char_...`).
 
 ## Links de Pagamento
 
 - [Referência de Links de Pagamento](https://docs.abacatepay.com/pages/payment-links/reference): Links reutilizáveis (frequency=MULTIPLE_PAYMENTS); o cliente pode pagar várias vezes pelo mesmo link.
 - [POST /payment-links/create](https://docs.abacatepay.com/pages/payment-links/create): Cria um link de pagamento reutilizável.
 - [GET /payment-links/list](https://docs.abacatepay.com/pages/payment-links/list): Lista os links de pagamento.
-- [GET /payment-links/one](https://docs.abacatepay.com/pages/payment-links/one): Busca um link de pagamento pelo ID.
-- [POST /payment-links/refund](https://docs.abacatepay.com/pages/payment-links/refund): Reembolsa integralmente um pagamento específico de link de pagamento pelo ID da transação (`bill_...` ou `char_...`).
+- [GET /payment-links/get](https://docs.abacatepay.com/pages/payment-links/one): Busca um link de pagamento pelo ID.
+- [POST /payment-links/refund](https://docs.abacatepay.com/pages/payment-links/refund): Reembolsa integralmente um pagamento específico de link de pagamento pelo ID da cobrança daquele pagamento (`pix_char_...`, `card_...` ou `char_...`); o `bill_...` do link é recusado.
 
 ## Clientes
 
@@ -42,15 +43,15 @@ Notas importantes:
 
 - [Referência do Checkout Transparente](https://docs.abacatepay.com/pages/transparents/reference): Gera cobranças via PIX ou Boleto diretamente no seu site/app sem redirecionar o usuário.
 - [POST /transparents/create (PIX)](https://docs.abacatepay.com/pages/transparents/create): Cria uma cobrança PIX. Retorna `brCode` (copia-e-cola) e `brCodeBase64` (imagem PNG base64). Campo obrigatório: `data.amount` (em centavos) e `method` como `"PIX"`. Suporta `data.ensureSameTaxId` para exigir que o pagador tenha o mesmo CPF/CNPJ do `customer.taxId`.
-- [POST /transparents/create (Boleto)](https://docs.abacatepay.com/pages/transparents/boleto): Cria uma cobrança via Boleto bancário. Retorna `barCode` (linha digitável), `url` do boleto para impressão e PIX alternativo. Campos obrigatórios: `method` como `"BOLETO"`, `data.amount`, `data.customer.name` e `data.customer.taxId`. Suporta juros (`interest`) e multa (`fine`).
+- [POST /transparents/create (Boleto)](https://docs.abacatepay.com/pages/transparents/boleto): Cria uma cobrança via Boleto bancário. Retorna `barCode` (código de barras), `identificationNumber` (linha digitável), `url` do boleto para impressão e um PIX alternativo. Campos obrigatórios: `method` como `"BOLETO"`, `data.amount`, `data.customer.name` e `data.customer.taxId`. Suporta juros (`interest`) e multa (`fine`).
 - [GET /transparents/list](https://docs.abacatepay.com/pages/transparents/list): Lista as cobranças transparentes criadas.
-- [POST /transparents/simulate-payment](https://docs.abacatepay.com/pages/transparents/simulate-payment): Simula um pagamento (ambiente sandbox/devMode).
-- [GET /transparents/check](https://docs.abacatepay.com/pages/transparents/check): Verifica o status de pagamento de um QR Code PIX ou Boleto pelo ID.
+- [POST /transparents/simulate-payment](https://docs.abacatepay.com/pages/transparents/simulate-payment): Simula o pagamento de uma cobrança PIX em Dev Mode.
+- [GET /transparents/check](https://docs.abacatepay.com/pages/transparents/check): Verifica o status de pagamento de uma cobrança PIX pelo ID.
 - [POST /transparents/refund](https://docs.abacatepay.com/pages/transparents/refund): Reembolsa integralmente um pagamento transparente pelo ID.
 
 ## Produtos
 
-- [Referência de Produtos](https://docs.abacatepay.com/pages/products/reference): Produtos do catálogo usados nos Checkouts. Avulso (`cycle` omitido) ou assinatura (`cycle`: WEEKLY, MONTHLY, SEMIANNUALLY, ANNUALLY). Moeda sempre BRL.
+- [Referência de Produtos](https://docs.abacatepay.com/pages/products/reference): Produtos do catálogo usados nos Checkouts. Avulso (`cycle` omitido) ou assinatura (`cycle`: WEEKLY, MONTHLY, QUARTERLY, SEMIANNUALLY, ANNUALLY). Moeda sempre BRL.
 - [POST /products/create](https://docs.abacatepay.com/pages/products/create): Cria um produto. Obrigatórios: `externalId`, `name`, `price` (centavos), `currency` ("BRL"). Opcionais: `description`, `imageUrl`, `cycle`.
 - [GET /products/list](https://docs.abacatepay.com/pages/products/list): Lista os produtos.
 - [GET /products/get](https://docs.abacatepay.com/pages/products/get): Busca um produto pelo ID.
@@ -67,7 +68,7 @@ Notas importantes:
 
 ## Webhooks
 
-- [Referência de Webhooks](https://docs.abacatepay.com/pages/webhooks/reference): Notificações automáticas de eventos. Eventos disponíveis: checkout.completed, checkout.refunded, checkout.disputed, checkout.lost, transparent.completed, transparent.refunded, transparent.disputed, transparent.lost, subscription.completed, subscription.cancelled, subscription.renewed, subscription.trial_started, payout.completed, payout.failed, transfer.completed, transfer.failed. Endpoint deve ser HTTPS público. Payloads assinados com HMAC usando o `secret` informado.
+- [Referência de Webhooks](https://docs.abacatepay.com/pages/webhooks/reference): Notificações automáticas de eventos. Eventos disponíveis: checkout.completed, checkout.refunded, checkout.disputed, checkout.lost, transparent.completed, transparent.refunded, transparent.disputed, transparent.lost, subscription.completed, subscription.trial_started, subscription.renewed, subscription.plan_changed, subscription.payment_failed, subscription.cancelled, payout.completed, payout.failed, transfer.completed, transfer.failed. Endpoint deve ser HTTPS público. O `secret` chega em cada entrega no parâmetro `webhookSecret` da URL.
 - [POST /webhooks/create](https://docs.abacatepay.com/pages/webhooks/create): Cria um webhook. Obrigatórios: `name`, `endpoint` (HTTPS), `secret`, `events` (array de eventos).
 - [GET /webhooks/list](https://docs.abacatepay.com/pages/webhooks/list): Lista os webhooks.
 - [GET /webhooks/get](https://docs.abacatepay.com/pages/webhooks/get): Busca um webhook pelo ID.
@@ -75,16 +76,20 @@ Notas importantes:
 
 ## Assinaturas
 
-- [Referência de Assinaturas](https://docs.abacatepay.com/pages/subscriptions/reference): Cobranças recorrentes. Exige produto com `cycle` definido. Checkout aceita apenas 1 item. Métodos padrão: ["CARD"]. Ciclos: WEEKLY, MONTHLY, SEMIANNUALLY, ANNUALLY. Status: PENDING, EXPIRED, CANCELLED, PAID, REFUNDED.
+- [Referência de Assinaturas](https://docs.abacatepay.com/pages/subscriptions/reference): Cobranças recorrentes. Exige produto com `cycle` definido. Checkout aceita apenas 1 item. Métodos padrão: ["CARD"]. Ciclos: WEEKLY, MONTHLY, QUARTERLY, SEMIANNUALLY, ANNUALLY. Status da assinatura: PENDING, ACTIVE, CANCELLED.
 - [POST /subscriptions/create](https://docs.abacatepay.com/pages/subscriptions/create): Cria um Checkout de assinatura. Mesmos parâmetros do Checkout; `items` com exatamente 1 produto com cycle definido.
-- [GET /subscriptions/list](https://docs.abacatepay.com/pages/subscriptions/list): Lista os Checkouts de assinatura.
+- [GET /subscriptions/list](https://docs.abacatepay.com/pages/subscriptions/list): Lista as assinaturas.
+- [GET /subscriptions/get](https://docs.abacatepay.com/pages/subscriptions/get): Busca uma assinatura pelo ID.
+- [GET /subscriptions/checkouts/list](https://docs.abacatepay.com/pages/subscriptions/checkouts-list): Lista os checkouts de assinatura.
+- [GET /subscriptions/checkouts/get](https://docs.abacatepay.com/pages/subscriptions/checkouts-get): Busca um checkout de assinatura pelo ID.
+- [POST /subscriptions/checkouts/delete](https://docs.abacatepay.com/pages/subscriptions/checkouts-delete): Remove um checkout de assinatura.
 - [POST /subscriptions/cancel](https://docs.abacatepay.com/pages/subscriptions/cancel): Cancela uma assinatura ativa.
-- [POST /subscriptions/change-plan](https://docs.abacatepay.com/pages/subscriptions/change-plan): Altera o produto principal (plano) de uma assinatura ativa. A cobrança do novo valor inicia no ciclo subsequente.
+- [POST /subscriptions/change-plan](https://docs.abacatepay.com/pages/subscriptions/change-plan): Altera o produto principal (plano) de uma assinatura ativa. O produto novo precisa ter o mesmo ciclo da assinatura. A cobrança do novo valor inicia no ciclo subsequente.
 - [POST /subscriptions/record-usage](https://docs.abacatepay.com/pages/subscriptions/record-usage): Registra unidades de consumo de um produto avulso (pay-as-you-go) em uma assinatura ativa para cobrança no próximo ciclo.
 
 ## Saques (Payouts)
 
-- [Referência de Saques](https://docs.abacatepay.com/pages/payouts/reference): Saque do saldo da conta para chave PIX de sua titularidade. Mínimo: R$ 3,50. Taxa: R$ 0,80 por saque. Limite: 1 saque/minuto. Processamento instantâneo 24/7.
+- [Referência de Saques](https://docs.abacatepay.com/pages/payouts/reference): Saque do saldo da conta para chave PIX do mesmo CPF/CNPJ da conta. Taxas em [Taxas e tarifas](https://docs.abacatepay.com/pages/concepts/taxas).
 - [POST /payouts/create](https://docs.abacatepay.com/pages/payouts/create): Cria um saque. Status: `COMPLETE` na criação; `FAILED` se o envio falhar (o valor volta para o saldo).
 - [GET /payouts/get](https://docs.abacatepay.com/pages/payouts/get): Busca um saque pelo ID. O comprovante fica em `receiptUrl`.
 - [GET /payouts/list](https://docs.abacatepay.com/pages/payouts/list): Lista os saques.
@@ -92,7 +97,7 @@ Notas importantes:
 ## Transferências PIX (enviar)
 
 - [Referência de PIX](https://docs.abacatepay.com/pages/pix/reference): Envio de transferências PIX para terceiros (diferente de Payouts, que são para sua própria chave).
-- [POST /pix/create](https://docs.abacatepay.com/pages/pix/create): Envia um PIX para uma chave de destino.
+- [POST /pix/send](https://docs.abacatepay.com/pages/pix/create): Envia um PIX para uma chave de terceiros. Obrigatórios: `amount` (mínimo 100), `pix` (`type` e `key`) e `externalId`.
 - [GET /pix/get](https://docs.abacatepay.com/pages/pix/get): Busca uma transferência PIX pelo ID.
 - [GET /pix/list](https://docs.abacatepay.com/pages/pix/list): Lista as transferências PIX.
 
@@ -100,6 +105,20 @@ Notas importantes:
 
 - [Referência da Loja](https://docs.abacatepay.com/pages/store/reference): Dados da sua loja/conta na AbacatePay.
 - [GET /stores/get](https://docs.abacatepay.com/pages/store/get): Retorna nome, configurações e informações gerais da loja autenticada.
+
+## Extrato
+
+- [Referência do Extrato](https://docs.abacatepay.com/pages/bank-statement/reference): Movimentações que alteram o saldo disponível; cada uma traz `balanceEffect` (`credit`, `debit` ou `none`).
+- [GET /bank-statement/list](https://docs.abacatepay.com/pages/bank-statement/list): Lista o extrato da conta, com paginação e filtros.
+
+## Conceitos
+
+- [O que é a AbacatePay?](https://docs.abacatepay.com/pages/concepts/overview): Visão geral dos produtos e de para quem servem.
+- [O que é o Checkout?](https://docs.abacatepay.com/pages/concepts/checkout): Como funciona a página de pagamento hospedada.
+- [O que é o PIX?](https://docs.abacatepay.com/pages/concepts/pix): Como o PIX funciona na AbacatePay.
+- [O que são Assinaturas?](https://docs.abacatepay.com/pages/concepts/subscriptions): Cobrança recorrente e ciclos.
+- [Como receber seu dinheiro](https://docs.abacatepay.com/pages/concepts/saques): Saques do saldo para a sua conta.
+- [Taxas e tarifas](https://docs.abacatepay.com/pages/concepts/taxas): Taxas por método de pagamento, saque e antecipação.
 
 ## Optional
 
@@ -111,10 +130,11 @@ Notas importantes:
 ## Outros Recursos
 
 - [Comece Aqui](https://docs.abacatepay.com/pages/start/welcome): Boas-vindas e primeiros passos.
-- [Autenticação](https://docs.abacatepay.com/pages/authentication): Detalhes sobre autenticação via Bearer Token.
+- [Autenticação](https://docs.abacatepay.com/pages/authentication): Autenticação via Bearer Token e permissões de cada rota.
+- [Introdução à API](https://docs.abacatepay.com/pages/reference/introduction): Envelope de resposta, paginação por cursor (`after`, `before`, `pagination.next`), filtro por data e erros.
 - [Modo Sandbox/Desenvolvedor](https://docs.abacatepay.com/pages/devmode): Testar integrações sem transações reais.
 - [Produção](https://docs.abacatepay.com/pages/production): Passos para colocar a integração em produção.
 - [Glossário](https://docs.abacatepay.com/pages/glossario): Termos técnicos utilizados na plataforma.
-- [SDKs](https://docs.abacatepay.com/pages/sdks/sdks): SDKs oficiais para Node.js, Python, Go, Java, PHP, Ruby, Rust, Kotlin e Swift.
+- [SDKs](https://docs.abacatepay.com/pages/sdks/sdks): SDKs para Node.js e Ruby (API v2). Os de Python, Go, Java, PHP, Rust, Kotlin e Swift são legados e só funcionam com chave da API v1.
 - [CLI](https://docs.abacatepay.com/pages/cli/overview): Interface de linha de comando oficial da AbacatePay.
 - [MCP & AI Skills](https://docs.abacatepay.com/pages/ai/overview): Integrações e prompts para agentes de Inteligência Artificial.

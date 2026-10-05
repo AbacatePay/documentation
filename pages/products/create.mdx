@@ -5,6 +5,10 @@ openapi: "POST /products/create"
 
 Cria um produto no seu catálogo para usar em checkouts, assinaturas e links de pagamento.
 
+<Card horizontal>
+  Requer a permissão `PRODUCT:CREATE`.
+</Card>
+
 <Card title="Obrigatórios" horizontal>
   `externalId` (único no seu sistema), `name`, `price` (em centavos) e `currency` (sempre `"BRL"`).
 </Card>
