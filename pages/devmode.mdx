@@ -83,13 +83,13 @@ Use o seguinte cartão para simular um pagamento **aprovado**:
 
 ### Cartões rejeitados
 
-Os números abaixo são sempre **rejeitados** no Dev mode, para você testar o fluxo de falha:
+No Dev mode, a recusa é simulada pelos 4 últimos dígitos do cartão. Use os números abaixo para testar cada motivo de falha:
 
-- `4000000000000002`
-- `4000000000009995`
-- `4000000000000127`
-- `4000000000000069`
-- `4000000000000101`
+| Número | Motivo da recusa |
+| ------ | ---------------- |
+| `4000000000000002` | Cartão recusado pelo emissor |
+| `4000000000000069` | Cartão expirado |
+| `4000000000000127` | CVV inválido |
 
 ## Checklist antes de ir para produção
 

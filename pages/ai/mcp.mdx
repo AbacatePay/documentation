@@ -55,11 +55,11 @@ bun install
   </Tab>
 
   <Tab title="Cursor">
-    Em `mcp.servers` nas configurações do Cursor, adicione a mesma estrutura:
+    No Cursor, adicione a mesma estrutura em `.cursor/mcp.json`, na raiz do projeto, ou em `~/.cursor/mcp.json`, para todos os projetos:
 
     ```json
     {
-      "mcp.servers": {
+      "mcpServers": {
         "abacate-pay": {
           "command": "bun",
           "args": ["/caminho/absoluto/para/abacatepay-mcp/src/index.ts"],

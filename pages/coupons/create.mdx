@@ -9,14 +9,14 @@ Cria um cupom de desconto que seus clientes aplicam no checkout.
   `code` (único na sua loja), `discountKind` (`PERCENTAGE` ou `FIXED`) e `discount` (valor do desconto).
 </Card>
 
-**`PERCENTAGE`** desconta uma porcentagem do total. **`FIXED`** desconta um valor fixo em centavos.
+**`PERCENTAGE`** desconta uma porcentagem do total, informada em centésimos de ponto percentual: `100` = 1%, `1000` = 10% e o máximo é `10000` (100%). **`FIXED`** desconta um valor fixo em centavos (mínimo `100`, ou seja, R$ 1,00).
 
 **Exemplo — 10% de desconto ilimitado:**
 ```json
 {
   "code": "BEMVINDO10",
   "discountKind": "PERCENTAGE",
-  "discount": 10,
+  "discount": 1000,
   "maxRedeems": -1,
   "notes": "Cupom de boas-vindas"
 }

@@ -6,7 +6,7 @@ openapi: "GET /transparents/list"
 Retorna todos os checkouts transparentes (PIX QR Code) da sua loja.
 
 <Card horizontal>
-  Requer a permissão `CHECKOUT:READ`.
+  Requer a permissão `TRANSPARENT:READ`.
 </Card>
 
 Use `limit`, `after` e `before` para paginar e `startDate`/`endDate` (`YYYY-MM-DD`) para filtrar por data de criação. Consulte [Paginação e filtro por data](/pages/reference/introduction#paginação-e-filtro-por-data). Cada item segue o mesmo formato da resposta do [Criar QRCode PIX](/pages/transparents/create), incluindo `status`, `brCode`, `amount` e `expiresAt`.

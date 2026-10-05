@@ -3,7 +3,7 @@
   "theme": "mint",
   "name": "AbacatePay",
   "redirects": [
-    { "source": "/pages/pix-qrcode/*", "destination": "/pages/pix/*" },
+    { "source": "/pages/pix-qrcode/*", "destination": "/pages/transparents/*" },
     { "source": "/pages/withdraw/*", "destination": "/pages/payouts/*" },
     { "source": "/pages/coupon/*", "destination": "/pages/coupons/*" },
     { "source": "/pages/cupom/*", "destination": "/pages/coupons/*" },
@@ -346,7 +346,7 @@
     "links": [
       {
         "label": "llms.txt",
-        "href": "https://www.abacatepay.com/llms.txt"
+        "href": "https://docs.abacatepay.com/llms.txt"
       },
       {
         "label": "Repositório",

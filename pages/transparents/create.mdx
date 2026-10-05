@@ -4,7 +4,7 @@ openapi: 'POST /transparents/create'
 ---
 
 <Card horizontal>
-  Requer a permissão `CHECKOUT:READ`.
+  Requer a permissão `TRANSPARENT:CREATE`.
 </Card>
 
 Cria um checkout transparente via **PIX**. A API devolve o QR Code em imagem (`brCodeBase64`) e o código copia e cola (`brCode`) — o cliente nunca sai do seu site.
@@ -48,7 +48,7 @@ Regras:
     "customer": {
       "name": "Daniel Lima",
       "email": "daniel_lima@abacatepay.com",
-      "taxId": "123.456.789-01",
+      "taxId": "111.444.777-35",
       "cellphone": "(11) 4002-8922"
     }
   }
@@ -120,7 +120,7 @@ Com `utm`:
     "customer": {
       "name": "Daniel Lima",
       "email": "daniel_lima@abacatepay.com",
-      "taxId": "123.456.789-01",
+      "taxId": "111.444.777-35",
       "cellphone": "(11) 4002-8922"
     },
     "metadata": {
