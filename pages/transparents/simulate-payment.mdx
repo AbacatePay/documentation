@@ -6,7 +6,7 @@ openapi: 'POST /transparents/simulate-payment'
 Simula o pagamento de um QR Code PIX no ambiente de desenvolvimento. Só funciona com chaves de API de sandbox.
 
 <Card horizontal>
-  Requer a permissão `CHECKOUT:READ`. Disponível apenas em `devMode`.
+  Requer a permissão `TRANSPARENT:CREATE`. Disponível apenas em `devMode`.
 </Card>
 
 Use para testar o fluxo completo sem precisar realizar um PIX real: crie um QR Code, simule o pagamento e confirme que seu webhook ou polling recebe o status `PAID`.

@@ -5,16 +5,6 @@ icon: "book-open-cover"
 ---
 
 O **Checkout** é a página segura onde o cliente finaliza o pagamento. Você envia os itens; a API devolve uma URL para redirecionar.
-<img
-  src="/images/payment-checkout-placeholder.png"
-  alt="Fluxo de cobrança - Checkout AbacatePay"
-  style={{
-    maxWidth: "100%",
-    height: "auto",
-    margin: "24px 0",
-    borderRadius: "8px"
-  }}
-/>
 
 ## Criar checkout
 
@@ -29,8 +19,8 @@ O parâmetro **`frequency`** define o tipo de cobrança:
 | Valor | Descrição |
 |-------|-----------|
 | **ONE_TIME** | Pagamento único (padrão). Não é necessário enviar ao criar um checkout. |
-| **MULTIPLE_PAYMENTS** | Link de pagamento onde é possível pagar mais de uma vez. Veja [Links de pagamento](/payment-links/reference). |
-| **SUBSCRIPTION** | Assinatura recorrente. Veja [Assinaturas](/subscriptions/reference). |
+| **MULTIPLE_PAYMENTS** | Link de pagamento onde é possível pagar mais de uma vez. Veja [Links de pagamento](/pages/payment-links/reference). |
+| **SUBSCRIPTION** | Assinatura recorrente. Veja [Assinaturas](/pages/subscriptions/reference). |
 
 **Exemplo (pagamento único — frequency não precisa ser enviado):**
 ```json

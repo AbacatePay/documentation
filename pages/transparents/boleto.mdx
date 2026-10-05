@@ -4,7 +4,7 @@ openapi: 'POST /transparents/create'
 ---
 
 <Card horizontal>
-  Requer a permissão `CHECKOUT:READ`.
+  Requer a permissão `TRANSPARENT:CREATE`.
 </Card>
 
 Cria um checkout transparente via **Boleto**. A API devolve a linha digitável (`barCode`), uma URL para visualização e impressão do boleto (`url`), e o PIX alternativo (`brCode`/`brCodeBase64`) para a mesma cobrança — tudo em uma única chamada.
@@ -160,7 +160,7 @@ A multa é uma **cobrança única** aplicada uma vez após o vencimento.
     "dueDate": "2026-08-15",
     "customer": {
       "name": "João Silva",
-      "taxId": "123.456.789-00"
+      "taxId": "111.444.777-35"
     },
     "interest": { "value": 100 },
     "fine": { "value": 1000, "type": "FIXED" }

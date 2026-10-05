@@ -7,14 +7,14 @@ icon: 'conveyor-belt-arm'
 Ir para produção envolve dois passos independentes: **verificar sua conta** (processo burocrático, feito uma vez só) e **trocar a chave de API** no seu sistema (mudança de código). Ambos precisam estar prontos antes de processar pagamentos reais.
 
 <Info>
-  Antes de iniciar, confirme que você passou pelo [checklist do Dev mode](/pages/devmode#checklist-antes-de-ir-para-producao). Ir para produção com integração incompleta pode causar falhas silenciosas.
+  Antes de iniciar, confirme que você passou pelo [checklist do Dev mode](/pages/devmode#checklist-antes-de-ir-para-produção). Ir para produção com integração incompleta pode causar falhas silenciosas.
 </Info>
 
 ## O que muda na prática
 
 | | Dev mode | Produção |
 |---|---|---|
-| Chave de API | Começa com `dev_` | Começa com `prod_` |
+| Chave de API | Começa com `abc_dev_` | Começa com `abc_prod_` |
 | Pagamentos | Simulados | Reais |
 | Webhooks | Eventos fictícios | Eventos reais |
 | Saque | Não disponível | Disponível |
@@ -27,7 +27,7 @@ Al migrar do ambiente de desenvolvimento para produção, você precisará compl
 <Card title="Validação do Projeto" horizontal>
   Além da verificação de documentos, nossa equipe também valida se o seu projeto está dentro das especificações e em conformidade com nossos termos de uso e regras de operação.
   
-  Antes de iniciar o processo, verifique se a sua operação está na nossa [lista de operações suportadas](/operacoes-suportadas) para garantir que poderemos dar suporte ao seu negócio.
+  Antes de iniciar o processo, confira nos nossos [termos de uso](https://www.abacatepay.com/termos) a lista de atividades não permitidas na plataforma para garantir que poderemos dar suporte ao seu negócio.
 </Card>
 
 ## Processo de Verificação

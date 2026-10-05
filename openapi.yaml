@@ -65,7 +65,7 @@ paths:
                 taxId:
                   type: string
                   description: CPF ou CNPJ válido do cliente (opcional)
-                  example: 123.456.789-01
+                  example: 111.444.777-35
                   x-mint:
                     hidden: true
                 zipCode:
@@ -155,7 +155,7 @@ paths:
           required: false
           schema:
             type: string
-            example: 123.456.789-01
+            example: '11144477735'
         - name: name
           in: query
           description: Filtrar por nome do cliente
@@ -237,7 +237,7 @@ paths:
           required: false
           schema:
             type: string
-            example: 123.456.789-01
+            example: '11144477735'
       responses:
         '200':
           description: Cliente encontrado com sucesso.
@@ -592,16 +592,24 @@ paths:
         Alterna o status de um cupom entre ativo e inativo.
 
         Use essa rota para ativar ou desativar um cupom sem precisar deletá-lo.
+
+        Diferente de `/coupons/delete`, o `id` vai no corpo da requisição, não na query.
       security:
         - bearerAuth: []
-      parameters:
-        - name: id
-          in: query
-          required: true
-          description: Identificador único do cupom
-          schema:
-            type: string
-            example: MY_COUPON
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - id
+              additionalProperties: false
+              properties:
+                id:
+                  type: string
+                  description: Identificador único do cupom
+                  example: MY_COUPON
       responses:
         '200':
           description: Status do cupom alternado com sucesso.
@@ -2068,7 +2076,7 @@ paths:
                           example: Daniel Lima
                         taxId:
                           type: string
-                          example: 123.456.789-01
+                          example: 111.444.777-35
                         email:
                           type: string
                           example: daniel_lima@abacatepay.com
@@ -4478,30 +4486,22 @@ paths:
         Esta operação é irreversível. Use com cuidado.
       security:
         - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - id
-              additionalProperties: false
-              properties:
-                id:
-                  type: string
-                  description: Identificador único do webhook a ser deletado
-                  example: webh_abc123xyz
+      parameters:
+        - name: id
+          in: query
+          required: true
+          description: Identificador único do webhook a ser deletado
+          schema:
+            type: string
+            example: webh_abc123xyz
       responses:
         '200':
-          description: Webhook deletado com sucesso.
+          description: Webhook deletado com sucesso. A resposta de sucesso não traz o campo `data`.
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  data:
-                    $ref: '#/components/schemas/WebhookResponse'
                   error:
                     type: string
                     nullable: true
@@ -4733,7 +4733,7 @@ components:
             taxId:
               type: string
               description: CPF ou CNPJ.
-              example: 123.456.789-01
+              example: '11144477735'
             cellphone:
               type: string
               example: (11) 99999-9999
@@ -4889,7 +4889,7 @@ components:
         taxId:
           type: string
           description: CPF ou CNPJ do cliente
-          example: 123.456.789-01
+          example: '11144477735'
         country:
           type: string
           description: País do cliente
@@ -4937,8 +4937,13 @@ components:
             - PERCENTAGE
             - FIXED
         discount:
-          type: number
-          description: Valor de desconto a ser aplicado
+          type: integer
+          minimum: 0
+          description: >-
+            Valor do desconto. Em `PERCENTAGE`, é em centésimos de ponto percentual:
+            `100` = 1%, `1000` = 10% (máximo `10000` = 100%). Em `FIXED`, é em
+            centavos (mínimo `100` = R$ 1,00).
+          example: 1000
         startsAt:
           type: string
           format: date-time
@@ -4992,9 +4997,11 @@ components:
             - FIXED
           example: PERCENTAGE
         discount:
-          type: number
-          description: Valor de desconto a ser aplicado
-          example: 123
+          type: integer
+          description: >-
+            Valor do desconto. Em `PERCENTAGE`, é em centésimos de ponto percentual
+            (`1000` = 10%). Em `FIXED`, é em centavos.
+          example: 1000
         devMode:
           type: boolean
           description: Indica se o cupom foi criado em ambiente de testes.

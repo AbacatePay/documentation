@@ -38,7 +38,7 @@ paths:
                 taxId:
                   type: string
                   description: CPF ou CNPJ válido do cliente.
-                  example: 123.456.789-01
+                  example: 111.444.777-35
       responses:
         '200':
           description: Cliente criado com sucesso.
@@ -267,7 +267,7 @@ paths:
                     taxId:
                       type: string
                       description: CPF ou CNPJ do cliente.
-                      example: 123.456.789-01
+                      example: 111.444.777-35
                 allowCoupons: 
                   type: boolean
                   default: false
@@ -396,7 +396,7 @@ paths:
                     taxId:
                       type: string
                       description: CPF ou CNPJ do cliente.
-                      example: 123.456.789-01
+                      example: 111.444.777-35
                 metadata:
                       type: object
                       description: Metadados opcionais para a cobrança
@@ -938,7 +938,7 @@ components:
             taxId:
               type: string
               description: CPF ou CNPJ do cliente.
-              example: 123.456.789-01
+              example: '11144477735'
     Coupon:
       type: object
       description: Os dados do seu cupom.
@@ -964,7 +964,11 @@ components:
           enum: ['PERCENTAGE', 'FIXED']
         discount:
           type: number
-          description: Valor de desconto a ser aplicado
+          description: >-
+            Valor do desconto. Em `PERCENTAGE`, é em centésimos de ponto percentual:
+            `100` = 1%, `1000` = 10% (máximo `10000` = 100%). Em `FIXED`, é em
+            centavos (mínimo `100` = R$ 1,00).
+          example: 1000
         metadata:
           type: object
           description: Objeto chave valor para metadados do cupom
@@ -999,8 +1003,10 @@ components:
           example: PERCENTAGE
         discount:
           type: number
-          description: Valor de desconto a ser aplicado
-          example: 123
+          description: >-
+            Valor do desconto. Em `PERCENTAGE`, é em centésimos de ponto percentual
+            (`1000` = 10%). Em `FIXED`, é em centavos.
+          example: 1000
         devMode:
           type: boolean
           description: Indica se o cupom foi criado em ambiente de testes.

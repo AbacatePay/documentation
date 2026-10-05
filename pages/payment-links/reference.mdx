@@ -12,16 +12,15 @@ Isso facilita quando existe a necessidade de vários clientes pagarem o mesmo va
 
 **Exemplo:**
 ```json
-POST /checkouts/create
+POST /payment-links/create
 {
-  "frequency": "MULTIPLE_PAYMENTS",
   "items": [
     {
       "id": "prod_pro",
       "quantity": 1
     }
   ],
-  "externalId": "pedido-123",
+  "externalId": "link-promo-123",
   "returnUrl": "https://seusite.com/voltar",
   "completionUrl": "https://seusite.com/sucesso",
   "methods": ["PIX", "CARD"],
@@ -36,25 +35,27 @@ POST /checkouts/create
 {
   "data": {
     "id": "bill_abc123xyz",
-    "externalId": "pedido-123",
+    "externalId": "link-promo-123",
     "url": "https://app.abacatepay.com/pay/bill_abc123xyz",
     "amount": 10000,
     "paidAmount": null,
     "items": [
       {
-        "id": "prod_456",
-        "quantity": 2
+        "id": "prod_pro",
+        "quantity": 1
       }
     ],
-    "status": "PENDING",
+    "status": "ACTIVE",
     "frequency": "MULTIPLE_PAYMENTS",
     "coupons": [],
     "devMode": false,
     "customerId": null,
-    "returnUrl": null,
-    "completionUrl": null,
+    "returnUrl": "https://seusite.com/voltar",
+    "completionUrl": "https://seusite.com/sucesso",
     "receiptUrl": null,
-    "metadata": {},
+    "metadata": {
+      "customField": "value"
+    },
     "createdAt": "2024-11-04T18:38:28.573Z",
     "updatedAt": "2024-11-04T18:38:28.573Z"
   },

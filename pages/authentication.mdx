@@ -163,15 +163,17 @@ Siga os passos abaixo no dashboard:
   </Step>
 </Steps>
 
-Depois disso, você já pode enviar requisições:
+Depois disso, você já pode enviar requisições. O exemplo abaixo cria uma cobrança PIX de R$ 10,00 e exige uma chave com a permissão `TRANSPARENT:CREATE`:
 
 ```bash
 curl -X POST https://api.abacatepay.com/v2/transparents/create \
   -H "Authorization: Bearer {{API_KEY}}" \
   -H "Content-Type: application/json" \
   --data '{
-    "amount": 1000,
-    "method": "PIX"
+    "method": "PIX",
+    "data": {
+      "amount": 1000
+    }
   }'
 ```
 
