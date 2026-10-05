@@ -1,6 +1,6 @@
 ---
 title: 'Kotlin'
-description: 'Integre a AbacatePay em aplicações Android e Kotlin em minutos.'
+description: 'Integre a AbacatePay em aplicações Kotlin que rodam no servidor.'
 icon: 'android'
 ---
 
@@ -8,10 +8,17 @@ icon: 'android'
   Repositório oficial — issues, changelog e contribuições.
 </Card>
 
+<Warning>
+  Este SDK usa a API v1 e precisa de uma chave da v1. Para a API v2, use o SDK de [Node.js](/pages/sdks/nodejs) ou [Ruby](/pages/sdks/ruby).
+</Warning>
+
+<Warning>
+  Use este SDK só no servidor: a chave de API é secreta e não pode ir dentro de um app Android.
+</Warning>
+
 ## Pré-requisitos
 
 - Kotlin 2+ e Java 11+
-- Android 5+ (se for app Android)
 - Uma chave de API ([criar no dashboard](https://app.abacatepay.com))
 
 ## Instalação
@@ -31,12 +38,12 @@ dependencies {
 
 ## Configuração
 
-Armazene sua chave de API em uma variável de ambiente ou arquivo seguro e nunca no código:
+No seu servidor, leia a chave de API de uma variável de ambiente e nunca a escreva no código:
 
 ```kotlin
 import com.abacatepay.AbacatePayClient
 
-val client = AbacatePayClient(apiKey = BuildConfig.ABACATEPAY_API_KEY)
+val client = AbacatePayClient(apiKey = System.getenv("ABACATEPAY_API_KEY"))
 ```
 
 ## Primeira cobrança

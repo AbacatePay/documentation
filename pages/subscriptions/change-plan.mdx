@@ -18,7 +18,7 @@ Altera o produto principal de uma assinatura ativa. O novo valor começa a ser c
 | `quantity`  | integer | Sim         | Quantidade do produto (mínimo `1`)                     |
 
 <Note>
-  O produto informado em `productId` precisa ter um `cycle` configurado (`WEEKLY`, `MONTHLY`, `SEMIANNUALLY` ou `ANNUALLY`). Produtos avulsos (sem ciclo) retornam erro.
+  O produto informado em `productId` precisa ter um `cycle` configurado, igual ao da assinatura. Produtos avulsos (sem ciclo) retornam erro.
 </Note>
 
 **Exemplo — upgrade de plano:**

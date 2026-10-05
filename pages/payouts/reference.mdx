@@ -13,12 +13,12 @@ Exemplo de resposta de um saque:
 ```json
 {
   "data": {
-    "id": "txn_abc123xyz",
-    "status": "PENDING",
+    "id": "tran_abc123xyz",
+    "status": "COMPLETE",
     "devMode": false,
-    "receiptUrl": null,
+    "receiptUrl": "https://app.abacatepay.com/receipt/tran_abc123xyz",
     "amount": 10000,
-    "platformFee": 100,
+    "platformFee": 80,
     "externalId": "saque-123",
     "createdAt": "2024-11-04T18:38:28.573Z",
     "updatedAt": "2024-11-04T18:38:28.573Z"
@@ -35,7 +35,7 @@ Exemplo de resposta de um saque:
 | `id`         | string  | ID único da transação na AbacatePay |
 | `status`     | string  | Status do saque (veja valores abaixo) |
 | `devMode`    | boolean | `true` se criado em sandbox |
-| `receiptUrl` | string \| null | URL do comprovante; disponível quando `status` é `COMPLETE` |
+| `receiptUrl` | string  | URL do comprovante |
 | `amount`     | number  | Valor em centavos (ex.: 10000 = R$ 100,00) |
 | `platformFee` | number | Taxa da plataforma em centavos |
 | `externalId` | string  | ID no seu sistema |
@@ -46,11 +46,8 @@ Exemplo de resposta de um saque:
 
 | Valor        | Significado |
 | ------------ | ----------- |
-| `PENDING`    | Criado, aguardando processamento |
-| `EXPIRED`    | Expirado |
-| `CANCELLED`  | Cancelado |
-| `COMPLETE`   | Concluído com sucesso |
-| `REFUNDED`   | Reembolsado |
+| `COMPLETE`   | Saque criado e enviado |
+| `FAILED`     | O envio falhou; o valor volta para o seu saldo |
 
 ## Limites e taxas
 

@@ -6,6 +6,15 @@ icon: 'book-open-cover'
 
 As rotas **Public MRR** expõem métricas de receita da loja para integração com plataformas Trust MRR ou para exibir no seu site ou dashboard.
 
+## Autenticação
+
+Toda chamada precisa de uma credencial no header `Authorization: Bearer`:
+
+| Versão | Credencial aceita |
+| ------ | ----------------- |
+| v2 (`https://api.abacatepay.com/v2/public-mrr/...`) | Chave de API (`abc_...`) com a permissão `STORE:READ` |
+| v1 (`https://api.abacatepay.com/v1/public-mrr/...`) | Token `mrr_...` gerado no app **Trust MRR** do dashboard (ou chave de API da v1) |
+
 ## Estrutura
 
 ### Merchant (`/public-mrr/merchant-info`)
@@ -31,8 +40,8 @@ Receita recorrente mensal:
 ```json
 {
   "data": {
-    "mrr": 0,
-    "totalActiveSubscriptions": 0
+    "mrr": { "currency": "BRL", "value": 129900 },
+    "totalActiveSubscriptions": { "currency": "BRL", "value": 12 }
   },
   "error": null
 }
@@ -71,8 +80,8 @@ Totais e transações por dia:
 
 | Atributo                    | Tipo    | Descrição |
 | -------------------------- | ------- | --------- |
-| `mrr`                      | number  | Receita recorrente mensal em centavos (0 = nenhuma) |
-| `totalActiveSubscriptions` | integer | Quantidade de assinaturas ativas (0 = nenhuma) |
+| `mrr`                      | object  | Receita recorrente mensal: o valor em centavos fica em `mrr.value` (0 = nenhuma) |
+| `totalActiveSubscriptions` | object  | Assinaturas ativas: a quantidade fica em `totalActiveSubscriptions.value` (0 = nenhuma) |
 
 **Receita (revenue):**
 

@@ -89,9 +89,9 @@ Webhooks precisam ser seguros — afinal, qualquer pessoa poderia tentar enviar 
 
 Por isso, recomendamos duas camadas de proteção:
 
-**1. Secret na URL** — cada webhook tem uma chave secreta que vai junto com a URL. Seu sistema verifica se essa chave está correta antes de processar o evento.
+**1. Secret na URL** — cada webhook tem uma chave secreta que vai junto com a URL. Seu sistema verifica se essa chave está correta antes de processar o evento. É o secret que prova que o evento veio da AbacatePay.
 
-**2. Assinatura digital (HMAC)** — a AbacatePay assina cada evento que envia. Seu sistema pode confirmar que o evento realmente veio da AbacatePay e que não foi alterado no caminho. É o mesmo método usado por Stripe, PayPal, Shopify e GitHub.
+**2. Assinatura digital (HMAC)** — a AbacatePay assina o corpo de cada evento. Seu sistema confirma que o corpo não foi alterado no caminho.
 
 <Info>
   A configuração de segurança é feita pelo seu desenvolvedor. Veja a documentação técnica completa na [página de segurança de webhooks](/pages/webhooks/security).

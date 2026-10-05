@@ -9,13 +9,11 @@ Retorna os dados de um saque pelo seu `id`.
   Requer a permissão `WITHDRAW:READ`.
 </Card>
 
-Use para verificar o `status` de um saque após criá-lo. Quando `status` for `COMPLETE`, o campo `receiptUrl` estará disponível com o comprovante.
+Use para verificar o `status` de um saque após criá-lo. O comprovante fica em `receiptUrl`.
 
 **Valores de `status`:**
 
 | Valor | Significado |
 |-------|-------------|
-| `PENDING` | Aguardando processamento |
-| `COMPLETE` | Concluído — `receiptUrl` disponível |
-| `CANCELLED` | Cancelado |
-| `REFUNDED` | Reembolsado |
+| `COMPLETE` | Saque criado e enviado |
+| `FAILED` | O envio falhou; o valor volta para o seu saldo |
