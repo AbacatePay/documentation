@@ -5,6 +5,10 @@ openapi: "POST /coupons/create"
 
 Cria um cupom de desconto que seus clientes aplicam no checkout.
 
+<Card horizontal>
+  Requer a permissão `COUPON:CREATE`.
+</Card>
+
 <Card title="Obrigatórios" horizontal>
   `code` (único na sua loja), `discountKind` (`PERCENTAGE` ou `FIXED`) e `discount` (valor do desconto).
 </Card>

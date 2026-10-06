@@ -5,6 +5,10 @@ openapi: 'POST /checkouts/create'
 
 Gera uma página de pagamento hospedada. Você envia os produtos; a API devolve a `url` para redirecionar o cliente.
 
+<Card horizontal>
+  Requer a permissão `CHECKOUT:CREATE`.
+</Card>
+
 <Card title="Obrigatório" horizontal>
   Só `items` é obrigatório — lista com `id` do produto e `quantity`.
 </Card>

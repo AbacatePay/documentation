@@ -5,6 +5,10 @@ openapi: "POST /subscriptions/create"
 
 Cria um checkout de assinatura. O cliente paga uma vez e entra no ciclo de cobranças recorrentes do produto.
 
+<Card horizontal>
+  Requer a permissão `SUBSCRIPTION:CREATE`.
+</Card>
+
 <Card title="Pré-requisito" horizontal>
   O produto referenciado em `items` deve ter um `cycle` definido (`WEEKLY`, `MONTHLY`, `SEMIANNUALLY` ou `ANNUALLY`). Produtos avulsos retornam erro.
 </Card>

@@ -5,6 +5,10 @@ openapi: 'POST /transparents/refund'
 
 Reembolsa integralmente um pagamento transparente (PIX QR Code ou Cartão). O valor reembolsado é igual ao valor original da transação — não há reembolso parcial.
 
+<Card horizontal>
+  Requer a permissão `REFUND:CREATE`.
+</Card>
+
 <Card title="Obrigatório" horizontal>
   Apenas `id` é obrigatório — o ID público do recurso a reembolsar.
 </Card>

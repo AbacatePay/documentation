@@ -5,6 +5,10 @@ openapi: 'POST /payment-links/create'
 
 Cria um link de pagamento que pode ser pago por múltiplos clientes — ideal para vendas em massa, rifas ou formulários de inscrição sem criar um checkout por cliente.
 
+<Card horizontal>
+  Requer a permissão `CHECKOUT:CREATE`.
+</Card>
+
 <Card title="Obrigatório" horizontal>
   Envie `"frequency": "MULTIPLE_PAYMENTS"` junto com `items`. O restante dos parâmetros é idêntico ao [Checkout](/pages/payment/create).
 </Card>
