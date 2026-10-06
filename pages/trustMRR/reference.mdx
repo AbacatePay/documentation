@@ -4,16 +4,11 @@ description: 'Métricas de receita públicas para integração ou exibição'
 icon: 'book-open-cover'
 ---
 
-As rotas **Public MRR** expõem métricas de receita da loja para integração com plataformas Trust MRR ou para exibir no seu site ou dashboard.
+As rotas **Public MRR** expõem métricas de receita da loja para integração com plataformas Trust MRR ou para exibir no seu site ou dashboard. Elas existem na v1 e na v2 (`https://api.abacatepay.com/v2/public-mrr/...`).
 
 ## Autenticação
 
-Toda chamada precisa de uma credencial no header `Authorization: Bearer`:
-
-| Versão | Credencial aceita |
-| ------ | ----------------- |
-| v2 (`https://api.abacatepay.com/v2/public-mrr/...`) | Chave de API (`abc_...`) com a permissão `STORE:READ` |
-| v1 (`https://api.abacatepay.com/v1/public-mrr/...`) | Token `mrr_...` gerado no app **Trust MRR** do dashboard (ou chave de API da v1) |
+Toda chamada usa o token `mrr_...` gerado no app **Trust MRR** do dashboard, no header `Authorization: Bearer`. O token só dá acesso às rotas de Public MRR, na v1 e na v2, e é ele que você entrega a uma plataforma de terceiros.
 
 ## Estrutura
 
@@ -27,15 +22,17 @@ Dados básicos da loja:
     "id": "store_abc123xyz",
     "name": "Example Tech",
     "website": "https://www.example.com",
-    "createdAt": "2024-12-06T18:53:31.756Z"
+    "createdAt": "2024-12-06T18:53:31.756Z",
+    "country": "BR"
   },
+  "success": true,
   "error": null
 }
 ```
 
 ### MRR (`/public-mrr/mrr`)
 
-Receita recorrente mensal:
+Receita recorrente mensal e total de assinaturas ativas:
 
 ```json
 {
@@ -43,6 +40,22 @@ Receita recorrente mensal:
     "mrr": { "currency": "BRL", "value": 129900 },
     "totalActiveSubscriptions": { "currency": "BRL", "value": 12 }
   },
+  "success": true,
+  "error": null
+}
+```
+
+### MRR por dia (`/public-mrr/mrr-by-day`)
+
+MRR no fim de cada dia do período, com até 366 dias:
+
+```json
+{
+  "data": {
+    "2024-01-15": { "mrr": 129900 },
+    "2024-01-16": { "mrr": 134900 }
+  },
+  "success": true,
   "error": null
 }
 ```
@@ -54,13 +67,14 @@ Totais e transações por dia:
 ```json
 {
   "data": {
-    "totalRevenue": 150000,
-    "totalTransactions": 45,
+    "totalRevenue": 8000,
+    "totalTransactions": 5,
     "transactionsPerDay": {
       "2024-01-15": { "amount": 5000, "count": 3 },
       "2024-01-16": { "amount": 3000, "count": 2 }
     }
   },
+  "success": true,
   "error": null
 }
 ```
@@ -75,13 +89,21 @@ Totais e transações por dia:
 | `name`     | string | Nome da loja |
 | `website`  | string | Site da loja |
 | `createdAt`| string | Data de criação (ISO 8601) |
+| `country`  | string | País da loja (`BR`) |
 
 **MRR (mrr):**
 
 | Atributo                    | Tipo    | Descrição |
 | -------------------------- | ------- | --------- |
-| `mrr`                      | object  | Receita recorrente mensal: o valor em centavos fica em `mrr.value` (0 = nenhuma) |
-| `totalActiveSubscriptions` | object  | Assinaturas ativas: a quantidade fica em `totalActiveSubscriptions.value` (0 = nenhuma) |
+| `mrr`                      | object  | Receita recorrente mensal das assinaturas pagantes, em centavos, em `mrr.value`. Cada assinatura entra com o valor de um mês: a anual conta 1/12, a trimestral 1/3, e assim por diante |
+| `totalActiveSubscriptions` | object  | Assinaturas ativas, incluindo as em período de teste, em `totalActiveSubscriptions.value` |
+
+**MRR por dia (mrr-by-day):**
+
+| Atributo | Tipo   | Descrição |
+| -------- | ------ | --------- |
+| chave    | string | Dia no formato `YYYY-MM-DD` |
+| `mrr`    | number | MRR em centavos no fim daquele dia, no horário de Brasília |
 
 **Receita (revenue):**
 

@@ -4063,8 +4063,8 @@ paths:
     get:
       summary: Obter informações do merchant
       description: >-
-        Retorna informações básicas da loja (ID, nome, website e data de
-        criação).
+        Retorna informações básicas da loja (ID, nome, website, data de criação
+        e país). Use o token `mrr_` gerado no app Trust MRR.
       security:
         - bearerAuth: []
       responses:
@@ -4095,11 +4095,16 @@ paths:
                         format: date-time
                         description: Data de criação da loja
                         example: '2024-12-06T18:53:31.756Z'
+                      country:
+                        type: string
+                        description: País da loja
+                        example: BR
                     required:
                       - id
                       - name
                       - website
                       - createdAt
+                      - country
                     additionalProperties: false
                   error:
                     type: string
@@ -4119,14 +4124,14 @@ paths:
                     description: >-
                       Mensagem de erro descrevendo o motivo da falha na
                       autenticação.
-                    example: Token de autenticação inválido ou ausente.
+                    example: Unauthorized
   /public-mrr/mrr:
     get:
       summary: Obter MRR (Monthly Recurring Revenue)
       description: >-
         Retorna o MRR (receita recorrente mensal) e o total de assinaturas
-        ativas da loja. Exige uma chave de API com a permissão `STORE:READ`.
-        Os dois campos são objetos: o número fica em `value`.
+        ativas da loja. Os dois campos são objetos: o número fica em `value`.
+        Use o token `mrr_` gerado no app Trust MRR.
       security:
         - bearerAuth: []
       responses:
@@ -4143,8 +4148,7 @@ paths:
                       mrr:
                         type: object
                         description: >-
-                          Receita recorrente mensal. O valor em centavos fica em
-                          `value` (0 indica que não há receita recorrente).
+                          Receita recorrente mensal das assinaturas pagantes. O valor em centavos fica em `value`; cada assinatura entra com o valor de um mês (a anual conta 1/12, a trimestral 1/3). 0 indica que não há receita recorrente.
                         required:
                           - currency
                           - value
@@ -4158,8 +4162,7 @@ paths:
                       totalActiveSubscriptions:
                         type: object
                         description: >-
-                          Total de assinaturas ativas. A quantidade fica em
-                          `value`.
+                          Assinaturas ativas, incluindo as em período de teste. A quantidade fica em `value`.
                         required:
                           - currency
                           - value
@@ -4192,7 +4195,88 @@ paths:
                     description: >-
                       Mensagem de erro descrevendo o motivo da falha na
                       autenticação.
-                    example: Token de autenticação inválido ou ausente.
+                    example: Unauthorized
+  /public-mrr/mrr-by-day:
+    get:
+      summary: Obter MRR por dia
+      description: >-
+        Retorna o MRR do fim de cada dia (horário de Brasília) entre `startDate`
+        e `endDate`, com a mesma conta de `/public-mrr/mrr`. O período pode ter
+        até 366 dias. Use o token `mrr_` gerado no app Trust MRR.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: startDate
+          in: query
+          required: true
+          description: Primeiro dia do período (formato YYYY-MM-DD)
+          schema:
+            type: string
+            format: date
+            example: '2024-01-15'
+        - name: endDate
+          in: query
+          required: true
+          description: Último dia do período (formato YYYY-MM-DD)
+          schema:
+            type: string
+            format: date
+            example: '2024-01-16'
+      responses:
+        '200':
+          description: MRR de cada dia do período.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: >-
+                      Uma chave por dia (YYYY-MM-DD), com o MRR em centavos no
+                      fim daquele dia.
+                    additionalProperties:
+                      type: object
+                      properties:
+                        mrr:
+                          type: number
+                          description: MRR em centavos no fim do dia
+                          example: 129900
+                      required:
+                        - mrr
+                      additionalProperties: false
+                    example:
+                      '2024-01-15':
+                        mrr: 129900
+                      '2024-01-16':
+                        mrr: 134900
+                  error:
+                    type: string
+                    nullable: true
+                    example: null
+                  success:
+                    $ref: '#/components/schemas/Success'
+        '400':
+          description: Erro de validação. Datas inválidas ou período maior que 366 dias.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Mensagem de erro descrevendo o problema de validação.
+                    example: Date range must be at most 366 days
+        '401':
+          description: Não autorizado. Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Unauthorized
   /public-mrr/revenue:
     get:
       summary: Obter receita por período
@@ -4200,7 +4284,7 @@ paths:
         Retorna a receita total, total de transações e transações por dia em um
         período específico. Os dados são cacheados por 1 hora (3600 segundos)
         para melhor performance. A data de fim deve ser posterior à data de
-        início.
+        início. Use o token `mrr_` gerado no app Trust MRR.
       security:
         - bearerAuth: []
       parameters:
@@ -4287,7 +4371,7 @@ paths:
                   error:
                     type: string
                     description: Mensagem de erro descrevendo o problema de validação.
-                    example: Start date and end date are required
+                    example: End date must be after start date
         '401':
           description: Não autorizado. Falha na autenticação.
           content:
@@ -4300,7 +4384,7 @@ paths:
                     description: >-
                       Mensagem de erro descrevendo o motivo da falha na
                       autenticação.
-                    example: Token de autenticação inválido ou ausente.
+                    example: Unauthorized
   /webhooks/create:
     post:
       summary: Criar um webhook
