@@ -40,8 +40,8 @@ Exemplo de resposta de uma transação PIX:
 | `status`     | string  | Status da transação (veja valores abaixo) |
 | `devMode`    | boolean | `true` se criado em sandbox |
 | `receiptUrl` | string  | URL do comprovante |
-| `amount`     | number  | Valor em centavos (ex.: 10000 = R$ 100,00) |
-| `platformFee` | number | Taxa da plataforma em centavos |
+| `amount`     | number  | Valor do PIX em centavos, com a taxa incluída (ex.: 10000 = R$ 100,00) |
+| `platformFee` | number | Taxa da plataforma em centavos, descontada do `amount` |
 | `externalId` | string \| null | ID no seu sistema; pode ser `null` |
 | `createdAt`  | string  | Data/hora de criação (ISO 8601) |
 | `updatedAt`  | string  | Data/hora da última atualização |
@@ -69,7 +69,7 @@ Ao criar um PIX, informe o tipo da chave de destino:
 ## Limites e taxas
 
 - **Mínimo:** R$ 1,00
-- **Taxa:** ver [termos de uso](https://abacatepay.com/termos)
+- **Taxa:** descontada do `amount`: o destinatário recebe `amount` − `platformFee`. Valores em [Taxas e tarifas](/pages/concepts/taxas)
 - **Processamento:** instantâneo; disponível 24/7
 - **Limite:** consulte o dashboard; excesso pode retornar HTTP 429
 

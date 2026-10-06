@@ -89,7 +89,7 @@ Notas importantes:
 
 ## Saques (Payouts)
 
-- [Referência de Saques](https://docs.abacatepay.com/pages/payouts/reference): Saque do saldo da conta para chave PIX do mesmo CPF/CNPJ da conta. Taxas em [Taxas e tarifas](https://docs.abacatepay.com/pages/concepts/taxas).
+- [Referência de Saques](https://docs.abacatepay.com/pages/payouts/reference): Saque do saldo da conta para chave PIX do mesmo CPF/CNPJ da conta. A taxa é descontada do valor sacado; valores em [Taxas e tarifas](https://docs.abacatepay.com/pages/concepts/taxas).
 - [POST /payouts/create](https://docs.abacatepay.com/pages/payouts/create): Cria um saque. Status: `COMPLETE` na criação; `FAILED` se o envio falhar (o valor volta para o saldo).
 - [GET /payouts/get](https://docs.abacatepay.com/pages/payouts/get): Busca um saque pelo ID. O comprovante fica em `receiptUrl`.
 - [GET /payouts/list](https://docs.abacatepay.com/pages/payouts/list): Lista os saques.
@@ -97,7 +97,7 @@ Notas importantes:
 ## Transferências PIX (enviar)
 
 - [Referência de PIX](https://docs.abacatepay.com/pages/pix/reference): Envio de transferências PIX para terceiros (diferente de Payouts, que são para sua própria chave).
-- [POST /pix/send](https://docs.abacatepay.com/pages/pix/create): Envia um PIX para uma chave de terceiros. Obrigatórios: `amount` (mínimo 100), `pix` (`type` e `key`) e `externalId`.
+- [POST /pix/send](https://docs.abacatepay.com/pages/pix/create): Envia um PIX para uma chave de terceiros. Obrigatórios: `amount` (mínimo 100), `pix` (`type` e `key`) e `externalId`. A taxa é descontada do `amount`: o destinatário recebe `amount` menos a taxa.
 - [GET /pix/get](https://docs.abacatepay.com/pages/pix/get): Busca uma transferência PIX pelo ID.
 - [GET /pix/list](https://docs.abacatepay.com/pages/pix/list): Lista as transferências PIX.
 
