@@ -2485,7 +2485,7 @@ paths:
               properties:
                 amount:
                   type: number
-                  description: Valor do payout em centavos.
+                  description: Valor do payout em centavos. A taxa (`platformFee`) é descontada desse valor.
                   minimum: 350
                   example: 10000
                 description:
@@ -2561,7 +2561,7 @@ paths:
                         example: 10000
                       platformFee:
                         type: number
-                        description: Taxa da plataforma em centavos.
+                        description: Taxa da plataforma em centavos, descontada do `amount`.
                         example: 80
                       externalId:
                         type: string
@@ -2659,7 +2659,7 @@ paths:
                         example: 10000
                       platformFee:
                         type: number
-                        description: Taxa da plataforma em centavos.
+                        description: Taxa da plataforma em centavos, descontada do `amount`.
                         example: 80
                       externalId:
                         type: string
@@ -2808,7 +2808,7 @@ paths:
               properties:
                 amount:
                   type: number
-                  description: Valor do PIX em centavos.
+                  description: Valor do PIX em centavos. A taxa (`platformFee`) é descontada desse valor; o destinatário recebe `amount` menos a taxa.
                   minimum: 100
                   example: 10000
                 externalId:
@@ -5708,7 +5708,7 @@ components:
           example: 5000
         platformFee:
           type: number
-          description: Taxa da plataforma em centavos.
+          description: Taxa da plataforma em centavos, descontada do `amount`.
           example: 80
         externalId:
           type: string
@@ -5764,7 +5764,7 @@ components:
           example: 10000
         platformFee:
           type: number
-          description: Taxa da plataforma em centavos.
+          description: Taxa da plataforma em centavos, descontada do `amount`.
           example: 80
         externalId:
           type: string

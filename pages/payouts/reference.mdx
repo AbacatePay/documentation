@@ -36,8 +36,8 @@ Exemplo de resposta de um saque:
 | `status`     | string  | Status do saque (veja valores abaixo) |
 | `devMode`    | boolean | `true` se criado em sandbox |
 | `receiptUrl` | string  | URL do comprovante |
-| `amount`     | number  | Valor em centavos (ex.: 10000 = R$ 100,00) |
-| `platformFee` | number | Taxa da plataforma em centavos |
+| `amount`     | number  | Valor do saque em centavos, com a taxa incluída (ex.: 10000 = R$ 100,00) |
+| `platformFee` | number | Taxa da plataforma em centavos, descontada do `amount` |
 | `externalId` | string  | ID no seu sistema |
 | `createdAt`  | string  | Data/hora de criação (ISO 8601) |
 | `updatedAt`  | string  | Data/hora da última atualização |
@@ -52,7 +52,7 @@ Exemplo de resposta de um saque:
 ## Limites e taxas
 
 - **Mínimo:** R$ 3,50 (350 centavos)
-- **Taxa:** R$ 0,80 por saque dentro dos limites; ver [termos de uso](https://abacatepay.com/termos)
+- **Taxa:** R$ 0,80 por saque dentro dos limites, descontada do `amount`: a conta de destino recebe `amount` − `platformFee`; ver [termos de uso](https://abacatepay.com/termos)
 - **Processamento:** instantâneo; 24/7 respeitando limites diários e noturnos da conta
 - **Limite:** 1 saque por minuto; excesso retorna HTTP 429. Para aumentar, fale com o suporte
 
