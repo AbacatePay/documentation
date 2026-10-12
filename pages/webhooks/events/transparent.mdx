@@ -4,44 +4,59 @@ description: 'Eventos disparados para pagamentos via Checkout Transparente (PIX,
 icon: 'credit-card'
 ---
 
+Todo evento chega com o mesmo envelope: `id` (identificador da entrega, repetido nas retentativas automáticas, por isso serve para tratar duplicidade), `event`, `apiVersion`, `devMode` e `data`. Em `data`, o objeto `transparent` traz a cobrança, `customer` traz o cliente (com CPF/CNPJ mascarado) e `payerInformation` muda conforme o método.
+
 <Tabs>
   <Tab title="transparent.completed">
-    Disparado quando um pagamento via checkout transparente é realizado. O `payerInformation` varia conforme o método.
+    Disparado quando um pagamento via checkout transparente é confirmado. PIX e Boleto chegam com `status: "PAID"`; cartão chega com `status: "APPROVED"`.
 
     <Tabs>
       <Tab title="PIX">
         ```json
         {
+          "id": "log_Qw8eR2tY4uI6oP1aS3dF5gH7",
           "event": "transparent.completed",
           "apiVersion": 2,
           "devMode": false,
           "data": {
             "transparent": {
-              "id": "char_xyz789",
-              "externalId": "pedido-456",
+              "id": "pix_char_mXq2Lk7vB9nR4sT8yW1zC6dF",
+              "externalId": null,
               "amount": 5000,
-              "paidAmount": 5000,
-              "platformFee": 50,
+              "paidAmount": null,
+              "platformFee": 80,
               "status": "PAID",
+              "items": [],
+              "methods": [],
               "frequency": "ONE_TIME",
-              "devMode": true,
-              "customerId": "cust_abc123",
-              "methods": ["PIX"],
-              "receiptUrl": "https://app.abacatepay.com/receipt/...",
-              "createdAt": "2024-12-06T19:00:00.000Z",
-              "updatedAt": "2024-12-06T19:00:05.000Z"
+              "coupons": [],
+              "devMode": false,
+              "customerId": "cust_aB3dE5fG7hJ9kL1mN3pQ5rS7",
+              "createdAt": "2026-10-12T19:00:00.000Z",
+              "updatedAt": "2026-10-12T19:00:05.000Z",
+              "receiptUrl": null,
+              "metadata": {
+                "pedidoId": "pedido-456"
+              }
             },
             "customer": {
-              "id": "cust_def456",
+              "id": "cust_aB3dE5fG7hJ9kL1mN3pQ5rS7",
               "name": "Maria Santos",
               "email": "maria@exemplo.com",
-              "taxId": "12.***.***/0001-**"
+              "taxId": "529.***.247-**"
             },
             "payerInformation": {
               "method": "PIX",
+              "utms": {
+                "source": null,
+                "medium": null,
+                "campaign": null,
+                "term": null,
+                "content": null
+              },
               "PIX": {
                 "name": "Maria Santos",
-                "taxId": "12.***.***/0001-**",
+                "taxId": "529.***.247-**",
                 "isSameAsCustomer": true
               }
             }
@@ -53,35 +68,103 @@ icon: 'credit-card'
       <Tab title="Cartão">
         ```json
         {
+          "id": "log_Zx9cV1bN3mL5kJ7hG2fD4sA6",
           "event": "transparent.completed",
           "apiVersion": 2,
           "devMode": false,
           "data": {
             "transparent": {
-              "id": "char_xyz789",
-              "externalId": "pedido-456",
-              "amount": 5000,
-              "paidAmount": 5000,
-              "platformFee": 78,
-              "status": "PAID",
+              "id": "card_Wk3aD8sPq1XyZ7mN2bVc4LtR",
+              "externalId": null,
+              "amount": 10000,
+              "paidAmount": null,
+              "platformFee": 410,
+              "status": "APPROVED",
+              "items": [],
+              "methods": [],
               "frequency": "ONE_TIME",
-              "devMode": true,
-              "customerId": "cust_abc123",
-              "methods": ["CARD"],
-              "receiptUrl": "https://app.abacatepay.com/receipt/...",
-              "createdAt": "2024-12-06T19:00:00.000Z",
-              "updatedAt": "2024-12-06T19:00:05.000Z"
+              "coupons": [],
+              "devMode": false,
+              "customerId": "cust_aB3dE5fG7hJ9kL1mN3pQ5rS7",
+              "createdAt": "2026-10-12T14:20:31.512Z",
+              "updatedAt": "2026-10-12T14:20:32.104Z",
+              "receiptUrl": null,
+              "metadata": {
+                "pedidoId": "pedido-123"
+              }
             },
             "customer": {
-              "id": "cust_def456",
-              "name": "Maria Santos",
+              "id": "cust_aB3dE5fG7hJ9kL1mN3pQ5rS7",
+              "name": "Maria Silva",
               "email": "maria@exemplo.com",
-              "taxId": "12.***.***/0001-**"
+              "taxId": "529.***.247-**"
             },
             "payerInformation": {
               "method": "CARD",
+              "utms": {
+                "source": null,
+                "medium": null,
+                "campaign": null,
+                "term": null,
+                "content": null
+              },
               "CARD": {
-                "number": "1234",
+                "number": "4242",
+                "brand": "VISA"
+              }
+            }
+          }
+        }
+        ```
+      </Tab>
+
+      <Tab title="Cartão parcelado">
+        ```json
+        {
+          "id": "log_Pl0oK9iJ8uH7yG6tF5rD4eS3",
+          "event": "transparent.completed",
+          "apiVersion": 2,
+          "devMode": false,
+          "data": {
+            "transparent": {
+              "id": "card_Lr8pN3vKq2XwT6yB9mZc1HdS",
+              "externalId": null,
+              "amount": 30000,
+              "paidAmount": null,
+              "platformFee": 296,
+              "status": "APPROVED",
+              "items": [],
+              "methods": [],
+              "frequency": "ONE_TIME",
+              "coupons": [],
+              "devMode": false,
+              "customerId": "cust_aB3dE5fG7hJ9kL1mN3pQ5rS7",
+              "createdAt": "2026-10-12T14:25:02.118Z",
+              "updatedAt": "2026-10-12T14:25:02.940Z",
+              "receiptUrl": null,
+              "metadata": {},
+              "installmentCount": 3,
+              "installmentAmount": 10000,
+              "installmentNumber": 1,
+              "installmentGroupId": "cinst_Qe5tY7uI9oP1aS3dF5gH7jK9"
+            },
+            "customer": {
+              "id": "cust_aB3dE5fG7hJ9kL1mN3pQ5rS7",
+              "name": "Maria Silva",
+              "email": "maria@exemplo.com",
+              "taxId": "529.***.247-**"
+            },
+            "payerInformation": {
+              "method": "CARD",
+              "utms": {
+                "source": null,
+                "medium": null,
+                "campaign": null,
+                "term": null,
+                "content": null
+              },
+              "CARD": {
+                "number": "4242",
                 "brand": "VISA"
               }
             }
@@ -93,36 +176,49 @@ icon: 'credit-card'
       <Tab title="Boleto">
         ```json
         {
+          "id": "log_Mn4bV6cX8zL1kJ3hG5fD7sA9",
           "event": "transparent.completed",
           "apiVersion": 2,
           "devMode": false,
           "data": {
             "transparent": {
-              "id": "bole_k8pqr2mnvx",
-              "externalId": "pedido-456",
+              "id": "bole_k8pqr2mnvxT4yW6zC1dF3gH5",
+              "externalId": null,
               "amount": 25000,
-              "paidAmount": 25000,
+              "paidAmount": null,
               "platformFee": 250,
               "status": "PAID",
+              "items": [],
+              "methods": [],
               "frequency": "ONE_TIME",
+              "coupons": [],
               "devMode": false,
-              "customerId": "cust_abc123",
-              "methods": ["BOLETO"],
-              "receiptUrl": "https://app.abacatepay.com/receipt/...",
-              "createdAt": "2024-11-04T14:22:10.381Z",
-              "updatedAt": "2024-11-04T14:22:15.000Z"
+              "customerId": "cust_Hk2mP4qR6sT8uV1wX3yZ5aB7",
+              "createdAt": "2026-10-04T14:22:10.381Z",
+              "updatedAt": "2026-10-06T10:15:00.000Z",
+              "receiptUrl": null,
+              "metadata": {
+                "faturaId": "fatura-456"
+              }
             },
             "customer": {
-              "id": "cust_def456",
+              "id": "cust_Hk2mP4qR6sT8uV1wX3yZ5aB7",
               "name": "Mariana Costa",
               "email": "mariana.costa@empresa.com.br",
-              "taxId": "98*.***.***/0001-**"
+              "taxId": "12.***.678/0001-**"
             },
             "payerInformation": {
               "method": "BOLETO",
+              "utms": {
+                "source": null,
+                "medium": null,
+                "campaign": null,
+                "term": null,
+                "content": null
+              },
               "BOLETO": {
                 "name": "Mariana Costa",
-                "taxId": "98*.***.***/0001-**",
+                "taxId": "12.***.678/0001-**",
                 "isSameAsCustomer": true
               }
             }
@@ -134,46 +230,59 @@ icon: 'credit-card'
   </Tab>
 
   <Tab title="transparent.disputed">
-    Disparado quando um pagamento via checkout transparente sofre uma disputa. O `payerInformation` varia conforme o método.
+    Disparado quando o pagador abre uma disputa (`status: "UNDER_DISPUTE"`) e de novo quando ela é resolvida: `status: "PAID"` se a disputa foi ganha, `"REFUNDED"` se foi perdida. O motivo vem em `reason`.
 
     <Tabs>
       <Tab title="PIX">
         ```json
         {
+          "id": "log_Qw8eR2tY4uI6oP1aS3dF5gH7",
           "event": "transparent.disputed",
           "apiVersion": 2,
           "devMode": false,
           "data": {
             "transparent": {
-              "id": "char_xyz789",
-              "externalId": "pedido-456",
+              "id": "pix_char_mXq2Lk7vB9nR4sT8yW1zC6dF",
+              "externalId": null,
               "amount": 5000,
-              "paidAmount": 5000,
-              "platformFee": 50,
-              "status": "PAID",
+              "paidAmount": null,
+              "platformFee": 80,
+              "status": "UNDER_DISPUTE",
+              "items": [],
+              "methods": [],
               "frequency": "ONE_TIME",
-              "devMode": true,
-              "customerId": "cust_abc123",
-              "methods": ["PIX"],
-              "receiptUrl": "https://app.abacatepay.com/receipt/...",
-              "createdAt": "2024-12-06T19:00:00.000Z",
-              "updatedAt": "2024-12-06T19:00:05.000Z"
+              "coupons": [],
+              "devMode": false,
+              "customerId": "cust_aB3dE5fG7hJ9kL1mN3pQ5rS7",
+              "createdAt": "2026-10-12T19:00:00.000Z",
+              "updatedAt": "2026-10-12T19:00:05.000Z",
+              "receiptUrl": null,
+              "metadata": {
+                "pedidoId": "pedido-456"
+              }
             },
             "customer": {
-              "id": "cust_def456",
+              "id": "cust_aB3dE5fG7hJ9kL1mN3pQ5rS7",
               "name": "Maria Santos",
               "email": "maria@exemplo.com",
-              "taxId": "12.***.***/0001-**"
+              "taxId": "529.***.247-**"
             },
             "payerInformation": {
               "method": "PIX",
+              "utms": {
+                "source": null,
+                "medium": null,
+                "campaign": null,
+                "term": null,
+                "content": null
+              },
               "PIX": {
                 "name": "Maria Santos",
-                "taxId": "12.***.***/0001-**",
+                "taxId": "529.***.247-**",
                 "isSameAsCustomer": true
               }
             },
-            "reason": "requested_by_customer"
+            "reason": "Dispute created"
           }
         }
         ```
@@ -182,39 +291,52 @@ icon: 'credit-card'
       <Tab title="Cartão">
         ```json
         {
+          "id": "log_Zx9cV1bN3mL5kJ7hG2fD4sA6",
           "event": "transparent.disputed",
           "apiVersion": 2,
           "devMode": false,
           "data": {
             "transparent": {
-              "id": "char_xyz789",
-              "externalId": "pedido-456",
-              "amount": 5000,
-              "paidAmount": 5000,
-              "platformFee": 78,
-              "status": "PAID",
+              "id": "card_Wk3aD8sPq1XyZ7mN2bVc4LtR",
+              "externalId": null,
+              "amount": 10000,
+              "paidAmount": null,
+              "platformFee": 410,
+              "status": "UNDER_DISPUTE",
+              "items": [],
+              "methods": [],
               "frequency": "ONE_TIME",
-              "devMode": true,
-              "customerId": "cust_abc123",
-              "methods": ["CARD"],
-              "receiptUrl": "https://app.abacatepay.com/receipt/...",
-              "createdAt": "2024-12-06T19:00:00.000Z",
-              "updatedAt": "2024-12-06T19:00:05.000Z"
+              "coupons": [],
+              "devMode": false,
+              "customerId": "cust_aB3dE5fG7hJ9kL1mN3pQ5rS7",
+              "createdAt": "2026-10-12T14:20:31.512Z",
+              "updatedAt": "2026-10-12T14:20:32.104Z",
+              "receiptUrl": null,
+              "metadata": {
+                "pedidoId": "pedido-123"
+              }
             },
             "customer": {
-              "id": "cust_def456",
-              "name": "Maria Santos",
+              "id": "cust_aB3dE5fG7hJ9kL1mN3pQ5rS7",
+              "name": "Maria Silva",
               "email": "maria@exemplo.com",
-              "taxId": "12.***.***/0001-**"
+              "taxId": "529.***.247-**"
             },
             "payerInformation": {
               "method": "CARD",
+              "utms": {
+                "source": null,
+                "medium": null,
+                "campaign": null,
+                "term": null,
+                "content": null
+              },
               "CARD": {
-                "number": "1234",
+                "number": "4242",
                 "brand": "VISA"
               }
             },
-            "reason": "requested_by_customer"
+            "reason": "Dispute created"
           }
         }
         ```
@@ -223,40 +345,53 @@ icon: 'credit-card'
       <Tab title="Boleto">
         ```json
         {
+          "id": "log_Mn4bV6cX8zL1kJ3hG5fD7sA9",
           "event": "transparent.disputed",
           "apiVersion": 2,
           "devMode": false,
           "data": {
             "transparent": {
-              "id": "bole_k8pqr2mnvx",
-              "externalId": "pedido-456",
+              "id": "bole_k8pqr2mnvxT4yW6zC1dF3gH5",
+              "externalId": null,
               "amount": 25000,
-              "paidAmount": 25000,
+              "paidAmount": null,
               "platformFee": 250,
-              "status": "PAID",
+              "status": "UNDER_DISPUTE",
+              "items": [],
+              "methods": [],
               "frequency": "ONE_TIME",
+              "coupons": [],
               "devMode": false,
-              "customerId": "cust_abc123",
-              "methods": ["BOLETO"],
-              "receiptUrl": "https://app.abacatepay.com/receipt/...",
-              "createdAt": "2024-11-04T14:22:10.381Z",
-              "updatedAt": "2024-11-04T14:22:15.000Z"
+              "customerId": "cust_Hk2mP4qR6sT8uV1wX3yZ5aB7",
+              "createdAt": "2026-10-04T14:22:10.381Z",
+              "updatedAt": "2026-10-06T10:15:00.000Z",
+              "receiptUrl": null,
+              "metadata": {
+                "faturaId": "fatura-456"
+              }
             },
             "customer": {
-              "id": "cust_def456",
+              "id": "cust_Hk2mP4qR6sT8uV1wX3yZ5aB7",
               "name": "Mariana Costa",
               "email": "mariana.costa@empresa.com.br",
-              "taxId": "98*.***.***/0001-**"
+              "taxId": "12.***.678/0001-**"
             },
             "payerInformation": {
               "method": "BOLETO",
+              "utms": {
+                "source": null,
+                "medium": null,
+                "campaign": null,
+                "term": null,
+                "content": null
+              },
               "BOLETO": {
                 "name": "Mariana Costa",
-                "taxId": "98*.***.***/0001-**",
+                "taxId": "12.***.678/0001-**",
                 "isSameAsCustomer": true
               }
             },
-            "reason": "requested_by_customer"
+            "reason": "Dispute created"
           }
         }
         ```
@@ -265,46 +400,59 @@ icon: 'credit-card'
   </Tab>
 
   <Tab title="transparent.refunded">
-    Disparado quando um pagamento via checkout transparente é reembolsado. O `payerInformation` varia conforme o método.
+    Disparado quando um pagamento via checkout transparente é reembolsado. O motivo informado no reembolso vem em `reason` (ou `"Refund completed"`, quando não houver).
 
     <Tabs>
       <Tab title="PIX">
         ```json
         {
+          "id": "log_Qw8eR2tY4uI6oP1aS3dF5gH7",
           "event": "transparent.refunded",
           "apiVersion": 2,
           "devMode": false,
           "data": {
             "transparent": {
-              "id": "char_xyz789",
-              "externalId": "pedido-456",
+              "id": "pix_char_mXq2Lk7vB9nR4sT8yW1zC6dF",
+              "externalId": null,
               "amount": 5000,
-              "paidAmount": 5000,
-              "platformFee": 50,
-              "status": "PAID",
+              "paidAmount": null,
+              "platformFee": 80,
+              "status": "REFUNDED",
+              "items": [],
+              "methods": [],
               "frequency": "ONE_TIME",
-              "devMode": true,
-              "customerId": "cust_abc123",
-              "methods": ["PIX"],
-              "receiptUrl": "https://app.abacatepay.com/receipt/...",
-              "createdAt": "2024-12-06T19:00:00.000Z",
-              "updatedAt": "2024-12-06T19:00:05.000Z"
+              "coupons": [],
+              "devMode": false,
+              "customerId": "cust_aB3dE5fG7hJ9kL1mN3pQ5rS7",
+              "createdAt": "2026-10-12T19:00:00.000Z",
+              "updatedAt": "2026-10-12T19:00:05.000Z",
+              "receiptUrl": null,
+              "metadata": {
+                "pedidoId": "pedido-456"
+              }
             },
             "customer": {
-              "id": "cust_def456",
+              "id": "cust_aB3dE5fG7hJ9kL1mN3pQ5rS7",
               "name": "Maria Santos",
               "email": "maria@exemplo.com",
-              "taxId": "12.***.***/0001-**"
+              "taxId": "529.***.247-**"
             },
             "payerInformation": {
               "method": "PIX",
+              "utms": {
+                "source": null,
+                "medium": null,
+                "campaign": null,
+                "term": null,
+                "content": null
+              },
               "PIX": {
                 "name": "Maria Santos",
-                "taxId": "12.***.***/0001-**",
+                "taxId": "529.***.247-**",
                 "isSameAsCustomer": true
               }
             },
-            "reason": "requested_by_customer"
+            "reason": "Cliente pediu o cancelamento"
           }
         }
         ```
@@ -313,39 +461,52 @@ icon: 'credit-card'
       <Tab title="Cartão">
         ```json
         {
+          "id": "log_Zx9cV1bN3mL5kJ7hG2fD4sA6",
           "event": "transparent.refunded",
           "apiVersion": 2,
           "devMode": false,
           "data": {
             "transparent": {
-              "id": "char_xyz789",
-              "externalId": "pedido-456",
-              "amount": 5000,
-              "paidAmount": 5000,
-              "platformFee": 78,
-              "status": "PAID",
+              "id": "card_Wk3aD8sPq1XyZ7mN2bVc4LtR",
+              "externalId": null,
+              "amount": 10000,
+              "paidAmount": null,
+              "platformFee": 410,
+              "status": "REFUNDED",
+              "items": [],
+              "methods": [],
               "frequency": "ONE_TIME",
-              "devMode": true,
-              "customerId": "cust_abc123",
-              "methods": ["CARD"],
-              "receiptUrl": "https://app.abacatepay.com/receipt/...",
-              "createdAt": "2024-12-06T19:00:00.000Z",
-              "updatedAt": "2024-12-06T19:00:05.000Z"
+              "coupons": [],
+              "devMode": false,
+              "customerId": "cust_aB3dE5fG7hJ9kL1mN3pQ5rS7",
+              "createdAt": "2026-10-12T14:20:31.512Z",
+              "updatedAt": "2026-10-12T14:20:32.104Z",
+              "receiptUrl": null,
+              "metadata": {
+                "pedidoId": "pedido-123"
+              }
             },
             "customer": {
-              "id": "cust_def456",
-              "name": "Maria Santos",
+              "id": "cust_aB3dE5fG7hJ9kL1mN3pQ5rS7",
+              "name": "Maria Silva",
               "email": "maria@exemplo.com",
-              "taxId": "12.***.***/0001-**"
+              "taxId": "529.***.247-**"
             },
             "payerInformation": {
               "method": "CARD",
+              "utms": {
+                "source": null,
+                "medium": null,
+                "campaign": null,
+                "term": null,
+                "content": null
+              },
               "CARD": {
-                "number": "1234",
+                "number": "4242",
                 "brand": "VISA"
               }
             },
-            "reason": "requested_by_customer"
+            "reason": "Cliente pediu o cancelamento"
           }
         }
         ```
@@ -354,40 +515,53 @@ icon: 'credit-card'
       <Tab title="Boleto">
         ```json
         {
+          "id": "log_Mn4bV6cX8zL1kJ3hG5fD7sA9",
           "event": "transparent.refunded",
           "apiVersion": 2,
           "devMode": false,
           "data": {
             "transparent": {
-              "id": "bole_k8pqr2mnvx",
-              "externalId": "pedido-456",
+              "id": "bole_k8pqr2mnvxT4yW6zC1dF3gH5",
+              "externalId": null,
               "amount": 25000,
-              "paidAmount": 25000,
+              "paidAmount": null,
               "platformFee": 250,
-              "status": "PAID",
+              "status": "REFUNDED",
+              "items": [],
+              "methods": [],
               "frequency": "ONE_TIME",
+              "coupons": [],
               "devMode": false,
-              "customerId": "cust_abc123",
-              "methods": ["BOLETO"],
-              "receiptUrl": "https://app.abacatepay.com/receipt/...",
-              "createdAt": "2024-11-04T14:22:10.381Z",
-              "updatedAt": "2024-11-04T14:22:15.000Z"
+              "customerId": "cust_Hk2mP4qR6sT8uV1wX3yZ5aB7",
+              "createdAt": "2026-10-04T14:22:10.381Z",
+              "updatedAt": "2026-10-06T10:15:00.000Z",
+              "receiptUrl": null,
+              "metadata": {
+                "faturaId": "fatura-456"
+              }
             },
             "customer": {
-              "id": "cust_def456",
+              "id": "cust_Hk2mP4qR6sT8uV1wX3yZ5aB7",
               "name": "Mariana Costa",
               "email": "mariana.costa@empresa.com.br",
-              "taxId": "98*.***.***/0001-**"
+              "taxId": "12.***.678/0001-**"
             },
             "payerInformation": {
               "method": "BOLETO",
+              "utms": {
+                "source": null,
+                "medium": null,
+                "campaign": null,
+                "term": null,
+                "content": null
+              },
               "BOLETO": {
                 "name": "Mariana Costa",
-                "taxId": "98*.***.***/0001-**",
+                "taxId": "12.***.678/0001-**",
                 "isSameAsCustomer": true
               }
             },
-            "reason": "requested_by_customer"
+            "reason": "Cliente pediu o cancelamento"
           }
         }
         ```
@@ -395,3 +569,10 @@ icon: 'credit-card'
     </Tabs>
   </Tab>
 </Tabs>
+
+## Cartão: o que muda
+
+- **Status de pago é `APPROVED`.** Depois, quando a adquirente repassa o valor, a cobrança passa a `PAID` sem novo webhook.
+- **Uma venda, um evento.** Na venda parcelada chega um único `transparent.completed`, com o `id` da primeira parcela, `amount` com o total da venda e os campos `installmentCount`, `installmentAmount`, `installmentNumber` e `installmentGroupId`.
+- **Bandeira e final do cartão ficam em `payerInformation.CARD`** (`brand` e `number`).
+- **O `cardToken` não vem no webhook.** Guarde o que volta na resposta de [Criar cobrança Cartão](/pages/transparents/card) ou consulte com `GET /v2/transparents/get`.

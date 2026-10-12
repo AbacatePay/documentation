@@ -3,7 +3,11 @@ title: 'Checar Status'
 openapi: 'GET /transparents/check'
 ---
 
-Verifica o status atual de um checkout transparente pelo seu `id`.
+Verifica o status atual de um checkout transparente PIX pelo seu `id`.
+
+<Note>
+  Esta rota é só para PIX. Para consultar uma cobrança de cartão (`card_...`), use `GET /v2/transparents/get?id=card_...`, que devolve a cobrança completa com o `status`. Veja [Criar cobrança Cartão](/pages/transparents/card#consultar-listar-e-reembolsar).
+</Note>
 
 <Card horizontal>
   Requer a permissão `TRANSPARENT:READ`.

@@ -3,10 +3,17 @@ title: 'Listar Checkouts Transparentes'
 openapi: "GET /transparents/list"
 ---
 
-Retorna todos os checkouts transparentes (PIX QR Code) da sua loja.
+Retorna as cobranças do checkout transparente da sua loja: PIX, Boleto e Cartão.
 
 <Card horizontal>
   Requer a permissão `TRANSPARENT:READ`.
 </Card>
 
-Use `limit`, `after` e `before` para paginar e `startDate`/`endDate` (`YYYY-MM-DD`) para filtrar por data de criação. Consulte [Paginação e filtro por data](/pages/reference/introduction#paginação-e-filtro-por-data). Cada item segue o mesmo formato da resposta do [Criar QRCode PIX](/pages/transparents/create), incluindo `status`, `brCode`, `amount` e `expiresAt`.
+Use `limit`, `after` e `before` para paginar e `startDate`/`endDate` (`YYYY-MM-DD`) para filtrar por data de criação. Consulte [Paginação e filtro por data](/pages/reference/introduction#paginação-e-filtro-por-data). Cada item segue o formato da resposta de criação do seu método: [PIX](/pages/transparents/create), [Boleto](/pages/transparents/boleto) ou [Cartão](/pages/transparents/card).
+
+Para filtrar por método, use `method`. Por exemplo, só as cobranças de cartão:
+
+```bash
+curl "https://api.abacatepay.com/v2/transparents/list?method=CARD&limit=20" \
+  -H "Authorization: Bearer $ABACATEPAY_API_KEY"
+```

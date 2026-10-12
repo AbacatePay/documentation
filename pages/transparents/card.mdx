@@ -1,0 +1,327 @@
+---
+title: Criar cobrança Cartão
+description: 'Cobre cartão de crédito com o token gerado pelo abacatepay.js ou com um cartão salvo (cardToken).'
+api: 'POST /transparents/create'
+---
+
+<Card horizontal>
+  Requer a permissão `TRANSPARENT:CREATE`.
+</Card>
+
+Cria uma cobrança de **cartão de crédito** no checkout transparente. O cartão é informado de um destes dois jeitos:
+
+| Campo | Quando usar |
+|---|---|
+| `data.token` | Primeira compra: o cliente acabou de digitar o cartão e o [abacatepay.js](/pages/transparents/abacatepay-js) gerou o token `ctok_` |
+| `data.cardToken` | Cobranças seguintes do mesmo cartão, sem o cliente presente. Veja [Cobrar de novo um cartão salvo](/pages/guides/cartao-salvo) |
+
+<Note>
+  Primeira integração? Siga o [passo a passo do checkout transparente](/pages/guides/cartao-transparente). Esta página é a referência dos campos.
+</Note>
+
+---
+
+## Corpo da requisição
+
+<ParamField body="method" type="string" required>
+  Sempre `"CARD"`.
+</ParamField>
+
+<ParamField body="data" type="object" required>
+  Dados da cobrança. Envie `token` **ou** `cardToken`, nunca os dois. Campos fora desta lista (como `description` e `externalId`) são ignorados na cobrança de cartão.
+
+  <Expandable title="campos de data" defaultOpen>
+    <ParamField body="amount" type="integer" required>
+      Valor total em centavos, a partir de `100` (R$ 1,00). Com `token`, precisa ser **igual** ao `amount` usado no `AbacatePay.create`. Com `cardToken`, pode ser qualquer valor.
+    </ParamField>
+
+    <ParamField body="token" type="string">
+      Token `ctok_...` gerado pelo `tokenize()` do abacatepay.js. Vale 60 segundos e uma única cobrança.
+    </ParamField>
+
+    <ParamField body="cardToken" type="string">
+      Token permanente do cartão, devolvido em uma cobrança anterior (texto de até 200 caracteres). Cobra o mesmo cartão sem o cliente presente e sem 3DS.
+    </ParamField>
+
+    <ParamField body="installmentCount" type="integer" default="1">
+      Número de parcelas, de `1` (à vista) a `12`. Cada parcela precisa ter pelo menos R$ 10,00: 3x exige `amount` de pelo menos `3000`.
+    </ParamField>
+
+    <ParamField body="customer" type="object" required>
+      Dados do cliente. Todos os campos são obrigatórios.
+
+      <Expandable title="campos de customer" defaultOpen>
+        <ParamField body="name" type="string" required>
+          Nome do cliente, até 150 caracteres.
+        </ParamField>
+        <ParamField body="email" type="string" required>
+          E-mail válido, até 150 caracteres.
+        </ParamField>
+        <ParamField body="taxId" type="string" required>
+          CPF ou CNPJ válido, com ou sem máscara.
+        </ParamField>
+        <ParamField body="cellphone" type="string" required>
+          Celular, de 8 a 20 caracteres.
+        </ParamField>
+      </Expandable>
+    </ParamField>
+
+    <ParamField body="metadata" type="object">
+      Seus dados de referência, devolvidos na resposta. **Todos os valores precisam ser texto**: `{ "pedidoId": "123" }`, não `{ "pedidoId": 123 }`.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+---
+
+## Exemplos de requisição
+
+<Tabs>
+  <Tab title="Primeira compra (token)">
+    ```json
+    {
+      "method": "CARD",
+      "data": {
+        "amount": 10000,
+        "token": "ctok_9fK2mQ7xLp4vR8sT1wYz3nBc",
+        "customer": {
+          "name": "Maria Silva",
+          "email": "maria@exemplo.com",
+          "taxId": "529.982.247-25",
+          "cellphone": "(11) 99999-9999"
+        },
+        "metadata": { "pedidoId": "pedido-123" }
+      }
+    }
+    ```
+  </Tab>
+  <Tab title="Cartão salvo (cardToken)">
+    ```json
+    {
+      "method": "CARD",
+      "data": {
+        "amount": 4700,
+        "cardToken": "dev_card_4242",
+        "customer": {
+          "name": "Maria Silva",
+          "email": "maria@exemplo.com",
+          "taxId": "529.982.247-25",
+          "cellphone": "(11) 99999-9999"
+        }
+      }
+    }
+    ```
+  </Tab>
+  <Tab title="Parcelado">
+    ```json
+    {
+      "method": "CARD",
+      "data": {
+        "amount": 30000,
+        "installmentCount": 3,
+        "token": "ctok_9fK2mQ7xLp4vR8sT1wYz3nBc",
+        "customer": {
+          "name": "Maria Silva",
+          "email": "maria@exemplo.com",
+          "taxId": "529.982.247-25",
+          "cellphone": "(11) 99999-9999"
+        }
+      }
+    }
+    ```
+  </Tab>
+</Tabs>
+
+<Tip>
+  Para testar no terminal, use um `cardToken` de Dev mode, como o `dev_card_4242` da sua primeira compra de teste: o `ctok_` vale só 60 segundos. Exemplos completos em Node.js e Python estão no [guia do cartão salvo](/pages/guides/cartao-salvo#passo-2-cobre-o-cartão-salvo).
+</Tip>
+
+---
+
+## Resposta
+
+<ResponseField name="data" type="object">
+  A cobrança criada.
+
+  <Expandable title="campos de data" defaultOpen>
+    <ResponseField name="id" type="string">
+      ID da cobrança (`card_...`). Use para consultar e reembolsar.
+    </ResponseField>
+    <ResponseField name="amount" type="integer">
+      Valor total da venda, em centavos. No parcelado, é o total e não a parcela.
+    </ResponseField>
+    <ResponseField name="status" type="string">
+      Situação da cobrança. Veja [Status](#status).
+    </ResponseField>
+    <ResponseField name="devMode" type="boolean">
+      `true` quando criada com chave de Dev mode.
+    </ResponseField>
+    <ResponseField name="cardToken" type="string">
+      Token permanente do cartão. Guarde para [cobrar de novo](/pages/guides/cartao-salvo). No Dev mode vem como `dev_card_` + os 4 últimos dígitos; em produção é um identificador sem formato fixo: guarde exatamente como veio.
+    </ResponseField>
+    <ResponseField name="brand" type="string">
+      Bandeira do cartão, como `VISA` ou `MASTERCARD`.
+    </ResponseField>
+    <ResponseField name="lastFour" type="string">
+      Últimos 4 dígitos do cartão.
+    </ResponseField>
+    <ResponseField name="installmentCount" type="integer">
+      Só no parcelado: número de parcelas.
+    </ResponseField>
+    <ResponseField name="installmentAmount" type="integer">
+      Só no parcelado: valor da primeira parcela, em centavos. As demais podem variar em centavos por arredondamento.
+    </ResponseField>
+    <ResponseField name="installmentNumber" type="integer">
+      Só no parcelado: sempre `1` nesta resposta.
+    </ResponseField>
+    <ResponseField name="installmentGroupId" type="string">
+      Só no parcelado: ID do parcelamento (`cinst_...`).
+    </ResponseField>
+    <ResponseField name="receiptUrl" type="string | null">
+      Comprovante. Vem `null` na criação.
+    </ResponseField>
+    <ResponseField name="createdAt" type="string">
+      Data de criação (ISO 8601).
+    </ResponseField>
+    <ResponseField name="updatedAt" type="string">
+      Data da última atualização (ISO 8601).
+    </ResponseField>
+    <ResponseField name="expiresAt" type="string">
+      Não se aplica a cartão. Ignore.
+    </ResponseField>
+    <ResponseField name="metadata" type="object">
+      O que você enviou em `data.metadata`.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="success" type="boolean">
+  `true` quando a cobrança foi criada.
+</ResponseField>
+
+<ResponseField name="error" type="string | null">
+  Mensagem de erro, ou `null`. Veja [Erros](#erros).
+</ResponseField>
+
+No parcelado, a resposta traz os campos de parcela:
+
+```json
+{
+  "data": {
+    "id": "card_Lr8pN3vKq2XwT6yB9mZc1HdS",
+    "amount": 30000,
+    "status": "APPROVED",
+    "devMode": true,
+    "cardToken": "dev_card_4242",
+    "brand": "VISA",
+    "lastFour": "4242",
+    "installmentCount": 3,
+    "installmentAmount": 10000,
+    "installmentNumber": 1,
+    "installmentGroupId": "cinst_Qe5tY7uI9oP1aS3dF5gH7jK9",
+    "receiptUrl": null,
+    "createdAt": "2026-10-12T14:25:02.118Z",
+    "updatedAt": "2026-10-12T14:25:02.118Z",
+    "metadata": {}
+  },
+  "success": true,
+  "error": null
+}
+```
+
+### Status
+
+| `status` | Significado |
+|---|---|
+| `APPROVED` | Aprovada. Pode liberar o pedido |
+| `PENDING` | O banco ainda não respondeu. Espere o webhook [`transparent.completed`](/pages/webhooks/events/transparent) |
+| `PAID` | O valor da venda foi repassado pela adquirente. Acontece depois da aprovação, sem ação sua |
+| `FAILED` | Recusada. Na criação, a recusa volta como erro; o status aparece na consulta e na listagem |
+| `REFUNDED` | Reembolsada |
+| `UNDER_DISPUTE` | Contestada pelo titular do cartão (chargeback) |
+
+---
+
+## Erros
+
+Erros voltam com `success: false` e a mensagem em `error`. Os mais comuns:
+
+- **`Não foi possível processar o pagamento com este cartão`** (400): o cartão foi recusado. A mensagem é a mesma para qualquer motivo, de propósito. Peça outro cartão.
+- **`Invalid or expired card token`** (400): o `ctok_` passou de 60 segundos, já foi usado, é de outra loja ou de outro ambiente. Gere outro com `tokenize()`.
+- **`amount does not match the tokenized amount`** (400): o `amount` é diferente do usado no `AbacatePay.create`. O token foi gasto: gere outro.
+- **`Card token not found`** (400): o `cardToken` não existe nesta loja e neste ambiente.
+- **`Provide exactly one of token (ctok_) or cardToken`** (400): faltou o cartão, ou foram enviados os dois.
+- **`customer.taxId must be a valid CPF or CNPJ`** (400): CPF ou CNPJ inválido.
+- **`amount must be at least 2000 cents for 2 installments`** (400): parcela abaixo de R$ 10,00. O número muda conforme as parcelas.
+- **`CARD_TRANSPARENTS is not available for this store`** (400): sua conta ainda não tem cartão liberado. Fale com o suporte.
+- **`Card payments are temporarily unavailable. Please try again later.`** (400): pagamentos com cartão suspensos temporariamente. Tente mais tarde.
+- **`Unauthorized`** (401): faltou o header `Authorization: Bearer <chave de API>`.
+- **`Invalid or inactive API key`** (401): chave de API errada ou revogada.
+- **`Insufficient permissions`** (401): a chave de API não tem a permissão `TRANSPARENT:CREATE`.
+- **`Value should be one of 'object', 'object', 'object'`** (422): algum campo está faltando ou no formato errado, e a mensagem não diz qual. Os casos mais comuns: falta `customer.cellphone`; `customer.email` inválido; `amount` menor que `100` ou com casas decimais; valor de `metadata` que não é texto; `installmentCount` fora de 1 a 12; `token` que não começa com `ctok_`.
+
+<Warning>
+  **Timeout ou erro de rede não é recusa.** A cobrança pode ter sido aprovada mesmo sem resposta. Não repita na hora: com `cardToken`, repetir pode cobrar o cliente duas vezes. Consulte a [listagem](/pages/transparents/list) ou espere o webhook antes de tentar de novo.
+</Warning>
+
+---
+
+## Consultar, listar e reembolsar
+
+- **Consultar uma cobrança:** `GET /v2/transparents/get?id=card_...` devolve o mesmo formato da resposta acima. Permissão `TRANSPARENT:READ`.
+- **Listar só as de cartão:** `GET /v2/transparents/list?method=CARD`. Veja [Listar](/pages/transparents/list).
+- **Reembolsar:** `POST /v2/transparents/refund` com `{ "id": "card_..." }`. Veja [Reembolsar](/pages/transparents/refund).
+- **Ser avisado da aprovação:** webhook `transparent.completed`. Veja os [eventos do checkout transparente](/pages/webhooks/events/transparent).
+
+A rota `GET /v2/transparents/check` é só para PIX. Para cartão, use `GET /v2/transparents/get`.
+
+<RequestExample>
+```bash cURL
+curl -X POST https://api.abacatepay.com/v2/transparents/create \
+  -H "Authorization: Bearer $ABACATEPAY_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "method": "CARD",
+    "data": {
+      "amount": 4700,
+      "cardToken": "dev_card_4242",
+      "customer": {
+        "name": "Maria Silva",
+        "email": "maria@exemplo.com",
+        "taxId": "529.982.247-25",
+        "cellphone": "(11) 99999-9999"
+      }
+    }
+  }'
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+{
+  "data": {
+    "id": "card_Wk3aD8sPq1XyZ7mN2bVc4LtR",
+    "amount": 4700,
+    "status": "APPROVED",
+    "devMode": true,
+    "cardToken": "dev_card_4242",
+    "brand": "VISA",
+    "lastFour": "4242",
+    "receiptUrl": null,
+    "createdAt": "2026-10-12T14:20:31.512Z",
+    "updatedAt": "2026-10-12T14:20:31.512Z",
+    "metadata": {}
+  },
+  "success": true,
+  "error": null
+}
+```
+
+```json 400
+{
+  "data": null,
+  "success": false,
+  "error": "Não foi possível processar o pagamento com este cartão"
+}
+```
+</ResponseExample>

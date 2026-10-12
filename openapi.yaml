@@ -2007,8 +2007,10 @@ paths:
       summary: Criar Checkout Transparente
       description: >-
         Cria um checkout transparente. Use `"method": "PIX"` para gerar um QR
-        Code ou `"method": "BOLETO"` para emitir um boleto com PIX alternativo
-        incluído.
+        Code, `"method": "BOLETO"` para emitir um boleto com PIX alternativo
+        incluído ou `"method": "CARD"` para cobrar cartão de crédito com o
+        token gerado pelo abacatepay.js (`token`) ou com um cartão salvo
+        (`cardToken`).
       security:
         - bearerAuth: []
       requestBody:
@@ -2024,6 +2026,7 @@ paths:
                   enum:
                     - PIX
                     - BOLETO
+                    - CARD
                   default: PIX
                   example: PIX
                 data:
@@ -2063,7 +2066,9 @@ paths:
                       description: >
                         Dados do pagador. Obrigatório para BOLETO (`name` e
                         `taxId` sempre exigidos). Para PIX, se informado, todos
-                        os campos são obrigatórios.
+                        os campos são obrigatórios. Para CARD, obrigatório com
+                        `name`, `email`, `taxId` (CPF ou CNPJ válido) e
+                        `cellphone`.
                       required:
                         - name
                         - taxId
@@ -2115,8 +2120,44 @@ paths:
                         - $ref: '#/components/schemas/BoletoFine'
                       x-mint:
                         hidden: true
+                    token:
+                      type: string
+                      pattern: '^ctok_'
+                      description: >-
+                        CARD — token `ctok_` gerado pelo `tokenize()` do
+                        abacatepay.js. Vale 60 segundos e uma cobrança, e o
+                        `amount` precisa ser igual ao usado no
+                        `AbacatePay.create`. Envie `token` ou `cardToken`,
+                        nunca os dois.
+                      example: ctok_9fK2mQ7xLp4vR8sT1wYz3nBc
+                      x-mint:
+                        hidden: true
+                    cardToken:
+                      type: string
+                      maxLength: 200
+                      description: >-
+                        CARD — token permanente do cartão, devolvido em uma
+                        cobrança anterior. Cobra o mesmo cartão sem o cliente
+                        presente e com qualquer `amount`. Envie `token` ou
+                        `cardToken`, nunca os dois.
+                      example: dev_card_4242
+                      x-mint:
+                        hidden: true
+                    installmentCount:
+                      type: integer
+                      minimum: 1
+                      maximum: 12
+                      default: 1
+                      description: >-
+                        CARD — número de parcelas (1 = à vista). Cada parcela
+                        precisa ter pelo menos R$ 10,00.
+                      x-mint:
+                        hidden: true
                     metadata:
                       type: object
+                      description: >-
+                        Campos livres devolvidos na resposta. Para CARD, todos
+                        os valores precisam ser texto.
                       additionalProperties: true
                       x-mint:
                         hidden: true
@@ -5485,10 +5526,11 @@ components:
     TransparentCharge:
       type: object
       description: >-
-        Dados da cobrança retornados pelo checkout transparente. Os campos
-        `brCode` e `brCodeBase64` são sempre retornados (PIX direto ou PIX
-        alternativo do boleto). Para boleto também retornam `barCode` e
-        `url`.
+        Dados da cobrança retornados pelo checkout transparente. Para PIX e
+        boleto, os campos `brCode` e `brCodeBase64` são sempre retornados (PIX
+        direto ou PIX alternativo do boleto), e o boleto também retorna
+        `barCode` e `url`. Para cartão (`card_...`), retornam `cardToken`,
+        `brand`, `lastFour` e, no parcelado, os campos `installment*`.
       properties:
         id:
           type: string
@@ -5580,6 +5622,43 @@ components:
           type: string
           description: Data da última atualização.
           example: '2024-11-04T14:22:10.381Z'
+        cardToken:
+          type: string
+          nullable: true
+          description: >-
+            Cartão — token permanente do cartão, para cobrar de novo com
+            `data.cardToken`. Retornado quando `method` é `"CARD"`.
+          example: dev_card_4242
+        brand:
+          type: string
+          nullable: true
+          description: Cartão — bandeira. Retornado quando `method` é `"CARD"`.
+          example: VISA
+        lastFour:
+          type: string
+          nullable: true
+          description: >-
+            Cartão — últimos 4 dígitos. Retornado quando `method` é `"CARD"`.
+          example: '4242'
+        installmentCount:
+          type: integer
+          description: Cartão parcelado — número de parcelas.
+          example: 3
+        installmentAmount:
+          type: integer
+          description: >-
+            Cartão parcelado — valor da primeira parcela em centavos. `amount`
+            continua sendo o total da venda.
+          example: 10000
+        installmentNumber:
+          type: integer
+          description: Cartão parcelado — número da parcela (sempre 1 na criação).
+          example: 1
+        installmentGroupId:
+          type: string
+          nullable: true
+          description: Cartão parcelado — ID do parcelamento.
+          example: cinst_Qe5tY7uI9oP1aS3dF5gH7jK9
         metadata:
           type: object
           description: Campos livres enviados na requisição.

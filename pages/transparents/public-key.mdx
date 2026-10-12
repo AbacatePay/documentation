@@ -1,0 +1,95 @@
+---
+title: 'Chave pública (publicKey)'
+description: 'A chave pk_ identifica a sua loja no formulário de cartão. Ela pode ficar no navegador, porque sozinha não cria cobranças.'
+icon: 'key'
+---
+
+A **chave pública** (`publicKey`, começa com `pk_`) identifica a sua loja no [abacatepay.js](/pages/transparents/abacatepay-js), o formulário de cartão do checkout transparente. É com ela que o formulário aparece no seu site e gera o token do cartão (`ctok_`).
+
+Ela foi feita para ficar no navegador, à vista de qualquer pessoa. Quem cria a cobrança é o seu backend, com a **chave de API**, que continua secreta.
+
+## Chave pública ou chave de API?
+
+| | Chave pública | Chave de API |
+|---|---|---|
+| **Formato** | `pk_...` | `abc_dev_...` ou `abc_prod_...` |
+| **Onde usar** | No navegador, em `AbacatePay.create({ publicKey })` | Só no backend, no header `Authorization` |
+| **Pode aparecer no código do site?** | Sim | **Nunca** |
+| **Mostra o formulário e gera o `ctok_`** | Sim | Não |
+| **Cria cobranças** | Não | Sim |
+| **Consulta cobranças, clientes ou saldo** | Não | Sim, conforme as permissões |
+| **Onde copiar** | **Integração → Checkout próprio** | **Integração → API** |
+
+Por isso não há risco em expor a chave pública: alguém que copie a sua `pk_` consegue no máximo gerar tokens, e um token só vira cobrança quando o **seu** backend chama a API com a **sua** chave de API.
+
+## Onde encontrar
+
+1. No dashboard, abra **Integração → Checkout próprio** ([app.abacatepay.com/own-checkout](https://app.abacatepay.com/own-checkout)).
+2. Em **Sua chave pública**, clique no olho para revelar ou no ícone de copiar.
+3. Confira o rótulo acima da chave: **Teste (DEV)** ou **Produção**.
+
+A página mostra a chave do modo em que o dashboard está. Com o **Modo Teste** ligado, você vê a chave de teste. Desligado, a de produção.
+
+<Note>
+  Se **Checkout próprio** não aparece no menu **Integração**, sua conta ainda não tem cartão liberado. Fale com o suporte.
+</Note>
+
+## Teste e produção
+
+Cada loja tem duas chaves públicas, uma por ambiente:
+
+| Chave pública | Use com a chave de API | O que acontece |
+|---|---|---|
+| **Teste (DEV)** | de Dev mode (`abc_dev_...`) | O formulário aparece em versão de teste e nada é cobrado. Veja [Dev mode](/pages/devmode) |
+| **Produção** | de produção (`abc_prod_...`) | Formulário seguro de verdade, com 3DS quando o banco pede. Cobrança real |
+
+<Warning>
+  **Pelo formato não dá para saber o ambiente.** As duas começam com `pk_`. Confira o rótulo no dashboard. E use sempre as duas chaves do **mesmo** ambiente: um token gerado com a chave pública de teste não pode ser cobrado com a chave de API de produção, e vice-versa. A cobrança falha com `Invalid or expired card token`.
+</Warning>
+
+O ambiente vem da chave, e não do Modo Teste da loja. Se o seu site usa a chave pública de produção, o formulário é o de produção, mesmo que você esteja com o Modo Teste ligado no dashboard.
+
+## Como usar
+
+A chave pública entra só no `AbacatePay.create`:
+
+```html
+<script src="https://abacatepay.com/abacatepay.js"></script>
+<script type="module">
+  const checkout = AbacatePay.create({
+    publicKey: 'pk_sua_chave_publica',
+    amount: 10000, // centavos
+  })
+  await checkout.mount('#cartao')
+</script>
+```
+
+Para trocar de teste para produção sem mexer no código, guarde a chave pública numa variável de ambiente do seu backend e entregue ao navegador junto com o valor do pedido, como no [passo a passo](/pages/guides/cartao-transparente#passo-4-o-backend-que-cobra). Assim a troca de ambiente é só configuração: as duas chaves mudam juntas.
+
+## Erros
+
+| Mensagem | Causa | Como resolver |
+|---|---|---|
+| `Invalid or revoked public key` | A chave não existe, está incompleta ou foi trocada | Copie de novo em **Integração → Checkout próprio** |
+| `CARD_TRANSPARENTS is not available for this store` | Sua conta ainda não tem cartão liberado | Fale com o suporte |
+| `Store is not configured for Rinne card payments` | Sua conta ainda não está pronta para receber cartão em produção | Fale com o suporte |
+| `Too many requests. Try again shortly.` | Muitas tentativas de cartão em um minuto, pela mesma chave ou pelo mesmo IP | Aguarde um minuto |
+
+Esses erros aparecem no `mount()` ou no `tokenize()` do abacatepay.js, com `error.code` igual a `API` e a mensagem em `error.message`.
+
+## Perguntas frequentes
+
+<AccordionGroup>
+  <Accordion title="Posso deixar a chave pública no código do meu site?">
+    Pode. Ela foi feita para isso. O que nunca pode ir para o navegador é a chave de API.
+  </Accordion>
+  <Accordion title="Preciso de uma chave pública por site ou por domínio?">
+    Não. É uma chave por ambiente da loja (teste e produção), e ela funciona em qualquer domínio.
+  </Accordion>
+  <Accordion title="A chave pública expira?">
+    Não. Ela vale até ser trocada. Se precisar de uma chave nova, fale com o suporte.
+  </Accordion>
+  <Accordion title="Uso a chave pública para chamar a API?">
+    Não. As rotas da API v2 (`/v2/...`) só aceitam a chave de API. A chave pública serve apenas para o abacatepay.js.
+  </Accordion>
+</AccordionGroup>

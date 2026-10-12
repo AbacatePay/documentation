@@ -1,0 +1,134 @@
+---
+title: 'Cobrar de novo um cartão salvo'
+description: 'Guarde o cardToken da primeira compra e cobre o mesmo cartão quando quiser, sem o cliente digitar nada.'
+icon: 'rotate'
+---
+
+Toda cobrança de cartão aprovada devolve um **`cardToken`**. Com ele guardado, você cobra o mesmo cartão de novo, direto do backend, sem formulário e sem o cliente presente: recompra com um clique, mensalidade, cobrança por uso.
+
+Pré-requisito: a primeira compra funcionando ([passo a passo](/pages/guides/cartao-transparente)).
+
+## `token` ou `cardToken`?
+
+| | `token` (`ctok_...`) | `cardToken` |
+|---|---|---|
+| **De onde vem** | `tokenize()`, no navegador | Resposta da primeira cobrança (`data.cardToken`) |
+| **Validade** | 60 segundos, uma cobrança | Sem prazo, quantas cobranças quiser |
+| **Valor** | Igual ao do `AbacatePay.create` | Qualquer valor a partir de `100` (R$ 1,00) |
+| **Cliente presente?** | Sim | Não |
+
+---
+
+## Passo 1: guarde o `cardToken`
+
+Na resposta da primeira cobrança, grave no seu banco, junto do cliente:
+
+- `cardToken`: exatamente como veio (texto de até 200 caracteres);
+- `brand` e `lastFour`: para mostrar "Visa final 4242" ao cliente;
+- `name`, `email`, `taxId` e `cellphone` do cliente: a próxima cobrança também exige `customer`.
+
+<Warning>
+  Só salve o cartão com autorização do cliente (por exemplo, um campo "Salvar este cartão", desmarcado por padrão).
+</Warning>
+
+---
+
+## Passo 2: cobre o cartão salvo
+
+É a mesma rota da primeira compra, com `cardToken` no lugar de `token`:
+
+<CodeGroup>
+```bash cURL
+curl -X POST https://api.abacatepay.com/v2/transparents/create \
+  -H "Authorization: Bearer $ABACATEPAY_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "method": "CARD",
+    "data": {
+      "amount": 4700,
+      "cardToken": "dev_card_4242",
+      "customer": {
+        "name": "Maria Silva",
+        "email": "maria@exemplo.com",
+        "taxId": "529.982.247-25",
+        "cellphone": "11999999999"
+      }
+    }
+  }'
+```
+
+```js Node.js
+const resposta = await fetch('https://api.abacatepay.com/v2/transparents/create', {
+  method: 'POST',
+  headers: {
+    Authorization: `Bearer ${process.env.ABACATEPAY_API_KEY}`,
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    method: 'CARD',
+    data: {
+      amount: 4700,
+      cardToken: 'dev_card_4242', // o cardToken salvo
+      customer: { name: 'Maria Silva', email: 'maria@exemplo.com', taxId: '529.982.247-25', cellphone: '11999999999' },
+    },
+  }),
+})
+
+const { success, data, error } = await resposta.json()
+console.log(success ? data.status : error)
+```
+
+```python Python
+import os
+import requests  # pip install requests
+
+resposta = requests.post(
+    "https://api.abacatepay.com/v2/transparents/create",
+    headers={"Authorization": f"Bearer {os.environ['ABACATEPAY_API_KEY']}"},
+    json={
+        "method": "CARD",
+        "data": {
+            "amount": 4700,
+            "cardToken": "dev_card_4242",  # o cardToken salvo
+            "customer": {"name": "Maria Silva", "email": "maria@exemplo.com", "taxId": "529.982.247-25", "cellphone": "11999999999"},
+        },
+    },
+    timeout=60,
+)
+
+resultado = resposta.json()
+print(resultado["data"]["status"] if resultado["success"] else resultado["error"])
+```
+</CodeGroup>
+
+Para testar no Dev mode, use o `cardToken` da sua primeira compra de teste (`dev_card_4242`) com a sua chave de API de Dev mode. Também dá para parcelar: envie `installmentCount` de 2 a 12, com no mínimo R$ 10,00 por parcela.
+
+---
+
+## Passo 3: trate as recusas
+
+Um cartão salvo pode ser recusado depois (venceu, foi bloqueado, está sem limite). A API responde `Não foi possível processar o pagamento com este cartão`. Peça ao cliente para cadastrar o cartão de novo pelo formulário e troque o `cardToken` salvo pelo novo. Não insista no mesmo cartão várias vezes seguidas.
+
+## Cuidados
+
+- **Timeout não é recusa.** Com `cardToken`, repetir uma cobrança que deu timeout pode cobrar o cliente duas vezes. Confira na [listagem](/pages/transparents/list) ou espere o webhook [`transparent.completed`](/pages/webhooks/events/transparent) antes de tentar de novo.
+- **O `cardToken` fica no backend.** Nunca mande para o navegador.
+- **A amarração cliente ↔ cartão é sua.** A API aceita qualquer `cardToken` da sua loja; busque sempre o do cliente certo.
+- **Teste e produção não se misturam.** Um `cardToken` de Dev mode não funciona com a chave de produção.
+
+## Perguntas frequentes
+
+<AccordionGroup>
+  <Accordion title="O cliente precisa confirmar no banco (3DS) de novo?">
+    Não. A cobrança com `cardToken` é feita pela sua loja, sem o cliente presente.
+  </Accordion>
+  <Accordion title="O cardToken expira?">
+    Não tem prazo. Ele para de funcionar quando o cartão vence, é cancelado ou trocado pelo banco.
+  </Accordion>
+  <Accordion title="O cliente digitou o mesmo cartão de novo. Qual cardToken eu uso?">
+    Sempre o da resposta mais recente.
+  </Accordion>
+  <Accordion title="Quero que a AbacatePay cobre todo mês sozinha. Uso o cardToken?">
+    Com o `cardToken`, quem decide quando cobrar é você. Se prefere que a cobrança recorrente aconteça sozinha, use [Assinaturas](/pages/subscriptions/reference).
+  </Accordion>
+</AccordionGroup>

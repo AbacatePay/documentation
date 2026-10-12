@@ -93,6 +93,13 @@
                 ]
               },
               {
+                "group": "Checkout transparente",
+                "pages": [
+                  "pages/guides/cartao-transparente",
+                  "pages/guides/cartao-salvo"
+                ]
+              },
+              {
                 "group": "Ajuda",
                 "pages": [
                   "pages/faq/index",
@@ -161,6 +168,9 @@
                   "pages/transparents/reference",
                   "pages/transparents/create",
                   "pages/transparents/boleto",
+                  "pages/transparents/card",
+                  "pages/transparents/public-key",
+                  "pages/transparents/abacatepay-js",
                   "pages/transparents/list",
                   "pages/transparents/simulate-payment",
                   "pages/transparents/check",
