@@ -21,9 +21,20 @@ Cadastra um cliente para pré-preencher o checkout e reutilizar em várias cobra
   "taxId": "11144477735",
   "cellphone": "+5511999999999",
   "zipCode": "01310-100",
+  "address": {
+    "zipCode": "01310-100",
+    "street": "Av. Paulista",
+    "number": "1000",
+    "neighborhood": "Bela Vista",
+    "city": "São Paulo",
+    "state": "SP"
+  },
   "metadata": { "plano": "premium" }
 }
 ```
+
+- `address` é opcional. Se enviar, mande `zipCode`, `street`, `number`, `neighborhood`, `city` e `state` (sigla com 2 letras); `complement` é opcional.
+- `metadata` é livre para a sua aplicação e volta na resposta. Todos os valores precisam ser texto (`"123"`, não `123`).
 
 <Tip title="Reuse o customerId" horizontal>
 Guarde o `data.id` retornado e passe como `customerId` ao criar checkouts — o cliente não precisa preencher os dados novamente.

@@ -12,6 +12,20 @@ Feedbacks também são bem-vindos no nosso Discord (#dev).
 ## Atualizações Recentes
 
 <Update label="12 de Out, 2026">
+## SDK Node.js 3.0.0 e correções na API
+
+**SDK:** o `@abacatepay/sdk` 3.0.0 traz o cartão no checkout transparente (`card.create`), a paginação por cursor da API e corrige chamadas que falhavam. Algumas assinaturas mudaram: veja [como migrar da versão 2](/pages/sdks/nodejs#migrando-da-versão-2).
+
+**API:**
+
+- `POST /v2/customers/create` passa a gravar `address` e `metadata`. Os valores de `metadata` precisam ser texto.
+- `GET /v2/payouts/list` lista só saques. Antes vinham também as outras transações da conta.
+- `interest` e `fine` vêm `null` quando não foram configurados. Antes vinham `{}`.
+- `receiptUrl` passa a vir preenchido nas cobranças transparentes pagas e nos webhooks `transparent.*`, `payout.*` e `transfer.*`.
+- O `expiresAt` das cobranças de cartão passa a ser o fim do dia da criação. Antes vinha uma data no passado.
+</Update>
+
+<Update label="12 de Out, 2026">
 ## Cartão no checkout transparente
 
 Dá para cobrar cartão de crédito dentro do seu site, sem redirecionar o cliente, com `method: "CARD"` em `POST /v2/transparents/create`.

@@ -74,12 +74,54 @@ paths:
                   example: 01310-100
                   x-mint:
                     hidden: true
+                address:
+                  type: object
+                  description: >-
+                    Endereço do cliente (opcional). Se enviar, os campos sem
+                    "opcional" são obrigatórios.
+                  required:
+                    - zipCode
+                    - street
+                    - number
+                    - neighborhood
+                    - city
+                    - state
+                  properties:
+                    zipCode:
+                      type: string
+                      example: 01310-100
+                    street:
+                      type: string
+                      example: Av. Paulista
+                    number:
+                      type: string
+                      example: '1000'
+                    neighborhood:
+                      type: string
+                      example: Bela Vista
+                    city:
+                      type: string
+                      example: São Paulo
+                    state:
+                      type: string
+                      minLength: 2
+                      maxLength: 2
+                      description: Sigla do estado, com 2 letras.
+                      example: SP
+                    complement:
+                      type: string
+                      description: Complemento (opcional).
+                      example: Sala 12
+                  x-mint:
+                    hidden: true
                 metadata:
                   type: object
                   description: >-
-                    Metadados adicionais do cliente. Campo livre para a sua
-                    aplicação (opcional)
-                  additionalProperties: true
+                    Metadados adicionais do cliente, devolvidos em `metadata`.
+                    Campo livre para a sua aplicação (opcional). Todos os
+                    valores precisam ser texto.
+                  additionalProperties:
+                    type: string
                   example:
                     source: landing-page
                     campaign: black-friday-2025

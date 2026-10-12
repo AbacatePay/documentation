@@ -78,6 +78,20 @@ const { success, data, error } = await resposta.json()
 console.log(success ? data.status : error)
 ```
 
+```ts SDK Node.js
+import { AbacatePay } from '@abacatepay/sdk' // npm install @abacatepay/sdk
+
+const abacate = AbacatePay({ secret: process.env.ABACATEPAY_API_KEY })
+
+const { success, data, error } = await abacate.card.create({
+  amount: 4700,
+  cardToken: 'dev_card_4242', // o cardToken salvo
+  customer: { name: 'Maria Silva', email: 'maria@exemplo.com', taxId: '529.982.247-25', cellphone: '11999999999' },
+})
+
+console.log(success ? data.status : error)
+```
+
 ```python Python
 import os
 import requests  # pip install requests
