@@ -11,6 +11,19 @@ Feedbacks também são bem-vindos no nosso Discord (#dev).
 
 ## Atualizações Recentes
 
+<Update label="12 de Out, 2026">
+## Cartão no checkout transparente
+
+Dá para cobrar cartão de crédito dentro do seu site, sem redirecionar o cliente, com `method: "CARD"` em `POST /v2/transparents/create`.
+
+- O formulário de cartão vem do [abacatepay.js](/pages/transparents/abacatepay-js) e usa a [chave pública](/pages/transparents/public-key) (`pk_...`), que pode ficar no navegador.
+- A primeira cobrança usa o token `ctok_` gerado no navegador, que vale 60 segundos e uma cobrança.
+- A resposta traz o `cardToken`, que permite [cobrar o mesmo cartão de novo](/pages/guides/cartao-salvo) sem o cliente digitar nada.
+- Parcelamento de 1 a 12x com `installmentCount`.
+
+Disponível para as contas com cartão liberado. Comece pelo [passo a passo](/pages/guides/cartao-transparente).
+</Update>
+
 <Update label="29 de Set, 2026">
 ## Extrato na API
 

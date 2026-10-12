@@ -1,6 +1,6 @@
 # AbacatePay
 
-> AbacatePay é uma plataforma brasileira de pagamentos via API. Permite cobrar clientes via Checkout hospedado, Checkout Transparente (PIX e Boleto embutido no seu site), Links de Pagamento reutilizáveis e Assinaturas recorrentes. Também oferece transferências PIX, saques (payouts), gestão de produtos, cupons, clientes e webhooks. Toda a API usa REST + JSON, autenticação Bearer Token e opera em BRL. Base URL: `https://api.abacatepay.com/v2`.
+> AbacatePay é uma plataforma brasileira de pagamentos via API. Permite cobrar clientes via Checkout hospedado, Checkout Transparente (PIX, Boleto e Cartão embutidos no seu site), Links de Pagamento reutilizáveis e Assinaturas recorrentes. Também oferece transferências PIX, saques (payouts), gestão de produtos, cupons, clientes e webhooks. Toda a API usa REST + JSON, autenticação Bearer Token e opera em BRL. Base URL: `https://api.abacatepay.com/v2`.
 
 Notas importantes:
 
@@ -11,6 +11,7 @@ Notas importantes:
 - Clientes são únicos por CPF/CNPJ — criar um cliente com taxId já existente retorna o existente.
 - Assinaturas exigem produto com `cycle` definido (`WEEKLY`, `MONTHLY`, `QUARTERLY`, `SEMIANNUALLY`, `ANNUALLY`).
 - Checkout Transparente gera PIX ou Boleto imediatamente sem redirecionar o usuário; retorna `brCode` (copia-e-cola) e `brCodeBase64` (imagem PNG) para PIX, e `barCode` (código de barras), `identificationNumber` (linha digitável) e `url` para Boleto.
+- Cartão no Checkout Transparente: o navegador usa o script `https://abacatepay.com/abacatepay.js` com a chave pública (`pk_...`, pode ficar no frontend) para gerar um token `ctok_` (60 segundos, uso único); o backend cobra com `POST /transparents/create`, `method: "CARD"`, o mesmo `amount` e `customer` com `name`, `email`, `taxId` e `cellphone`. A resposta traz `cardToken`, que cobra o mesmo cartão de novo (enviado no lugar de `token`, com qualquer `amount`, sem o cliente presente). Chave pública e chave de API precisam ser do mesmo ambiente.
 - Webhooks precisam de URL HTTPS pública. O `secret` informado na criação chega em cada entrega no parâmetro `webhookSecret` da URL e é o que prova a origem; o header `X-Webhook-Signature` (HMAC-SHA256 com uma chave pública) só garante a integridade do corpo.
 - Permissões: cada rota exige uma permissão da chave de API (ex.: `CHECKOUT:CREATE`); sem ela, a API responde 401 com `Insufficient permissions`. A tabela completa está em [Autenticação](https://docs.abacatepay.com/pages/authentication#permissões-da-chave-de-api).
 
@@ -39,9 +40,14 @@ Notas importantes:
 - [GET /customers/get](https://docs.abacatepay.com/pages/client/get): Busca um cliente pelo ID.
 - [POST /customers/delete](https://docs.abacatepay.com/pages/client/delete): Remove um cliente pelo ID.
 
-## Checkout Transparente (PIX e Boleto embutidos)
+## Checkout Transparente (PIX, Boleto e Cartão embutidos)
 
-- [Referência do Checkout Transparente](https://docs.abacatepay.com/pages/transparents/reference): Gera cobranças via PIX ou Boleto diretamente no seu site/app sem redirecionar o usuário.
+- [Referência do Checkout Transparente](https://docs.abacatepay.com/pages/transparents/reference): Gera cobranças via PIX, Boleto ou Cartão diretamente no seu site/app sem redirecionar o usuário.
+- [Checkout transparente: passo a passo](https://docs.abacatepay.com/pages/guides/cartao-transparente): Guia completo com projeto de exemplo (HTML + Node.js/Express): chave pública no navegador, `AbacatePay.create`/`mount`/`tokenize` para gerar o `ctok_`, cobrança no backend com `method: "CARD"`, testes no Dev mode (cartão 4242 4242 4242 4242), ida para produção e tabela de erros comuns.
+- [Cobrar de novo um cartão salvo](https://docs.abacatepay.com/pages/guides/cartao-salvo): Guarde o `cardToken` da primeira cobrança e cobre o mesmo cartão depois, só do backend, sem 3DS e com qualquer valor (mínimo 100 centavos). Diferenças entre `token` (`ctok_`) e `cardToken`, tratamento de recusas e cuidados (timeout não é recusa; não repetir às cegas).
+- [POST /transparents/create (Cartão)](https://docs.abacatepay.com/pages/transparents/card): Cria uma cobrança de cartão. Obrigatórios: `method` como `"CARD"`, `data.amount`, `data.customer` (`name`, `email`, `taxId`, `cellphone`) e `data.token` (`ctok_`) ou `data.cardToken`. Opcionais: `installmentCount` (1 a 12, mínimo R$ 10,00 por parcela) e `metadata` (valores só texto). Retorna `id` (`card_...`), `status`, `cardToken`, `brand`, `lastFour` e, no parcelado, `installmentCount`, `installmentAmount` e `installmentGroupId`. Erros de validação voltam com HTTP 422 e dizem o campo (ex.: `Property 'data.customer.cellphone' is missing`).
+- [Chave pública (publicKey)](https://docs.abacatepay.com/pages/transparents/public-key): A chave `pk_...` identifica a loja no abacatepay.js; pode ficar no navegador e não cria cobranças. Fica em Integração → Checkout próprio no dashboard; há uma chave de teste e uma de produção.
+- [abacatepay.js](https://docs.abacatepay.com/pages/transparents/abacatepay-js): Referência do script do formulário de cartão: opções do `AbacatePay.create`, `mount`, `tokenize`, `destroy`, `onCardChange`, códigos de erro, 3DS e exemplo em React.
 - [POST /transparents/create (PIX)](https://docs.abacatepay.com/pages/transparents/create): Cria uma cobrança PIX. Retorna `brCode` (copia-e-cola) e `brCodeBase64` (imagem PNG base64). Campo obrigatório: `data.amount` (em centavos) e `method` como `"PIX"`. Suporta `data.ensureSameTaxId` para exigir que o pagador tenha o mesmo CPF/CNPJ do `customer.taxId`.
 - [POST /transparents/create (Boleto)](https://docs.abacatepay.com/pages/transparents/boleto): Cria uma cobrança via Boleto bancário. Retorna `barCode` (código de barras), `identificationNumber` (linha digitável), `url` do boleto para impressão e um PIX alternativo. Campos obrigatórios: `method` como `"BOLETO"`, `data.amount`, `data.customer.name` e `data.customer.taxId`. Suporta juros (`interest`) e multa (`fine`).
 - [GET /transparents/list](https://docs.abacatepay.com/pages/transparents/list): Lista as cobranças transparentes criadas.

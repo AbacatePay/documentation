@@ -1,17 +1,18 @@
 ---
 title: 'Referência'
-description: 'PIX QR Code e Boleto no seu checkout sem redirecionar o cliente'
+description: 'PIX QR Code, Boleto e Cartão no seu checkout sem redirecionar o cliente'
 icon: 'book-open-cover'
 ---
 
-O **checkout transparente** permite receber pagamentos diretamente no seu site ou app — sem redirecionar o cliente para outra página. Suporta **PIX** e **Boleto**.
+O **checkout transparente** permite receber pagamentos diretamente no seu site ou app — sem redirecionar o cliente para outra página. Suporta **PIX**, **Boleto** e **Cartão de crédito**.
 
 ## Métodos disponíveis
 
-| `method` | Descrição                                            |
-| -------- | ---------------------------------------------------- |
-| `PIX`    | Gera um QR Code e código copia e cola instantâneos   |
-| `BOLETO` | Gera um boleto bancário com PIX alternativo incluído |
+| `method` | Descrição                                                                     |
+| -------- | ----------------------------------------------------------------------------- |
+| `PIX`    | Gera um QR Code e código copia e cola instantâneos                            |
+| `BOLETO` | Gera um boleto bancário com PIX alternativo incluído                          |
+| `CARD`   | Cobra cartão de crédito, à vista ou em até 12x, com o formulário do abacatepay.js |
 
 Todos os métodos usam o mesmo endpoint: `POST /v2/transparents/create`.
 
@@ -168,8 +169,69 @@ POST /v2/transparents/create
 
 ---
 
+## Receber via Cartão
+
+O cartão tem uma etapa a mais que PIX e Boleto, porque o número do cartão não pode passar pelo seu servidor:
+
+1. No navegador, o [abacatepay.js](/pages/transparents/abacatepay-js) mostra o formulário de cartão, usando a sua [chave pública](/pages/transparents/public-key), e gera um token `ctok_`.
+2. O seu backend chama `POST /v2/transparents/create` com `method: "CARD"`, o token e os dados do cliente.
+3. A resposta traz o `cardToken`, que permite [cobrar o mesmo cartão de novo](/pages/guides/cartao-salvo) sem o cliente digitar nada.
+
+<Card title="Campos obrigatórios" horizontal>
+  `data.amount`, `data.customer` (com `name`, `email`, `taxId` e `cellphone`) e o cartão: `data.token` **ou** `data.cardToken`.
+</Card>
+
+**Exemplo de requisição:**
+
+```json
+POST /v2/transparents/create
+{
+  "method": "CARD",
+  "data": {
+    "amount": 10000,
+    "token": "ctok_9fK2mQ7xLp4vR8sT1wYz3nBc",
+    "customer": {
+      "name": "Maria Silva",
+      "email": "maria@exemplo.com",
+      "taxId": "529.982.247-25",
+      "cellphone": "(11) 99999-9999"
+    }
+  }
+}
+```
+
+**Exemplo de resposta:**
+
+```json
+{
+  "data": {
+    "id": "card_Wk3aD8sPq1XyZ7mN2bVc4LtR",
+    "amount": 10000,
+    "status": "APPROVED",
+    "devMode": true,
+    "cardToken": "dev_card_4242",
+    "brand": "VISA",
+    "lastFour": "4242",
+    "receiptUrl": null,
+    "createdAt": "2026-10-12T14:20:31.512Z",
+    "updatedAt": "2026-10-12T14:20:31.512Z",
+    "metadata": {}
+  },
+  "success": true,
+  "error": null
+}
+```
+
+<Tip title="Comece pelo passo a passo" horizontal>
+  O [passo a passo do checkout transparente](/pages/guides/cartao-transparente) tem um projeto completo (página + backend) para copiar e rodar no Dev mode. Todos os campos estão em [Criar cobrança Cartão](/pages/transparents/card).
+</Tip>
+
+---
+
 ## Ideias de uso
 
 - **PIX no checkout próprio:** exiba o QR Code na sua página e mantenha o cliente no seu site.
 - **Boleto por e-mail:** envie `url` ou `barCode` por e-mail ou WhatsApp.
 - **Boleto + PIX:** ofereça os dois métodos na mesma tela — o cliente escolhe como pagar.
+- **Cartão no checkout transparente:** o cliente digita o cartão na sua página, sem redirecionamento.
+- **Recompra com um clique:** guarde o `cardToken` da primeira compra e cobre o mesmo cartão nas próximas.
