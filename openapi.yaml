@@ -5612,7 +5612,8 @@ components:
           description: >-
             Data de expiração da cobrança (ISO 8601). Para boleto, corresponde
             ao fim do dia de `dueDate` (ou do vencimento padrão de 3 dias
-            úteis, se `dueDate` não foi informado).
+            úteis, se `dueDate` não foi informado). Para cartão, é o fim do
+            dia da criação, em UTC.
           example: '2024-11-07T03:00:00.000Z'
         createdAt:
           type: string
