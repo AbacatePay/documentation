@@ -195,7 +195,7 @@ Antes de ir ao ar, ajuste o exemplo para a sua loja:
 | `Invalid or revoked public key` | Copie a chave pública de novo em **Integração → Checkout próprio** |
 | `Invalid or expired card token` | O token passou de 60 segundos, já foi usado ou as chaves são de ambientes diferentes. Gere outro com `tokenize()` |
 | `amount does not match the tokenized amount` | Use o mesmo `amount` na página e no backend |
-| `Value should be one of 'object', 'object', 'object'` | Falta um campo ou um está no formato errado. O mais comum: `customer.cellphone` |
+| `Property 'data.customer.cellphone' is missing` | Falta um campo na cobrança. A mensagem diz qual (aqui, o celular do cliente) |
 | `Não foi possível processar o pagamento com este cartão` | O cartão foi recusado. Peça outro cartão |
 
 Todos os erros estão em [Criar cobrança Cartão](/pages/transparents/card#erros) e em [abacatepay.js](/pages/transparents/abacatepay-js#erros).

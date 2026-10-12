@@ -258,7 +258,7 @@ Erros voltam com `success: false` e a mensagem em `error`. Os mais comuns:
 - **`Unauthorized`** (401): faltou o header `Authorization: Bearer <chave de API>`.
 - **`Invalid or inactive API key`** (401): chave de API errada ou revogada.
 - **`Insufficient permissions`** (401): a chave de API não tem a permissão `TRANSPARENT:CREATE`.
-- **`Value should be one of 'object', 'object', 'object'`** (422): algum campo está faltando ou no formato errado, e a mensagem não diz qual. Os casos mais comuns: falta `customer.cellphone`; `customer.email` inválido; `amount` menor que `100` ou com casas decimais; valor de `metadata` que não é texto; `installmentCount` fora de 1 a 12; `token` que não começa com `ctok_`.
+- **Erro de validação** (422): um campo está faltando ou no formato errado, e a mensagem diz qual. Por exemplo: `Property 'data.customer.cellphone' is missing`, `Property 'data.customer.email' should be email`, `Expected property 'data.metadata.pedidoId' to be string but found: 123` (valor de `metadata` que não é texto) ou `Property 'method' should be one of: 'PIX', 'BOLETO', 'CARD'`.
 
 <Warning>
   **Timeout ou erro de rede não é recusa.** A cobrança pode ter sido aprovada mesmo sem resposta. Não repita na hora: com `cardToken`, repetir pode cobrar o cliente duas vezes. Consulte a [listagem](/pages/transparents/list) ou espere o webhook antes de tentar de novo.
