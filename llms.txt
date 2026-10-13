@@ -140,7 +140,7 @@ Notas importantes:
 - [Autenticação](https://docs.abacatepay.com/pages/authentication): Autenticação via Bearer Token e permissões de cada rota.
 - [Introdução à API](https://docs.abacatepay.com/pages/reference/introduction): Envelope de resposta, paginação por cursor (`after`, `before`, `pagination.next`), filtro por data e erros.
 - [Modo Sandbox/Desenvolvedor](https://docs.abacatepay.com/pages/devmode): Testar integrações sem transações reais.
-- [Produção](https://docs.abacatepay.com/pages/production): Passos para colocar a integração em produção. A conta exige CNPJ (só pessoa jurídica) e a análise leva até 72 horas.
+- [Produção](https://docs.abacatepay.com/pages/production): Passos para colocar a integração em produção. A conta exige CNPJ (só pessoa jurídica) e a análise leva até 3 dias úteis.
 - [Glossário](https://docs.abacatepay.com/pages/glossario): Termos técnicos utilizados na plataforma.
 - [SDKs](https://docs.abacatepay.com/pages/sdks/sdks): SDKs para Node.js e Ruby (API v2). Os de Python, Go, Java, PHP, Rust, Kotlin e Swift são legados e só funcionam com chave da API v1.
 - [CLI](https://docs.abacatepay.com/pages/cli/overview): Interface de linha de comando oficial da AbacatePay.
