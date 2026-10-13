@@ -130,7 +130,7 @@ Para cobranças com `methods: ["BOLETO"]`, você pode definir a data de vencimen
 - Não pode ser data no passado
 - Máximo de 365 dias no futuro
 
-`dueDate` é a data de vencimento enviada ao provedor. Sem juros/multa, após o vencimento o boleto expira (`EXPIRED`) via webhook `PAYMENT_OVERDUE`. Com juros/multa, o boleto pode permanecer aberto para pagamento em atraso.
+`dueDate` é a data de vencimento enviada ao provedor. Sem juros/multa, após o vencimento o boleto expira (`EXPIRED`). Com juros/multa, o boleto pode permanecer aberto para pagamento em atraso.
 
 **Exemplo:**
 ```json

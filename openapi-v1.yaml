@@ -555,7 +555,7 @@ paths:
                   example: 'PIX'
                 amount:
                   type: number
-                  description: Valor do saque em centavos.
+                  description: Valor do saque em centavos. Mínimo `350` (R$ 3,50).
                   minimum: 350
                   example: 5000
                 pix:

@@ -20,7 +20,7 @@ Cria um checkout transparente via **PIX**. A API devolve o QR Code em imagem (`b
 | Campo | Tipo | Descrição |
 |---|---|---|
 | `method` | `string` | Deve ser `"PIX"` |
-| `data.amount` | `number` | Valor em centavos (ex: `10000` = R$ 100,00) |
+| `data.amount` | `number` | Valor em centavos, mínimo `100` (R$ 1,00) (ex: `10000` = R$ 100,00) |
 
 Todos os outros campos são opcionais mas recomendados para melhor rastreabilidade.
 

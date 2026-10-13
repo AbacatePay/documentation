@@ -66,9 +66,9 @@ As chaves de API são gerenciadas diretamente pelo dashboard. Com elas, você po
 
 ## Permissões da chave de API
 
-Além de identificar sua conta, a chave de API define **quais recursos** você pode acessar. Cada rota exige uma permissão; sem ela, a API responde **401** com o erro `Insufficient permissions`.
+Além de identificar sua conta, a chave de API define **quais recursos** você pode acessar. Cada rota exige uma permissão; sem ela, a API responde **403** com o erro `Insufficient permissions`.
 
-Ao criar a chave no dashboard, atribua só as permissões que a integração usa: por exemplo, uma chave só para ler clientes ou outra só para criar cobranças.
+Ao criar a chave no dashboard, atribua só as permissões que a integração usa: por exemplo, uma chave só para ler clientes ou outra só para criar cobranças. As permissões não podem ser editadas depois que a chave é criada: para mudar o acesso, crie uma chave nova.
 
 ### Permissão de cada rota
 
@@ -113,7 +113,8 @@ Cada endpoint da documentação indica qual permissão é necessária no topo da
     2. A chave foi copiada com espaços extras ou caracteres invisíveis
     3. A chave foi revogada no dashboard
     4. Você está usando uma chave de Dev mode em uma URL que exige produção (ou vice-versa)
-    5. A chave não tem a permissão da rota: nesse caso, o erro vem como `Insufficient permissions`
+
+    Se a chave é válida mas não tem a permissão da rota, a resposta é **403** com `Insufficient permissions` (veja abaixo).
 
     Para confirmar que a chave está funcionando, teste diretamente:
     ```bash
@@ -122,7 +123,7 @@ Cada endpoint da documentação indica qual permissão é necessária no topo da
     ```
   </Accordion>
 
-  <Accordion title="Insufficient permissions — permissão ausente">
+  <Accordion title="403 Insufficient permissions — permissão ausente">
     A chave é válida, mas não tem a permissão da rota. Veja na [tabela de permissões](#permissão-de-cada-rota) qual permissão a rota exige e crie no dashboard uma chave nova com ela: não dá para mudar as permissões de uma chave que já existe.
   </Accordion>
 
