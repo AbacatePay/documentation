@@ -2035,7 +2035,7 @@ paths:
                   properties:
                     amount:
                       type: number
-                      description: Valor da cobrança em centavos.
+                      description: Valor da cobrança em centavos. Mínimo `100` (R$ 1,00).
                     expiresIn:
                       type: number
                       description: >
@@ -2505,7 +2505,7 @@ paths:
       summary: Criar um payout
       description: >
         Saca o saldo da sua conta AbacatePay para uma chave PIX do mesmo
-        CPF/CNPJ da conta. Para enviar dinheiro a terceiros, use `POST /pix/send`.
+        CNPJ da conta. Para enviar dinheiro a terceiros, use `POST /pix/send`.
       security:
         - bearerAuth: []
       requestBody:
@@ -2526,7 +2526,7 @@ paths:
               properties:
                 amount:
                   type: number
-                  description: Valor do payout em centavos. A taxa (`platformFee`) é descontada desse valor.
+                  description: Valor do payout em centavos, mínimo `350` (R$ 3,50). A taxa (`platformFee`) é descontada desse valor.
                   minimum: 350
                   example: 10000
                 description:

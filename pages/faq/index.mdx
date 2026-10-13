@@ -26,11 +26,11 @@ icon: 'circle-question'
   </Accordion>
 
   <Accordion title="Como faço para cobrar todo mês (mensalidade)?">
-    Crie um produto com recorrência no dashboard. Seu cliente paga uma vez e é cobrado automaticamente a cada ciclo (mensal, semanal ou anual). Veja [O que são Assinaturas](/pages/concepts/subscriptions).
+    Crie um produto com recorrência no dashboard. Seu cliente paga uma vez e é cobrado automaticamente a cada ciclo (semanal, mensal, trimestral, semestral ou anual). Veja [O que são Assinaturas](/pages/concepts/subscriptions).
   </Accordion>
 
   <Accordion title="Minha conta precisa ser verificada para receber pagamentos reais?">
-    Sim. Você pode testar tudo no Dev Mode (ambiente de testes) sem verificação. Mas para processar pagamentos reais e sacar dinheiro, sua conta precisa estar verificada. O processo de verificação é feito no próprio dashboard.
+    Sim. Você pode testar tudo no Dev Mode (ambiente de testes) sem verificação. Mas para processar pagamentos reais e sacar dinheiro, sua conta precisa estar verificada. O processo de verificação é feito no próprio dashboard, exige CNPJ e a análise leva até 72 horas.
   </Accordion>
 </AccordionGroup>
 
@@ -55,7 +55,7 @@ icon: 'circle-question'
   </Accordion>
 
   <Accordion title="Recebi erro 403. O que fazer?">
-    A chave existe e é válida, mas não tem permissão para o recurso solicitado. Acesse o dashboard, edite a chave e adicione a permissão necessária (ex: `CHECKOUT:CREATE`). Consulte a [tabela de permissões](/pages/authentication).
+    A chave existe e é válida, mas não tem permissão para o recurso solicitado. As permissões não podem ser editadas depois que a chave é criada: acesse o dashboard e crie uma chave nova com a permissão necessária (ex: `CHECKOUT:CREATE`). Consulte a [tabela de permissões](/pages/authentication).
   </Accordion>
 </AccordionGroup>
 
@@ -67,7 +67,7 @@ icon: 'circle-question'
   </Accordion>
 
   <Accordion title="Como simulo um pagamento aprovado no Dev mode?">
-    Para PIX, use o endpoint `/transparents/simulate-payment` após criar a cobrança. Para cartão, use o número `4242 4242 4242 4242` com qualquer data futura e CVV de 3 dígitos. Consulte o [guia de Dev mode](/pages/devmode).
+    Para PIX, use o endpoint `/transparents/simulate-payment` após criar a cobrança. Para cartão, use o número `4242 4242 4242 4242` com qualquer data futura e qualquer CVV. Consulte o [guia de Dev mode](/pages/devmode).
   </Accordion>
 
   <Accordion title="Meus webhooks do Dev mode recebem eventos reais?">
@@ -80,7 +80,7 @@ icon: 'circle-question'
 <AccordionGroup>
   <Accordion title="Meu webhook não está recebendo eventos. O que verificar?">
     1. Confirme que a URL está acessível publicamente via HTTPS
-    2. Verifique se o endpoint responde `200 OK` — qualquer outro código faz a AbacatePay considerar a entrega como falha
+    2. Verifique se o endpoint responde com um status `2xx` (de `200` a `299`) — qualquer outro código faz a AbacatePay considerar a entrega como falha
     3. Confira se o webhook foi criado no ambiente correto (dev ou produção)
     4. Veja os logs do webhook no dashboard para checar tentativas anteriores
   </Accordion>

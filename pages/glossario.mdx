@@ -42,7 +42,7 @@ Plataforma intermediária que processa pagamentos entre o cliente e o vendedor. 
 Empresa que usa tecnologia para oferecer serviços financeiros. A AbacatePay é uma fintech focada em simplificar pagamentos.
 
 ### Payout
-Transferência do saldo da sua conta AbacatePay para uma chave PIX ou conta bancária do mesmo CPF/CNPJ da conta. Também chamado de saque. Para enviar dinheiro a terceiros, a API tem o [Enviar PIX](/pages/pix/create).
+Transferência do saldo da sua conta AbacatePay para uma chave PIX ou conta bancária do mesmo CNPJ da conta. Também chamado de saque. Para enviar dinheiro a terceiros, a API tem o [Enviar PIX](/pages/pix/create).
 
 ## Estrutura de Dados
 
@@ -74,7 +74,9 @@ Também chamada de **Item** na API, é um plano de cobrança recorrente onde o c
 Frequência de cobrança de uma assinatura:
 - **WEEKLY**: Semanal  
 - **MONTHLY**: Mensal
-- **YEARLY**: Anual
+- **QUARTERLY**: Trimestral
+- **SEMIANNUALLY**: Semestral
+- **ANNUALLY**: Anual
 
 ### Retry Policy (Política de Retentativa)
 Configuração que define quantas vezes o sistema deve tentar cobrar uma assinatura quando o pagamento falha:

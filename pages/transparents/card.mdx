@@ -258,7 +258,7 @@ Erros voltam com `success: false` e a mensagem em `error`. Os mais comuns:
 - **`Card payments are temporarily unavailable. Please try again later.`** (400): pagamentos com cartão suspensos temporariamente. Tente mais tarde.
 - **`Unauthorized`** (401): faltou o header `Authorization: Bearer <chave de API>`.
 - **`Invalid or inactive API key`** (401): chave de API errada ou revogada.
-- **`Insufficient permissions`** (401): a chave de API não tem a permissão `TRANSPARENT:CREATE`.
+- **`Insufficient permissions`** (403): a chave de API não tem a permissão `TRANSPARENT:CREATE`.
 - **Erro de validação** (422): um campo está faltando ou no formato errado, e a mensagem diz qual. Por exemplo: `Property 'data.customer.cellphone' is missing`, `Property 'data.customer.email' should be email`, `Expected property 'data.metadata.pedidoId' to be string but found: 123` (valor de `metadata` que não é texto) ou `Property 'method' should be one of: 'PIX', 'BOLETO', 'CARD'`.
 
 <Warning>

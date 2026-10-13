@@ -37,7 +37,7 @@ Data de vencimento do boleto no formato `YYYY-MM-DD` (ex: `"2026-08-15"`). Se om
 - Não pode ser data no passado
 - Máximo de 365 dias no futuro
 
-`dueDate` é a data enviada ao provedor. A resposta continua expondo `expiresAt` (ISO datetime no fim do dia do `dueDate`). Sem juros/multa, após o vencimento o boleto expira (`EXPIRED`) via webhook `PAYMENT_OVERDUE`. Com juros/multa, pode permanecer aberto para pagamento em atraso.
+`dueDate` é a data enviada ao provedor. A resposta continua expondo `expiresAt` (ISO datetime no fim do dia do `dueDate`). Sem juros/multa, após o vencimento o boleto expira (`EXPIRED`). Com juros/multa, pode permanecer aberto para pagamento em atraso.
 
 ### `data.utm` — campanha / UTM (opcional)
 
