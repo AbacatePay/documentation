@@ -1,6 +1,6 @@
 ---
 title: 'Node.js'
-description: 'Integre a AbacatePay em aplicações Node.js e TypeScript em minutos.'
+description: 'SDK oficial em TypeScript para Node.js e Bun: cobranças, cartão no checkout transparente, paginação e erros sem exceção.'
 icon: 'node-js'
 ---
 
@@ -8,12 +8,9 @@ icon: 'node-js'
   Repositório oficial — issues, changelog e contribuições.
 </Card>
 
-## Pré-requisitos
-
-- Node.js 18+
-- Uma chave de API ([criar no dashboard](https://app.abacatepay.com))
-
 ## Instalação
+
+Node.js 18 ou superior (ou Bun). A versão atual é a **3**.
 
 <CodeGroup>
 ```bash npm
@@ -32,46 +29,108 @@ bun add @abacatepay/sdk
 
 ## Configuração
 
-Armazene sua chave de API em uma variável de ambiente e nunca no código:
-
 ```ts
-// .env
-ABACATEPAY_API_KEY=sua_chave_aqui
+import { AbacatePay } from '@abacatepay/sdk'
+
+const abacate = AbacatePay({ secret: process.env.ABACATEPAY_API_KEY })
 ```
 
-```ts
-import { AbacatePay } from "@abacatepay/sdk";
+Guarde a chave de API numa variável de ambiente, nunca no código. Se você não passar `secret`, o SDK lê `ABACATEPAY_API_KEY` sozinho.
 
-const abacate = AbacatePay({ secret: process.env.ABACATEPAY_API_KEY! });
-```
+## Toda chamada devolve `{ success, data, error }`
 
-## Primeira cobrança
+Nenhum método lança exceção, nem em erro de rede ou timeout. Confira `success` antes de usar `data`:
 
 ```ts
-const checkout = await abacate.checkouts.create({
-  items: [{ id: "prod_abc123", quantity: 1 }],
-  customerId: "cust_987",
-});
+const { success, data, error } = await abacate.checkouts.create({
+  items: [{ id: 'prod_abc123', quantity: 1 }],
+})
 
-console.log(checkout.data.url); // URL de pagamento para o cliente
+if (!success) {
+  console.error(error)
+  return
+}
+
+console.log(data.url) // envie o cliente para esta URL
 ```
 
-**Resposta:**
+## Cartão no checkout transparente
 
-```json
-{
-  "success": true,
-  "error": null,
-  "data": {
-    "id": "bill_123456789",
-    "url": "https://app.abacatepay.com/pay/bill_123456789",
-    "amount": 15000,
-    "status": "PENDING",
-    "devMode": true,
-    "createdAt": "2024-11-04T18:38:28.573Z"
-  }
+O navegador gera o token com o [abacatepay.js](/pages/transparents/abacatepay-js), e o backend cobra com `card.create`:
+
+```ts
+const customer = { name: 'Maria Silva', email: 'maria@exemplo.com', taxId: '529.982.247-25', cellphone: '11999999999' }
+
+const cobranca = await abacate.card.create({
+  amount: 10000, // o mesmo valor do AbacatePay.create
+  token, // ctok_ que veio do navegador
+  customer,
+})
+
+if (cobranca.success) {
+  // Guarde para cobrar o mesmo cartão de novo
+  console.log(cobranca.data.status, cobranca.data.cardToken)
 }
 ```
+
+Para cobrar de novo o mesmo cartão, mande `cardToken` no lugar de `token`, com qualquer valor:
+
+```ts
+await abacate.card.create({ amount: 4700, cardToken: 'dev_card_4242', customer })
+```
+
+O tipo não deixa enviar `token` e `cardToken` juntos. O passo a passo completo está em [Checkout transparente](/pages/guides/cartao-transparente) e [Cobrar de novo um cartão salvo](/pages/guides/cartao-salvo).
+
+## Paginação
+
+As listagens usam cursor e vêm do mais novo para o mais antigo. Para ler tudo, mande `pagination.next` como `after` até ele vir `null`:
+
+```ts
+let after: string | undefined
+
+do {
+  const page = await abacate.checkouts.list({ limit: 100, after })
+  if (!page.success) break
+
+  for (const checkout of page.data) console.log(checkout.id, checkout.status)
+
+  after = page.pagination.next ?? undefined
+} while (after)
+```
+
+Toda listagem também aceita `before`, `startDate` e `endDate` (`YYYY-MM-DD`), além dos filtros de cada rota.
+
+## Retries e timeout
+
+- `GET` é repetido sozinho em timeout e em erros temporários (408, 425, 429 e 5xx).
+- O que cria, envia ou reembolsa dinheiro (`POST`) **só é repetido em 429**. Se uma cobrança, saque ou PIX der timeout, ela pode ter sido processada: consulte antes de tentar de novo.
+- O timeout padrão é de 30 segundos.
+
+```ts
+const abacate = AbacatePay({
+  secret: process.env.ABACATEPAY_API_KEY,
+  rest: { timeout: 60_000, retry: { max: 5 } },
+})
+```
+
+## Migrando da versão 2
+
+A versão 3 corrige chamadas que falhavam ou liam a resposta errado, e por isso muda algumas assinaturas:
+
+| Na 2.x | Na 3.0 |
+|---|---|
+| `list({ page, limit })` | `list({ after, before, limit, startDate, endDate })`. O `page` era ignorado pela API e só a primeira página voltava |
+| `pagination.page`, `pagination.totalPages` | `pagination: { hasMore, next, before }` |
+| `store.get()` | `stores.get()` (o antigo ainda funciona, mas está descontinuado) |
+| `pix.list()` | `transparents.list()` (o antigo ainda funciona, mas está descontinuado) |
+| `payouts.create({ amount })` | Também exige `pix: { type, key }`, como a API |
+| `coupons.create` sem `maxRedeems` | `maxRedeems` obrigatório. Em `PERCENTAGE`, `discount` é em pontos-base: `1000` = 10% |
+| `subscriptions.create` com o corpo antigo | Corpo real (`items`, `methods`, `customerId`...), devolvendo o checkout de assinatura |
+| Reembolso devolvia `refundPublicId` | Devolve `{ id, status, amount, reason, originalId, createdAt }` |
+| Boleto com `pix.brCode` | `brCode` e `brCodeBase64` no topo da resposta |
+| Timeout de 5 s, `POST` repetido em timeout | Timeout de 30 s, `POST` só repetido em 429 |
+
+O que é novo: `card.create`, `transparents.get/list/refund`, `checkouts.delete`, `paymentLinks.delete`, `subscriptions.get`, `subscriptions.checkouts.*`, `stores.list`, `bankStatement.list`, `reports.*` e `mrr.byDay`. A lista completa está no [changelog do SDK](https://github.com/AbacatePay/ecosystem/blob/main/packages/sdk/CHANGELOG.md).
 
 ## Próximos passos
 
@@ -79,8 +138,8 @@ console.log(checkout.data.url); // URL de pagamento para o cliente
   <Card title="Configurar webhooks" icon="bell" href="/pages/webhooks">
     Receba notificações em tempo real sobre pagamentos confirmados.
   </Card>
-  <Card title="Checkout Transparente" icon="credit-card" href="/pages/transparents/create">
-    Aceite PIX e cartão diretamente na sua interface.
+  <Card title="Checkout transparente" icon="credit-card" href="/pages/guides/cartao-transparente">
+    Cobre cartão dentro do seu site.
   </Card>
   <Card title="Criar clientes" icon="users" href="/pages/client/create">
     Gerencie clientes vinculados às cobranças.
