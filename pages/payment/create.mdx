@@ -94,6 +94,10 @@ Use `card.maxInstallments` (1–12) para permitir que o cliente parcele no cart�
 Redirecione o cliente para `data.url` — é lá que ele finaliza o pagamento.
 </Tip>
 
+<Tip title="Pular as etapas de dados do cliente" horizontal>
+Acrescente `?skip_customer=true` à `url` para tirar a etapa de dados pessoais e `skip_address=true` para tirar a de endereço. Veja [como fica cada forma de pagamento](/pages/payment/reference#pular-as-etapas-de-dados-do-cliente).
+</Tip>
+
 <Note>
 Para cobranças recorrentes use [Assinaturas](/pages/subscriptions/create). Para um link que múltiplos clientes podem pagar use [Links de pagamento](/pages/payment-links/create).
 </Note>

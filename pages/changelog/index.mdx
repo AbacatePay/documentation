@@ -11,6 +11,29 @@ Feedbacks também são bem-vindos no nosso Discord (#dev).
 
 ## Atualizações Recentes
 
+<Update label="16 de Out, 2026">
+## Checkout: flags para pular as etapas de dados do cliente
+
+O link do checkout aceita duas flags para o cliente ir direto ao pagamento:
+
+```
+https://app.abacatepay.com/pay/bill_abc123xyz?skip_customer=true&skip_address=true
+```
+
+| Flag | O que faz |
+|---|---|
+| `skip_customer=true` | Tira a etapa de dados pessoais. A cobrança sai sem os dados do cliente. |
+| `skip_address=true` | Tira a etapa de endereço. |
+
+- **PIX:** quem pagou chega pelo banco, em `payerInformation` no webhook.
+- **Cartão:** o cliente da cobrança é o titular, com o CPF informado no formulário do cartão.
+- **Boleto, Apple Pay e Google Pay:** somem com `skip_customer`, porque precisam dos dados de quem paga.
+- **Assinatura:** as flags não valem.
+- Não precisa mudar nada na API: as flags vão direto no link.
+
+Veja [Pular as etapas de dados do cliente](/pages/payment/reference#pular-as-etapas-de-dados-do-cliente).
+</Update>
+
 <Update label="12 de Out, 2026">
 ## Cartão no checkout transparente
 

@@ -82,6 +82,10 @@ Na AbacatePay, você não precisa construir essa tela. A gente gera ela automati
     Sim. Você pode configurar o nome, logo e cores da sua loja no dashboard, e eles aparecem automaticamente na tela de checkout.
   </Accordion>
 
+  <Accordion title="Dá para o cliente ir direto para o pagamento, sem preencher dados?">
+    Sim. Acrescente `?skip_customer=true` ao link para tirar a etapa de dados pessoais e `skip_address=true` para tirar a de endereço. Veja [como cada forma de pagamento se comporta](/pages/payment/reference#pular-as-etapas-de-dados-do-cliente).
+  </Accordion>
+
   <Accordion title="O que acontece se o cliente não pagar?">
     A cobrança fica com status `PENDING`. Você pode reenviar o link para o cliente a qualquer momento.
   </Accordion>
