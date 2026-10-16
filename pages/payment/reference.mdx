@@ -78,6 +78,34 @@ POST /checkouts/create
 Use a `url` retornada para levar o cliente ao checkout e concluir o pagamento.
 </Tip>
 
+## Pular as etapas de dados do cliente
+
+Antes do pagamento, o checkout pede os dados pessoais (nome, e-mail, CPF/CNPJ e celular) e, quando aceita cartão, o endereço. Para tirar essas etapas, acrescente uma ou as duas flags à `url` do checkout:
+
+| Flag | O que faz |
+|---|---|
+| `skip_customer=true` | Tira a etapa de dados pessoais. A cobrança sai sem os dados do cliente. |
+| `skip_address=true` | Tira a etapa de endereço. |
+
+**Exemplo:**
+```
+https://app.abacatepay.com/pay/bill_abc123xyz?skip_customer=true&skip_address=true
+```
+
+As flags aceitam `true` ou `1`, são independentes e valem no checkout e no link de pagamento. A etapa some de vez: não aparece no topo da página e o cliente não volta para ela.
+
+### Como fica cada forma de pagamento
+
+| Forma de pagamento | Com `skip_customer` | Com `skip_address` |
+|---|---|---|
+| PIX | A cobrança sai sem cliente. Nome e CPF/CNPJ de quem pagou chegam pelo banco, em `payerInformation` no webhook. | Não usa endereço. |
+| Cartão | O cliente da cobrança é o titular do cartão: o checkout continua pedindo o CPF do titular no formulário do cartão. | A cobrança sai sem endereço. |
+| Boleto, Apple Pay e Google Pay | Somem do checkout: precisam dos dados de quem paga. Se o boleto for a única forma de pagamento, a flag é ignorada. | Não usam endereço. |
+
+<Note>
+As flags não valem em checkout de assinatura, porque a cobrança recorrente precisa dos dados e do endereço do cliente, nem em contas cujo cartão ainda passa pelo processador antigo, que exige os dados do titular. Com `skip_customer`, o checkout também não mostra a oferta de [upsell](#upsell) e o cliente não recebe o e-mail de confirmação da compra.
+</Note>
+
 ## Upsell
 
 Você pode oferecer um produto adicional ao cliente após a conclusão do pagamento usando o campo `upSellProductId`. O produto é apresentado como uma oferta na página de confirmação — ideal para aumentar o ticket médio sem criar um novo checkout.

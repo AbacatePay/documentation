@@ -17,7 +17,7 @@ Notas importantes:
 
 ## Checkout (cobrar com página hospedada)
 
-- [Referência do Checkout](https://docs.abacatepay.com/pages/payment/reference): Visão geral do fluxo, campos obrigatórios, frequências (ONE_TIME, MULTIPLE_PAYMENTS, SUBSCRIPTION) e exemplo de request/response completo.
+- [Referência do Checkout](https://docs.abacatepay.com/pages/payment/reference): Visão geral do fluxo, campos obrigatórios, frequências (ONE_TIME, MULTIPLE_PAYMENTS, SUBSCRIPTION) e exemplo de request/response completo. Flags na `url` do checkout: `skip_customer=true` tira a etapa de dados pessoais (cobrança sem cliente; boleto e wallets somem) e `skip_address=true` tira a de endereço; não valem em assinatura.
 - [POST /checkouts/create](https://docs.abacatepay.com/pages/payment/create): Cria um Checkout e retorna a `url` para redirecionar o cliente. Campo obrigatório: `items` (array com `id` do produto e `quantity`). Opcionais: `methods` (PIX/CARD), `customerId`, `returnUrl`, `completionUrl`, `coupons`, `externalId`, `metadata`.
 - [Receber parcelado (Cartão)](https://docs.abacatepay.com/pages/payment/installments): Permite cobrar parcelado no cartão de crédito (de 1x até 12x) definindo `card.maxInstallments`. Requer valor total correspondente a pelo menos R$ 10,00 por parcela.
 - [GET /checkouts/list](https://docs.abacatepay.com/pages/payment/list): Lista todos os Checkouts da loja.

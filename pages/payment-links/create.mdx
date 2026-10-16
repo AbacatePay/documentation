@@ -44,6 +44,10 @@ Cria um link de pagamento que pode ser pago por múltiplos clientes — ideal pa
 Compartilhe `data.url` — cada cliente que acessar o link pode pagar de forma independente.
 </Tip>
 
+<Tip title="Pular as etapas de dados do cliente" horizontal>
+Acrescente `?skip_customer=true` e/ou `skip_address=true` à `url` para o cliente ir direto ao pagamento. Veja [as regras](/pages/payment/reference#pular-as-etapas-de-dados-do-cliente).
+</Tip>
+
 <Tip title="Vencimento do boleto" horizontal>
 Use `dueDate` (`YYYY-MM-DD`) para definir a data de vencimento. Se omitido, o padrão é 3 dias úteis. Só se aplica a `methods: ["BOLETO"]` — veja a [referência completa](/pages/payment/reference#data-de-vencimento-do-boleto).
 </Tip>
