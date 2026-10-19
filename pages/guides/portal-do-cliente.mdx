@@ -1,0 +1,107 @@
+---
+title: 'Mandar o portal do cliente'
+description: 'Deixe o cliente ver os pagamentos, pedir reembolso, cancelar a assinatura e trocar o cartão sem falar com o seu suporte.'
+icon: 'user-gear'
+---
+
+O portal do cliente é uma página pronta da AbacatePay. Você gera um link para um cliente e um checkout, e ele resolve sozinho o que comprou: vê os pagamentos, pede reembolso, cancela a assinatura e troca o cartão.
+
+Você não precisa montar tela nenhuma. É uma chamada de API e um link.
+
+---
+
+## Passo 1: guarde o `customerId` e o `checkoutId`
+
+O link é sempre de um cliente num checkout. Os dois IDs chegam no webhook do pagamento:
+
+| Webhook | `customerId` | `checkoutId` |
+|---|---|---|
+| `checkout.completed` | `data.customer.id` | `data.checkout.id` |
+| `subscription.completed` | `data.customer.id` | `data.checkout.id` |
+
+Grave os dois junto do pedido ou da assinatura no seu banco.
+
+---
+
+## Passo 2: gere o link
+
+Gere quando o cliente precisar, por exemplo num botão "Gerenciar assinatura" na sua área logada:
+
+<CodeGroup>
+```bash cURL
+curl -X POST https://api.abacatepay.com/v2/customer-portal/create \
+  -H "Authorization: Bearer $ABACATEPAY_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "customerId": "cust_abc123xyz",
+    "checkoutId": "bill_abc123xyz"
+  }'
+```
+
+```js Node.js
+const response = await fetch('https://api.abacatepay.com/v2/customer-portal/create', {
+  method: 'POST',
+  headers: {
+    Authorization: `Bearer ${process.env.ABACATEPAY_API_KEY}`,
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    customerId: 'cust_abc123xyz',
+    checkoutId: 'bill_abc123xyz',
+  }),
+})
+
+const { data, error } = await response.json()
+if (error) throw new Error(error)
+
+// Redirecione o cliente ou mande por e-mail
+console.log(data.url) // https://portal.abacatepay.com/k3J9xQ2m...
+```
+</CodeGroup>
+
+Chamar de novo com os mesmos IDs devolve o mesmo link, então pode gerar na hora do clique, sem guardar a `url`.
+
+---
+
+## Passo 3: mande o cliente para o link
+
+Redirecione, abra numa aba nova ou mande por e-mail. No portal, o cliente digita o e-mail da compra e recebe um código de 6 dígitos para entrar. Quem tiver só o link, sem acesso ao e-mail, não entra.
+
+---
+
+## Passo 4: acompanhe pelos webhooks
+
+O que o cliente faz no portal chega para você pelos mesmos webhooks de sempre:
+
+| No portal | Webhook |
+|---|---|
+| Reembolso | `checkout.refunded` |
+| Cancelamento da assinatura | `subscription.cancelled` (vale no fim do ciclo já pago) |
+| Reembolso de cobrança de assinatura | `checkout.refunded` e `subscription.cancelled` (cancela na hora) |
+
+Use esses eventos para liberar ou cortar o acesso no seu produto.
+
+<Warning>
+  O reembolso pelo portal é automático e não passa por aprovação sua: o cliente reembolsa sozinho qualquer pagamento confirmado por PIX ou cartão daquele checkout, no valor cheio, e o valor sai do seu saldo.
+</Warning>
+
+---
+
+## Perguntas frequentes
+
+<AccordionGroup>
+  <Accordion title="O link expira?">
+    Não. Mas a sessão do cliente dura 1 hora e, a cada entrada, ele precisa de um código novo no e-mail.
+  </Accordion>
+  <Accordion title="O cliente vê outras compras dele?">
+    Não. O link mostra só o checkout que você passou, nessa loja.
+  </Accordion>
+  <Accordion title="Por que deu `Customer has no payment for this checkout`?">
+    O cliente ainda não pagou esse checkout. Gere o link depois do `checkout.completed` ou do `subscription.completed`.
+  </Accordion>
+  <Accordion title="Por que a troca de cartão não aparece?">
+    Ela só aparece em assinatura ativa paga com cartão.
+  </Accordion>
+</AccordionGroup>
+
+Veja todos os detalhes do endpoint em [Criar um link do portal](/pages/customer-portal/create).

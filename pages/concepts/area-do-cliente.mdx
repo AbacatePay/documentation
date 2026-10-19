@@ -1,0 +1,54 @@
+---
+title: 'O que é a Área do Cliente?'
+description: 'Uma página pronta para o seu cliente cuidar sozinho do que comprou'
+icon: 'user-gear'
+---
+
+## A ideia
+
+A área do cliente (portal do cliente) é uma **página pronta da AbacatePay** onde o seu cliente resolve sozinho o que comprou, sem chamar o seu suporte. Você manda um link e pronto.
+
+---
+
+## O que o cliente consegue fazer
+
+<CardGroup cols={2}>
+  <Card icon="receipt" title="Ver os pagamentos">
+    Todas as cobranças daquela compra, com status e forma de pagamento.
+  </Card>
+  <Card icon="credit-card" title="Trocar o cartão">
+    Na assinatura, as próximas cobranças vão para o cartão novo.
+  </Card>
+  <Card icon="ban" title="Cancelar a assinatura">
+    O cancelamento vale no fim do período que ele já pagou.
+  </Card>
+  <Card icon="arrow-rotate-left" title="Pedir reembolso">
+    Automático, no valor cheio, por PIX ou no cartão.
+  </Card>
+</CardGroup>
+
+---
+
+## Como funciona
+
+<Steps>
+  <Step title="Você gera o link">
+    Um link por cliente e por compra, pela API. Ele não expira.
+  </Step>
+  <Step title="O cliente abre o link">
+    Ele confirma o e-mail da compra e recebe um código para entrar. Sem acesso ao e-mail, ninguém entra.
+  </Step>
+  <Step title="Você fica sabendo de tudo">
+    Cada reembolso ou cancelamento chega para você nas notificações (webhooks), como se fosse feito pelo dashboard.
+  </Step>
+</Steps>
+
+<Warning>
+  O reembolso pelo portal é automático, sem aprovação sua, e sai do seu saldo. Reembolsar uma cobrança de assinatura também cancela a assinatura na hora.
+</Warning>
+
+---
+
+<Card icon="code" title="Quer mandar o link para os seus clientes?" href="/pages/guides/portal-do-cliente">
+  Veja o passo a passo.
+</Card>

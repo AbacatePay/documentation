@@ -60,8 +60,10 @@
                 "pages": [
                   "pages/concepts/overview",
                   "pages/concepts/checkout",
+                  "pages/concepts/checkout-transparente",
                   "pages/concepts/pix",
                   "pages/concepts/subscriptions",
+                  "pages/concepts/area-do-cliente",
                   "pages/concepts/saques",
                   "pages/concepts/taxas"
                 ]
@@ -97,6 +99,12 @@
                 "pages": [
                   "pages/guides/cartao-transparente",
                   "pages/guides/cartao-salvo"
+                ]
+              },
+              {
+                "group": "Portal do cliente",
+                "pages": [
+                  "pages/guides/portal-do-cliente"
                 ]
               },
               {
