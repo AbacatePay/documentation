@@ -39,6 +39,8 @@ Notas importantes:
 - [GET /customers/list](https://docs.abacatepay.com/pages/client/list): Lista os clientes cadastrados.
 - [GET /customers/get](https://docs.abacatepay.com/pages/client/get): Busca um cliente pelo ID.
 - [POST /customers/delete](https://docs.abacatepay.com/pages/client/delete): Remove um cliente pelo ID.
+- [Referência do Portal do cliente](https://docs.abacatepay.com/pages/customer-portal/reference): Link para o cliente ver os pagamentos de um checkout, pedir reembolso (automático, valor cheio, PIX ou cartão), cancelar a assinatura (fim do ciclo) e trocar o cartão. Acesso por código de 6 dígitos no e-mail.
+- [POST /customer-portal/create](https://docs.abacatepay.com/pages/customer-portal/create): Gera (ou devolve o existente) o link do portal. Campos: `customerId`, `checkoutId` (obrigatórios). Retorna `url`.
 
 ## Checkout Transparente (PIX, Boleto e Cartão embutidos)
 

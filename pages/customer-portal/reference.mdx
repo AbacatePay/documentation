@@ -1,0 +1,62 @@
+---
+title: 'Referência'
+description: 'Link para o seu cliente gerenciar sozinho o que comprou: pagamentos, reembolso, cancelamento e cartão'
+icon: 'book-open-cover'
+---
+
+O portal do cliente é uma página da AbacatePay onde o seu cliente vê e gerencia o que comprou num checkout. Você gera o link com `POST /customer-portal/create` e manda para ele (no e-mail, na área logada do seu produto, onde preferir).
+
+## Como funciona
+
+1. Você chama `POST /customer-portal/create` com o `customerId` e o `checkoutId`.
+2. A API devolve a `url`, no formato `https://portal.abacatepay.com/<token>`.
+3. O cliente abre o link e digita o e-mail da compra. Se bater com o do cadastro, ele recebe um código de 6 dígitos, válido por 10 minutos.
+4. Com o código, ele entra no portal. A sessão dura 1 hora; depois disso, pede outro código.
+
+**Exemplo:**
+```json
+POST /customer-portal/create
+{
+  "customerId": "cust_abc123xyz",
+  "checkoutId": "bill_abc123xyz"
+}
+```
+
+**Resposta:**
+```json
+{
+  "data": {
+    "id": "cpl_abc123xyz",
+    "url": "https://portal.abacatepay.com/k3J9xQ2mP7vL1nR8sT4wY6zA0bC5dE2f",
+    "customerId": "cust_abc123xyz",
+    "checkoutId": "bill_abc123xyz",
+    "devMode": false,
+    "createdAt": "2026-10-19T12:00:00.000Z"
+  },
+  "success": true,
+  "error": null
+}
+```
+
+## Um link por cliente e checkout
+
+- O link só mostra o que aquele cliente pagou naquele checkout. Ele não vê outras compras nem outras lojas.
+- Chamar de novo com o mesmo `customerId` e `checkoutId` devolve o mesmo link.
+- O link não expira. Quem tem o link ainda precisa do código enviado ao e-mail do cliente para entrar.
+
+## O que o cliente pode fazer
+
+| Ação | Como funciona |
+|---|---|
+| Ver pagamentos | Lista as cobranças do checkout, com status e método. |
+| Pedir reembolso | Automático e no valor cheio, para pagamentos confirmados por PIX ou cartão. O valor sai do seu saldo e você recebe o webhook `checkout.refunded`. |
+| Cancelar a assinatura | Vale no fim do ciclo já pago: não há cobrança nova e o acesso segue até essa data. Você recebe o webhook `subscription.cancelled`. |
+| Trocar o cartão da assinatura | O próximo ciclo é cobrado no cartão novo. Se houver uma cobrança em atraso, ela é cobrada no cartão novo na hora; se for recusada, o cartão não é trocado. |
+
+<Warning>
+  O reembolso não passa por aprovação sua. Ao mandar o link, o cliente consegue reembolsar sozinho qualquer pagamento confirmado por PIX ou cartão desse checkout. Reembolsar uma cobrança de assinatura também cancela a assinatura na hora.
+</Warning>
+
+<Note>
+  Boleto não tem reembolso pelo portal. A troca de cartão só aparece para assinaturas ativas pagas com cartão.
+</Note>
