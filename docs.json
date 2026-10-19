@@ -163,6 +163,13 @@
                 ]
               },
               {
+                "group": "Portal do cliente",
+                "pages": [
+                  "pages/customer-portal/reference",
+                  "pages/customer-portal/create"
+                ]
+              },
+              {
                 "group": "Checkout Transparente",
                 "pages": [
                   "pages/transparents/reference",

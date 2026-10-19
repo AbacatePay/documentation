@@ -1,0 +1,31 @@
+---
+title: 'Criar um link do portal'
+openapi: "POST /customer-portal/create"
+---
+
+Gera o link do portal do cliente para um cliente e um checkout que ele pagou. Veja o que o cliente consegue fazer no portal em [Referência](/pages/customer-portal/reference).
+
+<Card horizontal>
+  Requer uma destas permissões: `CHECKOUT:CREATE`, `SUBSCRIPTION:CREATE` ou `CUSTOMER:CREATE`.
+</Card>
+
+**Exemplo:**
+```json
+{
+  "customerId": "cust_abc123xyz",
+  "checkoutId": "bill_abc123xyz"
+}
+```
+
+<Tip title="Pode chamar sempre" horizontal>
+  Chamar de novo com o mesmo `customerId` e `checkoutId` devolve o mesmo link. Não precisa guardar a `url`.
+</Tip>
+
+## Quando o link não sai
+
+| Erro | Motivo |
+|---|---|
+| `Checkout not found` | O `checkoutId` não existe na sua loja (ou é de outro modo, dev ou produção). |
+| `Customer not found` | O `customerId` não existe ou foi removido. |
+| `Customer has no email to receive the access code` | O cliente não tem e-mail; o código de acesso vai por e-mail. |
+| `Customer has no payment for this checkout` | O cliente ainda não pagou esse checkout. Em assinatura, ainda não tem assinatura criada nele. |
