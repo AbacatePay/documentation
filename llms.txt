@@ -19,7 +19,7 @@ Notas importantes:
 
 - [Referência do Checkout](https://docs.abacatepay.com/pages/payment/reference): Visão geral do fluxo, campos obrigatórios, frequências (ONE_TIME, MULTIPLE_PAYMENTS, SUBSCRIPTION) e exemplo de request/response completo. Flags na `url` do checkout: `skip_customer=true` tira a etapa de dados pessoais (cobrança sem cliente; boleto e wallets somem) e `skip_address=true` tira a de endereço; não valem em assinatura.
 - [POST /checkouts/create](https://docs.abacatepay.com/pages/payment/create): Cria um Checkout e retorna a `url` para redirecionar o cliente. Campo obrigatório: `items` (array com `id` do produto e `quantity`). Opcionais: `methods` (PIX/CARD), `customerId`, `returnUrl`, `completionUrl`, `coupons`, `externalId`, `metadata`.
-- [Receber parcelado (Cartão)](https://docs.abacatepay.com/pages/payment/installments): Permite cobrar parcelado no cartão de crédito (de 1x até 12x) definindo `card.maxInstallments`. Requer valor total correspondente a pelo menos R$ 10,00 por parcela.
+- [Receber parcelado (Cartão)](https://docs.abacatepay.com/pages/payment/installments): Permite cobrar parcelado no cartão de crédito (de 1x até 12x) definindo `card.maxInstallments`. Requer valor total correspondente a pelo menos R$ 10,00 por parcela. Com `card.passFeesToCustomer: true` o cliente paga a taxa do cartão e o lojista recebe o preço cheio; o acréscimo vem em `customerFee`.
 - [GET /checkouts/list](https://docs.abacatepay.com/pages/payment/list): Lista todos os Checkouts da loja.
 - [GET /checkouts/get](https://docs.abacatepay.com/pages/payment/one): Busca um Checkout pelo ID.
 - [POST /checkouts/refund](https://docs.abacatepay.com/pages/payment/refund): Reembolsa integralmente um Checkout pago pelo ID do checkout (`bill_...`) ou da cobrança (`pix_char_...`, `card_...` ou `char_...`).
@@ -45,6 +45,8 @@ Notas importantes:
 ## Checkout Transparente (PIX, Boleto e Cartão embutidos)
 
 - [Referência do Checkout Transparente](https://docs.abacatepay.com/pages/transparents/reference): Gera cobranças via PIX, Boleto ou Cartão diretamente no seu site/app sem redirecionar o usuário.
+- [Oferecer um upsell depois do pagamento](https://docs.abacatepay.com/pages/guides/upsell): Produto avulso e ativo em `upSellProductId` no checkout; a oferta aparece na tela de sucesso e é cobrada no mesmo meio da compra (cartão na hora, à vista, sem digitar de novo; PIX e boleto geram cobrança nova). O pagamento chega num segundo `checkout.completed` com o mesmo `checkout.id`, `isUpSell: true` e só o produto de upsell em `items`: trate duplicidade pelo `id` do evento. Não vale em link de pagamento.
+- [Repassar a taxa do cartão ao cliente](https://docs.abacatepay.com/pages/guides/repasse-de-taxa): `card.passFeesToCustomer: true` no checkout ou link; o cliente paga preço + acréscimo e o lojista recebe o preço. No webhook, `amount` é o total pago e `customerFee` o acréscimo. Só cartão, não vale em assinatura; com cupom sai à vista.
 - [Checkout transparente: passo a passo](https://docs.abacatepay.com/pages/guides/cartao-transparente): Guia completo com projeto de exemplo (HTML + Node.js/Express): chave pública no navegador, `AbacatePay.create`/`mount`/`tokenize` para gerar o `ctok_`, cobrança no backend com `method: "CARD"`, testes no Dev mode (cartão 4242 4242 4242 4242, qualquer data futura e qualquer CVV), ida para produção e tabela de erros comuns.
 - [Cobrar de novo um cartão salvo](https://docs.abacatepay.com/pages/guides/cartao-salvo): Guarde o `cardToken` da primeira cobrança e cobre o mesmo cartão depois, só do backend, sem 3DS e com qualquer valor (mínimo 100 centavos). Diferenças entre `token` (`ctok_`) e `cardToken`, tratamento de recusas e cuidados (timeout não é recusa; não repetir às cegas).
 - [POST /transparents/create (Cartão)](https://docs.abacatepay.com/pages/transparents/card): Cria uma cobrança de cartão. Obrigatórios: `method` como `"CARD"`, `data.amount`, `data.customer` (`name`, `email`, `taxId`, `cellphone`) e `data.token` (`ctok_`) ou `data.cardToken`. Opcionais: `installmentCount` (1 a 12, mínimo R$ 10,00 por parcela) e `metadata` (valores só texto). Retorna `id` (`card_...`), `status`, `cardToken`, `brand`, `lastFour` e, no parcelado, `installmentCount`, `installmentAmount` e `installmentGroupId`. Erros de validação voltam com HTTP 422 e dizem o campo (ex.: `Property 'data.customer.cellphone' is missing`).
@@ -67,7 +69,7 @@ Notas importantes:
 
 ## Cupons
 
-- [Referência de Cupons](https://docs.abacatepay.com/pages/coupons/reference): Descontos aplicáveis nos Checkouts.
+- [Referência de Cupons](https://docs.abacatepay.com/pages/coupons/reference): Descontos aplicáveis nos Checkouts. Cupom de 100% fecha o checkout sem cobrança, com `status: "REDEEMED"`.
 - [POST /coupons/create](https://docs.abacatepay.com/pages/coupons/create): Cria um cupom de desconto.
 - [GET /coupons/list](https://docs.abacatepay.com/pages/coupons/list): Lista os cupons.
 - [GET /coupons/get](https://docs.abacatepay.com/pages/coupons/get): Busca um cupom pelo ID.

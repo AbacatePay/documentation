@@ -1,0 +1,127 @@
+---
+title: 'Repassar a taxa do cartão ao cliente'
+description: 'O cliente paga a taxa do cartão e você recebe o preço cheio, à vista ou parcelado. É um campo a mais no checkout.'
+icon: 'percent'
+---
+
+Com o repasse, o cliente paga o preço do produto mais a taxa do cartão, e você recebe o preço cheio. Vale à vista e parcelado, no checkout e no link de pagamento.
+
+Exemplo com uma taxa de 4% + R$ 0,60 (no seu caso, vale a taxa da sua conta):
+
+| | Valor |
+|---|---|
+| Preço do produto | R$ 100,00 |
+| O cliente paga no cartão | R$ 104,79 |
+| Você recebe | R$ 100,00 |
+
+---
+
+## Passo 1: crie o checkout com `passFeesToCustomer`
+
+Envie `card.passFeesToCustomer: true`. Com `maxInstallments`, o repasse vale em todas as opções de parcela:
+
+<CodeGroup>
+```bash cURL
+curl -X POST https://api.abacatepay.com/v2/checkouts/create \
+  -H "Authorization: Bearer $ABACATEPAY_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "items": [{ "id": "prod_abc123xyz", "quantity": 1 }],
+    "methods": ["PIX", "CARD"],
+    "card": {
+      "maxInstallments": 12,
+      "passFeesToCustomer": true
+    }
+  }'
+```
+
+```js Node.js
+const response = await fetch('https://api.abacatepay.com/v2/checkouts/create', {
+  method: 'POST',
+  headers: {
+    Authorization: `Bearer ${process.env.ABACATEPAY_API_KEY}`,
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    items: [{ id: 'prod_abc123xyz', quantity: 1 }],
+    methods: ['PIX', 'CARD'],
+    card: {
+      maxInstallments: 12,
+      passFeesToCustomer: true,
+    },
+  }),
+})
+
+const { data, error } = await response.json()
+if (error) throw new Error(error)
+
+// Mande o cliente para o checkout
+console.log(data.url) // https://app.abacatepay.com/pay/bill_...
+```
+</CodeGroup>
+
+Para um link de pagamento, mande o mesmo corpo para `POST /v2/payment-links/create`.
+
+---
+
+## Passo 2: o cliente vê o total antes de pagar
+
+No checkout, cada opção de parcela mostra o valor da parcela e o total já com o acréscimo. O acréscimo muda com o número de parcelas, porque a taxa muda.
+
+Só o cartão tem acréscimo. PIX, boleto, Apple Pay e Google Pay continuam pelo preço normal.
+
+---
+
+## Passo 3: leia o valor no webhook
+
+No `checkout.completed` de um pagamento no cartão:
+
+```json
+{
+  "event": "checkout.completed",
+  "data": {
+    "checkout": {
+      "id": "bill_abc123xyz",
+      "amount": 10479,
+      "customerFee": 479,
+      "card": { "maxInstallments": 12, "passFeesToCustomer": true },
+      "status": "PAID",
+      ...
+    }
+  }
+}
+```
+
+- `amount`: o que o cliente pagou, com o acréscimo.
+- `customerFee`: o acréscimo, em centavos.
+- `amount - customerFee`: o preço do produto, já com o desconto se houve cupom.
+
+No `GET /v2/checkouts/get`, o `amount` é o preço do produto e o acréscimo vem em `customerFee`.
+
+---
+
+## Antes de ir para produção
+
+- Teste no [Dev mode](/pages/devmode). Lá o repasse funciona em qualquer conta.
+- Em produção, se a API responder `card.passFeesToCustomer requires card payments through Rinne`, a sua conta ainda não está habilitada para o repasse. Fale com o suporte.
+
+---
+
+## Perguntas frequentes
+
+<AccordionGroup>
+  <Accordion title="Funciona em assinatura?">
+    Não. A API responde `card.passFeesToCustomer is not available for subscriptions`.
+  </Accordion>
+  <Accordion title="E com cupom?">
+    O acréscimo é calculado sobre o valor com desconto, e o cartão sai à vista.
+  </Accordion>
+  <Accordion title="Por que deu `card.passFeesToCustomer requires CARD in methods`?">
+    O repasse só existe no cartão. Inclua `CARD` em `methods`.
+  </Accordion>
+  <Accordion title="Dá para ligar o repasse num checkout que já existe?">
+    Não. O repasse é definido na criação. Crie um checkout novo com o campo.
+  </Accordion>
+</AccordionGroup>
+
+Veja as regras completas em [Receber parcelado](/pages/payment/installments#repassar-a-taxa-ao-cliente).

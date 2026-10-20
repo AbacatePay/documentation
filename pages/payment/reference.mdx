@@ -144,6 +144,8 @@ POST /checkouts/create
 
 O `upSellProductId` é retornado na resposta e ficará `null` caso nenhum produto de upsell tenha sido vinculado ao checkout.
 
+Para o passo a passo, incluindo como identificar o pagamento do upsell no webhook, veja o guia [Oferecer um upsell depois do pagamento](/pages/guides/upsell).
+
 ## Data de vencimento do boleto
 
 Para cobranças com `methods: ["BOLETO"]`, você pode definir a data de vencimento com o campo opcional `dueDate` (`YYYY-MM-DD`). Se omitido, o vencimento padrão é de **3 dias úteis**.

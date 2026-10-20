@@ -95,6 +95,13 @@
                 ]
               },
               {
+                "group": "Checkout",
+                "pages": [
+                  "pages/guides/upsell",
+                  "pages/guides/repasse-de-taxa"
+                ]
+              },
+              {
                 "group": "Checkout transparente",
                 "pages": [
                   "pages/guides/cartao-transparente",

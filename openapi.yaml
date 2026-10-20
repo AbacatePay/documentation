@@ -74,12 +74,53 @@ paths:
                   example: 01310-100
                   x-mint:
                     hidden: true
+                address:
+                  type: object
+                  description: >-
+                    Endereço completo do cliente (opcional). Se enviado, todos os
+                    campos menos `complement` são obrigatórios.
+                  required:
+                    - zipCode
+                    - street
+                    - number
+                    - neighborhood
+                    - city
+                    - state
+                  properties:
+                    zipCode:
+                      type: string
+                      example: 01310-100
+                    street:
+                      type: string
+                      example: Avenida Paulista
+                    number:
+                      type: string
+                      example: '1000'
+                    neighborhood:
+                      type: string
+                      example: Bela Vista
+                    city:
+                      type: string
+                      example: São Paulo
+                    state:
+                      type: string
+                      description: UF com 2 letras.
+                      minLength: 2
+                      maxLength: 2
+                      example: SP
+                    complement:
+                      type: string
+                      example: Sala 12
+                  x-mint:
+                    hidden: true
                 metadata:
                   type: object
                   description: >-
                     Metadados adicionais do cliente. Campo livre para a sua
-                    aplicação (opcional)
-                  additionalProperties: true
+                    aplicação (opcional). Os valores precisam ser texto: número
+                    ou objeto responde `422`.
+                  additionalProperties:
+                    type: string
                   example:
                     source: landing-page
                     campaign: black-friday-2025
@@ -1198,6 +1239,14 @@ paths:
                       minimum: 1
                       maximum: 12
                       example: 12
+                    passFeesToCustomer:
+                      type: boolean
+                      description: >-
+                        Repassa a taxa do cartão ao cliente: ele paga o preço mais o
+                        acréscimo, e você recebe o preço cheio. Requer `CARD` em
+                        `methods`. Não vale para assinaturas.
+                      default: false
+                      example: true
       responses:
         '200':
           description: Cobrança criada com sucesso.
@@ -1572,6 +1621,14 @@ paths:
                       minimum: 1
                       maximum: 12
                       example: 12
+                    passFeesToCustomer:
+                      type: boolean
+                      description: >-
+                        Repassa a taxa do cartão ao cliente: ele paga o preço mais o
+                        acréscimo, e você recebe o preço cheio. Requer `CARD` em
+                        `methods`. Não vale para assinaturas.
+                      default: false
+                      example: true
                 customerId:
                   type: string
                   description: >
@@ -5155,10 +5212,37 @@ components:
           type: string
           description: CEP do cliente
           example: 01310-100
+        address:
+          type: object
+          nullable: true
+          description: Endereço do cliente. `null` quando não foi informado.
+          properties:
+            zipCode:
+              type: string
+              example: 01310-100
+            street:
+              type: string
+              example: Avenida Paulista
+            number:
+              type: string
+              example: '1000'
+            neighborhood:
+              type: string
+              example: Bela Vista
+            city:
+              type: string
+              example: São Paulo
+            state:
+              type: string
+              example: SP
+            complement:
+              type: string
+              example: Sala 12
         metadata:
           type: object
           description: Metadados adicionais do cliente
-          additionalProperties: true
+          additionalProperties:
+            type: string
           example:
             source: landing-page
             campaign: black-friday-2025
@@ -5424,13 +5508,16 @@ components:
                 example: 2
         status:
           type: string
-          description: Status atual do Checkout.
+          description: >-
+            Status atual do Checkout. `REDEEMED` quando o cliente fechou o
+            checkout com um cupom de 100%, sem pagar nada.
           enum:
             - PENDING
             - EXPIRED
             - CANCELLED
             - PAID
             - REFUNDED
+            - REDEEMED
           example: PENDING
         coupons:
           type: array
@@ -5480,6 +5567,26 @@ components:
             com mais de uma parcela. `null` para pagamentos à vista ou realizados
             por outros métodos (PIX, Boleto).
           example: 3
+        card:
+          type: object
+          description: Configuração do pagamento por cartão enviada na criação.
+          properties:
+            maxInstallments:
+              type: integer
+              description: Número máximo de parcelas oferecidas no checkout.
+              example: 12
+            passFeesToCustomer:
+              type: boolean
+              description: Se a taxa do cartão é repassada ao cliente.
+              example: false
+        customerFee:
+          type: integer
+          nullable: true
+          description: >-
+            Acréscimo, em centavos, que o cliente pagou com o repasse da taxa do
+            cartão (`card.passFeesToCustomer`). `null` sem repasse ou quando o
+            pagamento não foi no cartão.
+          example: null
         dueDate:
           type: string
           format: date

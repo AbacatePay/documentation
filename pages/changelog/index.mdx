@@ -11,6 +11,65 @@ Feedbacks também são bem-vindos no nosso Discord (#dev).
 
 ## Atualizações Recentes
 
+<Update label="20 de Out, 2026">
+## Upsell identificado no webhook
+
+O `checkout.completed` do pagamento de um upsell agora se distingue do da compra:
+
+- `isUpSell: true` no evento do upsell (`false` nos demais).
+- `items` traz só o produto de upsell, em vez de repetir os itens da compra.
+- `paidAmount` soma a compra e o upsell. Antes, ficava só com o preço do upsell.
+- Com `completionUrl`, a tela de sucesso espera o cliente tocar em **Continuar** enquanto a oferta estiver aberta.
+
+Veja o guia [Oferecer um upsell depois do pagamento](/pages/guides/upsell).
+</Update>
+
+<Update label="20 de Out, 2026">
+## Cartão: repasse da taxa ao cliente
+
+Novo campo `card.passFeesToCustomer` em `POST /v2/checkouts/create` e `POST /v2/payment-links/create`: o cliente paga a taxa do cartão e você recebe o preço cheio.
+
+- O checkout mostra o total de cada opção de parcela, já com o acréscimo.
+- O acréscimo pago vem em `customerFee` (centavos) no `GET /v2/checkouts/get` e no webhook `checkout.completed`, que traz em `amount` o total pago.
+- Só vale no cartão. PIX, boleto, Apple Pay e Google Pay cobram o preço normal, e assinatura não aceita.
+
+Veja [Repassar a taxa ao cliente](/pages/payment/installments#repassar-a-taxa-ao-cliente).
+</Update>
+
+<Update label="20 de Out, 2026">
+## Checkout com cupom de 100% fecha como `REDEEMED`
+
+Com um cupom que zera o valor, o cliente fecha o checkout sem pagar, no PIX e no cartão. Antes, o pagamento falhava.
+
+- O checkout passa a `status: "REDEEMED"`.
+- O webhook `checkout.completed` chega com esse status e `amount: 0`.
+- Num link de pagamento, o link continua `ACTIVE`.
+
+Veja [Cupons](/pages/coupons/reference).
+</Update>
+
+<Update label="20 de Out, 2026">
+## Correções em clientes, saques e checkouts
+
+- `POST /v2/customers/create` passa a gravar `metadata` e `address`, que antes eram descartados. Os valores de `metadata` precisam ser texto: número ou objeto responde `422`.
+- `GET /v2/payouts/list` e `GET /v2/pix/list` listam só saques e PIX enviados. Antes, traziam também pagamentos recebidos e reembolsos.
+- `interest` e `fine` vêm `null` quando não foram configurados, nos checkouts e no boleto transparente. Antes, vinham `{}`.
+
+Veja [Criar um cliente](/pages/client/create).
+</Update>
+
+<Update label="20 de Out, 2026">
+## Comprovante preenchido no transparente e nos webhooks
+
+O `receiptUrl` vinha sempre `null` em alguns lugares. Agora traz o link do comprovante em:
+
+- `GET /v2/transparents/get` e `GET /v2/transparents/list`, no PIX, no boleto e no cartão.
+- Webhooks `transparent.*`, `payout.*` e `transfer.*`.
+- `payment.receiptUrl` dos webhooks de assinatura.
+
+Cobranças pagas antes de 13/10/2026 continuam com `receiptUrl: null`.
+</Update>
+
 <Update label="19 de Out, 2026">
 ## Portal do cliente
 

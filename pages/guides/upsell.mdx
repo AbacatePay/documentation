@@ -1,0 +1,154 @@
+---
+title: 'Oferecer um upsell depois do pagamento'
+description: 'Mostre um segundo produto na tela de sucesso do checkout. O cliente aceita com um clique e, no cartão, nem digita o cartão de novo.'
+icon: 'cart-plus'
+---
+
+Upsell é a oferta de um produto a mais logo depois do pagamento. Você escolhe o produto ao criar o checkout, a AbacatePay mostra a oferta na tela de sucesso e cobra se o cliente aceitar.
+
+Você não precisa montar tela nenhuma. É um campo a mais no checkout e um cuidado no webhook.
+
+## Como funciona
+
+1. O cliente paga o checkout normalmente.
+2. A tela de sucesso mostra o produto com nome, descrição, preço e imagem, e o botão **Aproveitar a oferta**.
+3. Se ele aceitar, o upsell é cobrado no mesmo meio de pagamento da compra:
+
+| Pagou com | O upsell |
+|---|---|
+| Cartão | É cobrado na hora, à vista, no mesmo cartão. O cliente não digita nada. |
+| PIX | Gera um novo QR Code na tela. |
+| Boleto | Gera um novo boleto. |
+
+4. Quando o upsell é pago, chega um novo `checkout.completed` do mesmo checkout.
+
+---
+
+## Passo 1: crie o produto da oferta
+
+O produto precisa ser avulso (sem `cycle`) e estar ativo. Preencha `description` e `imageUrl`, porque é isso que o cliente vê na oferta.
+
+<CodeGroup>
+```bash cURL
+curl -X POST https://api.abacatepay.com/v2/products/create \
+  -H "Authorization: Bearer $ABACATEPAY_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "externalId": "ebook-receitas",
+    "name": "E-book de receitas",
+    "description": "50 receitas para usar com o curso",
+    "price": 2990,
+    "currency": "BRL",
+    "imageUrl": "https://seusite.com/ebook.png"
+  }'
+```
+
+```js Node.js
+const response = await fetch('https://api.abacatepay.com/v2/products/create', {
+  method: 'POST',
+  headers: {
+    Authorization: `Bearer ${process.env.ABACATEPAY_API_KEY}`,
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    externalId: 'ebook-receitas',
+    name: 'E-book de receitas',
+    description: '50 receitas para usar com o curso',
+    price: 2990,
+    currency: 'BRL',
+    imageUrl: 'https://seusite.com/ebook.png',
+  }),
+})
+
+const { data, error } = await response.json()
+if (error) throw new Error(error)
+
+console.log(data.id) // prod_...
+```
+</CodeGroup>
+
+Você cria o produto uma vez e usa em quantos checkouts quiser.
+
+---
+
+## Passo 2: crie o checkout com `upSellProductId`
+
+Passe o `id` (`prod_...`) ou o `externalId` do produto da oferta:
+
+```json
+POST /v2/checkouts/create
+{
+  "items": [{ "id": "prod_curso", "quantity": 1 }],
+  "methods": ["PIX", "CARD"],
+  "upSellProductId": "ebook-receitas"
+}
+```
+
+<Note>
+  Com `completionUrl`, a tela de sucesso só leva o cliente para a sua página quando ele toca em **Continuar**, para dar tempo de ver a oferta. Sem upsell, o redirecionamento acontece sozinho em 5 segundos.
+</Note>
+
+---
+
+## Passo 3: trate o segundo `checkout.completed`
+
+Quando o upsell é pago, chega outro `checkout.completed` com o **mesmo `checkout.id`** da compra e `checkout.isUpSell: true`:
+
+| Campo | Evento da compra | Evento do upsell |
+|---|---|---|
+| `id` do evento | `log_...` | Outro `log_...` |
+| `checkout.id` | `bill_abc123xyz` | `bill_abc123xyz`, o mesmo |
+| `checkout.isUpSell` | `false` | `true` |
+| `checkout.amount` | Valor da compra | Preço do produto de upsell |
+| `checkout.items` | Itens da compra | Só o produto de upsell |
+| `checkout.paidAmount` | Valor da compra | Compra + upsell |
+
+```js Node.js
+app.post('/webhooks/abacatepay', async (req, res) => {
+  const event = req.body
+  if (event.event !== 'checkout.completed') return res.sendStatus(200)
+
+  // Duplicidade pelo id do evento, nunca pelo id do checkout
+  if (await jaProcessado(event.id)) return res.sendStatus(200)
+
+  const { checkout } = event.data
+  const pedido = await buscarPedidoPorCheckout(checkout.id)
+
+  if (checkout.isUpSell) {
+    await liberarProdutos(pedido, checkout.items) // o produto de upsell
+  } else {
+    await liberarCompra(pedido)
+  }
+
+  await marcarProcessado(event.id)
+  res.sendStatus(200)
+})
+```
+
+<Warning>
+  Se você trata duplicidade pelo `checkout.id`, o upsell é descartado como repetição e o cliente paga sem receber. Use o `id` do evento, que só se repete nas retentativas da mesma entrega.
+</Warning>
+
+---
+
+## Perguntas frequentes
+
+<AccordionGroup>
+  <Accordion title="Funciona em link de pagamento?">
+    Não. O upsell só é cobrado em checkout de pagamento único.
+  </Accordion>
+  <Accordion title="O cliente pode parcelar o upsell?">
+    Não. No cartão, o upsell sai à vista.
+  </Accordion>
+  <Accordion title="O cupom da compra vale no upsell?">
+    Não. O upsell é cobrado pelo preço do produto.
+  </Accordion>
+  <Accordion title="Por que a oferta não apareceu?">
+    O produto está inativo ou tem `cycle`, ou a compra foi fechada com um cupom de 100%. Sem pagamento, não há oferta.
+  </Accordion>
+  <Accordion title="Por que deu erro quando o cliente aceitou?">
+    O upsell usa nome, e-mail, CPF/CNPJ e celular do cliente da compra. Se faltar algum, por exemplo com `skip_customer=true` no link, a oferta não é cobrada.
+  </Accordion>
+</AccordionGroup>
+
+Veja os detalhes do campo em [Referência do checkout](/pages/payment/reference#upsell).

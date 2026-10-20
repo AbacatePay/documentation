@@ -413,3 +413,24 @@ icon: 'cart-shopping'
     </Tabs>
   </Tab>
 </Tabs>
+
+## Upsell
+
+Quando o cliente aceita o [upsell](/pages/guides/upsell) e paga, chega um segundo `checkout.completed` com o mesmo `checkout.id` da compra e:
+
+- `isUpSell: true` (nos demais eventos, `false`);
+- `items` só com o produto de upsell;
+- `amount` com o preço do upsell e `paidAmount` com a soma da compra e do upsell.
+
+Trate duplicidade pelo `id` do evento, não pelo `checkout.id`, ou o upsell é descartado como repetição.
+
+## Cartão com repasse de taxa
+
+Quando o checkout foi criado com [`card.passFeesToCustomer: true`](/pages/payment/installments#repassar-a-taxa-ao-cliente), o `checkout.completed` de um pagamento no cartão traz:
+
+- `amount`: o total que o cliente pagou, com o acréscimo.
+- `customerFee`: o acréscimo, em centavos. Vem `null` sem repasse e nos pagamentos por PIX e boleto.
+
+## Cupom de 100%
+
+Quando o cliente usa um cupom que zera o valor, nada é cobrado, mas o `checkout.completed` chega do mesmo jeito, com `amount: 0` e `status: "REDEEMED"`. Num link de pagamento, o `status` continua `ACTIVE`, porque o link segue aberto para outros clientes.

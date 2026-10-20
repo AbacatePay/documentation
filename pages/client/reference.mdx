@@ -14,14 +14,21 @@ Use `/customers/create` para cadastrar um cliente antes de cobrar. O `customerId
 ```json
 POST /customers/create
 {
-  "data": {
-    "email": "customer@example.com",        // obrigatório
-    "taxId": "11144477735",                 // opcional
-    "name": "João Silva",                   // opcional
-    "cellphone": "+5511999999999",          // opcional
-    "zipCode": "01310-100"                  // opcional
+  "email": "customer@example.com",          // obrigatório
+  "taxId": "11144477735",                   // opcional
+  "name": "João Silva",                     // opcional
+  "cellphone": "+5511999999999",            // opcional
+  "zipCode": "01310-100",                   // opcional
+  "address": {                              // opcional - se enviar, só complement pode faltar
+    "zipCode": "01310-100",
+    "street": "Avenida Paulista",
+    "number": "1000",
+    "neighborhood": "Bela Vista",
+    "city": "São Paulo",
+    "state": "SP",
+    "complement": "Sala 12"
   },
-  "metadata": {                             // opcional - dados extras da sua aplicação
+  "metadata": {                             // opcional - dados extras da sua aplicação, valores em texto
     "customField": "value"
   }
 }
@@ -39,6 +46,15 @@ POST /customers/create
     "name": "João Silva",
     "cellphone": "+5511999999999",
     "zipCode": "01310-100",
+    "address": {
+      "zipCode": "01310-100",
+      "street": "Avenida Paulista",
+      "number": "1000",
+      "neighborhood": "Bela Vista",
+      "city": "São Paulo",
+      "state": "SP",
+      "complement": "Sala 12"
+    },
     "metadata": {
       "customField": "value"
     }

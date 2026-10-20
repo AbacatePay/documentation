@@ -73,3 +73,12 @@ POST /coupons/create
   "error": null
 }
 ```
+
+## Cupom de 100%
+
+Um cupom que zera o valor fecha o checkout sem cobrança:
+
+- No PIX, o cliente vai direto para a tela de sucesso. No cartão, ele informa o cartão, mas nada é cobrado.
+- O checkout passa a `status: "REDEEMED"`, e o [webhook `checkout.completed`](/pages/webhooks/events/checkout) chega com esse status e `amount: 0`.
+- Num link de pagamento, o link continua `ACTIVE` para os próximos clientes.
+- Não vale para assinaturas.
