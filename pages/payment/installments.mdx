@@ -132,6 +132,7 @@ POST /checkouts/create
 - Só o cartão tem acréscimo. PIX, boleto, Apple Pay e Google Pay cobram o preço normal.
 - Com cupom, o acréscimo é calculado sobre o valor com desconto e o cartão sai à vista.
 - Vale para checkout avulso e [link de pagamento](/pages/payment-links/create). Assinatura não aceita.
+- No reembolso, o cliente recebe de volta tudo o que pagou, com o acréscimo. O valor sai do seu saldo, e a taxa do cartão não é devolvida, como em qualquer reembolso.
 
 Depois do pagamento, o acréscimo vem em `customerFee` (em centavos) no `GET /checkouts/get` e no [webhook `checkout.completed`](/pages/webhooks/events/checkout). O `amount` do checkout continua sendo o preço; no webhook, `amount` traz o total que o cliente pagou.
 
