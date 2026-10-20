@@ -19,7 +19,7 @@ Notas importantes:
 
 - [Referência do Checkout](https://docs.abacatepay.com/pages/payment/reference): Visão geral do fluxo, campos obrigatórios, frequências (ONE_TIME, MULTIPLE_PAYMENTS, SUBSCRIPTION) e exemplo de request/response completo. Flags na `url` do checkout: `skip_customer=true` tira a etapa de dados pessoais (cobrança sem cliente; boleto e wallets somem) e `skip_address=true` tira a de endereço; não valem em assinatura.
 - [POST /checkouts/create](https://docs.abacatepay.com/pages/payment/create): Cria um Checkout e retorna a `url` para redirecionar o cliente. Campo obrigatório: `items` (array com `id` do produto e `quantity`). Opcionais: `methods` (PIX/CARD), `customerId`, `returnUrl`, `completionUrl`, `coupons`, `externalId`, `metadata`.
-- [Receber parcelado (Cartão)](https://docs.abacatepay.com/pages/payment/installments): Permite cobrar parcelado no cartão de crédito (de 1x até 12x) definindo `card.maxInstallments`. Requer valor total correspondente a pelo menos R$ 10,00 por parcela.
+- [Receber parcelado (Cartão)](https://docs.abacatepay.com/pages/payment/installments): Permite cobrar parcelado no cartão de crédito (de 1x até 12x) definindo `card.maxInstallments`. Requer valor total correspondente a pelo menos R$ 10,00 por parcela. Com `card.passFeesToCustomer: true` o cliente paga a taxa do cartão e o lojista recebe o preço cheio; o acréscimo vem em `customerFee`.
 - [GET /checkouts/list](https://docs.abacatepay.com/pages/payment/list): Lista todos os Checkouts da loja.
 - [GET /checkouts/get](https://docs.abacatepay.com/pages/payment/one): Busca um Checkout pelo ID.
 - [POST /checkouts/refund](https://docs.abacatepay.com/pages/payment/refund): Reembolsa integralmente um Checkout pago pelo ID do checkout (`bill_...`) ou da cobrança (`pix_char_...`, `card_...` ou `char_...`).
@@ -67,7 +67,7 @@ Notas importantes:
 
 ## Cupons
 
-- [Referência de Cupons](https://docs.abacatepay.com/pages/coupons/reference): Descontos aplicáveis nos Checkouts.
+- [Referência de Cupons](https://docs.abacatepay.com/pages/coupons/reference): Descontos aplicáveis nos Checkouts. Cupom de 100% fecha o checkout sem cobrança, com `status: "REDEEMED"`.
 - [POST /coupons/create](https://docs.abacatepay.com/pages/coupons/create): Cria um cupom de desconto.
 - [GET /coupons/list](https://docs.abacatepay.com/pages/coupons/list): Lista os cupons.
 - [GET /coupons/get](https://docs.abacatepay.com/pages/coupons/get): Busca um cupom pelo ID.

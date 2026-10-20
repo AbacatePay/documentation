@@ -1198,6 +1198,14 @@ paths:
                       minimum: 1
                       maximum: 12
                       example: 12
+                    passFeesToCustomer:
+                      type: boolean
+                      description: >-
+                        Repassa a taxa do cartão ao cliente: ele paga o preço mais o
+                        acréscimo, e você recebe o preço cheio. Requer `CARD` em
+                        `methods`. Não vale para assinaturas.
+                      default: false
+                      example: true
       responses:
         '200':
           description: Cobrança criada com sucesso.
@@ -1572,6 +1580,14 @@ paths:
                       minimum: 1
                       maximum: 12
                       example: 12
+                    passFeesToCustomer:
+                      type: boolean
+                      description: >-
+                        Repassa a taxa do cartão ao cliente: ele paga o preço mais o
+                        acréscimo, e você recebe o preço cheio. Requer `CARD` em
+                        `methods`. Não vale para assinaturas.
+                      default: false
+                      example: true
                 customerId:
                   type: string
                   description: >
@@ -5424,13 +5440,16 @@ components:
                 example: 2
         status:
           type: string
-          description: Status atual do Checkout.
+          description: >-
+            Status atual do Checkout. `REDEEMED` quando o cliente fechou o
+            checkout com um cupom de 100%, sem pagar nada.
           enum:
             - PENDING
             - EXPIRED
             - CANCELLED
             - PAID
             - REFUNDED
+            - REDEEMED
           example: PENDING
         coupons:
           type: array
@@ -5480,6 +5499,26 @@ components:
             com mais de uma parcela. `null` para pagamentos à vista ou realizados
             por outros métodos (PIX, Boleto).
           example: 3
+        card:
+          type: object
+          description: Configuração do pagamento por cartão enviada na criação.
+          properties:
+            maxInstallments:
+              type: integer
+              description: Número máximo de parcelas oferecidas no checkout.
+              example: 12
+            passFeesToCustomer:
+              type: boolean
+              description: Se a taxa do cartão é repassada ao cliente.
+              example: false
+        customerFee:
+          type: integer
+          nullable: true
+          description: >-
+            Acréscimo, em centavos, que o cliente pagou com o repasse da taxa do
+            cartão (`card.passFeesToCustomer`). `null` sem repasse ou quando o
+            pagamento não foi no cartão.
+          example: null
         dueDate:
           type: string
           format: date

@@ -178,7 +178,7 @@ Cria uma cobrança de **cartão de crédito** no checkout transparente. O cartã
       Só no parcelado: ID do parcelamento (`cinst_...`).
     </ResponseField>
     <ResponseField name="receiptUrl" type="string | null">
-      Comprovante. Vem `null` na criação.
+      Link do comprovante, preenchido depois da aprovação. Se vier `null` na criação, consulte com `GET /v2/transparents/get`.
     </ResponseField>
     <ResponseField name="createdAt" type="string">
       Data de criação (ISO 8601).

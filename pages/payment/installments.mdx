@@ -72,8 +72,10 @@ POST /checkouts/create
     "frequency": "ONE_TIME",
     "methods": ["PIX", "CARD"],
     "card": {
-      "maxInstallments": 6
+      "maxInstallments": 6,
+      "passFeesToCustomer": false
     },
+    "customerFee": null,
     "installmentsCount": null,
     "createdAt": "2025-04-17T12:00:00.000Z",
     "updatedAt": "2025-04-17T12:00:00.000Z"
@@ -106,6 +108,38 @@ Use **GET /checkouts/get** para consultar o checkout após receber o [webhook `c
   "error": null
 }
 ```
+
+## Repassar a taxa ao cliente
+
+Com `card.passFeesToCustomer: true`, o cliente paga a taxa do cartão e você recebe o preço cheio.
+
+```json
+POST /checkouts/create
+{
+  "items": [
+    { "id": "prod_abc123xyz", "quantity": 1 }
+  ],
+  "methods": ["PIX", "CARD"],
+  "card": {
+    "maxInstallments": 6,
+    "passFeesToCustomer": true
+  }
+}
+```
+
+- Em cada opção, de 1x até `maxInstallments`, o cliente paga o menor valor que, descontada a sua taxa, cobre o preço. Exemplo com uma taxa de 4% + R$ 0,60: num produto de R$ 100,00, o cliente paga R$ 104,79 e você recebe R$ 100,00.
+- O acréscimo muda com o número de parcelas, porque a taxa muda. O checkout mostra o total de cada opção antes do cliente pagar.
+- Só o cartão tem acréscimo. PIX, boleto, Apple Pay e Google Pay cobram o preço normal.
+- Com cupom, o acréscimo é calculado sobre o valor com desconto e o cartão sai à vista.
+- Vale para checkout avulso e [link de pagamento](/pages/payment-links/create). Assinatura não aceita.
+
+Depois do pagamento, o acréscimo vem em `customerFee` (em centavos) no `GET /checkouts/get` e no [webhook `checkout.completed`](/pages/webhooks/events/checkout). O `amount` do checkout continua sendo o preço; no webhook, `amount` traz o total que o cliente pagou.
+
+| Erro | Quando acontece |
+|------|-----------------|
+| `card.passFeesToCustomer requires CARD in methods` | `CARD` não está em `methods` |
+| `card.passFeesToCustomer is not available for subscriptions` | O checkout é uma assinatura |
+| `card.passFeesToCustomer requires card payments through Rinne` | Sua conta ainda não está habilitada para o repasse. Fale com o suporte. Em dev mode, funciona em qualquer conta. |
 
 ## Só aceitar cartão parcelado
 

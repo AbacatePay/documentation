@@ -4,7 +4,7 @@ description: 'Eventos disparados para pagamentos via Checkout Transparente (PIX,
 icon: 'credit-card'
 ---
 
-Todo evento chega com o mesmo envelope: `id` (identificador da entrega, repetido nas retentativas automáticas, por isso serve para tratar duplicidade), `event`, `apiVersion`, `devMode` e `data`. Em `data`, o objeto `transparent` traz a cobrança, `customer` traz o cliente (com CPF/CNPJ mascarado) e `payerInformation` muda conforme o método.
+Todo evento chega com o mesmo envelope: `id` (identificador da entrega, repetido nas retentativas automáticas, por isso serve para tratar duplicidade), `event`, `apiVersion`, `devMode` e `data`. Em `data`, o objeto `transparent` traz a cobrança, `customer` traz o cliente (com CPF/CNPJ mascarado) e `payerInformation` muda conforme o método. O link do comprovante vem em `transparent.receiptUrl`.
 
 <Tabs>
   <Tab title="transparent.completed">
@@ -34,7 +34,7 @@ Todo evento chega com o mesmo envelope: `id` (identificador da entrega, repetido
               "customerId": "cust_aB3dE5fG7hJ9kL1mN3pQ5rS7",
               "createdAt": "2026-10-12T19:00:00.000Z",
               "updatedAt": "2026-10-12T19:00:05.000Z",
-              "receiptUrl": null,
+              "receiptUrl": "https://app.abacatepay.com/receipt/...",
               "metadata": {
                 "pedidoId": "pedido-456"
               }
@@ -88,7 +88,7 @@ Todo evento chega com o mesmo envelope: `id` (identificador da entrega, repetido
               "customerId": "cust_aB3dE5fG7hJ9kL1mN3pQ5rS7",
               "createdAt": "2026-10-12T14:20:31.512Z",
               "updatedAt": "2026-10-12T14:20:32.104Z",
-              "receiptUrl": null,
+              "receiptUrl": "https://app.abacatepay.com/receipt/...",
               "metadata": {
                 "pedidoId": "pedido-123"
               }
@@ -141,7 +141,7 @@ Todo evento chega com o mesmo envelope: `id` (identificador da entrega, repetido
               "customerId": "cust_aB3dE5fG7hJ9kL1mN3pQ5rS7",
               "createdAt": "2026-10-12T14:25:02.118Z",
               "updatedAt": "2026-10-12T14:25:02.940Z",
-              "receiptUrl": null,
+              "receiptUrl": "https://app.abacatepay.com/receipt/...",
               "metadata": {},
               "installmentCount": 3,
               "installmentAmount": 10000,
@@ -196,7 +196,7 @@ Todo evento chega com o mesmo envelope: `id` (identificador da entrega, repetido
               "customerId": "cust_Hk2mP4qR6sT8uV1wX3yZ5aB7",
               "createdAt": "2026-10-04T14:22:10.381Z",
               "updatedAt": "2026-10-06T10:15:00.000Z",
-              "receiptUrl": null,
+              "receiptUrl": "https://app.abacatepay.com/receipt/...",
               "metadata": {
                 "faturaId": "fatura-456"
               }
@@ -256,7 +256,7 @@ Todo evento chega com o mesmo envelope: `id` (identificador da entrega, repetido
               "customerId": "cust_aB3dE5fG7hJ9kL1mN3pQ5rS7",
               "createdAt": "2026-10-12T19:00:00.000Z",
               "updatedAt": "2026-10-12T19:00:05.000Z",
-              "receiptUrl": null,
+              "receiptUrl": "https://app.abacatepay.com/receipt/...",
               "metadata": {
                 "pedidoId": "pedido-456"
               }
@@ -311,7 +311,7 @@ Todo evento chega com o mesmo envelope: `id` (identificador da entrega, repetido
               "customerId": "cust_aB3dE5fG7hJ9kL1mN3pQ5rS7",
               "createdAt": "2026-10-12T14:20:31.512Z",
               "updatedAt": "2026-10-12T14:20:32.104Z",
-              "receiptUrl": null,
+              "receiptUrl": "https://app.abacatepay.com/receipt/...",
               "metadata": {
                 "pedidoId": "pedido-123"
               }
@@ -365,7 +365,7 @@ Todo evento chega com o mesmo envelope: `id` (identificador da entrega, repetido
               "customerId": "cust_Hk2mP4qR6sT8uV1wX3yZ5aB7",
               "createdAt": "2026-10-04T14:22:10.381Z",
               "updatedAt": "2026-10-06T10:15:00.000Z",
-              "receiptUrl": null,
+              "receiptUrl": "https://app.abacatepay.com/receipt/...",
               "metadata": {
                 "faturaId": "fatura-456"
               }
@@ -426,7 +426,7 @@ Todo evento chega com o mesmo envelope: `id` (identificador da entrega, repetido
               "customerId": "cust_aB3dE5fG7hJ9kL1mN3pQ5rS7",
               "createdAt": "2026-10-12T19:00:00.000Z",
               "updatedAt": "2026-10-12T19:00:05.000Z",
-              "receiptUrl": null,
+              "receiptUrl": "https://app.abacatepay.com/receipt/...",
               "metadata": {
                 "pedidoId": "pedido-456"
               }
@@ -481,7 +481,7 @@ Todo evento chega com o mesmo envelope: `id` (identificador da entrega, repetido
               "customerId": "cust_aB3dE5fG7hJ9kL1mN3pQ5rS7",
               "createdAt": "2026-10-12T14:20:31.512Z",
               "updatedAt": "2026-10-12T14:20:32.104Z",
-              "receiptUrl": null,
+              "receiptUrl": "https://app.abacatepay.com/receipt/...",
               "metadata": {
                 "pedidoId": "pedido-123"
               }
@@ -535,7 +535,7 @@ Todo evento chega com o mesmo envelope: `id` (identificador da entrega, repetido
               "customerId": "cust_Hk2mP4qR6sT8uV1wX3yZ5aB7",
               "createdAt": "2026-10-04T14:22:10.381Z",
               "updatedAt": "2026-10-06T10:15:00.000Z",
-              "receiptUrl": null,
+              "receiptUrl": "https://app.abacatepay.com/receipt/...",
               "metadata": {
                 "faturaId": "fatura-456"
               }

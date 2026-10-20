@@ -90,6 +90,10 @@ Use `interest` e `fine` para configurar juros por atraso e multa caso o cliente 
 Use `card.maxInstallments` (1–12) para permitir que o cliente parcele no cartão. O valor mínimo por parcela é R$ 10,00. Veja a [doc completa de parcelamento](/pages/payment/installments).
 </Tip>
 
+<Tip title="Repasse da taxa do cartão" horizontal>
+Use `card.passFeesToCustomer: true` para o cliente pagar a taxa do cartão e você receber o preço cheio. O acréscimo pago vem em `customerFee`. Veja [como funciona](/pages/payment/installments#repassar-a-taxa-ao-cliente).
+</Tip>
+
 <Tip title="Use a url retornada" horizontal>
 Redirecione o cliente para `data.url` — é lá que ele finaliza o pagamento.
 </Tip>
