@@ -59,9 +59,21 @@ O `POST /subscriptions/create` usa os mesmos parâmetros do Checkout:
 | `returnUrl`            | Não         | URL de retorno ao clicar em "Voltar" |
 | `completionUrl`        | Não         | URL após pagamento concluído |
 | `metadata`             | Não         | Metadados livres |
-| `coupons`              | Não         | Lista de cupons |
+| `coupons`              | Não         | Lista de cupons. Só vale em assinatura só no cartão e sem período de teste (veja abaixo) |
 | `methods`              | Não         | Lista de métodos (`PIX`, `CARD`). Padrão: `["CARD"]` para assinaturas |
 | `retryPolicy`          | Não         | Política de retentativa em caso de falha de cobrança (veja abaixo) |
+
+### Cupons em assinatura
+
+O cupom só vale quando a assinatura é cobrada **só no cartão** (`methods: ["CARD"]`) e o produto **não tem período de teste**:
+
+| Checkout de assinatura | Cupom |
+|---|---|
+| Só cartão, sem `trialDays` | O cliente vê o campo de cupom e o desconto vale |
+| Com `PIX` (Pix Automático) | O campo some e o cupom é recusado: o mandato do Pix Automático fixa o valor |
+| Produto com `trialDays` | O campo some e o cupom é recusado |
+
+A criação pela API aceita `coupons` em qualquer caso; a regra vale na hora do pagamento.
 
 ### retryPolicy
 
