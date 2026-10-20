@@ -36,6 +36,16 @@ Veja [Cupons](/pages/coupons/reference).
 </Update>
 
 <Update label="20 de Out, 2026">
+## Correções em clientes, saques e checkouts
+
+- `POST /v2/customers/create` passa a gravar `metadata` e `address`, que antes eram descartados. Os valores de `metadata` precisam ser texto: número ou objeto responde `422`.
+- `GET /v2/payouts/list` e `GET /v2/pix/list` listam só saques e PIX enviados. Antes, traziam também pagamentos recebidos e reembolsos.
+- `interest` e `fine` vêm `null` quando não foram configurados, nos checkouts e no boleto transparente. Antes, vinham `{}`.
+
+Veja [Criar um cliente](/pages/client/create).
+</Update>
+
+<Update label="20 de Out, 2026">
 ## Comprovante preenchido no transparente e nos webhooks
 
 O `receiptUrl` vinha sempre `null` em alguns lugares. Agora traz o link do comprovante em:

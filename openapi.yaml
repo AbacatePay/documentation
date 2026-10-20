@@ -74,12 +74,53 @@ paths:
                   example: 01310-100
                   x-mint:
                     hidden: true
+                address:
+                  type: object
+                  description: >-
+                    Endereço completo do cliente (opcional). Se enviado, todos os
+                    campos menos `complement` são obrigatórios.
+                  required:
+                    - zipCode
+                    - street
+                    - number
+                    - neighborhood
+                    - city
+                    - state
+                  properties:
+                    zipCode:
+                      type: string
+                      example: 01310-100
+                    street:
+                      type: string
+                      example: Avenida Paulista
+                    number:
+                      type: string
+                      example: '1000'
+                    neighborhood:
+                      type: string
+                      example: Bela Vista
+                    city:
+                      type: string
+                      example: São Paulo
+                    state:
+                      type: string
+                      description: UF com 2 letras.
+                      minLength: 2
+                      maxLength: 2
+                      example: SP
+                    complement:
+                      type: string
+                      example: Sala 12
+                  x-mint:
+                    hidden: true
                 metadata:
                   type: object
                   description: >-
                     Metadados adicionais do cliente. Campo livre para a sua
-                    aplicação (opcional)
-                  additionalProperties: true
+                    aplicação (opcional). Os valores precisam ser texto: número
+                    ou objeto responde `422`.
+                  additionalProperties:
+                    type: string
                   example:
                     source: landing-page
                     campaign: black-friday-2025
@@ -5171,10 +5212,37 @@ components:
           type: string
           description: CEP do cliente
           example: 01310-100
+        address:
+          type: object
+          nullable: true
+          description: Endereço do cliente. `null` quando não foi informado.
+          properties:
+            zipCode:
+              type: string
+              example: 01310-100
+            street:
+              type: string
+              example: Avenida Paulista
+            number:
+              type: string
+              example: '1000'
+            neighborhood:
+              type: string
+              example: Bela Vista
+            city:
+              type: string
+              example: São Paulo
+            state:
+              type: string
+              example: SP
+            complement:
+              type: string
+              example: Sala 12
         metadata:
           type: object
           description: Metadados adicionais do cliente
-          additionalProperties: true
+          additionalProperties:
+            type: string
           example:
             source: landing-page
             campaign: black-friday-2025
