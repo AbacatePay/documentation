@@ -12,6 +12,18 @@ Feedbacks também são bem-vindos no nosso Discord (#dev).
 ## Atualizações Recentes
 
 <Update label="20 de Out, 2026">
+## Cupom em assinatura: só no cartão
+
+Cupom em assinatura vale só quando ela é cobrada só no cartão e o produto não tem período de teste.
+
+- Com `PIX` (Pix Automático), o campo de cupom some do checkout e o cupom é recusado, porque o mandato fixa o valor.
+- Com `trialDays`, também não há cupom.
+- A criação pela API continua aceitando `coupons`; a regra vale na hora do pagamento.
+
+Veja [Cupons em assinatura](/pages/subscriptions/reference#cupons-em-assinatura).
+</Update>
+
+<Update label="20 de Out, 2026">
 ## Upsell identificado no webhook
 
 O `checkout.completed` do pagamento de um upsell agora se distingue do da compra:
@@ -51,7 +63,7 @@ Veja [Cupons](/pages/coupons/reference).
 <Update label="20 de Out, 2026">
 ## Correções em clientes, saques e checkouts
 
-- `POST /v2/customers/create` passa a gravar `metadata` e `address`, que antes eram descartados. Os valores de `metadata` precisam ser texto: número ou objeto responde `422`.
+- `POST /v2/customers/create` passa a gravar `metadata` e `address`, que antes eram descartados. Os valores de `metadata` precisam ser texto: número ou objeto é recusado.
 - `GET /v2/payouts/list` e `GET /v2/pix/list` listam só saques e PIX enviados. Antes, traziam também pagamentos recebidos e reembolsos.
 - `interest` e `fine` vêm `null` quando não foram configurados, nos checkouts e no boleto transparente. Antes, vinham `{}`.
 

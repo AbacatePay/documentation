@@ -86,7 +86,7 @@ Notas importantes:
 
 ## Assinaturas
 
-- [Referência de Assinaturas](https://docs.abacatepay.com/pages/subscriptions/reference): Cobranças recorrentes. Exige produto com `cycle` definido. Checkout aceita apenas 1 item. Métodos padrão: ["CARD"]. Ciclos: WEEKLY, MONTHLY, QUARTERLY, SEMIANNUALLY, ANNUALLY. Status da assinatura: PENDING, ACTIVE, CANCELLED.
+- [Referência de Assinaturas](https://docs.abacatepay.com/pages/subscriptions/reference): Cobranças recorrentes. Exige produto com `cycle` definido. Checkout aceita apenas 1 item. Métodos padrão: ["CARD"]. Ciclos: WEEKLY, MONTHLY, QUARTERLY, SEMIANNUALLY, ANNUALLY. Status da assinatura: PENDING, ACTIVE, CANCELLED. Cupom só vale em assinatura só no cartão e sem trial; com PIX (Pix Automático) ou trialDays é recusado.
 - [POST /subscriptions/create](https://docs.abacatepay.com/pages/subscriptions/create): Cria um Checkout de assinatura. Mesmos parâmetros do Checkout; `items` com exatamente 1 produto com cycle definido.
 - [GET /subscriptions/list](https://docs.abacatepay.com/pages/subscriptions/list): Lista as assinaturas.
 - [GET /subscriptions/get](https://docs.abacatepay.com/pages/subscriptions/get): Busca uma assinatura pelo ID.

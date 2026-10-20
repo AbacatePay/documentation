@@ -38,6 +38,10 @@ Redirecione o cliente para `data.url` para concluir o primeiro pagamento e ativa
 Assinaturas aceitam apenas **um produto por checkout**. O método padrão é `CARD`.
 </Note>
 
+<Note title="Cupons" horizontal>
+Cupom só vale em assinatura cobrada só no cartão e sem período de teste. Com `PIX` ou com `trialDays`, o campo de cupom não aparece no checkout. Veja [Cupons em assinatura](/pages/subscriptions/reference#cupons-em-assinatura).
+</Note>
+
 <Note title="Período de teste gratuito" horizontal>
 Se o produto referenciado tiver `trialDays` configurado, o checkout cobra **R$ 0,00** — apenas tokeniza o cartão. A primeira cobrança pelo valor integral ocorre automaticamente ao final do trial. Consulte a [referência de assinaturas](/pages/subscriptions/reference#período-de-teste-gratuito-free-trial) para mais detalhes.
 </Note>

@@ -118,7 +118,7 @@ paths:
                   description: >-
                     Metadados adicionais do cliente. Campo livre para a sua
                     aplicação (opcional). Os valores precisam ser texto: número
-                    ou objeto responde `422`.
+                    ou objeto é recusado.
                   additionalProperties:
                     type: string
                   example:
