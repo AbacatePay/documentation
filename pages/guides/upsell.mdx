@@ -84,25 +84,24 @@ POST /v2/checkouts/create
 }
 ```
 
-<Warning>
-  Não envie `completionUrl` num checkout com upsell. Com ela, a tela de sucesso leva o cliente para a sua página em 5 segundos, e a oferta some junto.
-</Warning>
+<Note>
+  Com `completionUrl`, a tela de sucesso só leva o cliente para a sua página quando ele toca em **Continuar**, para dar tempo de ver a oferta. Sem upsell, o redirecionamento acontece sozinho em 5 segundos.
+</Note>
 
 ---
 
 ## Passo 3: trate o segundo `checkout.completed`
 
-Quando o upsell é pago, chega outro `checkout.completed` com o **mesmo `checkout.id`** da compra. É assim que você sabe que o cliente levou a oferta:
+Quando o upsell é pago, chega outro `checkout.completed` com o **mesmo `checkout.id`** da compra e `checkout.isUpSell: true`:
 
 | Campo | Evento da compra | Evento do upsell |
 |---|---|---|
 | `id` do evento | `log_...` | Outro `log_...` |
 | `checkout.id` | `bill_abc123xyz` | `bill_abc123xyz`, o mesmo |
+| `checkout.isUpSell` | `false` | `true` |
 | `checkout.amount` | Valor da compra | Preço do produto de upsell |
-| `checkout.items` | Itens da compra | Os mesmos itens da compra |
-| `checkout.upSellProductId` | `prod_...` | `prod_...` |
-
-O produto de upsell não aparece em `items`: use `upSellProductId` para saber o que liberar.
+| `checkout.items` | Itens da compra | Só o produto de upsell |
+| `checkout.paidAmount` | Valor da compra | Compra + upsell |
 
 ```js Node.js
 app.post('/webhooks/abacatepay', async (req, res) => {
@@ -115,10 +114,10 @@ app.post('/webhooks/abacatepay', async (req, res) => {
   const { checkout } = event.data
   const pedido = await buscarPedidoPorCheckout(checkout.id)
 
-  if (!pedido.pago) {
-    await liberarCompra(pedido) // 1º evento: a compra
-  } else if (checkout.upSellProductId) {
-    await liberarProduto(pedido, checkout.upSellProductId) // 2º evento: o upsell
+  if (checkout.isUpSell) {
+    await liberarProdutos(pedido, checkout.items) // o produto de upsell
+  } else {
+    await liberarCompra(pedido)
   }
 
   await marcarProcessado(event.id)

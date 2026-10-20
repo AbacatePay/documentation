@@ -12,6 +12,19 @@ Feedbacks também são bem-vindos no nosso Discord (#dev).
 ## Atualizações Recentes
 
 <Update label="20 de Out, 2026">
+## Upsell identificado no webhook
+
+O `checkout.completed` do pagamento de um upsell agora se distingue do da compra:
+
+- `isUpSell: true` no evento do upsell (`false` nos demais).
+- `items` traz só o produto de upsell, em vez de repetir os itens da compra.
+- `paidAmount` soma a compra e o upsell. Antes, ficava só com o preço do upsell.
+- Com `completionUrl`, a tela de sucesso espera o cliente tocar em **Continuar** enquanto a oferta estiver aberta.
+
+Veja o guia [Oferecer um upsell depois do pagamento](/pages/guides/upsell).
+</Update>
+
+<Update label="20 de Out, 2026">
 ## Cartão: repasse da taxa ao cliente
 
 Novo campo `card.passFeesToCustomer` em `POST /v2/checkouts/create` e `POST /v2/payment-links/create`: o cliente paga a taxa do cartão e você recebe o preço cheio.

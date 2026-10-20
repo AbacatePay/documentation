@@ -414,6 +414,16 @@ icon: 'cart-shopping'
   </Tab>
 </Tabs>
 
+## Upsell
+
+Quando o cliente aceita o [upsell](/pages/guides/upsell) e paga, chega um segundo `checkout.completed` com o mesmo `checkout.id` da compra e:
+
+- `isUpSell: true` (nos demais eventos, `false`);
+- `items` só com o produto de upsell;
+- `amount` com o preço do upsell e `paidAmount` com a soma da compra e do upsell.
+
+Trate duplicidade pelo `id` do evento, não pelo `checkout.id`, ou o upsell é descartado como repetição.
+
 ## Cartão com repasse de taxa
 
 Quando o checkout foi criado com [`card.passFeesToCustomer: true`](/pages/payment/installments#repassar-a-taxa-ao-cliente), o `checkout.completed` de um pagamento no cartão traz:
