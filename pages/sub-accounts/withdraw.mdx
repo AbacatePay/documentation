@@ -37,6 +37,8 @@ O `amount` sai do saldo da subconta, e o titular recebe `amount` menos `platform
 | `COMPLETE`   | PIX criado e enviado |
 | `FAILED`     | O envio falhou; o valor volta para o saldo da subconta |
 
+O resultado do envio chega pelos webhooks [`transfer.completed` e `transfer.failed`](/pages/webhooks/events/transfers), com o mesmo `id` e `externalId` da resposta do saque.
+
 **Limites:**
 - A taxa e os limites diários e noturnos de saque são os da sua conta, e os saques das subcontas contam no mesmo limite diário
 - Cada subconta pode fazer um saque a cada 30 segundos. Subcontas diferentes podem sacar em sequência

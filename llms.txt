@@ -117,7 +117,7 @@ Notas importantes:
 - [POST /sub-accounts/create](https://docs.abacatepay.com/pages/sub-accounts/create): Cria uma subconta. Obrigatórios: `name` e `taxId` (CPF ou CNPJ); opcionais `externalId` e `metadata`. Idempotente pelo `taxId`: devolve a existente. Retorna `id` (`sacc_...`) e `balance` (`available`, `blocked`).
 - [GET /sub-accounts/get](https://docs.abacatepay.com/pages/sub-accounts/get): Busca uma subconta pelo `id`, com o saldo atual.
 - [GET /sub-accounts/list](https://docs.abacatepay.com/pages/sub-accounts/list): Lista as subcontas com o saldo; filtros `taxId` e `externalId`.
-- [POST /sub-accounts/withdraw](https://docs.abacatepay.com/pages/sub-accounts/withdraw): Saca da subconta para a chave CPF/CNPJ do titular. Obrigatórios: `id`, `amount` (mínimo 100) e `externalId`. A taxa sai do `amount`; taxa e limites de saque são os da loja; um saque a cada 30 segundos por subconta.
+- [POST /sub-accounts/withdraw](https://docs.abacatepay.com/pages/sub-accounts/withdraw): Saca da subconta para a chave CPF/CNPJ do titular. Obrigatórios: `id`, `amount` (mínimo 100) e `externalId`. A taxa sai do `amount`; taxa e limites de saque são os da loja; um saque a cada 30 segundos por subconta. O resultado chega nos webhooks `transfer.completed` e `transfer.failed`.
 
 ## Loja
 
