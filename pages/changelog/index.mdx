@@ -11,6 +11,19 @@ Feedbacks também são bem-vindos no nosso Discord (#dev).
 
 ## Atualizações Recentes
 
+<Update label="26 de Out, 2026">
+## Subcontas e split no PIX
+
+Marketplaces agora podem separar o saldo de cada vendedor dentro da própria conta.
+
+- `POST /v2/sub-accounts/create` cadastra o vendedor pelo CPF ou CNPJ. `GET /v2/sub-accounts/get` e `GET /v2/sub-accounts/list` trazem o saldo de cada subconta.
+- Novo campo `data.splits` em `POST /v2/transparents/create` com `method: "PIX"`: quando o PIX é pago, cada parte vai para a subconta indicada.
+- `POST /v2/sub-accounts/withdraw` saca o saldo da subconta por PIX, sempre para a chave CPF/CNPJ do titular.
+- Novas permissões `SUB_ACCOUNT:CREATE`, `SUB_ACCOUNT:READ` e `SUB_ACCOUNT:WITHDRAW`.
+
+O recurso precisa ser habilitado pelo suporte. Veja [Subcontas](/pages/sub-accounts/reference).
+</Update>
+
 <Update label="20 de Out, 2026">
 ## Cupom em assinatura: só no cartão
 

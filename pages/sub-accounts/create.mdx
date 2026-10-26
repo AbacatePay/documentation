@@ -1,0 +1,41 @@
+---
+title: Criar subconta
+openapi: 'POST /sub-accounts/create'
+---
+
+Cadastra um vendedor como subconta da sua loja.
+
+<Card horizontal>
+  Requer a permissão `SUB_ACCOUNT:CREATE`.
+</Card>
+
+**Formato aceito pela API:**
+```json
+{
+  "name": "João da Silva",
+  "taxId": "111.444.777-35",
+  "externalId": "vendedor-42",
+  "metadata": {
+    "loja": "centro"
+  }
+}
+```
+
+| Campo | Tipo | Descrição |
+|---|---|---|
+| `name` | `string` | Nome do titular, até 100 caracteres. Obrigatório |
+| `taxId` | `string` | CPF ou CNPJ do titular, com ou sem máscara. Obrigatório |
+| `externalId` | `string` | ID no seu sistema, até 100 caracteres. Opcional |
+| `metadata` | `object` | Campos livres; todos os valores precisam ser texto. Opcional |
+
+<Note>
+  A criação é idempotente pelo CPF/CNPJ: se já existe uma subconta com o mesmo `taxId`, a API devolve essa subconta, com o saldo atual, e ignora os outros campos.
+</Note>
+
+**Erros comuns:**
+
+| `error` | Motivo |
+|---|---|
+| `CPF ou CNPJ inválido` | O `taxId` não é um CPF nem um CNPJ válido |
+| `externalId já usado por outra subconta` | Outra subconta da loja já tem esse `externalId` |
+| `Função não habilitada` | As subcontas não estão habilitadas na sua conta |

@@ -254,6 +254,10 @@
                 "pages": ["pages/pix/reference", "pages/pix/create", "pages/pix/get", "pages/pix/list"]
               },
               {
+                "group": "Subcontas",
+                "pages": ["pages/sub-accounts/reference", "pages/sub-accounts/create", "pages/sub-accounts/get", "pages/sub-accounts/list", "pages/sub-accounts/withdraw"]
+              },
+              {
                 "group": "Extrato",
                 "pages": ["pages/bank-statement/reference", "pages/bank-statement/list"]
               },

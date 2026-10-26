@@ -1,0 +1,78 @@
+---
+title: "Referência"
+description: "Saldo separado por vendedor, com split no PIX e saque para o titular"
+icon: "book-open-cover"
+---
+
+Com **subcontas** você guarda, dentro da sua conta, um saldo separado para cada vendedor do seu marketplace. Cada subconta é identificada pelo CPF ou CNPJ do vendedor. Ela recebe partes dos seus PIX (o **split**) e saca por PIX para a chave CPF/CNPJ do próprio titular.
+
+<Note>
+  As subcontas precisam ser habilitadas na sua conta. Fale com o suporte para liberar o recurso. Sem ele, as rotas respondem `Função não habilitada`.
+</Note>
+
+## Como funciona
+
+1. **Cadastre o vendedor** com [Criar subconta](/pages/sub-accounts/create), informando nome e CPF/CNPJ.
+2. **Divida o pagamento** com o campo `splits` em [Criar cobrança PIX](/pages/transparents/create#dividir-com-subcontas). Quando o PIX é pago, cada parte vai para o saldo da subconta indicada, e o restante fica no seu saldo.
+3. **Pague o vendedor** com [Sacar da subconta](/pages/sub-accounts/withdraw). O PIX sai para a chave CPF/CNPJ igual ao `taxId` da subconta.
+
+O saldo das subcontas não entra no saldo da sua loja e não pode ser sacado por [Saques](/pages/payouts/create) nem por [Enviar PIX](/pages/pix/create). No [extrato](/pages/bank-statement/list) da loja, cada parte enviada aparece como uma saída **Split para subconta**.
+
+## Estrutura
+
+Exemplo de resposta de uma subconta:
+
+```json
+{
+  "data": {
+    "id": "sacc_9f8Kq2LmX4vTzR7pWn3bYc1H",
+    "name": "João da Silva",
+    "taxId": "11144477735",
+    "externalId": "vendedor-42",
+    "balance": {
+      "available": 7000,
+      "blocked": 0
+    },
+    "devMode": false,
+    "metadata": {
+      "loja": "centro"
+    },
+    "createdAt": "2026-10-26T14:22:10.381Z",
+    "updatedAt": "2026-10-26T14:22:10.381Z"
+  },
+  "success": true,
+  "error": null
+}
+```
+
+## Atributos
+
+| Atributo     | Tipo    | Descrição |
+| ------------ | ------- | --------- |
+| `id`         | string  | ID único da subconta, com prefixo `sacc_` |
+| `name`       | string  | Nome do titular |
+| `taxId`      | string  | CPF ou CNPJ do titular, só dígitos |
+| `externalId` | string \| null | ID no seu sistema |
+| `balance.available` | number | Saldo disponível para saque, em centavos |
+| `balance.blocked` | number | Saldo retido, em centavos |
+| `devMode`    | boolean | `true` se criada em sandbox |
+| `metadata`   | object  | Campos livres que você enviou na criação |
+| `createdAt`  | string  | Data/hora de criação (ISO 8601) |
+| `updatedAt`  | string  | Data/hora da última atualização |
+
+## Regras
+
+- **Um titular, uma subconta:** criar de novo com o mesmo CPF/CNPJ devolve a subconta que já existe, com o saldo atual.
+- **Split:** só no PIX do checkout transparente, com até 10 subcontas por cobrança. A soma das partes cabe no valor da cobrança menos a taxa. O crédito acontece quando o PIX é pago.
+- **Saque:** sempre para a chave PIX CPF/CNPJ do titular. A taxa e os limites diários e noturnos de saque são os da sua conta, e os saques das subcontas contam no mesmo limite diário. Cada subconta pode fazer um saque a cada 30 segundos.
+- **Disponibilidade:** depende do provedor de PIX da sua conta. Se ele não suportar subcontas, a criação responde com erro.
+
+## Permissões
+
+| Permissão | Rotas |
+| --------- | ----- |
+| `SUB_ACCOUNT:CREATE` | `POST /sub-accounts/create` |
+| `SUB_ACCOUNT:READ` | `GET /sub-accounts/get`, `GET /sub-accounts/list` |
+| `SUB_ACCOUNT:WITHDRAW` | `POST /sub-accounts/withdraw` |
+
+Para criar cobranças com `splits`, a chave também precisa de `TRANSPARENT:CREATE`.

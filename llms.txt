@@ -52,7 +52,7 @@ Notas importantes:
 - [POST /transparents/create (Cartão)](https://docs.abacatepay.com/pages/transparents/card): Cria uma cobrança de cartão. Obrigatórios: `method` como `"CARD"`, `data.amount`, `data.customer` (`name`, `email`, `taxId`, `cellphone`) e `data.token` (`ctok_`) ou `data.cardToken`. Opcionais: `installmentCount` (1 a 12, mínimo R$ 10,00 por parcela) e `metadata` (valores só texto). Retorna `id` (`card_...`), `status`, `cardToken`, `brand`, `lastFour` e, no parcelado, `installmentCount`, `installmentAmount` e `installmentGroupId`. Erros de validação voltam com HTTP 422 e dizem o campo (ex.: `Property 'data.customer.cellphone' is missing`).
 - [Chave pública (publicKey)](https://docs.abacatepay.com/pages/transparents/public-key): A chave `pk_...` identifica a loja no abacatepay.js; pode ficar no navegador e não cria cobranças. Fica em Integração → Checkout próprio no dashboard; há uma chave de teste e uma de produção.
 - [abacatepay.js](https://docs.abacatepay.com/pages/transparents/abacatepay-js): Referência do script do formulário de cartão: opções do `AbacatePay.create`, `mount`, `tokenize`, `destroy`, `onCardChange`, códigos de erro, 3DS e exemplo em React.
-- [POST /transparents/create (PIX)](https://docs.abacatepay.com/pages/transparents/create): Cria uma cobrança PIX. Retorna `brCode` (copia-e-cola) e `brCodeBase64` (imagem PNG base64). Campo obrigatório: `data.amount` (em centavos, mínimo `100` = R$ 1,00) e `method` como `"PIX"`. Suporta `data.ensureSameTaxId` para exigir que o pagador tenha o mesmo CPF/CNPJ do `customer.taxId`.
+- [POST /transparents/create (PIX)](https://docs.abacatepay.com/pages/transparents/create): Cria uma cobrança PIX. Retorna `brCode` (copia-e-cola) e `brCodeBase64` (imagem PNG base64). Campo obrigatório: `data.amount` (em centavos, mínimo `100` = R$ 1,00) e `method` como `"PIX"`. Suporta `data.ensureSameTaxId` para exigir que o pagador tenha o mesmo CPF/CNPJ do `customer.taxId` e `data.splits` (até 10 `{ subAccountId, amount }`) para creditar partes do pagamento em subcontas quando o PIX é pago; a soma cabe no valor menos a taxa.
 - [POST /transparents/create (Boleto)](https://docs.abacatepay.com/pages/transparents/boleto): Cria uma cobrança via Boleto bancário. Retorna `barCode` (código de barras), `identificationNumber` (linha digitável), `url` do boleto para impressão e um PIX alternativo. Campos obrigatórios: `method` como `"BOLETO"`, `data.amount`, `data.customer.name` e `data.customer.taxId`. Suporta juros (`interest`) e multa (`fine`).
 - [GET /transparents/list](https://docs.abacatepay.com/pages/transparents/list): Lista as cobranças transparentes criadas.
 - [POST /transparents/simulate-payment](https://docs.abacatepay.com/pages/transparents/simulate-payment): Simula o pagamento de uma cobrança PIX em Dev Mode.
@@ -110,6 +110,14 @@ Notas importantes:
 - [POST /pix/send](https://docs.abacatepay.com/pages/pix/create): Envia um PIX para uma chave de terceiros. Obrigatórios: `amount` (mínimo 100), `pix` (`type` e `key`) e `externalId`. A taxa é descontada do `amount`: o destinatário recebe `amount` menos a taxa.
 - [GET /pix/get](https://docs.abacatepay.com/pages/pix/get): Busca uma transferência PIX pelo ID.
 - [GET /pix/list](https://docs.abacatepay.com/pages/pix/list): Lista as transferências PIX.
+
+## Subcontas (split para vendedores)
+
+- [Referência de Subcontas](https://docs.abacatepay.com/pages/sub-accounts/reference): Saldo separado por vendedor (CPF/CNPJ) dentro da conta da loja. Recebe partes de PIX via `data.splits` e saca por PIX só para a chave CPF/CNPJ do titular. O saldo das subcontas não entra no saldo da loja. Precisa ser habilitado pelo suporte; sem isso as rotas respondem `Função não habilitada`. Permissões `SUB_ACCOUNT:CREATE`, `SUB_ACCOUNT:READ` e `SUB_ACCOUNT:WITHDRAW`.
+- [POST /sub-accounts/create](https://docs.abacatepay.com/pages/sub-accounts/create): Cria uma subconta. Obrigatórios: `name` e `taxId` (CPF ou CNPJ); opcionais `externalId` e `metadata`. Idempotente pelo `taxId`: devolve a existente. Retorna `id` (`sacc_...`) e `balance` (`available`, `blocked`).
+- [GET /sub-accounts/get](https://docs.abacatepay.com/pages/sub-accounts/get): Busca uma subconta pelo `id`, com o saldo atual.
+- [GET /sub-accounts/list](https://docs.abacatepay.com/pages/sub-accounts/list): Lista as subcontas com o saldo; filtros `taxId` e `externalId`.
+- [POST /sub-accounts/withdraw](https://docs.abacatepay.com/pages/sub-accounts/withdraw): Saca da subconta para a chave CPF/CNPJ do titular. Obrigatórios: `id`, `amount` (mínimo 100) e `externalId`. A taxa sai do `amount`; taxa e limites de saque são os da loja; um saque a cada 30 segundos por subconta. O resultado chega nos webhooks `transfer.completed` e `transfer.failed`.
 
 ## Loja
 
