@@ -1,0 +1,12 @@
+---
+title: Buscar subconta
+openapi: 'GET /sub-accounts/get'
+---
+
+Busca uma subconta pelo ID, com o saldo atual.
+
+<Card horizontal>
+  Requer a permissão `SUB_ACCOUNT:READ`.
+</Card>
+
+Informe o ID `sacc_` no parâmetro `id`. Se a subconta não existe na sua loja, a API responde com o erro `Sub account not found`.

@@ -1,0 +1,53 @@
+---
+title: Sacar da subconta
+openapi: 'POST /sub-accounts/withdraw'
+---
+
+Saca o saldo de uma subconta por PIX para a chave CPF/CNPJ do titular.
+
+<Card horizontal>
+  Requer a permissão `SUB_ACCOUNT:WITHDRAW`.
+</Card>
+
+Não há campo de chave PIX: o destino é sempre a chave CPF/CNPJ igual ao `taxId` da subconta, o que garante que o dinheiro vai para o próprio vendedor. Ele precisa ter essa chave cadastrada no banco dele.
+
+**Formato aceito pela API:**
+```json
+{
+  "id": "sacc_9f8Kq2LmX4vTzR7pWn3bYc1H",
+  "amount": 7000,
+  "externalId": "repasse-vendedor-42-out",
+  "description": "Repasse de outubro"
+}
+```
+
+| Campo | Tipo | Descrição |
+|---|---|---|
+| `id` | `string` | ID da subconta (`sacc_`). Obrigatório |
+| `amount` | `integer` | Valor em centavos, mínimo `100` (R$ 1,00), com a taxa incluída. Obrigatório |
+| `externalId` | `string` | ID do saque no seu sistema, até 100 caracteres. Obrigatório |
+| `description` | `string` | Descrição do PIX, até 140 caracteres. Opcional |
+
+O `amount` sai do saldo da subconta, e o titular recebe `amount` menos `platformFee`. A resposta tem o mesmo formato de [Enviar PIX](/pages/pix/reference#estrutura), com o campo `subAccountId` a mais.
+
+**Valores de `status`:**
+
+| Valor        | Significado |
+| ------------ | ----------- |
+| `COMPLETE`   | PIX criado e enviado |
+| `FAILED`     | O envio falhou; o valor volta para o saldo da subconta |
+
+**Limites:**
+- A taxa e os limites diários e noturnos de saque são os da sua conta, e os saques das subcontas contam no mesmo limite diário
+- Cada subconta pode fazer um saque a cada 30 segundos. Subcontas diferentes podem sacar em sequência
+- Os saques das subcontas não aparecem em [Listar Saques](/pages/payouts/list) nem no extrato da loja
+
+**Erros comuns:**
+
+| `error` | Motivo |
+|---|---|
+| `Saldo insuficiente` | O `amount` passa do `balance.available` da subconta |
+| `Aguarde alguns segundos antes de solicitar outro saque` | A subconta fez um saque há menos de 30 segundos |
+| `Limite de saque diário atingido` | O saque passaria do limite diário da sua conta |
+| `Sub account not found` | O `id` não é de uma subconta da sua loja |
+| `Função não habilitada` | As subcontas ou os saques não estão habilitados na sua conta |

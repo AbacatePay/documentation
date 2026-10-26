@@ -2218,6 +2218,34 @@ paths:
                       additionalProperties: true
                       x-mint:
                         hidden: true
+                    splits:
+                      type: array
+                      minItems: 1
+                      maxItems: 10
+                      description: >-
+                        PIX — partes do pagamento creditadas nas suas subcontas
+                        quando o PIX é pago. A soma dos `amount` precisa caber
+                        no valor da cobrança menos a taxa, sem repetir a mesma
+                        subconta. Exige as subcontas habilitadas na conta.
+                      items:
+                        type: object
+                        required:
+                          - subAccountId
+                          - amount
+                        additionalProperties: false
+                        properties:
+                          subAccountId:
+                            type: string
+                            pattern: '^sacc_'
+                            description: ID da subconta que recebe a parte.
+                            example: sacc_9f8Kq2LmX4vTzR7pWn3bYc1H
+                          amount:
+                            type: integer
+                            minimum: 1
+                            description: Valor em centavos creditado na subconta.
+                            example: 7000
+                      x-mint:
+                        hidden: true
                     utm:
                       description: >-
                         Parâmetros opcionais de campanha (UTM). Objeto e campos internos
@@ -3104,6 +3132,299 @@ paths:
                     description: >-
                       Mensagem de erro descrevendo o motivo da falha na
                       autenticação.
+                    example: Token de autenticação inválido ou ausente.
+  /sub-accounts/create:
+    post:
+      summary: Criar subconta
+      description: >
+        Cadastra um vendedor como subconta da sua loja, identificado pelo CPF
+        ou CNPJ. Idempotente pelo `taxId`: se a subconta já existe, a API
+        devolve a existente, com o saldo atual.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - taxId
+              additionalProperties: false
+              example:
+                name: João da Silva
+                taxId: 111.444.777-35
+                externalId: vendedor-42
+              properties:
+                name:
+                  type: string
+                  minLength: 1
+                  maxLength: 100
+                  description: Nome do titular.
+                  example: João da Silva
+                taxId:
+                  type: string
+                  minLength: 11
+                  maxLength: 18
+                  description: CPF ou CNPJ do titular, com ou sem máscara.
+                  example: 111.444.777-35
+                externalId:
+                  type: string
+                  minLength: 1
+                  maxLength: 100
+                  description: >-
+                    Identificador da subconta no seu sistema. Não pode se
+                    repetir entre as subcontas da loja.
+                  example: vendedor-42
+                metadata:
+                  type: object
+                  description: Campos livres; todos os valores precisam ser texto.
+                  additionalProperties:
+                    type: string
+                  example:
+                    loja: centro
+      responses:
+        '200':
+          description: Subconta criada, ou a existente com o mesmo `taxId`.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/SubAccount'
+                  error:
+                    type: string
+                    nullable: true
+                    example: null
+                  success:
+                    $ref: '#/components/schemas/Success'
+        '401':
+          description: Não autorizado. Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Token de autenticação inválido ou ausente.
+  /sub-accounts/get:
+    get:
+      summary: Buscar subconta
+      description: Busca uma subconta pelo ID, com o saldo atual.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: query
+          description: ID da subconta.
+          required: true
+          schema:
+            type: string
+            example: sacc_9f8Kq2LmX4vTzR7pWn3bYc1H
+      responses:
+        '200':
+          description: Subconta encontrada.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/SubAccount'
+                  error:
+                    type: string
+                    nullable: true
+                    example: null
+                  success:
+                    $ref: '#/components/schemas/Success'
+        '401':
+          description: Não autorizado. Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Token de autenticação inválido ou ausente.
+  /sub-accounts/list:
+    get:
+      summary: Listar subcontas
+      description: >
+        Lista as subcontas da loja, das mais recentes para as mais antigas,
+        com o saldo de cada uma.
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/QueryAfter'
+        - $ref: '#/components/parameters/QueryBefore'
+        - $ref: '#/components/parameters/QueryLimit'
+        - $ref: '#/components/parameters/QueryStartDate'
+        - $ref: '#/components/parameters/QueryEndDate'
+        - name: taxId
+          in: query
+          description: Filtrar pelo CPF ou CNPJ do titular, com ou sem máscara.
+          required: false
+          schema:
+            type: string
+            example: '11144477735'
+        - name: externalId
+          in: query
+          description: Filtrar pelo identificador no seu sistema.
+          required: false
+          schema:
+            type: string
+            example: vendedor-42
+      responses:
+        '200':
+          description: Lista de subcontas.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SubAccount'
+                  success:
+                    $ref: '#/components/schemas/Success'
+                  error:
+                    type: string
+                    nullable: true
+                    example: null
+                  pagination:
+                    $ref: '#/components/schemas/PaginationCursor'
+        '401':
+          description: Não autorizado. Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Token de autenticação inválido ou ausente.
+  /sub-accounts/withdraw:
+    post:
+      summary: Sacar da subconta
+      description: >
+        Saca o saldo de uma subconta por PIX. O destino é sempre a chave
+        CPF/CNPJ igual ao `taxId` da subconta, por isso não há campo de chave.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - id
+                - amount
+                - externalId
+              additionalProperties: false
+              example:
+                id: sacc_9f8Kq2LmX4vTzR7pWn3bYc1H
+                amount: 7000
+                externalId: repasse-vendedor-42-out
+              properties:
+                id:
+                  type: string
+                  pattern: '^sacc_'
+                  description: ID da subconta.
+                  example: sacc_9f8Kq2LmX4vTzR7pWn3bYc1H
+                amount:
+                  type: integer
+                  minimum: 100
+                  description: >-
+                    Valor em centavos, mínimo `100` (R$ 1,00). Sai do saldo da
+                    subconta; a taxa (`platformFee`) é descontada desse valor.
+                  example: 7000
+                externalId:
+                  type: string
+                  minLength: 1
+                  maxLength: 100
+                  description: Identificador do saque no seu sistema.
+                  example: repasse-vendedor-42-out
+                description:
+                  type: string
+                  maxLength: 140
+                  description: Descrição do PIX.
+                  example: Repasse de outubro
+      responses:
+        '200':
+          description: Saque criado.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        description: Identificador único da transação.
+                        example: tran_abc123xyz
+                      subAccountId:
+                        type: string
+                        description: Subconta de onde o saque saiu.
+                        example: sacc_9f8Kq2LmX4vTzR7pWn3bYc1H
+                      status:
+                        type: string
+                        enum:
+                          - COMPLETE
+                          - FAILED
+                        description: >-
+                          `FAILED` quando o envio falha; o valor volta para o
+                          saldo da subconta.
+                        example: COMPLETE
+                      devMode:
+                        type: boolean
+                        example: false
+                      receiptUrl:
+                        type: string
+                        format: uri
+                        description: URL do comprovante.
+                        example: 'https://app.abacatepay.com/receipt/tran_abc123xyz'
+                      amount:
+                        type: number
+                        description: Valor do saque em centavos, com a taxa incluída.
+                        example: 7000
+                      platformFee:
+                        type: number
+                        description: Taxa em centavos, descontada do `amount`.
+                        example: 80
+                      externalId:
+                        type: string
+                        example: repasse-vendedor-42-out
+                      createdAt:
+                        type: string
+                        format: date-time
+                        example: '2026-10-26T14:22:10.381Z'
+                      updatedAt:
+                        type: string
+                        format: date-time
+                        example: '2026-10-26T14:22:10.381Z'
+                  error:
+                    type: string
+                    nullable: true
+                    example: null
+                  success:
+                    $ref: '#/components/schemas/Success'
+        '401':
+          description: Não autorizado. Falha na autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
                     example: Token de autenticação inválido ou ausente.
   /bank-statement/list:
     get:
@@ -6387,6 +6708,57 @@ components:
           format: date-time
           description: Data da última atualização do webhook
           example: '2025-01-01T00:00:00.000Z'
+    SubAccount:
+      type: object
+      description: Subconta de um vendedor, com o saldo atual.
+      properties:
+        id:
+          type: string
+          description: ID único da subconta.
+          example: sacc_9f8Kq2LmX4vTzR7pWn3bYc1H
+        name:
+          type: string
+          description: Nome do titular.
+          example: João da Silva
+        taxId:
+          type: string
+          description: CPF ou CNPJ do titular, só dígitos.
+          example: '11144477735'
+        externalId:
+          type: string
+          nullable: true
+          description: Identificador no seu sistema.
+          example: vendedor-42
+        balance:
+          type: object
+          description: Saldo da subconta em centavos.
+          properties:
+            available:
+              type: integer
+              description: Disponível para saque.
+              example: 7000
+            blocked:
+              type: integer
+              description: Retido.
+              example: 0
+        devMode:
+          type: boolean
+          description: Indica se a subconta foi criada em ambiente de testes.
+          example: false
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+          example:
+            loja: centro
+        createdAt:
+          type: string
+          format: date-time
+          example: '2026-10-26T14:22:10.381Z'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2026-10-26T14:22:10.381Z'
   securitySchemes:
     bearerAuth:
       type: http

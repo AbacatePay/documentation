@@ -59,6 +59,38 @@ Regras:
   Use essa trava em cobranças nominais (assinaturas, mensalidades, faturas) para evitar que o QR Code seja pago por terceiros.
 </Note>
 
+### Dividir com subcontas
+
+Com `data.splits`, parte do PIX vai para o saldo das suas [subcontas](/pages/sub-accounts/reference) quando o cliente paga. O restante fica no seu saldo.
+
+| Campo | Tipo | Descrição |
+|---|---|---|
+| `data.splits[].subAccountId` | `string` | ID da subconta (`sacc_`) que recebe a parte |
+| `data.splits[].amount` | `integer` | Valor em centavos creditado na subconta, mínimo `1` |
+
+Regras:
+
+- Exige as subcontas habilitadas na sua conta e a permissão `TRANSPARENT:CREATE`
+- Disponível apenas com `method: "PIX"`
+- De 1 a 10 subcontas por cobrança, sem repetir a mesma subconta
+- A soma dos `amount` cabe no valor da cobrança menos a taxa (`platformFee`). Senão, a API responde com `A soma dos splits passa do valor líquido da cobrança`
+- As partes só são creditadas quando o PIX é pago. Cobrança expirada ou cancelada não credita nada
+
+```json
+{
+  "method": "PIX",
+  "data": {
+    "amount": 10000,
+    "splits": [
+      { "subAccountId": "sacc_9f8Kq2LmX4vTzR7pWn3bYc1H", "amount": 7000 },
+      { "subAccountId": "sacc_2Hq7Lm9XpR4vTzK8sWn3bYc5", "amount": 1500 }
+    ]
+  }
+}
+```
+
+Nesse exemplo, depois do pagamento, uma subconta recebe R$ 70,00, a outra R$ 15,00, e o seu saldo recebe R$ 100,00 menos a taxa e menos as duas partes.
+
 ### `data.utm` — campanha / UTM (opcional)
 
 No corpo `data` com **`method`: `"PIX"`**, o objeto `utm` usa o mesmo esquema do **PIX QR Code v1 (`PixQrCodeV1`)**: objeto opcional; cada campo interno também é opcional (`string`).
