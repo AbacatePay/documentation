@@ -11,6 +11,18 @@ Feedbacks também são bem-vindos no nosso Discord (#dev).
 
 ## Atualizações Recentes
 
+<Update label="27 de Out, 2026">
+## Pix por chave fixa
+
+Receba Pix numa chave fixa da sua conta, sem gerar cobrança. O recurso é liberado conta a conta e funciona só em produção.
+
+- A chave fica em **Cobranças → Chave Pix** no dashboard, com a lista dos Pix recebidos.
+- Cada Pix recebido dispara o webhook v2 `pix_key.received`, com valor, taxa e pagador. O reembolso, feito pelo dashboard, dispara `pix_key.refunded`.
+- A taxa é a mesma do Pix por QR Code da conta.
+
+Veja [Receber Pix por chave fixa](/pages/guides/pix-chave-fixa).
+</Update>
+
 <Update label="20 de Out, 2026">
 ## Cupom em assinatura: só no cartão
 

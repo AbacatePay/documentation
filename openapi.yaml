@@ -6332,6 +6332,8 @@ components:
               - payout.failed
               - transfer.completed
               - transfer.failed
+              - pix_key.received
+              - pix_key.refunded
           example:
             - checkout.completed
             - subscription.renewed

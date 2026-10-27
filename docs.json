@@ -115,6 +115,12 @@
                 ]
               },
               {
+                "group": "Pix",
+                "pages": [
+                  "pages/guides/pix-chave-fixa"
+                ]
+              },
+              {
                 "group": "Ajuda",
                 "pages": [
                   "pages/faq/index",
@@ -141,7 +147,8 @@
                   "pages/webhooks/events/transparent",
                   "pages/webhooks/events/subscriptions",
                   "pages/webhooks/events/transfers",
-                  "pages/webhooks/events/payouts"
+                  "pages/webhooks/events/payouts",
+                  "pages/webhooks/events/pix-key"
                 ]
               }
             ]

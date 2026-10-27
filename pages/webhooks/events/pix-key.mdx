@@ -1,0 +1,94 @@
+---
+title: 'Pix por chave'
+description: 'Eventos disparados para Pix recebidos na chave fixa da conta.'
+icon: 'key'
+---
+
+Usados para notificar os **Pix recebidos na chave fixa** da sua conta, sem cobrança por trás. Veja o guia [Receber Pix por chave fixa](/pages/guides/pix-chave-fixa).
+
+<Info>
+  Esses eventos só podem ser cadastrados em contas com o Pix por chave liberado, e só existem em produção: webhooks criados em Dev mode não os recebem.
+</Info>
+
+<Tabs>
+  <Tab title="pix_key.received">
+    Disparado a cada Pix recebido na chave.
+
+    ```json
+    {
+      "id": "log_uRuGjMfQhP1nCPt5kuLBMWqn",
+      "event": "pix_key.received",
+      "apiVersion": 2,
+      "devMode": false,
+      "data": {
+        "pixKey": {
+          "id": "tran_64cYncueN5DNF24FQgGJUyqZ",
+          "amount": 100,
+          "fee": 80,
+          "status": "COMPLETE",
+          "endToEndId": "E18236120202610271332s06f8c6bb99",
+          "receiptUrl": "https://app.abacatepay.com/receipt/tran_64cYncueN5DNF24FQgGJUyqZ",
+          "createdAt": "2026-10-27T13:32:34.077Z"
+        },
+        "payer": {
+          "name": "Maria da Silva",
+          "taxId": "123.***.789-**",
+          "bank": { "ispb": "18236120", "name": "NU PAGAMENTOS - IP" }
+        }
+      }
+    }
+    ```
+  </Tab>
+
+  <Tab title="pix_key.refunded">
+    Disparado quando um Pix recebido na chave é reembolsado pelo dashboard. Tem o mesmo formato do `pix_key.received`, com `data.pixKey.status: "REFUNDED"` e o motivo em `data.reason`.
+
+    ```json
+    {
+      "id": "log_...",
+      "event": "pix_key.refunded",
+      "apiVersion": 2,
+      "devMode": false,
+      "data": {
+        "pixKey": {
+          "id": "tran_64cYncueN5DNF24FQgGJUyqZ",
+          "amount": 100,
+          "fee": 80,
+          "status": "REFUNDED",
+          "endToEndId": "E18236120202610271332s06f8c6bb99",
+          "receiptUrl": "https://app.abacatepay.com/receipt/tran_64cYncueN5DNF24FQgGJUyqZ",
+          "createdAt": "2026-10-27T13:32:34.077Z"
+        },
+        "payer": {
+          "name": "Maria da Silva",
+          "taxId": "123.***.789-**",
+          "bank": { "ispb": "18236120", "name": "NU PAGAMENTOS - IP" }
+        },
+        "reason": "..."
+      }
+    }
+    ```
+
+    **TODO:** confirmar o formato de `data.reason` (texto livre informado no reembolso?) para pôr um exemplo real.
+  </Tab>
+</Tabs>
+
+---
+
+## Campos
+
+| Campo | Tipo | Descrição |
+|-------|------|-----------|
+| `data.pixKey.id` | `string` | ID do Pix na AbacatePay (`tran_...`). O mesmo Pix nunca gera dois IDs: use como chave de idempotência. |
+| `data.pixKey.amount` | `number` | Valor recebido, em centavos. |
+| `data.pixKey.fee` | `number` | Taxa cobrada, em centavos. O líquido é `amount - fee`. A taxa nunca passa do valor recebido. |
+| `data.pixKey.status` | `string` | `COMPLETE` (recebido), `UNDER_DISPUTE` (em contestação MED) ou `REFUNDED` (reembolsado). |
+| `data.pixKey.endToEndId` | `string` | Identificador do Pix no SPI. Também é único por pagamento. |
+| `data.pixKey.receiptUrl` | `string` | Link do comprovante. |
+| `data.pixKey.createdAt` | `string` | Quando o Pix foi recebido (ISO 8601). |
+| `data.payer.name` | `string` | Nome do pagador. |
+| `data.payer.taxId` | `string` | CPF/CNPJ do pagador, mascarado por padrão. **TODO:** confirmar com o time se e como o lojista pede o documento completo. |
+| `data.payer.bank` | `object \| null` | ISPB (`ispb`) e nome (`name`) do banco do pagador, ou `null` quando não informado. |
+| `data.reason` | `string` | Só no `pix_key.refunded`: o motivo do reembolso. |
+
+Assinatura, retentativas e formato de entrega são os mesmos dos outros webhooks v2. Veja [Verificação e segurança](/pages/webhooks/security).
