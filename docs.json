@@ -347,6 +347,37 @@
             ]
           },
           {
+            "tab": "Vídeos",
+            "groups": [
+              {
+                "group": "Vídeos",
+                "pages": ["pages/videos/index"]
+              },
+              {
+                "group": "Para lojistas",
+                "pages": [
+                  "pages/videos/primeiro-pagamento",
+                  "pages/videos/checkout",
+                  "pages/videos/pix",
+                  "pages/videos/chave-pix",
+                  "pages/videos/assinaturas",
+                  "pages/videos/produtos",
+                  "pages/videos/cupons",
+                  "pages/videos/saques"
+                ]
+              },
+              {
+                "group": "Integração",
+                "pages": [
+                  "pages/videos/chaves-de-api",
+                  "pages/videos/dev-mode",
+                  "pages/videos/checkout-transparente",
+                  "pages/videos/webhooks"
+                ]
+              }
+            ]
+          },
+          {
             "tab": "Changelog",
             "pages": ["pages/changelog/index"]
           }
