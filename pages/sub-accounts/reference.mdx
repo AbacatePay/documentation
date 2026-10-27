@@ -62,7 +62,7 @@ Exemplo de resposta de uma subconta:
 
 ## Regras
 
-- **Um titular, uma subconta:** criar de novo com o mesmo CPF/CNPJ devolve a subconta que já existe, com o saldo atual.
+- **Um titular, uma subconta:** criar de novo com o mesmo CPF/CNPJ devolve a subconta que já existe, com o saldo atual. O CPF/CNPJ não pode ser o da sua loja.
 - **Split:** só no PIX do checkout transparente, com até 10 subcontas por cobrança. A soma das partes cabe no valor da cobrança menos a taxa. O crédito acontece quando o PIX é pago.
 - **Saque:** sempre para a chave PIX CPF/CNPJ do titular. A taxa e os limites diários e noturnos de saque são os da sua conta, e os saques das subcontas contam no mesmo limite diário. Cada subconta pode fazer um saque a cada 30 segundos.
 - **Disponibilidade:** depende do provedor de PIX da sua conta. Se ele não suportar subcontas, a criação responde com erro.
