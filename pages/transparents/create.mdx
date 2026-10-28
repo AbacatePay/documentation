@@ -3,11 +3,17 @@ title: Criar cobrança PIX
 openapi: 'POST /transparents/create'
 ---
 
+import { Video } from '/snippets/video.jsx'
+
 <Card horizontal>
   Requer a permissão `TRANSPARENT:CREATE`.
 </Card>
 
 Cria um checkout transparente via **PIX**. A API devolve o QR Code em imagem (`brCodeBase64`) e o código copia e cola (`brCode`) — o cliente nunca sai do seu site.
+
+<Video id="https://youtu.be/hwsKTG2M5M8" title="Cobrança PIX - AbacatePay" />
+
+O vídeo também está em [PIX](/pages/videos/pix).
 
 <Note>
   Para cobrar via Boleto, veja [Criar cobrança Boleto](/pages/transparents/boleto).

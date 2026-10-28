@@ -4,7 +4,13 @@ description: "Crie um checkout"
 icon: "book-open-cover"
 ---
 
+import { Video } from '/snippets/video.jsx'
+
 O **Checkout** é a página segura onde o cliente finaliza o pagamento. Você envia os itens; a API devolve uma URL para redirecionar.
+
+<Video id="https://youtu.be/a0szadN5rcQ" title="Checkout Cobranças - AbacatePay" />
+
+O vídeo também está em [Checkout](/pages/videos/checkout).
 
 ## Criar checkout
 
@@ -77,6 +83,12 @@ POST /checkouts/create
 <Tip title="Redirecione o cliente" icon="book" horizontal>
 Use a `url` retornada para levar o cliente ao checkout e concluir o pagamento.
 </Tip>
+
+## Comprovante
+
+<Video id="https://youtu.be/TwEArVdl-SE" title="Comprovante - AbacatePay" />
+
+Depois do pagamento, `receiptUrl` traz o link do comprovante. No dashboard, o botão **Ver comprovante** abre o mesmo recibo. O vídeo também está em [Comprovante](/pages/videos/comprovante).
 
 ## Pular as etapas de dados do cliente
 

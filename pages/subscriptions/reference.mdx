@@ -4,6 +4,8 @@ description: "Crie checkouts de assinatura e gerencie as existentes."
 icon: "book-open-cover"
 ---
 
+import { Video } from '/snippets/video.jsx'
+
 ## Modelo mental
 
 Uma assinatura na AbacatePay tem três fases distintas:
@@ -11,6 +13,10 @@ Uma assinatura na AbacatePay tem três fases distintas:
 ```
 Checkout (cliente paga) → Assinatura ACTIVE → Cobranças automáticas a cada ciclo
 ```
+
+<Video id="https://youtu.be/VmmYJforxc8" title="Assinaturas - AbacatePay" />
+
+O vídeo também está em [Assinaturas](/pages/videos/assinaturas).
 
 O `POST /subscriptions/create` **não cria uma assinatura diretamente** — ele cria um checkout de assinatura. A assinatura em si (com `id: subs_...`) só existe após o cliente concluir o pagamento. Esse detalhe muda como você lida com os webhooks: ouça `subscription.completed` para confirmar que a assinatura está ativa, não apenas que o checkout foi criado.
 
