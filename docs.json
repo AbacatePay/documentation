@@ -356,7 +356,6 @@
               {
                 "group": "Para lojistas",
                 "pages": [
-                  "pages/videos/primeiro-pagamento",
                   "pages/videos/checkout",
                   "pages/videos/link-de-pagamento",
                   "pages/videos/pix",
