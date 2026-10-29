@@ -127,7 +127,7 @@ POST /checkouts/create
 }
 ```
 
-- Em cada opção, de 1x até `maxInstallments`, o cliente paga o menor valor que, descontada a sua taxa, cobre o preço. Exemplo com uma taxa de 4% + R$ 0,60: num produto de R$ 100,00, o cliente paga R$ 104,79 e você recebe R$ 100,00.
+- Em cada opção, de 1x até `maxInstallments`, o cliente paga o menor valor que, descontada a sua taxa, cobre o preço. Exemplo com uma taxa de 5,42% + R$ 0,60, a do cartão à vista recebendo em D+1 (no seu caso, vale a taxa da sua conta): num produto de R$ 100,00, o cliente paga R$ 106,36 e você recebe R$ 100,00.
 - O acréscimo muda com o número de parcelas, porque a taxa muda. O checkout mostra o total de cada opção antes do cliente pagar.
 - Só o cartão tem acréscimo. PIX, boleto, Apple Pay e Google Pay cobram o preço normal.
 - Com cupom, o acréscimo é calculado sobre o valor com desconto e o cartão sai à vista.
