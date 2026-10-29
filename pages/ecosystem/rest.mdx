@@ -1,16 +1,16 @@
 ---
-title: 'REST'
-description: 'REST client ergonômico, rápido e totalmente tipado para a API da AbacatePay.'
+title: 'Cliente HTTP'
+description: 'Cliente HTTP ergonômico, rápido e totalmente tipado para a API da AbacatePay.'
 icon: 'repeat'
 ---
 
 ## O que é o @abacatepay/rest?
 
-O [@abacatepay/rest](https://www.npmjs.com/package/@abacatepay/rest) é um **cliente REST leve, rápido e totalmente tipado** para consumir a API da AbacatePay diretamente, sem abstrações pesadas.
+O [@abacatepay/rest](https://www.npmjs.com/package/@abacatepay/rest) é um **cliente HTTP leve, rápido e totalmente tipado** para consumir a API da AbacatePay diretamente, sem abstrações pesadas.
 
 Ele foi projetado para **Node.js, Bun e runtimes modernos**, oferecendo controle total sobre as requisições, com **retries inteligentes**, **backoff automático**, **timeouts configuráveis** e **tratamento de erros consistente**.
 
-<Card title="Quando usar o REST Client?" icon="help-circle" horizontal>
+<Card title="Quando usar o cliente HTTP?" icon="help-circle" horizontal>
   * Você quer **controle total** sobre endpoints e payloads
   * Está criando **SDKs, CLIs ou ferramentas internas**
   * Prefere uma camada fina sobre HTTP em vez de abstrações de alto nível
@@ -80,7 +80,7 @@ await client.post('/coupons/delete', {
 });
 ```
 
-Sem abstrações, sem plugins, sem boilerplate, apenas **REST**.
+Sem abstrações, sem plugins, sem boilerplate, apenas **HTTP**.
 
 ## Performance & Design
 
@@ -111,7 +111,7 @@ O valor retornado deve ser **sempre** um objeto **Response**, caso o contrário,
 
 ## Retry & Backoff
 
-Por padrão, o REST Client faz 3 tentativas automáticas para erros retryable, como:
+Por padrão, o cliente faz 3 tentativas automáticas para erros retryable, como:
 
 - Rate limit (`429`)
 - Erros `5xx`
@@ -166,11 +166,11 @@ Você pode customizar completamente o comportamento do client:
 - Base URL (sandbox / production)
 - Hooks internos (request / response)
 
-<Card title="Flexível por design" icon="sliders"> O REST Client não impõe padrões — ele se adapta à sua arquitetura. </Card>
+<Card title="Flexível por design" icon="sliders"> O cliente HTTP não impõe padrões — ele se adapta à sua arquitetura. </Card>
 
-### REST Client vs SDKs
+### Cliente HTTP vs SDKs
 
-<CardGroup cols={2}> <Card title="REST Client" icon="sparkles" href="#"> Camada fina, controle total, ideal para libs, CLIs e integrações avançadas. </Card> <Card title="SDKs" icon="boxes-stacked" href="../sdks"> Abstrações de alto nível para integração rápida com menos código. </Card> </CardGroup>
+<CardGroup cols={2}> <Card title="Cliente HTTP" icon="sparkles" href="#"> Camada fina, controle total, ideal para libs, CLIs e integrações avançadas. </Card> <Card title="SDKs" icon="boxes-stacked" href="../sdks"> Abstrações de alto nível para integração rápida com menos código. </Card> </CardGroup>
 
 ### Próximos Passos
 
