@@ -73,7 +73,7 @@ Regras:
 - Exige as subcontas habilitadas na sua conta e a permissão `TRANSPARENT:CREATE`
 - Disponível apenas com `method: "PIX"`
 - De 1 a 10 subcontas por cobrança, sem repetir a mesma subconta
-- A soma dos `amount` cabe no valor da cobrança menos a taxa (`platformFee`). Senão, a API responde com `A soma dos splits passa do valor líquido da cobrança`
+- A soma dos `amount` cabe no valor da cobrança menos a taxa (`platformFee`), respeitando a tarifa mínima de PIX por cobrança. Senão, a API responde com `A soma dos splits passa do valor líquido da cobrança`
 - As partes só são creditadas quando o PIX é pago. Cobrança expirada ou cancelada não credita nada
 
 ```json
@@ -175,7 +175,7 @@ Com `utm`:
     "devMode": false,
     "brCode": "00020160014BR.GOV.BCB.PIX070503***6304ABCD",
     "brCodeBase64": "data:image/png;base64,iVBORw0KG...",
-    "platformFee": 100,
+    "platformFee": 80,
     "receiptUrl": null,
     "createdAt": "2024-11-04T18:38:28.573Z",
     "updatedAt": "2024-11-04T18:38:28.573Z",

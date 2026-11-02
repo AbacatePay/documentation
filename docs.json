@@ -115,6 +115,12 @@
                 ]
               },
               {
+                "group": "Pix",
+                "pages": [
+                  "pages/guides/pix-chave-fixa"
+                ]
+              },
+              {
                 "group": "Ajuda",
                 "pages": [
                   "pages/faq/index",
@@ -141,7 +147,8 @@
                   "pages/webhooks/events/transparent",
                   "pages/webhooks/events/subscriptions",
                   "pages/webhooks/events/transfers",
-                  "pages/webhooks/events/payouts"
+                  "pages/webhooks/events/payouts",
+                  "pages/webhooks/events/pix-key"
                 ]
               }
             ]
@@ -339,6 +346,37 @@
                   "pages/ecosystem/eslint",
                   "pages/ecosystem/typebox",
                   "pages/ecosystem/zod"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Vídeos",
+            "groups": [
+              {
+                "group": "Vídeos",
+                "pages": ["pages/videos/index"]
+              },
+              {
+                "group": "Para lojistas",
+                "pages": [
+                  "pages/videos/primeiro-pagamento",
+                  "pages/videos/checkout",
+                  "pages/videos/pix",
+                  "pages/videos/chave-pix",
+                  "pages/videos/assinaturas",
+                  "pages/videos/produtos",
+                  "pages/videos/cupons",
+                  "pages/videos/saques"
+                ]
+              },
+              {
+                "group": "Integração",
+                "pages": [
+                  "pages/videos/chaves-de-api",
+                  "pages/videos/dev-mode",
+                  "pages/videos/checkout-transparente",
+                  "pages/videos/webhooks"
                 ]
               }
             ]

@@ -48,7 +48,7 @@ O resultado do envio chega pelos webhooks [`transfer.completed` e `transfer.fail
 
 | `error` | Motivo |
 |---|---|
-| `Saldo insuficiente` | O `amount` passa do `balance.available` da subconta |
+| `Saldo insuficiente` | O `amount` passa do `balance.available` da subconta, já descontado o débito de contestação em aberto da sua conta |
 | `Aguarde alguns segundos antes de solicitar outro saque` | A subconta fez um saque há menos de 30 segundos |
 | `Limite de saque diário atingido` | O saque passaria do limite diário da sua conta |
 | `Sub account not found` | O `id` não é de uma subconta da sua loja |

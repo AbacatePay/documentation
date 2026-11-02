@@ -6,12 +6,12 @@ icon: 'percent'
 
 Com o repasse, o cliente paga o preço do produto mais a taxa do cartão, e você recebe o preço cheio. Vale à vista e parcelado, no checkout e no link de pagamento.
 
-Exemplo com uma taxa de 4% + R$ 0,60 (no seu caso, vale a taxa da sua conta):
+Exemplo com uma taxa de 5,42% + R$ 0,60, a do cartão à vista recebendo em D+1 (no seu caso, vale a taxa da sua conta):
 
 | | Valor |
 |---|---|
 | Preço do produto | R$ 100,00 |
-| O cliente paga no cartão | R$ 104,79 |
+| O cliente paga no cartão | R$ 106,36 |
 | Você recebe | R$ 100,00 |
 
 ---
@@ -82,8 +82,8 @@ No `checkout.completed` de um pagamento no cartão:
   "data": {
     "checkout": {
       "id": "bill_abc123xyz",
-      "amount": 10479,
-      "customerFee": 479,
+      "amount": 10636,
+      "customerFee": 636,
       "card": { "maxInstallments": 12, "passFeesToCustomer": true },
       "status": "PAID",
       ...
@@ -123,7 +123,7 @@ No `GET /v2/checkouts/get`, o `amount` é o preço do produto e o acréscimo vem
     Não. O repasse é definido na criação. Crie um checkout novo com o campo.
   </Accordion>
   <Accordion title="E se eu reembolsar?">
-    O reembolso é integral: o cliente recebe de volta tudo o que pagou, com o acréscimo. Num produto de R$ 100,00 pago como R$ 104,79, voltam R$ 104,79 para o cliente e saem R$ 104,79 do seu saldo. A taxa do cartão não é devolvida, como em qualquer reembolso.
+    O reembolso é integral: o cliente recebe de volta tudo o que pagou, com o acréscimo. Num produto de R$ 100,00 pago como R$ 106,36, voltam R$ 106,36 para o cliente e saem R$ 106,36 do seu saldo. A taxa do cartão não é devolvida, como em qualquer reembolso.
   </Accordion>
 </AccordionGroup>
 

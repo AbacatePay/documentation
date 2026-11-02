@@ -131,7 +131,7 @@ Todo evento chega com o mesmo envelope: `id` (identificador da entrega, repetido
               "externalId": null,
               "amount": 30000,
               "paidAmount": null,
-              "platformFee": 296,
+              "platformFee": 811,
               "status": "APPROVED",
               "items": [],
               "methods": [],
@@ -573,6 +573,6 @@ Todo evento chega com o mesmo envelope: `id` (identificador da entrega, repetido
 ## Cartão: o que muda
 
 - **Status de pago é `APPROVED`.** Depois, quando a adquirente repassa o valor, a cobrança passa a `PAID` sem novo webhook.
-- **Uma venda, um evento.** Na venda parcelada chega um único `transparent.completed`, com o `id` da primeira parcela, `amount` com o total da venda e os campos `installmentCount`, `installmentAmount`, `installmentNumber` e `installmentGroupId`.
+- **Uma venda, um evento.** Na venda parcelada chega um único `transparent.completed`, com o `id` da primeira parcela, `amount` com o total da venda e os campos `installmentCount`, `installmentAmount`, `installmentNumber` e `installmentGroupId`. A taxa é calculada sobre a venda inteira e dividida entre as parcelas; o `platformFee` do evento é a parte da primeira parcela.
 - **Bandeira e final do cartão ficam em `payerInformation.CARD`** (`brand` e `number`).
 - **O `cardToken` não vem no webhook.** Guarde o que volta na resposta de [Criar cobrança Cartão](/pages/transparents/card) ou consulte com `GET /v2/transparents/get`.

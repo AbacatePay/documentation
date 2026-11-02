@@ -1,0 +1,144 @@
+---
+title: 'Receber Pix por chave fixa'
+description: 'Receba Pix numa chave fixa da sua conta, sem gerar cobrança, e automatize a baixa com webhook.'
+icon: 'key'
+---
+
+Com o Pix por chave fixa, seus clientes pagam numa chave Pix da sua conta AbacatePay, sem cobrança, QR Code ou boleto. Serve para quem tem clientes que só pagam "por chave" e quer automatizar a baixa desses recebimentos.
+
+- Todo Pix que cai na chave entra no seu saldo, com a mesma [taxa](/pages/concepts/taxas) do Pix por QR Code da sua conta.
+- A cada Pix recebido, a AbacatePay dispara o webhook `pix_key.received`, com o valor, a taxa e quem pagou (nome, CPF/CNPJ e banco).
+- Não existe cobrança por trás. O pagamento é identificado pelo próprio Pix (pagador e `endToEndId`), não por um ID de cobrança.
+
+---
+
+## Disponibilidade
+
+- O recurso é liberado conta a conta pela equipe AbacatePay, para contas elegíveis. Para usar, fale com o suporte pelo chat do dashboard ou em ajuda@abacatepay.com.
+- Funciona só em produção. Não existe Pix por chave no [Dev mode](/pages/devmode), e webhooks criados em Dev mode não recebem esses eventos.
+
+---
+
+## Passo 1: pegue a sua chave no dashboard
+
+Com o recurso liberado, a aba **Chave Pix** aparece em **Cobranças**.
+
+Clique em **Ver minha chave Pix**:
+
+<Frame>
+  <img src="/images/pix-chave-botao.png" alt="Botão Ver minha chave Pix em Cobranças" />
+</Frame>
+
+Copie a chave. É ela que você passa para os seus clientes.
+
+<Frame>
+  <img src="/images/pix-chave-modal.png" alt="Modal Sua chave Pix com a chave e o botão de copiar" />
+</Frame>
+
+---
+
+## Passo 2: acompanhe os Pix recebidos
+
+A aba **Chave Pix** lista cada Pix recebido na chave, com:
+
+- pagador (nome e CPF/CNPJ mascarado);
+- valor e data;
+- status: **Pago**, **Em disputa** ou **Reembolsado**;
+- ações: **Ver comprovante**, **Reembolsar** e **Copiar ID**.
+
+Dá para buscar por ID, nome ou CPF/CNPJ e filtrar por status.
+
+<Frame>
+  <img src="/images/pix-chave-lista.png" alt="Aba Chave Pix com a lista dos Pix recebidos" />
+</Frame>
+
+Os Pix recebidos na chave contam no faturamento do dashboard e aparecem no Extrato como venda no Pix.
+
+---
+
+## Passo 3: cadastre o webhook
+
+Em **Webhooks → Webhook v2** no dashboard, crie um webhook com os eventos:
+
+| Evento | Nome no dashboard | Quando é disparado |
+|---|---|---|
+| `pix_key.received` | Pix recebido na chave | Um Pix caiu na sua chave |
+| `pix_key.refunded` | Pix recebido na chave reembolsado | Um Pix recebido na chave foi reembolsado |
+
+<Frame>
+  <img src="/images/pix-chave-webhook.png" alt="Criação de webhook v2 com os eventos de Pix por chave" />
+</Frame>
+
+Esses eventos só aparecem, e só podem ser cadastrados, em contas com o recurso liberado. Nas demais, a API recusa o cadastro.
+
+Assinatura, retentativas e formato de entrega são os mesmos dos outros webhooks v2. Veja [Verificação e segurança](/pages/webhooks/security) e [Entrega e retentativas](/pages/webhooks#entrega-e-retentativas).
+
+---
+
+## Passo 4: dê baixa com o `pix_key.received`
+
+```json
+{
+  "id": "log_uRuGjMfQhP1nCPt5kuLBMWqn",
+  "event": "pix_key.received",
+  "apiVersion": 2,
+  "devMode": false,
+  "data": {
+    "pixKey": {
+      "id": "tran_64cYncueN5DNF24FQgGJUyqZ",
+      "amount": 100,
+      "fee": 80,
+      "status": "COMPLETE",
+      "endToEndId": "E18236120202610271332s06f8c6bb99",
+      "receiptUrl": "https://app.abacatepay.com/receipt/tran_64cYncueN5DNF24FQgGJUyqZ",
+      "createdAt": "2026-10-27T13:32:34.077Z"
+    },
+    "payer": {
+      "name": "Maria da Silva",
+      "taxId": "123.***.789-**",
+      "bank": { "ispb": "18236120", "name": "NU PAGAMENTOS - IP" }
+    }
+  }
+}
+```
+
+- `data.pixKey.amount`: o que o cliente pagou, em centavos.
+- `data.pixKey.fee`: a taxa, em centavos. Você recebe `amount - fee`.
+- `data.payer`: quem pagou. Use para saber de qual cliente é o Pix.
+- `data.pixKey.id`: o ID do Pix na AbacatePay. Guarde para não dar baixa duas vezes.
+
+Veja todos os campos em [Eventos de Pix por chave](/pages/webhooks/events/pix-key).
+
+---
+
+## Reembolso
+
+O reembolso é feito pelo dashboard: na aba **Chave Pix**, clique em **Reembolsar** no Pix.
+
+- O valor volta para quem pagou e o webhook `pix_key.refunded` é disparado.
+- O reembolso exige saldo disponível suficiente na conta.
+- Ainda não há endpoint da API para reembolsar um Pix por chave.
+
+---
+
+## Boas práticas
+
+<AccordionGroup>
+  <Accordion title="Como sei de qual cliente é o Pix?">
+    Como não há cobrança, a conciliação é pelo pagador (`payer.name` e `payer.taxId`) e pelo valor. Oriente seus clientes a pagar de uma conta no nome deles: um Pix feito da conta de outra pessoa chega com os dados dessa outra pessoa.
+  </Accordion>
+  <Accordion title="Como evito dar baixa duas vezes?">
+    O mesmo Pix nunca gera dois `data.pixKey.id` diferentes, mas o webhook pode ser reentregue. Antes de dar baixa, confira se aquele `data.pixKey.id` já foi processado para o mesmo evento.
+  </Accordion>
+  <Accordion title="E se o Pix for menor que a taxa?">
+    A taxa nunca passa do valor recebido. Um Pix menor que a taxa resulta em líquido zero, não em saldo negativo.
+  </Accordion>
+  <Accordion title="O pagador pode contestar o Pix?">
+    Sim, pelo MED. Enquanto a contestação está aberta, o status fica `UNDER_DISPUTE` (**Em disputa** no dashboard) e o valor fica bloqueado no seu saldo.
+
+    **TODO:** confirmar se há webhook na abertura e no encerramento da contestação.
+  </Accordion>
+  <Accordion title="Dá para testar no Dev mode?">
+    Não. O Pix por chave só existe em produção.
+  </Accordion>
+</AccordionGroup>
