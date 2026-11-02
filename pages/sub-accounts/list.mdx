@@ -1,0 +1,14 @@
+---
+title: Listar subcontas
+openapi: 'GET /sub-accounts/list'
+---
+
+Retorna as subcontas da sua loja, das mais recentes para as mais antigas, com o saldo de cada uma.
+
+<Card horizontal>
+  Requer a permissão `SUB_ACCOUNT:READ`.
+</Card>
+
+Use `limit`, `after` e `before` para paginar e `startDate`/`endDate` (`YYYY-MM-DD`) para filtrar por data de criação. Consulte [Paginação e filtro por data](/pages/reference/introduction#paginação-e-filtro-por-data).
+
+Para achar a subconta de um vendedor, filtre por `taxId` (CPF ou CNPJ, com ou sem máscara) ou por `externalId`. Cada item segue o formato da [Referência](/pages/sub-accounts/reference#estrutura).
