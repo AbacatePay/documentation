@@ -71,7 +71,8 @@
               {
                 "group": "Guias Rápidos",
                 "pages": [
-                  "pages/guides/primeiro-pagamento"
+                  "pages/guides/primeiro-pagamento",
+                  "pages/guides/shopify"
                 ]
               },
               {

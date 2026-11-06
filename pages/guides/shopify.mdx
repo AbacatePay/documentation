@@ -1,0 +1,159 @@
+---
+title: 'Checkout da AbacatePay na Shopify'
+description: 'Como instalar o checkout da AbacatePay na sua loja Shopify (passo a passo)'
+icon: 'shopify'
+---
+
+Com o plugin Shopify, o botão de finalizar compra da sua loja leva o cliente ao checkout da AbacatePay. O cliente informa os dados e paga com Pix ou cartão. Depois do pagamento, o pedido aparece pago em **Orders** na Shopify.
+
+<Tip>
+  Este guia **não exige código**. Você só copia e cola valores entre a Shopify e o dashboard da AbacatePay. Reserve uns 15 minutos.
+</Tip>
+
+---
+
+## Como funciona a integração
+
+- O checkout da AbacatePay **substitui o checkout da Shopify**. O script que você cola no tema leva o cliente direto do carrinho para a AbacatePay.
+- **Preços e estoque vêm da Shopify.** Na hora da compra, a AbacatePay consulta na Shopify o preço atual de cada produto do carrinho e se ele está disponível. O cliente não consegue mudar o preço pelo navegador.
+- **O pedido é criado na Shopify depois do pagamento.** Ele chega pago, com os produtos e o cliente. Com a opção **Atualizar estoque** ligada, o estoque dos produtos vendidos é baixado.
+- **Os botões de compra expressa ficam ocultos.** Botões como **Comprar agora**, Shop Pay e outras carteiras levariam o cliente ao checkout da Shopify, então o script os esconde.
+
+---
+
+## O que você vai precisar
+
+- Uma conta na AbacatePay ([criar conta grátis](https://app.abacatepay.com)). Para vender de verdade, sua conta precisa estar verificada, veja [Indo para produção](/pages/production).
+- Uma loja Shopify **em reais (BRL)**.
+- Acesso de dono da loja, ou de um colaborador que possa criar apps e editar o tema.
+
+<Warning>
+  Deixe a **Shopify e a AbacatePay logadas no mesmo navegador** durante a instalação. A instalação termina redirecionando de uma para a outra.
+</Warning>
+
+---
+
+## Passo a passo
+
+<Steps>
+  <Step title="Acesse o Dev Dashboard da Shopify">
+    1. No admin da Shopify, clique em **Configurações** (canto inferior esquerdo).
+    2. Abra **Apps** e clique em **Desenvolver apps**.
+    3. Escolha **Criar apps no Dev Dashboard**.
+
+    <Note>
+      Se a Shopify pedir, crie uma organização em **Shopify Partners**: informe o Brasil como local e os dados da sua empresa.
+    </Note>
+  </Step>
+
+  <Step title="Crie o app">
+    1. No Dev Dashboard, clique em **Criar app** e dê um nome, por exemplo **AbacatePay Checkout**.
+    2. Em **URLs**, preencha:
+       - **App URL**: `https://dash.abacatepay.com/shopify/app`
+       - **Redirect URLs**: `https://dash.abacatepay.com/shopify/oauth/callback`
+    3. Deixe **desmarcada** a opção **Embed app in Shopify admin**.
+    4. Em **Access**, cole no campo **Scopes**:
+
+    ```text
+    read_products,read_orders,write_orders,read_inventory,write_inventory,write_draft_orders
+    ```
+
+    5. Role até o final e clique em **Release**. Na janela de confirmação, clique em **Release** de novo.
+
+    <Warning>
+      Cole as URLs e os escopos **exatamente como estão aqui**. Se faltar um escopo, a instalação para com o aviso "Faltam os escopos …". Não altere nada nas seções **POS** e **App Proxy**.
+    </Warning>
+  </Step>
+
+  <Step title="Peça acesso aos dados do cliente">
+    No app, solicite o acesso a **Protected customer data** e marque **nome**, **e-mail** e **endereço**.
+
+    A AbacatePay usa esses dados para criar o pedido em nome do cliente e para conferir que o pedido foi criado.
+
+    <Warning>
+      Sem esse acesso, o pedido pode ser criado na Shopify sem que a AbacatePay consiga confirmar a criação.
+    </Warning>
+  </Step>
+
+  <Step title="Conecte a loja na AbacatePay">
+    1. No app do Dev Dashboard, abra **Configurações** e copie o **Client ID** e o **Client Secret**.
+    2. No dashboard da AbacatePay, acesse **Integração → Plugins → Shopify**.
+    3. Preencha:
+       - **URL da loja**: o domínio `sua-loja.myshopify.com`
+       - **Client ID** e **Client Secret** que você copiou
+       - **Métodos de pagamento**: Pix, Cartão de crédito ou os dois
+       - **Atualizar estoque**: ligado, cada pedido pago baixa na Shopify o estoque dos produtos vendidos. Desligue se você controla o estoque por outro sistema.
+    4. Clique em **Salvar**. O status muda para **Aguardando instalação do app na Shopify**.
+
+    <Warning>
+      A conexão vale para o modo em que você está no dashboard. Conecte a loja com o **Dev mode desligado** para vender de verdade: uma loja Shopify conectada fica presa àquela conta e àquele modo.
+    </Warning>
+
+    <Warning>
+      Use o domínio **`.myshopify.com`** gerado pela Shopify, que fica em **Configurações → Domínios**. O domínio próprio da sua loja (por exemplo, `minhaloja.com.br`) não funciona aqui.
+    </Warning>
+
+    <Note>
+      O **Client Secret** é a chave do seu app. Não compartilhe. Se trocar o Client ID depois, informe o Client Secret de novo.
+    </Note>
+  </Step>
+
+  <Step title="Instale o app na loja">
+    1. No Dev Dashboard, abra **Distribution** e escolha **Custom distribution**.
+    2. Informe o mesmo domínio `.myshopify.com` e gere o link de instalação.
+    3. Abra o link numa nova aba e clique em **Instalar**.
+
+    Ao aprovar, você volta para a página do plugin na AbacatePay com a mensagem **Loja conectada à AbacatePay**, e o status muda para **Loja conectada**.
+
+    <Note>
+      Salve a loja na AbacatePay (passo 4) **antes** de instalar. Se instalar antes, aparece o aviso "Esta loja ainda não está configurada no plugin". Basta salvar e abrir o link de instalação de novo.
+    </Note>
+  </Step>
+
+  <Step title="Adicione o checkout ao tema">
+    1. No admin da Shopify, acesse **Loja virtual → Temas**, clique em **⋯** no tema publicado e depois em **Editar código**.
+    2. Abra o arquivo `layout/theme.liquid`.
+    3. Cole esta linha logo antes de `</body>` e clique em **Salvar**:
+
+    ```html
+    <script src="https://dash.abacatepay.com/shopify/storefront.js?shop={{ shop.permanent_domain }}" defer></script>
+    ```
+
+    A mesma linha aparece pronta para copiar na página do plugin.
+
+    <Warning>
+      O script fica no tema. Se você **trocar de tema** ou publicar outro, cole a linha de novo no `theme.liquid` do tema novo.
+    </Warning>
+  </Step>
+
+  <Step title="Personalize o checkout (opcional)">
+    No dashboard da AbacatePay, acesse **Personalizar checkout** e escolha o layout **Shopify**. Ele mostra contato e pagamento numa página só, com o resumo do pedido ao lado.
+
+    Você pode ajustar a **logo**, a **cor do botão** e o **texto do rodapé**.
+  </Step>
+
+  <Step title="Faça um pedido de teste">
+    1. Na sua loja, adicione um produto ao carrinho e clique em **Finalizar compra**. Você deve cair no checkout da AbacatePay.
+    2. Preencha seus dados e pague.
+    3. Em poucos segundos, o pedido aparece pago em **Pedidos** na Shopify.
+
+    <Tip>
+      Se a loja foi conectada com o [Dev mode](/pages/devmode) ligado, o pagamento é simulado e o pedido entra na Shopify marcado como **teste**.
+    </Tip>
+  </Step>
+</Steps>
+
+Pronto! Sua loja Shopify já vende com o checkout da AbacatePay. 🥑
+
+---
+
+## Considerações finais
+
+- **Teste antes de divulgar.** Faça um pedido completo antes de mandar tráfego para a loja.
+- **Cupons e descontos da Shopify** não são aplicados no checkout da AbacatePay. O cliente paga o preço do produto na Shopify.
+- **Não remova escopos** nem desinstale o app depois da instalação. Sem acesso, a AbacatePay não consegue criar os pedidos pagos.
+- O pedido criado pela AbacatePay leva a tag `abacatepay`, e o pagamento aparece com o gateway **AbacatePay**.
+
+<Card title="Precisa de ajuda?" icon="headset" color="#25c2a0">
+  Nossa equipe pode ajudar na integração com a Shopify. Entre em contato pelo e-mail <Icon icon="envelope" type="solid"/> ajuda@abacatepay.com
+</Card>
