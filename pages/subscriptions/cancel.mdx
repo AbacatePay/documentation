@@ -3,17 +3,15 @@ title: 'Cancelar uma assinatura'
 openapi: "POST /subscriptions/cancel"
 ---
 
-Cancela uma assinatura ativa imediatamente. Parcelas futuras pendentes são canceladas junto.
+Cancela uma assinatura ativa na hora (`cancelPolicy: NOW`). As cobranças pendentes são canceladas junto, e a resposta traz a assinatura com `status: CANCELLED`.
 
 <Card horizontal>
   Requer a permissão `SUBSCRIPTION:DELETE`.
 </Card>
 
-## Corpo da requisição
-
-| Campo | Tipo   | Obrigatório | Descrição              |
-|-------|--------|-------------|------------------------|
-| `id`  | string | Sim         | ID da assinatura (`subs_...`) |
+<Card title="Entenda o cancelamento" icon="rotate" href="/pages/cobrar/assinaturas#cancelar-uma-assinatura" horizontal>
+  Cancelamento pela API, pelo dashboard e pelo Portal do cliente, e as causas do `subscription.cancelled`.
+</Card>
 
 **Exemplo:**
 ```json
@@ -22,30 +20,9 @@ Cancela uma assinatura ativa imediatamente. Parcelas futuras pendentes são canc
 }
 ```
 
-## Resposta
+## Erros
 
-Retorna o objeto da assinatura com `status` atualizado para `CANCELLED`.
-
-```json
-{
-  "data": {
-    "id": "subs_abc123xyz",
-    "customerId": "cust_abc123xyz",
-    "amount": 2990,
-    "status": "CANCELLED",
-    "method": "CARD",
-    "coupons": [],
-    "devMode": false,
-    "trialDays": null,
-    "trialEndsAt": null,
-    "createdAt": "2024-12-06T20:00:00.000Z",
-    "updatedAt": "2024-12-06T20:00:05.000Z"
-  },
-  "success": true,
-  "error": null
-}
-```
-
-<Warning title="Cancelamento imediato" horizontal>
-  O cancelamento é aplicado na hora (`cancelPolicy: NOW`). Não há período de carência — o cliente perde o acesso imediatamente.
-</Warning>
+| `error` | Causa |
+|---|---|
+| `Subscription not found` | A assinatura não existe nesta loja. |
+| `Subscription doesn't exists or not active.` | A assinatura já está cancelada. |

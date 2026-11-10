@@ -3,26 +3,21 @@ title: 'Buscar um checkout de assinatura'
 openapi: "GET /subscriptions/checkouts/get"
 ---
 
-Retorna um checkout de assinatura (`bill_...` com `frequency: SUBSCRIPTION`), criado via [Criar checkout de assinatura](/pages/subscriptions/create).
+Retorna um checkout de assinatura (`bill_...`), criado em [Criar checkout de assinatura](/pages/subscriptions/create). O formato é o mesmo do [Buscar um Checkout](/pages/payment/one).
 
 <Card horizontal>
   Requer a permissão `SUBSCRIPTION:READ`.
 </Card>
 
-O formato da resposta é o mesmo do [Buscar um Checkout](/pages/payment/one). Informe ao menos um entre `id`, `externalId` e `customerId`.
+<Card title="Entenda as assinaturas" icon="rotate" href="/pages/cobrar/assinaturas" horizontal>
+  A diferença entre o checkout de assinatura e a assinatura, e o que acontece depois do pagamento.
+</Card>
 
-<Info>
-  Até 23/09/2026, checkouts de assinatura também saíam pelo `GET /checkouts/get`. Essa rota agora retorna apenas checkouts de pagamento único e links de pagamento. Veja o [changelog](/pages/changelog/index).
-</Info>
+Informe ao menos um entre `id`, `externalId` e `customerId`. Para achar a assinatura gerada pelo checkout, use [Listar assinaturas](/pages/subscriptions/list) com `checkoutId`.
 
-**Valores de `status`:**
+## Erros
 
-| Valor | Significado |
-|-------|-------------|
-| `PENDING` | Aguardando o primeiro pagamento |
-| `PAID` | Pago; a assinatura foi criada |
-| `EXPIRED` | Expirado sem pagamento |
-| `CANCELLED` | Cancelado |
-| `REFUNDED` | Reembolsado |
-
-Depois do pagamento, use [Listar assinaturas](/pages/subscriptions/list) com `checkoutId` para encontrar as assinaturas geradas por este checkout.
+| `error` | Causa |
+|---|---|
+| `Provide id, externalId or customerId` | Nenhum dos três filtros foi informado. |
+| `Billing not found` | Nenhum checkout de assinatura da loja casa com o filtro. |

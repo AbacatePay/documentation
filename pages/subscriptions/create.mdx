@@ -1,26 +1,26 @@
 ---
-title: 'Criar Checkout de assinatura'
+title: 'Criar checkout de assinatura'
 openapi: "POST /subscriptions/create"
 ---
 
-Cria um checkout de assinatura. O cliente paga uma vez e entra no ciclo de cobranças recorrentes do produto.
+Cria um checkout de assinatura (`bill_...`). Depois que o cliente paga na `url` da resposta, a assinatura (`subs_...`) passa a existir.
 
 <Card horizontal>
   Requer a permissão `SUBSCRIPTION:CREATE`.
 </Card>
 
-<Card title="Pré-requisito" horizontal>
-  O produto referenciado em `items` deve ter um `cycle` definido (`WEEKLY`, `MONTHLY`, `QUARTERLY`, `SEMIANNUALLY` ou `ANNUALLY`). Produtos avulsos retornam erro.
+<Card title="Entenda as assinaturas" icon="rotate" href="/pages/cobrar/assinaturas" horizontal>
+  Ciclos, retentativas, teste grátis, cupom, troca de plano e cancelamento.
 </Card>
 
-**Exemplo:**
+**Exemplo no cartão:**
 ```json
 {
   "items": [
     { "id": "prod_abc123xyz", "quantity": 1 }
   ],
   "customerId": "cust_abc123xyz",
-  "externalId": "subs-123",
+  "externalId": "assinatura-123",
   "completionUrl": "https://seusite.com/sucesso",
   "methods": ["CARD"],
   "retryPolicy": {
@@ -30,18 +30,27 @@ Cria um checkout de assinatura. O cliente paga uma vez e entra no ciclo de cobra
 }
 ```
 
-<Tip title="Use a url retornada" horizontal>
-Redirecione o cliente para `data.url` para concluir o primeiro pagamento e ativar a assinatura.
-</Tip>
+**Exemplo no [Pix Automático](/pages/cobrar/pix-automatico):**
+```json
+{
+  "items": [
+    { "id": "prod_abc123xyz", "quantity": 1 }
+  ],
+  "customerId": "cust_abc123xyz",
+  "methods": ["PIX"]
+}
+```
 
-<Note>
-Assinaturas aceitam apenas **um produto por checkout**. O método padrão é `CARD`.
-</Note>
+## Erros
 
-<Note title="Cupons" horizontal>
-Cupom só vale em assinatura cobrada só no cartão e sem período de teste. Com `PIX` ou com `trialDays`, o campo de cupom não aparece no checkout. Veja [Cupons em assinatura](/pages/subscriptions/reference#cupons-em-assinatura).
-</Note>
-
-<Note title="Período de teste gratuito" horizontal>
-Se o produto referenciado tiver `trialDays` configurado, o checkout cobra **R$ 0,00** — apenas tokeniza o cartão. A primeira cobrança pelo valor integral ocorre automaticamente ao final do trial. Consulte a [referência de assinaturas](/pages/subscriptions/reference#período-de-teste-gratuito-free-trial) para mais detalhes.
-</Note>
+| `error` | Causa |
+|---|---|
+| `No products found` | Nenhum produto de `items` foi encontrado. |
+| `No subscription product with cycle found for billing` | Nenhum produto de `items` tem `cycle`. |
+| `Subscription checkout: every item must have a billing cycle` | Algum produto de `items` não tem `cycle`. |
+| `All products in a subscription checkout must share the same billing cycle` | Os produtos de `items` têm ciclos diferentes. |
+| `Multiple products are not available for subscription checkouts on this store` | Mais de um produto em `items`, sem a liberação na conta. |
+| `PIX Automático is not available for this store` | `PIX` em `methods`, sem o Pix Automático liberado. |
+| `Subscription is not available for this store` | A conta não tem assinaturas liberadas em produção. |
+| `Subscription checkouts do not support card installments` | `card.maxInstallments` maior que `1`. |
+| `card.passFeesToCustomer is not available for subscriptions` | `card.passFeesToCustomer: true`. |

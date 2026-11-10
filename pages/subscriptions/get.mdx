@@ -3,24 +3,34 @@ title: 'Buscar uma assinatura'
 openapi: "GET /subscriptions/get"
 ---
 
-Retorna os dados de uma assinatura (`subs_...`).
+Retorna uma assinatura (`subs_...`), com o ciclo pago (`currentPeriodStart` e `currentPeriodEnd`) e a data da próxima cobrança (`nextChargeAt`).
 
 <Card horizontal>
   Requer a permissão `SUBSCRIPTION:READ`.
 </Card>
 
+<Card title="Entenda as assinaturas" icon="rotate" href="/pages/cobrar/assinaturas" horizontal>
+  Status, ciclos, retentativas, teste grátis e cancelamento.
+</Card>
+
 Informe ao menos um destes filtros:
 
-| Parâmetro    | Descrição |
-|--------------|-----------|
-| `id`         | ID da assinatura (`subs_...`) |
-| `externalId` | O `externalId` que você informou ao criar o checkout de assinatura |
+| Parâmetro | Descrição |
+|---|---|
+| `id` | ID da assinatura (`subs_...`) |
+| `externalId` | O `externalId` do checkout de assinatura que originou a assinatura |
 | `customerId` | ID do cliente (`cust_...`) |
 
-Sem nenhum deles, a API retorna `Provide id, externalId or customerId`. Quando o filtro casa mais de uma assinatura (por exemplo, um cliente com várias), a mais recente é retornada.
+Quando o filtro casa mais de uma assinatura, como um cliente com várias, a API devolve a mais recente. O `checkoutId` da resposta é o checkout de assinatura (`bill_...`) que originou a assinatura; para buscá-lo, use [Buscar checkout de assinatura](/pages/subscriptions/checkouts-get).
 
-O campo `checkoutId` da resposta aponta o checkout de assinatura (`bill_...`) que originou a assinatura.
+**Exemplo:**
+```http
+GET /v2/subscriptions/get?id=subs_abc123xyz
+```
 
-<Tip title="Procurando o checkout?" horizontal>
-  Para buscar o checkout de assinatura (`bill_...`), antes ou depois do pagamento, use [Buscar checkout de assinatura](/pages/subscriptions/checkouts-get).
-</Tip>
+## Erros
+
+| `error` | Causa |
+|---|---|
+| `Provide id, externalId or customerId` | Nenhum dos três filtros foi informado. |
+| `Subscription not found` | Nenhuma assinatura da loja casa com o filtro. |

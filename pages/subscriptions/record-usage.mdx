@@ -3,32 +3,17 @@ title: 'Registrar uso'
 openapi: "POST /subscriptions/record-usage"
 ---
 
-Registra unidades de uso de um produto avulso (pay-as-you-go) em uma assinatura ativa. O valor correspondente é incluído na próxima cobrança do ciclo.
+Registra unidades consumidas de um produto sem ciclo numa assinatura ativa. O valor entra na próxima cobrança da assinatura.
 
 <Card horizontal>
   Requer a permissão `SUBSCRIPTION:CREATE`.
 </Card>
 
-## Como funciona
+<Card title="Entenda a cobrança por uso" icon="rotate" href="/pages/cobrar/assinaturas#cobrança-por-uso" horizontal>
+  Como o uso é somado ao plano e o valor mínimo da cobrança.
+</Card>
 
-Diferente do produto principal da assinatura (que tem ciclo fixo), produtos de uso são cobrados de acordo com o consumo real registrado via este endpoint. Cada registro é vinculado à próxima parcela pendente da assinatura.
-
-Use `action: "add"` para adicionar unidades e `action: "subtract"` para estornar unidades já registradas no mesmo ciclo.
-
-## Corpo da requisição
-
-| Campo       | Tipo    | Obrigatório | Descrição                                                     |
-|-------------|---------|-------------|---------------------------------------------------------------|
-| `id`        | string  | Sim         | ID da assinatura (`subs_...`)                                 |
-| `productId` | string  | Sim         | ID do produto de uso (`prod_...`) — **não** deve ter ciclo    |
-| `units`     | integer | Sim         | Quantidade de unidades (mínimo `1`)                           |
-| `action`    | string  | Sim         | `"add"` para adicionar ou `"subtract"` para remover unidades  |
-
-<Note>
-  O produto em `productId` deve ser um produto **sem ciclo** (`cycle: null`). Produtos de assinatura (com ciclo) retornam erro.
-</Note>
-
-**Exemplo — adicionar 50 unidades de API calls:**
+**Exemplo: adicionar 50 unidades**
 ```json
 {
   "id": "subs_abc123xyz",
@@ -38,7 +23,7 @@ Use `action: "add"` para adicionar unidades e `action: "subtract"` para estornar
 }
 ```
 
-**Exemplo — estornar 10 unidades:**
+**Exemplo: estornar 10 unidades do mesmo ciclo**
 ```json
 {
   "id": "subs_abc123xyz",
@@ -48,38 +33,14 @@ Use `action: "add"` para adicionar unidades e `action: "subtract"` para estornar
 }
 ```
 
-## Resposta
+A resposta traz em `installmentNumber` a cobrança em que o uso vai entrar e em `unitPrice` o preço da unidade no momento do registro.
 
-Retorna o registro de uso criado, já vinculado à próxima parcela do ciclo (`installmentNumber`).
+## Erros
 
-```json
-{
-  "data": {
-    "id": "usgr_abc123xyz",
-    "subscriptionId": "subs_abc123xyz",
-    "productId": "prod_api_calls",
-    "units": 50,
-    "unitPrice": 100,
-    "action": "add",
-    "installmentNumber": 2,
-    "recordedAt": "2024-12-06T20:10:00.000Z"
-  },
-  "success": true,
-  "error": null
-}
-```
-
-| Campo               | Tipo    | Descrição                                                      |
-|---------------------|---------|----------------------------------------------------------------|
-| `id`                | string  | ID do registro de uso (`usgr_...`)                             |
-| `subscriptionId`    | string  | ID da assinatura                                               |
-| `productId`         | string  | ID do produto                                                  |
-| `units`             | integer | Quantidade de unidades registradas                             |
-| `unitPrice`         | integer | Preço unitário em centavos no momento do registro              |
-| `action`            | string  | `"add"` ou `"subtract"`                                        |
-| `installmentNumber` | integer | Número da parcela onde este uso será cobrado                   |
-| `recordedAt`        | string  | Data/hora do registro                                          |
-
-<Tip title="Cobrança automática" horizontal>
-  O valor total cobrado na próxima parcela inclui todos os registros de uso com `action: "add"` menos os com `action: "subtract"` do mesmo ciclo: `Σ(add × unitPrice) − Σ(subtract × unitPrice)`.
-</Tip>
+| `error` | Causa |
+|---|---|
+| `Subscription not found or not active` | A assinatura não existe ou não está ativa. |
+| `Usage records are not supported on Pix Automático subscriptions` | A assinatura é no Pix Automático. |
+| `Product not found or unavailable` | O produto não existe ou foi excluído. |
+| `Product must not have a billing cycle` | O produto tem `cycle`. Use um produto avulso. |
+| `No pending installment found for this subscription` | A assinatura não tem próxima cobrança agendada. |
