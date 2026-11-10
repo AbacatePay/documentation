@@ -1,56 +1,48 @@
 ---
 title: 'Introdução'
-description: 'Base URL, autenticação, formato de resposta, códigos de status e limites da API.'
+description: 'Base URL, autenticação, formato de resposta, erros, paginação e limites da API.'
 icon: 'book-open'
 ---
 
-Esta seção documenta os endpoints da API da AbacatePay v2. Todos os recursos seguem as mesmas convenções de autenticação, formato de resposta e tratamento de erros descritas aqui. Leia esta página uma vez — ela evita a maioria dos erros de integração.
+Esta seção documenta os endpoints da API da AbacatePay v2. Todos seguem as mesmas convenções de autenticação, formato de resposta e erros descritas aqui. Para entender cada recurso antes de integrar, comece pela [Documentação](/pages/comecar/sobre).
 
 <CardGroup cols={3}>
-  <Card title="Autenticação" icon="key" href="/pages/authentication">
-    Como gerar e usar suas chaves de API.
+  <Card title="Chaves de API" icon="key" href="/pages/comecar/chaves-de-api">
+    Como criar a chave e quais permissões dar.
   </Card>
-  <Card title="Dev mode" icon="code" href="/pages/devmode">
-    Testar sem risco antes de ir para produção.
+  <Card title="Modo Teste" icon="flask" href="/pages/comecar/modo-teste">
+    Testar sem dinheiro real antes de ir para produção.
   </Card>
   <Card title="Webhooks" icon="webhook" href="/pages/webhooks">
     Receber notificações de eventos em tempo real.
   </Card>
 </CardGroup>
 
----
-
 ## Base URL
-
-Todas as requisições da v2 usam o seguinte endereço:
 
 ```
 https://api.abacatepay.com/v2
 ```
 
-O ambiente (desenvolvimento ou produção) é determinado pela chave de API usada — não pela URL.
-
----
+O ambiente (Modo Teste ou produção) vem da chave de API usada, não da URL.
 
 ## Autenticação
 
-Toda requisição deve incluir sua chave de API no header `Authorization`:
+Toda requisição leva a chave de API no header `Authorization`:
 
 ```bash
-Authorization: Bearer SUA_CHAVE_API
+Authorization: Bearer SUA_CHAVE
 ```
 
-Requisições sem chave ou com chave inválida retornam `401 Unauthorized`. Consulte a [página de autenticação](/pages/authentication) para criar e gerenciar suas chaves.
-
----
+Veja como criar a chave e as permissões de cada rota em [Chaves de API e permissões](/pages/comecar/chaves-de-api).
 
 ## Formato de resposta
 
-Todos os endpoints retornam JSON com a mesma estrutura:
+Todos os endpoints devolvem JSON com a mesma estrutura:
 
 ```json
 {
-  "data": { ... },
+  "data": { "id": "bill_abc123xyz" },
   "success": true,
   "error": null
 }
@@ -66,36 +58,47 @@ Em caso de erro:
 }
 ```
 
-<Info>
-  Sempre verifique `success` antes de acessar `data`. Nunca assuma que a requisição funcionou apenas pelo status HTTP.
-</Info>
-
----
+Os valores monetários são sempre inteiros em centavos: `1000` = R$ 10,00.
 
 ## Códigos de status HTTP
 
-| Código | Significado |
-|--------|-------------|
+| Código | Quando acontece |
+|--------|-----------------|
 | `200` | Sucesso |
-| `400` | Requisição inválida — verifique os campos enviados |
-| `401` | Não autenticado — chave ausente, inválida ou revogada |
-| `403` | Sem permissão — a chave não tem acesso ao recurso solicitado |
-| `404` | Recurso não encontrado |
-| `422` | Erro de validação — dados corretos mas semanticamente inválidos |
-| `429` | Rate limit atingido |
-| `5xx` | Erro interno — tente novamente com backoff exponencial |
+| `400` | A requisição está bem formada, mas uma regra de negócio a recusou. Também é a resposta quando o recurso não é encontrado (ex.: `Customer not found`). |
+| `401` | Problema na chave de API: ausente, inválida, expirada, de outra versão ou sem a permissão da rota |
+| `403` | Sessão de login da CLI tentando chamar uma rota que tira dinheiro da loja |
+| `422` | O corpo ou a query não seguem o schema: campo obrigatório faltando, tipo errado ou valor fora do enum. A mensagem diz qual campo. |
+| `429` | Limite de requisições atingido |
+| `5xx` | Erro interno. Tente de novo com espera crescente. |
 
----
+### Erros de autenticação
 
-## Permissões
+| `error` | Causa |
+|---------|-------|
+| `Unauthorized` | O header `Authorization` não foi enviado ou está fora do formato `Bearer SUA_CHAVE` |
+| `Invalid or inactive API key` | A chave não existe ou foi excluída |
+| `API key has expired` | A chave passou da data de validade |
+| `IP address not whitelisted` | A chave só aceita alguns IPs, e a requisição veio de outro |
+| `API key version mismatch` | Chave da v1 numa rota da v2, ou o contrário |
+| `Insufficient permissions` | A chave não tem a permissão da rota. Crie uma chave nova com a permissão; não dá para editar as permissões de uma chave. |
+| `Invalid API call` | A rota não existe. Confira o método e o caminho. |
 
-Cada chave de API pode ter permissões granulares por recurso. Se você receber `403`, verifique se a chave usada tem a permissão necessária para o endpoint. Consulte a [página de autenticação](/pages/authentication) para ver todas as permissões disponíveis.
+## Limites
 
----
+Cada loja pode fazer até **100 requisições por segundo**, somando todas as chaves do Modo Teste e de produção. Acima disso, a API responde `429 Too many requests`.
+
+Toda resposta traz o uso do limite nos headers:
+
+| Header | O que mostra |
+|--------|--------------|
+| `RateLimit-Limit` | O limite da janela (100) |
+| `RateLimit-Remaining` | Quantas requisições ainda cabem na janela atual |
+| `RateLimit-Reset` | Em quantos segundos a janela recomeça |
 
 ## Paginação e filtro por data
 
-Endpoints de listagem suportam **paginação por cursor** e **filtro por intervalo de datas** de criação (`createdAt`).
+Os endpoints de listagem aceitam **paginação por cursor** e **filtro por data** de criação (`createdAt`).
 
 ### Paginação por cursor
 
@@ -103,7 +106,7 @@ As listas vêm dos itens mais recentes para os mais antigos.
 
 | Param | Tipo | Descrição |
 |-------|------|-----------|
-| `limit` | `integer` | Itens por página (1–100, default `100`) |
+| `limit` | `integer` | Itens por página (1–100, padrão `100`) |
 | `after` | `string` | Cursor da próxima página: use o valor de `pagination.next` |
 | `before` | `string` | Cursor da página anterior: use o valor de `pagination.before` |
 
@@ -112,7 +115,7 @@ As respostas de listagem trazem o objeto `pagination` junto do envelope:
 ```json
 {
   "success": true,
-  "data": [ ... ],
+  "data": [],
   "error": null,
   "pagination": {
     "hasMore": true,
@@ -138,60 +141,37 @@ GET /v2/customers/list?limit=20&after=cust_abc123
 
 | Param | Tipo | Descrição |
 |-------|------|-----------|
-| `startDate` | `string` | Data inicial inclusive (`YYYY-MM-DD`) |
-| `endDate` | `string` | Data final inclusive (`YYYY-MM-DD`) |
+| `startDate` | `string` | Data inicial, inclusive (`YYYY-MM-DD`) |
+| `endDate` | `string` | Data final, inclusive (`YYYY-MM-DD`) |
 
-Os dois parâmetros são opcionais e podem ser usados isoladamente ou combinados com `limit`, `after` e `before`.
+Os dois são opcionais e podem ser usados sozinhos ou junto com `limit`, `after` e `before`. As datas valem no fuso **America/Sao_Paulo**: `startDate=2026-01-15` inclui registros a partir de 15/01/2026, 00:00, horário de Brasília. Nenhuma das duas pode ser anterior a `2024-01-01` nem mais de um ano no futuro.
 
 ```bash
 GET /v2/customers/list?startDate=2026-01-01&endDate=2026-01-31&limit=50
 ```
 
-<Info>
-  As datas são interpretadas no fuso horário **America/Sao_Paulo**. Por exemplo, `startDate=2026-01-15` inclui registros a partir de 15/01/2026 00:00 (horário de Brasília).
-</Info>
-
-Endpoints com suporte a paginação e filtro de data: clientes, cupons, produtos, checkouts, links de pagamento, assinaturas, webhooks, saques, PIX enviados, pagamentos transparentes e demais rotas `*/list` da v2.
-
----
+Aceitam paginação e filtro por data: clientes, cupons, produtos, checkouts, links de pagamento, assinaturas, webhooks, saques, Pix enviados, cobranças transparentes e as demais rotas `*/list` da v2.
 
 ## Erros mais comuns
 
 <AccordionGroup>
-  <Accordion title="400 — os campos estão corretos mas a requisição é rejeitada">
-    Verifique o tipo dos valores. A API é tipada: `amount` é sempre inteiro em centavos (`1000` = R$ 10,00), não decimal. IDs de produtos e clientes são strings, não números.
+  <Accordion title="422 — a requisição é recusada antes de chegar à regra de negócio">
+    Algum campo está fora do schema. A mensagem diz qual, por exemplo `Property 'data.customer.cellphone' is missing`. Confira os tipos: `amount` é sempre inteiro em centavos (`1000` = R$ 10,00), não decimal, e os IDs são strings.
   </Accordion>
 
-  <Accordion title="401 — chave válida mas ainda recebo Unauthorized">
-    Confirme que o header está exatamente como `Authorization: Bearer SUA_CHAVE` — com espaço entre `Bearer` e a chave, sem aspas extras.
+  <Accordion title="400 — os campos estão certos, mas a API recusa">
+    Uma regra de negócio barrou a requisição, ou o recurso não foi encontrado. A mensagem no campo `error` diz o motivo. Exemplo: mandar `dueDate` num checkout sem `BOLETO` em `methods` responde `dueDate requires BOLETO in methods`.
   </Accordion>
 
-  <Accordion title="403 — tenho a chave mas não tenho acesso ao endpoint">
-    A chave existe mas não tem a permissão necessária. As permissões de uma chave não podem ser editadas depois de criada: vá no dashboard → Integração e crie uma chave nova com a permissão do recurso que está tentando acessar.
+  <Accordion title="401 — tenho a chave, mas recebo Unauthorized">
+    Veja a causa no campo `error` e na tabela de [erros de autenticação](#erros-de-autenticação). Confirme também que o header está exatamente como `Authorization: Bearer SUA_CHAVE`, com espaço depois de `Bearer` e sem aspas.
   </Accordion>
 
-  <Accordion title="422 — dados válidos mas semanticamente errados">
-    Exemplo: criar uma assinatura com um produto que não tem `cycle` definido. Os campos estão corretos individualmente, mas a combinação não faz sentido. A mensagem de erro no campo `error` da resposta descreve o problema específico.
+  <Accordion title="429 — Too many requests">
+    A loja passou de 100 requisições por segundo. Espere o tempo de `RateLimit-Reset` e tente de novo.
   </Accordion>
 
   <Accordion title="5xx — erro do servidor">
-    Erros `5xx` são temporários. Implemente retentativas com backoff exponencial (ex: aguarde 1s, depois 2s, depois 4s). Se persistir por mais de alguns minutos, entre em contato com o suporte.
+    Erros `5xx` são temporários. Tente de novo com espera crescente (1 s, depois 2 s, depois 4 s). Se continuar por mais de alguns minutos, fale com o suporte em ajuda@abacatepay.com.
   </Accordion>
 </AccordionGroup>
-
-## Dicas gerais
-
-<CardGroup cols={2}>
-  <Card title="Use Dev mode para testes" icon="code" href="/pages/devmode">
-    Chaves de desenvolvimento simulam pagamentos sem cobranças reais.
-  </Card>
-  <Card title="Armazene a chave em variável de ambiente" icon="shield">
-    Nunca comite sua chave de API no código. Use `process.env`, `.env` ou um gerenciador de segredos.
-  </Card>
-  <Card title="Idempotência em webhooks" icon="repeat" href="/pages/webhooks">
-    Sempre registre o ID do evento recebido e descarte duplicatas.
-  </Card>
-  <Card title="Backoff em erros 5xx" icon="rotate">
-    Implemente retentativas com espera crescente para falhas temporárias.
-  </Card>
-</CardGroup>

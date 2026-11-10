@@ -1,0 +1,57 @@
+---
+title: 'Modo Teste'
+description: 'O ambiente para testar cobranças, pagamentos e webhooks sem dinheiro real.'
+icon: 'flask'
+---
+
+import { Video } from '/snippets/video.jsx'
+
+O **Modo Teste** é o ambiente de testes da AbacatePay. Os pagamentos são simulados, nada é cobrado de verdade e os dados ficam separados dos de produção. Toda conta começa nele, e você pode testar quantas vezes quiser, mesmo antes de [verificar a conta](/pages/comecar/conta-e-verificacao).
+
+<Video id="https://youtu.be/dxSBVWkYeuM" title="Dev mode - AbacatePay" />
+
+O vídeo também está em [Dev mode](/pages/videos/dev-mode).
+
+## Como alternar
+
+No dashboard, use o switch **Modo Teste (Sandbox)** no rodapé do menu. Cobranças, chaves de API e webhooks criados com o Modo Teste ligado ficam separados dos de produção.
+
+Na API, o ambiente vem da chave, não da URL. As duas usam `https://api.abacatepay.com/v2`:
+
+- chave do Modo Teste: começa com `abc_dev_`;
+- chave de produção: começa com `abc_prod_`.
+
+Nas respostas, o campo `devMode` diz em qual ambiente o recurso foi criado.
+
+## O que muda
+
+| | Modo Teste | Produção |
+|---|---|---|
+| Chave de API | Começa com `abc_dev_` | Começa com `abc_prod_` |
+| Pagamentos | Simulados | Reais |
+| Webhooks | Recebem os eventos dos testes | Recebem os eventos reais |
+| Saques, Pagamentos e Pix por chave fixa | Não existem | Disponíveis |
+| Verificação da conta | Não precisa | Precisa |
+
+## Simular pagamentos
+
+- **No checkout e no link de pagamento:** no Modo Teste, o botão final da tela de pagamento vira **Simular Pagamento**. Clique nele para aprovar a cobrança.
+- **No checkout transparente (Pix):** chame [Simular pagamento](/pages/transparents/simulate-payment) com o `id` da cobrança.
+- **No cartão:** use os cartões de teste abaixo, no checkout ou no [checkout transparente](/pages/guides/cartao-transparente). Com a chave pública de teste, o formulário do abacatepay.js já vem preenchido com um cartão aprovado.
+
+## Cartões de teste
+
+Use qualquer data de validade futura (ex.: 12/30) e qualquer CVV (ex.: 123).
+
+| Cartão | Resultado |
+|---|---|
+| `4242 4242 4242 4242` | Aprovado |
+| `4000 0000 0000 0002` | Recusado: cartão recusado pelo emissor |
+| `4000 0000 0000 0069` | Recusado: cartão expirado |
+| `4000 0000 0000 0127` | Recusado: CVV inválido |
+
+O resultado depende dos 4 últimos dígitos: só os terminados em `0002`, `0069` e `0127` são recusados. A API devolve a mesma mensagem genérica para qualquer recusa, sem o motivo, como acontece em produção.
+
+## Antes de ir para produção
+
+Teste o fluxo completo: criar a cobrança, pagar, receber o webhook e tratar recusas e erros. O [checklist de produção](/pages/comecar/producao#checklist) ajuda a conferir.

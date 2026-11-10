@@ -13,7 +13,19 @@ Notas importantes:
 - Checkout Transparente gera PIX ou Boleto imediatamente sem redirecionar o usuário; retorna `brCode` (copia-e-cola) e `brCodeBase64` (imagem PNG) para PIX, e `barCode` (código de barras), `identificationNumber` (linha digitável) e `url` para Boleto.
 - Cartão no Checkout Transparente: o navegador usa o script `https://abacatepay.com/abacatepay.js` com a chave pública (`pk_...`, pode ficar no frontend) para gerar um token `ctok_` (60 segundos, uso único); o backend cobra com `POST /transparents/create`, `method: "CARD"`, o mesmo `amount` e `customer` com `name`, `email`, `taxId` e `cellphone`. A resposta traz `cardToken`, que cobra o mesmo cartão de novo (enviado no lugar de `token`, com qualquer `amount`, sem o cliente presente). Chave pública e chave de API precisam ser do mesmo ambiente.
 - Webhooks precisam de URL HTTPS pública. Qualquer resposta `2xx` (200–299) conta como entrega bem-sucedida. O `secret` informado na criação chega em cada entrega no parâmetro `webhookSecret` da URL e é o que prova a origem; o header `X-Webhook-Signature` (HMAC-SHA256 com uma chave pública) só garante a integridade do corpo.
-- Permissões: cada rota exige uma permissão da chave de API (ex.: `CHECKOUT:CREATE`); sem ela, a API responde 403 com `Insufficient permissions`. As permissões não podem ser editadas depois que a chave é criada: para mudar o acesso, crie outra chave. 401 fica para chave ausente, inválida ou revogada. A tabela completa está em [Autenticação](https://docs.abacatepay.com/pages/authentication#permissões-da-chave-de-api).
+- Permissões: cada rota exige uma permissão da chave de API (ex.: `CHECKOUT:CREATE`); sem ela, a API responde 401 com `Insufficient permissions`. As permissões não podem ser editadas depois que a chave é criada: para mudar o acesso, crie outra chave. Os outros 401 dizem a causa no `error` (`Invalid or inactive API key`, `API key has expired`, `API key version mismatch` etc.). A tabela completa está em [Chaves de API e permissões](https://docs.abacatepay.com/pages/comecar/chaves-de-api#permissões).
+- Erros: regra de negócio e recurso não encontrado respondem 400; corpo fora do schema responde 422; o limite é de 100 requisições por segundo por loja (429), com os headers `RateLimit-Limit`, `RateLimit-Remaining` e `RateLimit-Reset`.
+
+## Começando
+
+- [Sobre a AbacatePay](https://docs.abacatepay.com/pages/comecar/sobre): O que a plataforma faz, como um pagamento funciona e por onde começar, com ou sem código.
+- [Primeiros passos](https://docs.abacatepay.com/pages/comecar/primeiros-passos): Criar produto e link de pagamento pelo dashboard e simular a venda no Modo Teste; ou a primeira cobrança Pix pela API com `POST /transparents/create`.
+- [Conta e verificação](https://docs.abacatepay.com/pages/comecar/conta-e-verificacao): Requisitos (só CNPJ; site com contato, termos e política de privacidade), como enviar e prazo da análise: até 3 dias úteis após o envio, mais se houver pedido de ajustes.
+- [Modo Teste](https://docs.abacatepay.com/pages/comecar/modo-teste): Ambiente de testes. Chave `abc_dev_` (teste) ou `abc_prod_` (produção), mesma URL. Botão “Simular Pagamento” no checkout, `POST /transparents/simulate-payment` no Pix transparente e cartões de teste (recusa pelos finais `0002`, `0069` e `0127`). Saques, Pagamentos e Pix por chave fixa só existem em produção.
+- [Ir para produção](https://docs.abacatepay.com/pages/comecar/producao): Checklist da integração e o que fazer depois da aprovação (chave de produção e webhooks recriados).
+- [Chaves de API e permissões](https://docs.abacatepay.com/pages/comecar/chaves-de-api): Criar a chave (Integração → API → Nova chave, exige 2FA, aparece uma única vez), permissão de cada rota e boas práticas.
+- [Taxas](https://docs.abacatepay.com/pages/comecar/taxas): Sem mensalidade; a taxa sai de cada movimentação. `platformFee` no transparente, no saque e no Enviar Pix. Valores na [página de preços](https://www.abacatepay.com/pricing).
+- [Introdução à API](https://docs.abacatepay.com/pages/reference/introduction): Base URL, envelope de resposta, códigos de status, erros de autenticação, rate limit, paginação por cursor (`after`, `before`, `pagination.next`) e filtro por data.
 
 ## Checkout (cobrar com página hospedada)
 
@@ -132,12 +144,10 @@ Notas importantes:
 
 ## Conceitos
 
-- [O que é a AbacatePay?](https://docs.abacatepay.com/pages/concepts/overview): Visão geral dos produtos e de para quem servem.
 - [O que é o Checkout?](https://docs.abacatepay.com/pages/concepts/checkout): Como funciona a página de pagamento hospedada.
 - [O que é o PIX?](https://docs.abacatepay.com/pages/concepts/pix): Como o PIX funciona na AbacatePay.
 - [O que são Assinaturas?](https://docs.abacatepay.com/pages/concepts/subscriptions): Cobrança recorrente e ciclos.
 - [Como receber seu dinheiro](https://docs.abacatepay.com/pages/concepts/saques): Saques do saldo para a sua conta.
-- [Taxas e tarifas](https://docs.abacatepay.com/pages/concepts/taxas): Como as taxas são descontadas (`platformFee`); os valores ficam na [página de preços](https://www.abacatepay.com/pricing).
 
 ## Optional
 
@@ -149,11 +159,6 @@ Notas importantes:
 
 ## Outros Recursos
 
-- [Comece Aqui](https://docs.abacatepay.com/pages/start/welcome): Boas-vindas e primeiros passos.
-- [Autenticação](https://docs.abacatepay.com/pages/authentication): Autenticação via Bearer Token e permissões de cada rota.
-- [Introdução à API](https://docs.abacatepay.com/pages/reference/introduction): Envelope de resposta, paginação por cursor (`after`, `before`, `pagination.next`), filtro por data e erros.
-- [Modo Sandbox/Desenvolvedor](https://docs.abacatepay.com/pages/devmode): Testar integrações sem transações reais.
-- [Produção](https://docs.abacatepay.com/pages/production): Passos para colocar a integração em produção. A conta exige CNPJ (só pessoa jurídica) e a análise leva até 3 dias úteis.
 - [Glossário](https://docs.abacatepay.com/pages/glossario): Termos técnicos utilizados na plataforma.
 - [SDKs](https://docs.abacatepay.com/pages/sdks/sdks): SDKs para Node.js e Ruby (API v2). Os de Python, Go, Java, PHP, Rust, Kotlin e Swift são legados e só funcionam com chave da API v1.
 - [CLI](https://docs.abacatepay.com/pages/cli/overview): Interface de linha de comando oficial da AbacatePay.

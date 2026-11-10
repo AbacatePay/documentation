@@ -1,0 +1,60 @@
+---
+title: 'Sobre a AbacatePay'
+description: 'O que a AbacatePay faz, como um pagamento funciona e por onde começar, com ou sem código.'
+icon: 'store'
+---
+
+A AbacatePay é uma plataforma de pagamentos para empresas. Você cobra seus clientes por Pix, cartão de crédito ou boleto, o dinheiro entra no seu saldo na AbacatePay e você saca para a sua conta quando quiser.
+
+Tudo pode ser feito pelo dashboard, sem programar, ou pela API, se você quer automatizar as cobranças no seu sistema.
+
+## Como um pagamento funciona
+
+```
+Você cria a cobrança → o cliente paga → a AbacatePay confirma → o valor entra no seu saldo → você saca
+```
+
+1. Você cria uma cobrança pelo dashboard ou pela API.
+2. O cliente paga na tela de pagamento da AbacatePay ou no seu próprio site.
+3. A confirmação aparece no dashboard e, se você integrou, chega ao seu sistema por [webhook](/pages/webhooks).
+4. O valor, já sem a [taxa](/pages/comecar/taxas), entra no seu saldo.
+5. Você saca para a sua conta pelo dashboard ou pela API.
+
+## Formas de cobrar
+
+<CardGroup cols={2}>
+  <Card icon="cart-shopping" title="Checkout" href="/pages/concepts/checkout">
+    Uma tela de pagamento pronta, hospedada pela AbacatePay. Você manda o link ao cliente ou redireciona ele do seu site.
+  </Card>
+  <Card icon="link" title="Link de pagamento" href="/pages/payment-links/reference">
+    Um link que vários clientes podem pagar, quantas vezes quiserem. Bom para compartilhar no WhatsApp ou no Instagram.
+  </Card>
+  <Card icon="code" title="Checkout transparente" href="/pages/concepts/checkout-transparente">
+    O pagamento acontece dentro do seu site ou app, sem levar o cliente para outra página. Exige desenvolvimento.
+  </Card>
+  <Card icon="rotate" title="Assinaturas" href="/pages/concepts/subscriptions">
+    Cobrança recorrente: a AbacatePay cobra o cliente automaticamente a cada ciclo.
+  </Card>
+</CardGroup>
+
+Em todas elas o cliente pode pagar por **Pix**, **cartão de crédito** (à vista ou parcelado) ou **boleto**, conforme as formas que você liberar.
+
+## Por onde começar
+
+<CardGroup cols={2}>
+  <Card icon="rocket" title="Sem código" href="/pages/comecar/primeiros-passos">
+    Crie um produto, gere um link de pagamento e teste uma venda pelo dashboard. Se você vende na Shopify, use o [plugin da AbacatePay](/pages/guides/shopify).
+  </Card>
+  <Card icon="terminal" title="Com código" href="/pages/comecar/chaves-de-api">
+    Crie uma chave de API, teste no [Modo Teste](/pages/comecar/modo-teste) e consulte a [Referência da API](/pages/reference/introduction). Há também [SDKs](/pages/sdks/sdks), uma [CLI](/pages/cli/overview) e um [servidor MCP](/pages/ai/overview) para agentes de IA.
+  </Card>
+</CardGroup>
+
+## Quem usa a AbacatePay
+
+- **Infoprodutores** que vendem cursos e mentorias
+- **SaaS e startups** que cobram assinatura
+- **E-commerces** que precisam de um checkout rápido
+- **Prestadores de serviço** com CNPJ que querem um jeito simples de cobrar
+
+Você pode testar tudo sem verificar a conta. Para receber pagamentos reais, a AbacatePay precisa verificar a sua empresa: veja [Conta e verificação](/pages/comecar/conta-e-verificacao).

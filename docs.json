@@ -9,7 +9,22 @@
     { "source": "/pages/cupom/*", "destination": "/pages/coupons/*" },
     { "source": "/withdraw", "destination": "/pages/payouts/reference" },
     { "source": "/coupons/list", "destination": "/pages/coupons/list" },
-    { "source": "/pages/start/quickstart", "destination": "/pages/start/welcome" },
+    { "source": "/pages/start/quickstart", "destination": "/pages/comecar/sobre" },
+    { "source": "/pages/start/welcome", "destination": "/pages/comecar/sobre" },
+    { "source": "/pages/start/introduction", "destination": "/pages/comecar/sobre" },
+    { "source": "/pages/introduction", "destination": "/pages/comecar/sobre" },
+    { "source": "/pages/concepts/overview", "destination": "/pages/comecar/sobre" },
+    { "source": "/pages/guides/primeiro-pagamento", "destination": "/pages/comecar/primeiros-passos" },
+    { "source": "/pages/authentication", "destination": "/pages/comecar/chaves-de-api" },
+    { "source": "/pages/devmode", "destination": "/pages/comecar/modo-teste" },
+    { "source": "/pages/production", "destination": "/pages/comecar/producao" },
+    { "source": "/pages/concepts/taxas", "destination": "/pages/comecar/taxas" },
+    { "source": "/api-reference/introduction", "destination": "/pages/reference/introduction" },
+    { "source": "/pages/rest", "destination": "/pages/ecosystem/rest" },
+    { "source": "/pages/typebox", "destination": "/pages/ecosystem/typebox" },
+    { "source": "/pages/sdk/node", "destination": "/pages/sdks/nodejs" },
+    { "source": "/pages/sdk/kotlin", "destination": "/pages/sdks/kotlin" },
+    { "source": "/pages/sdks/golang", "destination": "/pages/sdks/go" },
     { "source": "/pages/zod", "destination": "/pages/ecosystem/zod" },
     { "source": "/glossario", "destination": "/pages/glossario" },
     { "source": "/subscriptions/reference", "destination": "/pages/subscriptions/reference" }
@@ -42,36 +57,62 @@
         "tag": "Current",
         "tabs": [
           {
-            "tab": "Comece aqui",
+            "tab": "Documentação",
             "groups": [
               {
-                "group": "Comece aqui",
+                "group": "Começando",
                 "pages": [
-                  "pages/start/welcome"
-                ]
-              }
-            ]
-          },
-          {
-            "tab": "Para Lojistas",
-            "groups": [
-              {
-                "group": "Entenda o Produto",
-                "pages": [
-                  "pages/concepts/overview",
-                  "pages/concepts/checkout",
-                  "pages/concepts/checkout-transparente",
-                  "pages/concepts/pix",
-                  "pages/concepts/subscriptions",
-                  "pages/concepts/area-do-cliente",
-                  "pages/concepts/saques",
-                  "pages/concepts/taxas"
+                  "pages/comecar/sobre",
+                  "pages/comecar/primeiros-passos",
+                  "pages/comecar/conta-e-verificacao",
+                  "pages/comecar/modo-teste",
+                  "pages/comecar/producao",
+                  "pages/comecar/chaves-de-api",
+                  "pages/comecar/taxas"
                 ]
               },
               {
-                "group": "Guias Rápidos",
+                "group": "Cobrar",
                 "pages": [
-                  "pages/guides/primeiro-pagamento",
+                  "pages/concepts/checkout",
+                  "pages/concepts/checkout-transparente",
+                  "pages/guides/cartao-transparente",
+                  "pages/concepts/subscriptions"
+                ]
+              },
+              {
+                "group": "Formas de pagamento",
+                "pages": [
+                  "pages/concepts/pix",
+                  "pages/guides/repasse-de-taxa",
+                  "pages/guides/cartao-salvo"
+                ]
+              },
+              {
+                "group": "Vender",
+                "pages": [
+                  "pages/guides/upsell",
+                  "pages/concepts/area-do-cliente",
+                  "pages/guides/portal-do-cliente"
+                ]
+              },
+              {
+                "group": "Seu dinheiro",
+                "pages": [
+                  "pages/concepts/saques",
+                  "pages/guides/pix-chave-fixa"
+                ]
+              },
+              {
+                "group": "Notificações",
+                "pages": [
+                  "pages/webhooks",
+                  "pages/webhooks/security"
+                ]
+              },
+              {
+                "group": "Integrações",
+                "pages": [
                   "pages/guides/shopify"
                 ]
               },
@@ -85,77 +126,7 @@
             ]
           },
           {
-            "tab": "Guias",
-            "groups": [
-              {
-                "group": "Integração",
-                "pages": [
-                  "pages/authentication",
-                  "pages/devmode",
-                  "pages/production"
-                ]
-              },
-              {
-                "group": "Checkout",
-                "pages": [
-                  "pages/guides/upsell",
-                  "pages/guides/repasse-de-taxa"
-                ]
-              },
-              {
-                "group": "Checkout transparente",
-                "pages": [
-                  "pages/guides/cartao-transparente",
-                  "pages/guides/cartao-salvo"
-                ]
-              },
-              {
-                "group": "Portal do cliente",
-                "pages": [
-                  "pages/guides/portal-do-cliente"
-                ]
-              },
-              {
-                "group": "Pix",
-                "pages": [
-                  "pages/guides/pix-chave-fixa"
-                ]
-              },
-              {
-                "group": "Ajuda",
-                "pages": [
-                  "pages/faq/index",
-                  "pages/glossario"
-                ]
-              }
-            ]
-          },
-          {
-            "tab": "Webhooks",
-            "groups": [
-              {
-                "group": "Visão geral",
-                "pages": ["pages/webhooks"]
-              },
-              {
-                "group": "Segurança",
-                "pages": ["pages/webhooks/security"]
-              },
-              {
-                "group": "Eventos",
-                "pages": [
-                  "pages/webhooks/events/checkout",
-                  "pages/webhooks/events/transparent",
-                  "pages/webhooks/events/subscriptions",
-                  "pages/webhooks/events/transfers",
-                  "pages/webhooks/events/payouts",
-                  "pages/webhooks/events/pix-key"
-                ]
-              }
-            ]
-          },
-          {
-            "tab": "Referência",
+            "tab": "Referência da API",
             "groups": [
               {
                 "group": "Introdução",
@@ -258,7 +229,7 @@
                 "pages": ["pages/payouts/reference", "pages/payouts/create", "pages/payouts/get", "pages/payouts/list"]
               },
               {
-                "group": "PIX",
+                "group": "Enviar Pix",
                 "pages": ["pages/pix/reference", "pages/pix/create", "pages/pix/get", "pages/pix/list"]
               },
               {
@@ -276,6 +247,17 @@
               {
                 "group": "Public MRR",
                 "pages": ["pages/trustMRR/reference", "pages/trustMRR/mrr", "pages/trustMRR/mrr-by-day", "pages/trustMRR/get", "pages/trustMRR/list"]
+              },
+              {
+                "group": "Eventos de webhook",
+                "pages": [
+                  "pages/webhooks/events/checkout",
+                  "pages/webhooks/events/transparent",
+                  "pages/webhooks/events/subscriptions",
+                  "pages/webhooks/events/transfers",
+                  "pages/webhooks/events/payouts",
+                  "pages/webhooks/events/pix-key"
+                ]
               }
             ]
           },

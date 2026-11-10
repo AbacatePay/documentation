@@ -40,7 +40,7 @@ Cada loja tem duas chaves públicas, uma por ambiente:
 
 | Chave pública | Use com a chave de API | O que acontece |
 |---|---|---|
-| **Teste (DEV)** | de Dev mode (`abc_dev_...`) | O formulário aparece em versão de teste e nada é cobrado. Veja [Dev mode](/pages/devmode) |
+| **Teste (DEV)** | de Dev mode (`abc_dev_...`) | O formulário aparece em versão de teste e nada é cobrado. Veja [Modo Teste](/pages/comecar/modo-teste) |
 | **Produção** | de produção (`abc_prod_...`) | Formulário seguro de verdade, com 3DS quando o banco pede. Cobrança real |
 
 <Warning>
@@ -64,7 +64,7 @@ A chave pública entra só no `AbacatePay.create`:
 </script>
 ```
 
-Para trocar de teste para produção sem mexer no código, guarde a chave pública numa variável de ambiente do seu backend e entregue ao navegador junto com o valor do pedido, como no [passo a passo](/pages/guides/cartao-transparente#passo-4-o-backend-que-cobra). Assim a troca de ambiente é só configuração: as duas chaves mudam juntas.
+Para trocar de teste para produção sem mexer no código, guarde a chave pública numa variável de ambiente do seu backend e entregue ao navegador junto com o valor do pedido, como no [passo a passo](/pages/guides/cartao-transparente#passo-3-o-backend). Assim a troca de ambiente é só configuração: as duas chaves mudam juntas.
 
 ## Erros
 

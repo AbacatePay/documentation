@@ -10,7 +10,7 @@ icon: 'circle-question'
   <Accordion title="Preciso saber programar para usar a AbacatePay?">
     Não. Você pode criar cobranças, gerar links de pagamento e gerenciar tudo pelo dashboard sem escrever uma linha de código. A API e os SDKs são para quem quer automatizar o processo dentro de um sistema.
 
-    Veja o guia [Receba seu primeiro pagamento](/pages/guides/primeiro-pagamento) para começar sem código.
+    Veja o guia [Primeiros passos](/pages/comecar/primeiros-passos) para começar sem código.
   </Accordion>
 
   <Accordion title="Como recebo meu dinheiro?">
@@ -30,7 +30,7 @@ icon: 'circle-question'
   </Accordion>
 
   <Accordion title="Minha conta precisa ser verificada para receber pagamentos reais?">
-    Sim. Você pode testar tudo no Dev Mode (ambiente de testes) sem verificação. Mas para processar pagamentos reais e sacar dinheiro, sua conta precisa estar verificada. O processo de verificação é feito no próprio dashboard, exige CNPJ e a análise leva até 3 dias úteis.
+    Sim. Você pode testar tudo no Modo Teste sem verificação. Para receber pagamentos reais e sacar, a conta precisa estar verificada. A verificação é feita no próprio dashboard, exige CNPJ e a análise leva até 3 dias úteis depois do envio. Veja [Conta e verificação](/pages/comecar/conta-e-verificacao).
   </Accordion>
 </AccordionGroup>
 
@@ -40,38 +40,35 @@ icon: 'circle-question'
 
 <AccordionGroup>
   <Accordion title="Como obtenho minha chave de API?">
-    Acesse o [dashboard da AbacatePay](https://app.abacatepay.com), vá em **Integrar → API Keys** e clique em **Criar Chave**. Consulte o [guia de autenticação](/pages/authentication) para o passo a passo completo.
+    No [dashboard](https://app.abacatepay.com), vá em **Integração → API** e clique em **Nova chave**. O passo a passo está em [Chaves de API e permissões](/pages/comecar/chaves-de-api).
   </Accordion>
 
-  <Accordion title="Posso usar a mesma chave em dev e produção?">
-    Não. Chaves de Dev mode só funcionam no ambiente de desenvolvimento — elas nunca processam transações reais. Para produção, crie uma chave separada após verificar sua conta.
+  <Accordion title="Posso usar a mesma chave no Modo Teste e em produção?">
+    Não. Cada chave é de um ambiente: a do Modo Teste (`abc_dev_...`) só simula transações, e a de produção (`abc_prod_...`) movimenta dinheiro real. Crie a chave de produção depois que a conta for verificada.
   </Accordion>
 
   <Accordion title="Recebi erro 401. O que fazer?">
-    Verifique se:
-    - O header `Authorization: Bearer SUA_CHAVE` está presente na requisição
-    - A chave não foi revogada no dashboard
-    - Você está usando a chave do ambiente correto (dev ou produção)
+    Leia o campo `error` da resposta: ele diz a causa (chave ausente, inválida, expirada, de outra versão ou sem a permissão da rota). A lista com o que fazer em cada caso está em [erros de autenticação](/pages/reference/introduction#erros-de-autenticação).
   </Accordion>
 
-  <Accordion title="Recebi erro 403. O que fazer?">
-    A chave existe e é válida, mas não tem permissão para o recurso solicitado. As permissões não podem ser editadas depois que a chave é criada: acesse o dashboard e crie uma chave nova com a permissão necessária (ex: `CHECKOUT:CREATE`). Consulte a [tabela de permissões](/pages/authentication).
+  <Accordion title="Recebi 401 com Insufficient permissions. O que fazer?">
+    A chave é válida, mas não tem a permissão da rota. As permissões não podem ser editadas depois que a chave é criada: crie uma chave nova com a permissão necessária (ex.: `CHECKOUT:CREATE`). Veja a [tabela de permissões](/pages/comecar/chaves-de-api#permissões).
   </Accordion>
 </AccordionGroup>
 
-### Dev mode e testes
+### Modo Teste
 
 <AccordionGroup>
-  <Accordion title="Qual a diferença entre Dev mode e Produção?">
-    No Dev mode, todos os pagamentos são simulados — nenhum valor real é movimentado. O ambiente é determinado automaticamente pela chave usada: chaves de Dev geram transações fictícias, chaves de Produção processam transações reais.
+  <Accordion title="Qual a diferença entre o Modo Teste e a produção?">
+    No Modo Teste os pagamentos são simulados e nenhum valor real é movimentado. O ambiente vem da chave usada, e a URL da API é a mesma. Veja [Modo Teste](/pages/comecar/modo-teste).
   </Accordion>
 
-  <Accordion title="Como simulo um pagamento aprovado no Dev mode?">
-    Para PIX, use o endpoint `/transparents/simulate-payment` após criar a cobrança. Para cartão, use o número `4242 4242 4242 4242` com qualquer data futura e qualquer CVV. Consulte o [guia de Dev mode](/pages/devmode).
+  <Accordion title="Como simulo um pagamento aprovado no Modo Teste?">
+    No checkout e no link de pagamento, clique em **Simular Pagamento** na tela de pagamento. No Pix transparente, chame `/transparents/simulate-payment` depois de criar a cobrança. No cartão, use `4242 4242 4242 4242` com qualquer data futura e qualquer CVV. Veja os [cartões de teste](/pages/comecar/modo-teste#cartões-de-teste).
   </Accordion>
 
-  <Accordion title="Meus webhooks do Dev mode recebem eventos reais?">
-    Não. Webhooks criados em Dev mode recebem apenas eventos simulados. Para eventos reais, use uma chave de produção e crie o webhook no ambiente de produção.
+  <Accordion title="Meus webhooks do Modo Teste recebem eventos reais?">
+    Não. Webhooks criados no Modo Teste recebem só os eventos dos testes. Para eventos reais, crie o webhook de novo com o Modo Teste desligado.
   </Accordion>
 </AccordionGroup>
 

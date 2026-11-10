@@ -1,0 +1,104 @@
+---
+title: 'Ir para produção'
+description: 'O checklist da integração e o que fazer depois que a conta é aprovada.'
+icon: 'conveyor-belt-arm'
+---
+
+Ir para produção tem dois passos independentes: ter a [conta verificada](/pages/comecar/conta-e-verificacao), o que se faz uma vez só, e trocar a chave de API do Modo Teste pela de produção no seu sistema. Os dois precisam estar prontos antes de processar pagamentos reais.
+
+## Checklist
+
+Use esta lista para saber se a sua integração está pronta. O progresso fica salvo no seu navegador.
+
+<div id="abkt-checklist" style={{
+  borderRadius: "8px",
+  border: "1px solid rgba(255,255,255,0.1)",
+  overflow: "hidden",
+  marginBottom: "16px"
+}}>
+  {[
+    { id: "auth",       label: "Autenticação funcionando com a chave do Modo Teste" },
+    { id: "create",     label: <>Criação de cobrança retornando <code>success: true</code></> },
+    { id: "card",       label: <>Pagamento com cartão testado com <code>4242 4242 4242 4242</code></> },
+    { id: "pix",        label: <>Pagamento Pix testado com <code>/transparents/simulate-payment</code> ou com o botão Simular Pagamento</> },
+    { id: "webhook",    label: <>Webhook recebendo e processando <code>checkout.completed</code> (ou o evento que você usa)</> },
+    { id: "idempotent", label: "Eventos repetidos descartados pelo id (idempotência)" },
+    { id: "errors",     label: <>Tratamento de erros <code>4xx</code> e de <code>5xx</code> com nova tentativa</> },
+    { id: "envvar",     label: "Chave de API em variável de ambiente, nunca no código" },
+    { id: "failures",   label: "Cenários de falha testados (cartões recusados, dados inválidos)" },
+  ].map(({ id, label }, i) => (
+    <label
+      key={id}
+      htmlFor={`chk-${id}`}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: "12px",
+        padding: "12px 16px",
+        cursor: "pointer",
+        borderBottom: i < 8 ? "1px solid rgba(255,255,255,0.06)" : "none",
+        transition: "background 0.15s",
+      }}
+      onMouseEnter={e => e.currentTarget.style.background = "rgba(158,234,108,0.04)"}
+      onMouseLeave={e => e.currentTarget.style.background = "transparent"}
+    >
+      <input
+        type="checkbox"
+        id={`chk-${id}`}
+        style={{ width: "16px", height: "16px", accentColor: "#9EEA6C", cursor: "pointer", flexShrink: 0 }}
+        defaultChecked={typeof window !== "undefined" && localStorage.getItem(`abkt-devmode-${id}`) === "1"}
+        onChange={e => {
+          localStorage.setItem(`abkt-devmode-${id}`, e.target.checked ? "1" : "0");
+          const all = document.querySelectorAll("#abkt-checklist input[type=checkbox]");
+          const done = [...all].filter(c => c.checked).length;
+          const bar = document.getElementById("abkt-progress-bar");
+          const label = document.getElementById("abkt-progress-label");
+          if (bar) bar.style.width = `${(done / all.length) * 100}%`;
+          if (label) label.textContent = `${done} / ${all.length} concluídos`;
+        }}
+      />
+      <span style={{ fontSize: "14px", lineHeight: "1.5" }}>{label}</span>
+    </label>
+  ))}
+</div>
+
+<div style={{ marginBottom: "24px" }}>
+  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px" }}>
+    <span style={{ fontSize: "12px", color: "rgba(255,255,255,0.4)" }}>Progresso</span>
+    <span id="abkt-progress-label" style={{ fontSize: "12px", color: "rgba(255,255,255,0.4)" }}>0 / 9 concluídos</span>
+  </div>
+  <div style={{ background: "rgba(255,255,255,0.08)", borderRadius: "4px", height: "6px", overflow: "hidden" }}>
+    <div id="abkt-progress-bar" style={{ height: "100%", background: "#9EEA6C", borderRadius: "4px", width: "0%", transition: "width 0.3s" }} />
+  </div>
+</div>
+
+<script dangerouslySetInnerHTML={{ __html: `
+  (function() {
+    var ids = ["auth","create","card","pix","webhook","idempotent","errors","envvar","failures"];
+    var done = 0;
+    ids.forEach(function(id) {
+      var el = document.getElementById("chk-" + id);
+      if (el && localStorage.getItem("abkt-devmode-" + id) === "1") {
+        el.checked = true;
+        done++;
+      }
+    });
+    var bar = document.getElementById("abkt-progress-bar");
+    var lbl = document.getElementById("abkt-progress-label");
+    if (bar) bar.style.width = (done / ids.length * 100) + "%";
+    if (lbl) lbl.textContent = done + " / " + ids.length + " concluídos";
+  })();
+`}} />
+
+## Depois da aprovação
+
+Quando a conta é aprovada, você recebe um e-mail. Então:
+
+1. Desligue o **Modo Teste (Sandbox)** no dashboard e crie uma chave de produção em **Integração → API → Nova chave**. Veja [Chaves de API](/pages/comecar/chaves-de-api).
+2. Troque, no seu sistema, a chave do Modo Teste pela de produção. A URL da API é a mesma.
+3. Crie os webhooks de novo com o Modo Teste desligado. Os webhooks do Modo Teste não recebem eventos reais.
+4. Faça uma venda real de valor baixo para confirmar que está tudo funcionando.
+
+<Card title="Precisa de ajuda?" icon="headset" horizontal>
+  Fale com a gente em ajuda@abacatepay.com.
+</Card>
