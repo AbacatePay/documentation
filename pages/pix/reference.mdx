@@ -4,6 +4,8 @@ description: "Envie dinheiro via PIX para qualquer chave PIX"
 icon: "book-open-cover"
 ---
 
+import { Video } from '/snippets/video.jsx'
+
 Com o **PIX** você envia dinheiro para qualquer chave PIX que não seja da conta titular — terceiros, fornecedores ou parceiros.
 
 <Note>
@@ -45,6 +47,10 @@ Exemplo de resposta de uma transação PIX:
 | `externalId` | string \| null | ID no seu sistema; pode ser `null` |
 | `createdAt`  | string  | Data/hora de criação (ISO 8601) |
 | `updatedAt`  | string  | Data/hora da última atualização |
+
+<Video id="https://youtu.be/TwEArVdl-SE" title="Comprovante - AbacatePay" />
+
+`receiptUrl` é o link do comprovante da transferência. No dashboard, o botão **Ver comprovante** abre o mesmo recibo. O vídeo também está em [Comprovante](/pages/videos/comprovante).
 
 **Valores de `status`:**
 

@@ -4,7 +4,13 @@ description: 'Receba Pix numa chave fixa da sua conta, sem gerar cobrança, e au
 icon: 'key'
 ---
 
+import { Video } from '/snippets/video.jsx'
+
 Com o Pix por chave fixa, seus clientes pagam numa chave Pix da sua conta AbacatePay, sem cobrança, QR Code ou boleto. Serve para quem tem clientes que só pagam "por chave" e quer automatizar a baixa desses recebimentos.
+
+<Video id="https://youtu.be/XcW95Ax9hxQ" title="Chave PIX Aleatória - AbacatePay" />
+
+O vídeo também está em [Chave Pix](/pages/videos/chave-pix).
 
 - Todo Pix que cai na chave entra no seu saldo, com a mesma [taxa](/pages/concepts/taxas) do Pix por QR Code da sua conta.
 - A cada Pix recebido, a AbacatePay dispara o webhook `pix_key.received`, com o valor, a taxa e quem pagou (nome, CPF/CNPJ e banco).
@@ -113,7 +119,9 @@ Veja todos os campos em [Eventos de Pix por chave](/pages/webhooks/events/pix-ke
 
 ## Reembolso
 
-O reembolso é feito pelo dashboard: na aba **Chave Pix**, clique em **Reembolsar** no Pix.
+<Video id="https://youtu.be/YBwg0A1ib1o" title="Reembolso - AbacatePay" />
+
+O reembolso é feito pelo dashboard: na aba **Chave Pix**, clique em **Reembolsar** no Pix. O vídeo também está em [Reembolso](/pages/videos/reembolso).
 
 - O valor volta para quem pagou e o webhook `pix_key.refunded` é disparado.
 - O reembolso exige saldo disponível suficiente na conta.
