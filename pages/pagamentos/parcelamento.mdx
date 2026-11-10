@@ -1,0 +1,163 @@
+---
+title: 'Parcelamento no cartão'
+description: 'Venda em até 12x no cartão de crédito pelo checkout, pelo link de pagamento ou pela API. Veja o mínimo por parcela, quem paga os juros e como configurar.'
+icon: 'calendar-days'
+---
+
+Com o parcelamento, o cliente divide a compra no cartão de crédito em até 12 parcelas. Você define o máximo, o cliente escolhe na hora de pagar, e o banco aprova a venda inteira de uma vez.
+
+## Onde o parcelamento funciona
+
+| Onde | Parcela? |
+|---|---|
+| [Checkout](/pages/cobrar/checkout) | Sim, até o máximo que você definir |
+| [Link de pagamento](/pages/cobrar/link-de-pagamento) | Sim, até o máximo que você definir |
+| [Checkout transparente](/pages/cobrar/checkout-transparente) | Sim, no número de parcelas que você enviar |
+| [One click buy](/pages/pagamentos/one-click-buy) (cartão salvo) | Sim |
+| [Assinaturas](/pages/cobrar/assinaturas) | Não |
+| Compra com [cupom](/pages/vender/cupons) | Não. O cartão é cobrado à vista |
+| [Apple Pay e Google Pay](/pages/pagamentos/apple-pay-google-pay) | Não. Sempre à vista |
+| [Upsell](/pages/vender/upsell) | Não. Sempre à vista |
+
+## Como funciona o parcelamento
+
+```mermaid
+flowchart LR
+  A[Você define o máximo de parcelas] --> B[O cliente escolhe as parcelas]
+  B --> C[O banco aprova a venda inteira]
+  C --> D[Cada parcela entra no seu saldo]
+```
+
+- **De 2 a 12 parcelas.** Uma parcela é o pagamento à vista.
+- **Mínimo de R$ 10,00 por parcela.** Para oferecer 3x, o total precisa ser de pelo menos R$ 30,00; para 12x, de R$ 120,00.
+- **O valor da compra é o total.** O cliente vê o valor de cada parcela, e as parcelas podem variar alguns centavos por arredondamento.
+- **A venda é aprovada de uma vez**, no limite do cartão do cliente. Para você, cada parcela entra no saldo por conta própria.
+- **Sem cupom.** Quando o cliente aplica um cupom, o cartão é cobrado à vista.
+
+## Quem paga os juros do parcelamento
+
+A taxa do cartão aumenta com o número de parcelas, e quem paga é você: o cliente paga o preço dividido nas parcelas, sem acréscimo, e a taxa sai do valor que você recebe. As taxas de cada parcela estão em **Perfil → Taxas** e na [página de preços](https://www.abacatepay.com/pricing).
+
+Se preferir que o cliente pague, ligue o [repasse de taxa](/pages/pagamentos/repasse-de-taxa): o checkout soma a taxa de cada opção de parcela ao total, e você recebe o preço cheio.
+
+## Pelo dashboard
+
+1. Vá em **Sua Loja → Cobranças** e clique em **Criar cobrança**, ou em **Sua Loja → Links de pagamento** e clique em **Criar link de pagamento**.
+2. Em **Métodos de pagamento**, selecione **Cartão**.
+3. Em **Parcelas no cartão**, escolha o máximo. A lista só vai até onde o mínimo de R$ 10,00 por parcela permite para os produtos escolhidos.
+4. Salve.
+
+O campo **Parcelas no cartão** aparece quando a sua conta tem o parcelamento liberado, o que vem com a [ativação do cartão](/pages/pagamentos/cartao-de-credito#como-ativar-o-cartão-na-sua-conta).
+
+No checkout, quando o cliente escolhe **Crédito**, aparece o campo **Parcelas no cartão**, com o valor de cada opção (por exemplo, `3x de R$ 33,33`).
+
+Depois da venda, a lista de **Sua Loja → Cobranças** mostra o número de parcelas abaixo do valor (`em 3x`). Nos detalhes da cobrança, a seção **Parcelas** lista cada uma com o seu status: **A receber**, **Liquidada**, **Antecipada**, **Estornada** ou **Em disputa**.
+
+## Pela API
+
+### No checkout e no link de pagamento
+
+Envie `card.maxInstallments`, de `1` a `12`, ao [criar o checkout](/pages/payment/create) ou o [link de pagamento](/pages/payment-links/create). `CARD` precisa estar em `methods`.
+
+```json
+{
+  "items": [{ "id": "prod_abc123xyz", "quantity": 1 }],
+  "methods": ["PIX", "CARD"],
+  "card": { "maxInstallments": 6 }
+}
+```
+
+O checkout mostra as opções de 1x até o máximo. Para aceitar só cartão, tire `PIX` de `methods`.
+
+Depois do pagamento, o campo `installmentsCount` traz o número de parcelas escolhido, em [Buscar checkout](/pages/payment/one) e no webhook. Ele fica `null` antes do pagamento, no pagamento à vista e em Pix ou boleto.
+
+### No checkout transparente
+
+Envie `installmentCount`, de `1` a `12`, em [Criar cobrança Cartão](/pages/transparents/card). O `amount` é o total da venda.
+
+```json
+{
+  "method": "CARD",
+  "data": {
+    "amount": 30000,
+    "installmentCount": 3,
+    "token": "ctok_9fK2mQ7xLp4vR8sT1wYz3nBc",
+    "customer": {
+      "name": "Maria Silva",
+      "email": "maria@exemplo.com",
+      "taxId": "529.982.247-25",
+      "cellphone": "(11) 99999-9999"
+    }
+  }
+}
+```
+
+A resposta traz o `id` da primeira parcela, o `amount` com o total da venda e os campos do parcelamento:
+
+```json
+{
+  "data": {
+    "id": "card_Lr8pN3vKq2XwT6yB9mZc1HdS",
+    "amount": 30000,
+    "status": "APPROVED",
+    "installmentCount": 3,
+    "installmentAmount": 10000,
+    "installmentNumber": 1,
+    "installmentGroupId": "cinst_Qe5tY7uI9oP1aS3dF5gH7jK9"
+  },
+  "success": true,
+  "error": null
+}
+```
+
+| Campo | O que é |
+|---|---|
+| `installmentCount` | Número de parcelas |
+| `installmentAmount` | Valor da primeira parcela, em centavos. As outras podem variar em centavos |
+| `installmentNumber` | Sempre `1` nesta resposta |
+| `installmentGroupId` | ID do parcelamento (`cinst_...`) |
+
+Os campos só aparecem quando a venda tem mais de uma parcela.
+
+### Erros do parcelamento
+
+| Erro | Quando acontece |
+|---|---|
+| `card.maxInstallments must be an integer between 1 and 12` | `maxInstallments` fora de 1 a 12 |
+| `card.maxInstallments requires CARD in methods` | `CARD` não está em `methods` |
+| `Total below minimum for 6x (R$10 per installment)` | O total não chega a R$ 10,00 por parcela no máximo escolhido. O número muda com as parcelas |
+| `amount must be at least 3000 cents for 3 installments` | No checkout transparente, `amount` abaixo de R$ 10,00 por parcela |
+
+## Notificações
+
+Uma venda parcelada gera **um único evento**, quando a venda inteira é aprovada:
+
+- No checkout e no link de pagamento, chega um [`checkout.completed`](/pages/webhooks/events/checkout) com o `amount` da venda inteira e o `installmentsCount`.
+- No checkout transparente, chega um [`transparent.completed`](/pages/webhooks/events/transparent) com o `id` da primeira parcela, o `amount` da venda inteira e os campos `installmentCount`, `installmentAmount`, `installmentNumber` e `installmentGroupId`.
+
+## Testar no Modo Teste
+
+No [Modo Teste](/pages/comecar/modo-teste), crie o checkout com `maxInstallments`, escolha as parcelas na tela de pagamento e pague com um dos [cartões de teste](/pages/comecar/modo-teste#cartões-de-teste). Nada é cobrado de verdade.
+
+## Perguntas frequentes
+
+<AccordionGroup>
+  <Accordion title="O cliente paga juros no parcelado?">
+    Não. O cliente paga o preço dividido nas parcelas, e a taxa do parcelamento sai do que você recebe. Para que o cliente pague a taxa, use o [repasse de taxa](/pages/pagamentos/repasse-de-taxa).
+  </Accordion>
+  <Accordion title="Por que o checkout não mostra 12x?">
+    Ou o máximo definido é menor, ou o total não chega a R$ 10,00 por parcela. Um produto de R$ 50,00 parcela em até 5x.
+  </Accordion>
+  <Accordion title="Posso parcelar uma assinatura?">
+    Não. Assinaturas são cobradas à vista a cada ciclo.
+  </Accordion>
+  <Accordion title="O parcelamento funciona com cupom?">
+    Não. Com cupom, o cartão é cobrado à vista.
+  </Accordion>
+  <Accordion title="Recebo um webhook a cada parcela?">
+    Não. Chega um único evento por venda, com o total e o número de parcelas.
+  </Accordion>
+  <Accordion title="Como reembolso uma venda parcelada?">
+    O reembolso é da venda inteira: todas as parcelas são estornadas, e o extrato mostra um estorno por parcela. Veja [Reembolsos](/pages/vender/reembolsos).
+  </Accordion>
+</AccordionGroup>
