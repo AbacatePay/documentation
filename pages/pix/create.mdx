@@ -1,30 +1,24 @@
 ---
-title: Enviar PIX
+title: Enviar Pix
 openapi: 'POST /pix/send'
 ---
 
-Envia dinheiro para qualquer chave PIX de terceiros — fornecedores, parceiros ou colaboradores.
+Envia um Pix do saldo da sua conta para a chave Pix de outra pessoa ou empresa.
 
 <Card horizontal>
   Requer a permissão `WITHDRAW:CREATE`.
 </Card>
 
-<Note>
-**PIX vs Saques:** use **PIX** para enviar a chaves de terceiros. Para sacar para a sua própria chave use [Saques](/pages/payouts/create).
-</Note>
+<Card title="Entenda o Enviar Pix" icon="paper-plane" href="/pages/dinheiro/enviar-pix" horizontal>
+  Taxa, limites compartilhados com o saque, tipos de chave, Pix Copia e Cola, idempotência pelo `externalId` e eventos.
+</Card>
 
-<Warning>
-  O destino é aninhado em `pix`, com as chaves `key` e `type`. Enviar
-  `pixKey`/`pixKeyType` no topo falha com `Property 'pix' is missing`, e
-  aninhar com esses nomes falha com `Property 'pix.type' is missing`.
-</Warning>
-
-**Formato aceito pela API:**
+**Exemplo:**
 ```json
 {
   "amount": 10000,
-  "description": "Pagamento fornecedor #42",
-  "externalId": "pix-123",
+  "externalId": "pagamento-fornecedor-42",
+  "description": "NF 1234",
   "pix": {
     "key": "contato@fornecedor.com",
     "type": "EMAIL"
@@ -32,17 +26,19 @@ Envia dinheiro para qualquer chave PIX de terceiros — fornecedores, parceiros 
 }
 ```
 
-**Tipos de chave PIX aceitos:**
+**Erros comuns:**
 
-| `pix.type` | Exemplo |
-|--------------|---------|
-| `CPF` | `12345678901` |
-| `CNPJ` | `12345678000190` |
-| `PHONE` | `11987654321` |
-| `EMAIL` | `contato@exemplo.com` |
-| `RANDOM` | UUID aleatório |
-| `BR_CODE` | Código completo do QR |
-
-<Tip title="Limites" horizontal>
-Valor mínimo: R$ 1,00. O processamento é instantâneo e disponível 24/7. A taxa sai do valor enviado: o destinatário recebe `amount` menos a taxa. Para entregar um valor exato, some a taxa ao `amount`.
-</Tip>
+| `error` | Motivo |
+|---|---|
+| `Property 'pix' is missing` | O destino não veio em `pix`. Mandar `pixKey` e `pixKeyType` no topo cai aqui |
+| `Property 'pix.type' is missing` | `pix` veio sem `type` e `key`, por exemplo com `pixKey` e `pixKeyType` dentro dele |
+| `externalId já usado em outro envio com valor diferente` | Já existe um envio com esse `externalId` e outro `amount` |
+| `Essa chave Pix é da própria loja. Para mandar dinheiro pra ela, faça um saque.` | A chave é do CPF ou CNPJ da sua conta. Use [Criar um saque](/pages/payouts/create) |
+| `Invalid BRCode` | O Pix Copia e Cola é inválido ou é de cobrança (dinâmico), sem a chave do destinatário |
+| `Saldo insuficiente` | O `amount` passa do saldo disponível, já descontado o débito de disputa em aberto |
+| `Não é possível sacar os saldos de PIX e cartão no mesmo saque` | Nenhum dos dois saldos cobre o valor sozinho |
+| `Chave PIX não encontrada` | A chave não existe |
+| `Aguarde alguns segundos antes de solicitar outro saque` | A conta fez um saque ou um envio de Pix há menos de 30 segundos |
+| `Limite de saque diário atingido` | O envio passaria do limite diário da conta, que soma saques e envios |
+| `Limite de saque noturno atingido` | Das 20h às 8h, o envio passaria do limite noturno da conta |
+| `Função não habilitada` | O Enviar Pix está desativado na sua conta |

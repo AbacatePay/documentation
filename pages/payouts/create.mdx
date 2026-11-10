@@ -3,36 +3,40 @@ title: Criar um Saque
 openapi: 'POST /payouts/create'
 ---
 
-Saca saldo da sua conta para uma chave PIX de sua titularidade.
+Saca o saldo disponível da sua conta por Pix para uma chave no mesmo CPF ou CNPJ da conta.
 
 <Card horizontal>
   Requer a permissão `WITHDRAW:CREATE`.
 </Card>
 
-<Note>
-**Saques vs PIX:** use **Saques** para sua própria chave PIX. Para enviar a terceiros use [Enviar PIX](/pages/pix/create).
-</Note>
+<Card title="Entenda os saques" icon="money-bill-transfer" href="/pages/dinheiro/saques" horizontal>
+  Mínimo de R$ 3,50, taxa, saldo de origem, limites diário e noturno, intervalo de 30 segundos e eventos.
+</Card>
 
-<Warning>
-  O destino é aninhado em `pix`, com as chaves `key` e `type`. Enviar
-  `pixKey`/`pixKeyType` no topo falha com `Property 'pix' is missing`, e
-  aninhar com esses nomes falha com `Property 'pix.type' is missing`.
-</Warning>
-
-**Formato aceito pela API:**
+**Exemplo:**
 ```json
 {
   "amount": 10000,
-  "description": "Saque semanal",
-  "externalId": "saque-123",
+  "externalId": "saque-2026-11-10",
   "pix": {
-    "key": "sua-chave@email.com",
-    "type": "EMAIL"
+    "key": "12345678000190",
+    "type": "CNPJ"
   }
 }
 ```
 
-**Limites:**
-- Valor mínimo: R$ 3,50
-- Taxa: descontada do valor: a conta de destino recebe `amount` menos `platformFee`. Os valores estão na [página de preços](https://www.abacatepay.com/pricing)
-- Limite de frequência: 1 saque por minuto (HTTP 429 se excedido)
+**Erros comuns:**
+
+| `error` | Motivo |
+|---|---|
+| `Property 'pix' is missing` | O destino não veio em `pix`. Mandar `pixKey` e `pixKeyType` no topo cai aqui |
+| `Property 'pix.type' is missing` | `pix` veio sem `type` e `key`, por exemplo com `pixKey` e `pixKeyType` dentro dele |
+| `Saldo insuficiente` | O `amount` passa do saldo disponível, já descontado o débito de disputa em aberto |
+| `Não é possível sacar os saldos de PIX e cartão no mesmo saque` | Nenhum dos dois saldos cobre o valor sozinho |
+| `Essa chave Pix não está em nome da sua empresa. Para enviar a outra pessoa ou empresa, inclusive sócios, use a tela Pagamentos.` | A chave é de outro CPF ou CNPJ. Para pagar outra pessoa, use [Enviar Pix](/pages/pix/create) |
+| `Chave PIX não encontrada` | A chave não existe |
+| `Aguarde alguns segundos antes de solicitar outro saque` | A conta fez um saque ou um envio de Pix há menos de 30 segundos |
+| `Limite de saque diário atingido` | O saque passaria do limite diário da conta |
+| `Limite de saque noturno atingido` | Das 20h às 8h, o saque passaria do limite noturno da conta |
+| `Saques estão temporariamente indisponíveis. Tente novamente mais tarde.` | Os saques estão em manutenção |
+| `Função não habilitada` | O saque pela API está desativado na sua conta |

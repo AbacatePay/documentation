@@ -3,17 +3,14 @@ title: Buscar saque
 openapi: 'GET /payouts/get'
 ---
 
-Retorna os dados de um saque pelo seu `id`.
+Retorna um saque pelo `id` ou pelo `externalId`.
 
 <Card horizontal>
   Requer a permissão `WITHDRAW:READ`.
 </Card>
 
-Use para verificar o `status` de um saque após criá-lo. O comprovante fica em `receiptUrl`.
+<Card title="Entenda os saques" icon="money-bill-transfer" href="/pages/dinheiro/saques" horizontal>
+  Status `COMPLETE` e `FAILED`, comprovante em `receiptUrl` e eventos.
+</Card>
 
-**Valores de `status`:**
-
-| Valor | Significado |
-|-------|-------------|
-| `COMPLETE` | Saque criado e enviado |
-| `FAILED` | O envio falhou; o valor volta para o seu saldo |
+Se o saque não existe na sua conta, a API responde com o erro `Transaction not found`.

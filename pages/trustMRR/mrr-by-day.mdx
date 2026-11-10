@@ -3,8 +3,19 @@ title: 'Obter MRR por Dia'
 openapi: '/openapi.yaml GET /public-mrr/mrr-by-day'
 ---
 
+Retorna o MRR no fim de cada dia entre `startDate` e `endDate`, no horário de Brasília.
+
 <Card horizontal>
-  Use o token `mrr_` gerado no app Trust MRR.
+  Use o token `mrr_` do plugin Public MRR, não a chave de API.
 </Card>
 
-Retorna o MRR do fim de cada dia entre `startDate` e `endDate`, com a mesma conta do [Obter MRR](/pages/trustMRR/mrr). O período pode ter até 366 dias.
+<Card title="Entenda o Public MRR" icon="chart-line" href="/pages/integracoes/public-mrr" horizontal>
+  Como gerar o token e como o MRR é calculado.
+</Card>
+
+**Erros comuns:**
+
+| `error` | Motivo |
+|---|---|
+| `End date must be after start date` | O `endDate` é anterior ao `startDate` |
+| `Date range must be at most 366 days` | O período passa de 366 dias |

@@ -3,13 +3,17 @@ title: Criar subconta
 openapi: 'POST /sub-accounts/create'
 ---
 
-Cadastra um vendedor como subconta da sua loja.
+Cadastra um vendedor como subconta da sua loja. Se já existe uma subconta com o mesmo CPF ou CNPJ, devolve essa subconta.
 
 <Card horizontal>
   Requer a permissão `SUB_ACCOUNT:CREATE`.
 </Card>
 
-**Formato aceito pela API:**
+<Card title="Entenda as subcontas" icon="sitemap" href="/pages/dinheiro/subcontas-e-split" horizontal>
+  Um titular por subconta, split no Pix, saldo separado, saque para o vendedor e liberação.
+</Card>
+
+**Exemplo:**
 ```json
 {
   "name": "João da Silva",
@@ -21,22 +25,13 @@ Cadastra um vendedor como subconta da sua loja.
 }
 ```
 
-| Campo | Tipo | Descrição |
-|---|---|---|
-| `name` | `string` | Nome do titular, até 100 caracteres. Obrigatório |
-| `taxId` | `string` | CPF ou CNPJ do titular, com ou sem máscara. Obrigatório |
-| `externalId` | `string` | ID no seu sistema, até 100 caracteres. Opcional |
-| `metadata` | `object` | Campos livres; todos os valores precisam ser texto. Opcional |
-
-<Note>
-  A criação é idempotente pelo CPF/CNPJ: se já existe uma subconta com o mesmo `taxId`, a API devolve essa subconta, com o saldo atual, e ignora os outros campos.
-</Note>
-
 **Erros comuns:**
 
 | `error` | Motivo |
 |---|---|
 | `CPF ou CNPJ inválido` | O `taxId` não é um CPF nem um CNPJ válido |
+| `Nome da subconta é obrigatório` | O `name` veio só com espaços |
 | `A subconta não pode ter o CPF ou CNPJ da própria loja` | O `taxId` é o documento da sua loja. O seu saldo já é o da loja; subconta é para vendedores |
 | `externalId já usado por outra subconta` | Outra subconta da loja já tem esse `externalId` |
-| `Função não habilitada` | As subcontas não estão habilitadas na sua conta |
+| `Subcontas exigem o saldo Pix…` | O saldo Pix da sua conta ainda não aceita subcontas. Fale com o suporte |
+| `Função não habilitada` | As subcontas não estão liberadas na sua conta |

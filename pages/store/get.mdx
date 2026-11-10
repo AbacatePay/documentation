@@ -3,73 +3,21 @@ title: 'Obter detalhes da loja'
 openapi: "GET /stores/get"
 ---
 
-<Card  horizontal>
+Retorna o ID, o nome e o saldo da sua loja.
+
+<Card horizontal>
   Requer a permissão `STORE:READ`.
 </Card>
 
-<Note>
-  Este endpoint permite que você recupere todas as informações da sua loja, incluindo saldos disponíveis, pendentes e bloqueados.
-</Note>
+<Card title="Entenda o saldo" icon="wallet" href="/pages/dinheiro/saldo-e-extrato" horizontal>
+  Saldo disponível, pendente e bloqueado, antecipação em processamento e quando cada pagamento fica disponível.
+</Card>
 
-## Exemplo de uso
-
-<CodeGroup>
-
-```bash cURL
-curl -X GET "https://api.abacatepay.com/v2/stores/get" \
-  -H "Authorization: Bearer YOUR_API_KEY" \
-  -H "Content-Type: application/json"
+**Exemplo:**
+```bash
+curl "https://api.abacatepay.com/v2/stores/get" \
+  -H "Authorization: Bearer SUA_CHAVE"
 ```
-
-```javascript JavaScript
-const response = await fetch('https://api.abacatepay.com/v2/stores/get', {
-  method: 'GET',
-  headers: {
-    'Authorization': 'Bearer YOUR_API_KEY',
-    'Content-Type': 'application/json'
-  }
-});
-
-const data = await response.json();
-console.log(data);
-```
-
-```python Python
-import requests
-
-headers = {
-    'Authorization': 'Bearer YOUR_API_KEY',
-    'Content-Type': 'application/json'
-}
-
-response = requests.get('https://api.abacatepay.com/v2/stores/get', headers=headers)
-data = response.json()
-print(data)
-```
-
-```php PHP
-<?php
-$headers = [
-    'Authorization: Bearer YOUR_API_KEY',
-    'Content-Type: application/json'
-];
-
-$ch = curl_init();
-curl_setopt($ch, CURLOPT_URL, 'https://api.abacatepay.com/v2/stores/get');
-curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-$response = curl_exec($ch);
-$data = json_decode($response, true);
-curl_close($ch);
-
-print_r($data);
-?>
-```
-
-</CodeGroup>
-
-## Resposta de sucesso
 
 ```json
 {
@@ -79,7 +27,8 @@ print_r($data);
     "balance": {
       "available": 50000,
       "pending": 10000,
-      "blocked": 0
+      "blocked": 0,
+      "processingAnticipation": 0
     }
   },
   "success": true,
@@ -87,32 +36,11 @@ print_r($data);
 }
 ```
 
-## Resposta de erro
+Os valores de `balance` são em centavos e somam o saldo de Pix e boleto com o de cartão.
 
-```json
-{
-  "success": false,
-  "error": "Erro ao recuperar dados da loja.",
-  "data": null
-}
-```
+**Erros comuns:**
 
-## Casos de uso
-
-<AccordionGroup>
-  <Accordion title="Verificar saldo disponível">
-    Use este endpoint para verificar quanto dinheiro você tem disponível para saque antes de criar uma nova transação de saque.
-  </Accordion>
-
-  <Accordion title="Dashboard da loja">
-    Ideal para exibir informações da loja em dashboards administrativos, mostrando saldos e identificação da conta.
-  </Accordion>
-
-  <Accordion title="Reconciliação de contas">
-    Útil para processos de reconciliação, permitindo verificar o estado atual dos saldos da sua conta.
-  </Accordion>
-</AccordionGroup>
-
-<Warning title="Autenticação obrigatória" icon="lock" horizontal>
-  Este endpoint requer autenticação via Bearer token. Certifique-se de incluir sua chave de API no cabeçalho Authorization.
-</Warning>
+| `error` | Motivo |
+|---|---|
+| `Store not found` | A loja da chave não foi encontrada |
+| `Bank account not found` | A loja ainda não tem conta de saldo |
