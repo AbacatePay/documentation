@@ -1,6 +1,7 @@
 ---
-title: 'Primeiros passos'
-description: 'Crie um produto, gere um link de pagamento e teste uma venda. Ou faça a primeira chamada à API.'
+title: 'Primeiros passos: receba seu primeiro pagamento'
+sidebarTitle: 'Primeiros passos'
+description: 'Crie um produto, gere um link de pagamento e simule uma venda em 10 minutos, sem código. Ou faça a primeira cobrança Pix pela API.'
 icon: 'rocket'
 ---
 
@@ -21,7 +22,7 @@ Em 10 minutos você cria um produto, gera um link de pagamento e simula uma vend
     Um produto é o que você vende: um curso, uma consultoria, um pacote.
 
     1. No menu, vá em **Sua Loja → Produtos** e clique em **Novo produto**.
-    2. Preencha o nome, o preço e, se quiser, uma descrição para a tela de pagamento.
+    2. Preencha o nome, o preço e a descrição que aparece na tela de pagamento.
     3. Salve.
   </Step>
 
@@ -41,7 +42,7 @@ Em 10 minutos você cria um produto, gera um link de pagamento e simula uma vend
   <Step title="Acompanhe o pagamento">
     Em **Sua Loja → Links de pagamento**, abra o link: o pagamento aparece dentro dele. O link continua **Ativo** e aceita novos pagamentos até você desativá-lo.
 
-    Para avisar o seu sistema a cada pagamento, configure um [webhook](/pages/webhooks).
+    Para avisar o seu sistema a cada pagamento, configure um [webhook](/pages/notificacoes/webhooks).
   </Step>
 
   <Step title="Receba de verdade">
@@ -77,20 +78,20 @@ Em 10 minutos você cria um produto, gera um link de pagamento e simula uma vend
   </Step>
 
   <Step title="Receba a confirmação">
-    Cadastre um [webhook](/pages/webhooks) para receber o evento `transparent.completed` quando a cobrança for paga.
+    Cadastre um [webhook](/pages/notificacoes/webhooks) para receber o evento [`transparent.completed`](/pages/webhooks/events/transparent) quando a cobrança for paga.
   </Step>
 </Steps>
 
 ## Próximos passos
 
 <CardGroup cols={2}>
-  <Card icon="rotate" title="Assinaturas" href="/pages/concepts/subscriptions">
+  <Card icon="rotate" title="Assinaturas" href="/pages/cobrar/assinaturas">
     Cobre seus clientes automaticamente a cada ciclo.
   </Card>
-  <Card icon="tag" title="Cupons de desconto" href="/pages/coupons/reference">
+  <Card icon="tag" title="Cupons de desconto" href="/pages/vender/cupons">
     Crie promoções com desconto fixo ou percentual.
   </Card>
-  <Card icon="code" title="Checkout transparente" href="/pages/concepts/checkout-transparente">
+  <Card icon="code" title="Checkout transparente" href="/pages/cobrar/checkout-transparente">
     Receba Pix, boleto e cartão dentro do seu site.
   </Card>
   <Card icon="book-open" title="Referência da API" href="/pages/reference/introduction">

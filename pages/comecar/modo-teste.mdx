@@ -1,6 +1,7 @@
 ---
-title: 'Modo Teste'
-description: 'O ambiente para testar cobranças, pagamentos e webhooks sem dinheiro real.'
+title: 'Modo Teste: ambiente de testes (sandbox)'
+sidebarTitle: 'Modo Teste'
+description: 'Teste cobranças, pagamentos por Pix, cartão e boleto e webhooks sem dinheiro real. Veja como simular pagamentos e os cartões de teste.'
 icon: 'flask'
 ---
 
@@ -37,7 +38,7 @@ Nas respostas, o campo `devMode` diz em qual ambiente o recurso foi criado.
 
 - **No checkout e no link de pagamento:** no Modo Teste, o botão final da tela de pagamento vira **Simular Pagamento**. Clique nele para aprovar a cobrança.
 - **No checkout transparente (Pix):** chame [Simular pagamento](/pages/transparents/simulate-payment) com o `id` da cobrança.
-- **No cartão:** use os cartões de teste abaixo, no checkout ou no [checkout transparente](/pages/guides/cartao-transparente). Com a chave pública de teste, o formulário do abacatepay.js já vem preenchido com um cartão aprovado.
+- **No cartão:** use os cartões de teste abaixo, no checkout ou no [checkout transparente](/pages/cobrar/checkout-transparente-cartao). Com a chave pública de teste, o formulário do abacatepay.js já vem preenchido com um cartão aprovado.
 
 ## Cartões de teste
 

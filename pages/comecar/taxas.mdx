@@ -1,6 +1,7 @@
 ---
-title: 'Taxas'
-description: 'Como a AbacatePay cobra as taxas: sem mensalidade, descontadas de cada movimentação.'
+title: 'Taxas da AbacatePay: como são cobradas'
+sidebarTitle: 'Taxas'
+description: 'A AbacatePay não cobra mensalidade: a taxa sai de cada venda, saque ou Pix enviado. Veja como é descontada no Pix, no cartão, no saque e no TED.'
 icon: 'receipt'
 ---
 
@@ -12,15 +13,15 @@ Os valores das taxas de Pix, cartão de crédito, boleto, saque e TED estão na 
 
 ## Como as taxas são cobradas
 
-```
-Cliente paga R$ 100,00
-→ AbacatePay desconta a taxa da transação
-→ O restante entra no seu saldo
+```mermaid
+flowchart LR
+  A["Cliente paga R$ 100,00"] --> B[A AbacatePay desconta a taxa]
+  B --> C[O restante entra no seu saldo]
 ```
 
-Nas cobranças do [checkout transparente](/pages/transparents/reference), nos saques e no [Enviar Pix](/pages/pix/reference), o campo `platformFee` mostra a taxa descontada, em centavos.
+Nas cobranças do [checkout transparente](/pages/cobrar/checkout-transparente), nos [saques](/pages/dinheiro/saques) e no [Enviar Pix](/pages/dinheiro/enviar-pix), o campo `platformFee` mostra a taxa descontada, em centavos.
 
-- **Cartão:** a taxa muda com o número de parcelas. As taxas da sua conta para cada parcela estão em **Perfil → Taxas**. Se quiser que o cliente pague a taxa, veja [Repassar a taxa do cartão](/pages/guides/repasse-de-taxa).
+- **Cartão:** a taxa muda com o número de parcelas. As taxas da sua conta para cada parcela estão em **Perfil → Taxas**. Se quiser que o cliente pague a taxa, veja [Repasse de taxa](/pages/pagamentos/repasse-de-taxa).
 - **Saque e Enviar Pix:** a taxa sai do valor enviado. A conta de destino recebe `amount` menos `platformFee`.
 - **TED:** a taxa é somada ao valor da transferência.
 - **Reembolso:** quando você reembolsa uma venda, a taxa cobrada nela não é devolvida.

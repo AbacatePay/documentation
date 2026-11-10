@@ -7,7 +7,7 @@
     { "source": "/pages/withdraw/*", "destination": "/pages/payouts/*" },
     { "source": "/pages/coupon/*", "destination": "/pages/coupons/*" },
     { "source": "/pages/cupom/*", "destination": "/pages/coupons/*" },
-    { "source": "/withdraw", "destination": "/pages/payouts/reference" },
+    { "source": "/withdraw", "destination": "/pages/dinheiro/saques" },
     { "source": "/coupons/list", "destination": "/pages/coupons/list" },
     { "source": "/pages/start/quickstart", "destination": "/pages/comecar/sobre" },
     { "source": "/pages/start/welcome", "destination": "/pages/comecar/sobre" },
@@ -25,9 +25,43 @@
     { "source": "/pages/sdk/node", "destination": "/pages/sdks/nodejs" },
     { "source": "/pages/sdk/kotlin", "destination": "/pages/sdks/kotlin" },
     { "source": "/pages/sdks/golang", "destination": "/pages/sdks/go" },
+    { "source": "/pages/concepts/checkout", "destination": "/pages/cobrar/checkout" },
+    { "source": "/pages/payment/reference", "destination": "/pages/cobrar/checkout" },
+    { "source": "/pages/payment-links/reference", "destination": "/pages/cobrar/link-de-pagamento" },
+    { "source": "/pages/concepts/checkout-transparente", "destination": "/pages/cobrar/checkout-transparente" },
+    { "source": "/pages/transparents/reference", "destination": "/pages/cobrar/checkout-transparente" },
+    { "source": "/pages/guides/cartao-transparente", "destination": "/pages/cobrar/checkout-transparente-cartao" },
+    { "source": "/pages/concepts/subscriptions", "destination": "/pages/cobrar/assinaturas" },
+    { "source": "/pages/subscriptions/reference", "destination": "/pages/cobrar/assinaturas" },
+    { "source": "/pages/concepts/pix", "destination": "/pages/pagamentos/pix" },
+    { "source": "/pages/payment/installments", "destination": "/pages/pagamentos/parcelamento" },
+    { "source": "/pages/guides/repasse-de-taxa", "destination": "/pages/pagamentos/repasse-de-taxa" },
+    { "source": "/pages/guides/cartao-salvo", "destination": "/pages/pagamentos/one-click-buy" },
+    { "source": "/pages/transparents/public-key", "destination": "/pages/pagamentos/cartao-de-credito" },
+    { "source": "/pages/guides/upsell", "destination": "/pages/vender/upsell" },
+    { "source": "/pages/concepts/area-do-cliente", "destination": "/pages/vender/portal-do-cliente" },
+    { "source": "/pages/guides/portal-do-cliente", "destination": "/pages/vender/portal-do-cliente" },
+    { "source": "/pages/customer-portal/reference", "destination": "/pages/vender/portal-do-cliente" },
+    { "source": "/pages/products/reference", "destination": "/pages/vender/produtos" },
+    { "source": "/pages/client/reference", "destination": "/pages/vender/clientes" },
+    { "source": "/pages/coupons/reference", "destination": "/pages/vender/cupons" },
+    { "source": "/pages/concepts/saques", "destination": "/pages/dinheiro/saques" },
+    { "source": "/pages/payouts/reference", "destination": "/pages/dinheiro/saques" },
+    { "source": "/pages/pix/reference", "destination": "/pages/dinheiro/enviar-pix" },
+    { "source": "/pages/guides/pix-chave-fixa", "destination": "/pages/dinheiro/chave-pix" },
+    { "source": "/pages/sub-accounts/reference", "destination": "/pages/dinheiro/subcontas-e-split" },
+    { "source": "/pages/bank-statement/reference", "destination": "/pages/dinheiro/saldo-e-extrato" },
+    { "source": "/pages/store/reference", "destination": "/pages/dinheiro/saldo-e-extrato" },
+    { "source": "/pages/trustMRR", "destination": "/pages/integracoes/public-mrr" },
+    { "source": "/pages/trustMRR/reference", "destination": "/pages/integracoes/public-mrr" },
+    { "source": "/pages/trustMRR/get", "destination": "/pages/trustMRR/merchant-info" },
+    { "source": "/pages/trustMRR/list", "destination": "/pages/trustMRR/revenue" },
+    { "source": "/pages/webhooks", "destination": "/pages/notificacoes/webhooks" },
+    { "source": "/pages/webhooks/reference", "destination": "/pages/notificacoes/webhooks" },
+    { "source": "/pages/webhooks/security", "destination": "/pages/notificacoes/seguranca" },
     { "source": "/pages/zod", "destination": "/pages/ecosystem/zod" },
     { "source": "/glossario", "destination": "/pages/glossario" },
-    { "source": "/subscriptions/reference", "destination": "/pages/subscriptions/reference" }
+    { "source": "/subscriptions/reference", "destination": "/pages/cobrar/assinaturas" }
   ],
   "colors": {
     "primary": "#9EEA6C",
@@ -74,46 +108,72 @@
               {
                 "group": "Cobrar",
                 "pages": [
-                  "pages/concepts/checkout",
-                  "pages/concepts/checkout-transparente",
-                  "pages/guides/cartao-transparente",
-                  "pages/concepts/subscriptions"
+                  "pages/cobrar/checkout",
+                  "pages/cobrar/link-de-pagamento",
+                  "pages/cobrar/checkout-transparente",
+                  "pages/cobrar/checkout-transparente-cartao",
+                  "pages/cobrar/assinaturas",
+                  "pages/cobrar/pix-automatico"
                 ]
               },
               {
                 "group": "Formas de pagamento",
                 "pages": [
-                  "pages/concepts/pix",
-                  "pages/guides/repasse-de-taxa",
-                  "pages/guides/cartao-salvo"
+                  "pages/pagamentos/pix",
+                  "pages/pagamentos/cartao-de-credito",
+                  "pages/pagamentos/parcelamento",
+                  "pages/pagamentos/repasse-de-taxa",
+                  "pages/pagamentos/one-click-buy",
+                  "pages/pagamentos/apple-pay-google-pay",
+                  "pages/pagamentos/boleto",
+                  "pages/pagamentos/juros-e-multa-boleto"
                 ]
               },
               {
                 "group": "Vender",
                 "pages": [
-                  "pages/guides/upsell",
-                  "pages/concepts/area-do-cliente",
-                  "pages/guides/portal-do-cliente"
+                  "pages/vender/produtos",
+                  "pages/vender/clientes",
+                  "pages/vender/cupons",
+                  "pages/vender/upsell",
+                  "pages/vender/portal-do-cliente",
+                  "pages/vender/reembolsos",
+                  "pages/vender/utm-e-metadados"
                 ]
               },
               {
                 "group": "Seu dinheiro",
                 "pages": [
-                  "pages/concepts/saques",
-                  "pages/guides/pix-chave-fixa"
+                  "pages/dinheiro/saldo-e-extrato",
+                  "pages/dinheiro/saques",
+                  "pages/dinheiro/enviar-pix",
+                  "pages/dinheiro/chave-pix",
+                  "pages/dinheiro/subcontas-e-split"
                 ]
               },
               {
                 "group": "Notificações",
                 "pages": [
-                  "pages/webhooks",
-                  "pages/webhooks/security"
+                  "pages/notificacoes/webhooks",
+                  "pages/notificacoes/seguranca",
+                  {
+                    "group": "Eventos",
+                    "pages": [
+                      "pages/webhooks/events/checkout",
+                      "pages/webhooks/events/transparent",
+                      "pages/webhooks/events/subscriptions",
+                      "pages/webhooks/events/transfers",
+                      "pages/webhooks/events/payouts",
+                      "pages/webhooks/events/pix-key"
+                    ]
+                  }
                 ]
               },
               {
                 "group": "Integrações",
                 "pages": [
-                  "pages/guides/shopify"
+                  "pages/guides/shopify",
+                  "pages/integracoes/public-mrr"
                 ]
               },
               {
@@ -130,16 +190,22 @@
             "groups": [
               {
                 "group": "Introdução",
-                "pages": ["pages/reference/introduction"]
+                "pages": [
+                  "pages/reference/introduction"
+                ]
               },
               {
-                "group": "Cobrar com Checkout",
-                "pages": ["pages/payment/reference", "pages/payment/create", "pages/payment/installments", "pages/payment/list", "pages/payment/one", "pages/payment/refund"]
+                "group": "Checkouts",
+                "pages": [
+                  "pages/payment/create",
+                  "pages/payment/list",
+                  "pages/payment/one",
+                  "pages/payment/refund"
+                ]
               },
               {
                 "group": "Links de pagamento",
                 "pages": [
-                  "pages/payment-links/reference",
                   "pages/payment-links/create",
                   "pages/payment-links/list",
                   "pages/payment-links/one",
@@ -147,9 +213,21 @@
                 ]
               },
               {
+                "group": "Checkout transparente",
+                "pages": [
+                  "pages/transparents/create",
+                  "pages/transparents/boleto",
+                  "pages/transparents/card",
+                  "pages/transparents/list",
+                  "pages/transparents/check",
+                  "pages/transparents/simulate-payment",
+                  "pages/transparents/refund",
+                  "pages/transparents/abacatepay-js"
+                ]
+              },
+              {
                 "group": "Clientes",
                 "pages": [
-                  "pages/client/reference",
                   "pages/client/create",
                   "pages/client/list",
                   "pages/client/get",
@@ -159,29 +237,21 @@
               {
                 "group": "Portal do cliente",
                 "pages": [
-                  "pages/customer-portal/reference",
                   "pages/customer-portal/create"
                 ]
               },
               {
-                "group": "Checkout Transparente",
+                "group": "Produtos",
                 "pages": [
-                  "pages/transparents/reference",
-                  "pages/transparents/create",
-                  "pages/transparents/boleto",
-                  "pages/transparents/card",
-                  "pages/transparents/public-key",
-                  "pages/transparents/abacatepay-js",
-                  "pages/transparents/list",
-                  "pages/transparents/simulate-payment",
-                  "pages/transparents/check",
-                  "pages/transparents/refund"
+                  "pages/products/create",
+                  "pages/products/list",
+                  "pages/products/get",
+                  "pages/products/delete"
                 ]
               },
               {
                 "group": "Cupons",
                 "pages": [
-                  "pages/coupons/reference",
                   "pages/coupons/create",
                   "pages/coupons/list",
                   "pages/coupons/get",
@@ -190,29 +260,8 @@
                 ]
               },
               {
-                "group": "Produtos",
-                "pages": [
-                  "pages/products/reference",
-                  "pages/products/create",
-                  "pages/products/list",
-                  "pages/products/get",
-                  "pages/products/delete"
-                ]
-              },
-              {
-                "group": "Webhooks",
-                "pages": [
-                  "pages/webhooks/reference",
-                  "pages/webhooks/create",
-                  "pages/webhooks/list",
-                  "pages/webhooks/get",
-                  "pages/webhooks/delete"
-                ]
-              },
-              {
                 "group": "Assinaturas",
                 "pages": [
-                  "pages/subscriptions/reference",
                   "pages/subscriptions/create",
                   "pages/subscriptions/checkouts-get",
                   "pages/subscriptions/checkouts-list",
@@ -226,37 +275,57 @@
               },
               {
                 "group": "Saques",
-                "pages": ["pages/payouts/reference", "pages/payouts/create", "pages/payouts/get", "pages/payouts/list"]
+                "pages": [
+                  "pages/payouts/create",
+                  "pages/payouts/get",
+                  "pages/payouts/list"
+                ]
               },
               {
                 "group": "Enviar Pix",
-                "pages": ["pages/pix/reference", "pages/pix/create", "pages/pix/get", "pages/pix/list"]
+                "pages": [
+                  "pages/pix/create",
+                  "pages/pix/get",
+                  "pages/pix/list"
+                ]
               },
               {
                 "group": "Subcontas",
-                "pages": ["pages/sub-accounts/reference", "pages/sub-accounts/create", "pages/sub-accounts/get", "pages/sub-accounts/list", "pages/sub-accounts/withdraw"]
+                "pages": [
+                  "pages/sub-accounts/create",
+                  "pages/sub-accounts/get",
+                  "pages/sub-accounts/list",
+                  "pages/sub-accounts/withdraw"
+                ]
               },
               {
                 "group": "Extrato",
-                "pages": ["pages/bank-statement/reference", "pages/bank-statement/list"]
+                "pages": [
+                  "pages/bank-statement/list"
+                ]
               },
               {
                 "group": "Loja",
-                "pages": ["pages/store/reference", "pages/store/get"]
+                "pages": [
+                  "pages/store/get"
+                ]
               },
               {
                 "group": "Public MRR",
-                "pages": ["pages/trustMRR/reference", "pages/trustMRR/mrr", "pages/trustMRR/mrr-by-day", "pages/trustMRR/get", "pages/trustMRR/list"]
+                "pages": [
+                  "pages/trustMRR/mrr",
+                  "pages/trustMRR/mrr-by-day",
+                  "pages/trustMRR/merchant-info",
+                  "pages/trustMRR/revenue"
+                ]
               },
               {
-                "group": "Eventos de webhook",
+                "group": "Webhooks",
                 "pages": [
-                  "pages/webhooks/events/checkout",
-                  "pages/webhooks/events/transparent",
-                  "pages/webhooks/events/subscriptions",
-                  "pages/webhooks/events/transfers",
-                  "pages/webhooks/events/payouts",
-                  "pages/webhooks/events/pix-key"
+                  "pages/webhooks/create",
+                  "pages/webhooks/list",
+                  "pages/webhooks/get",
+                  "pages/webhooks/delete"
                 ]
               }
             ]

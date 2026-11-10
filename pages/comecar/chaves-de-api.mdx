@@ -1,6 +1,6 @@
 ---
 title: 'Chaves de API e permissões'
-description: 'Como criar uma chave de API, quais permissões dar e como guardar a chave com segurança.'
+description: 'Crie uma chave de API da AbacatePay, escolha as permissões de cada rota e guarde a chave com segurança. Veja também os erros de autenticação.'
 icon: 'key'
 ---
 
@@ -13,7 +13,7 @@ Authorization: Bearer SUA_CHAVE
 A chave fica só no seu backend. Ela também define o ambiente: uma chave do [Modo Teste](/pages/comecar/modo-teste) (`abc_dev_...`) simula transações, e uma chave de produção (`abc_prod_...`) movimenta dinheiro real. A URL é a mesma.
 
 <Card title="Chave de API não é chave pública" horizontal>
-  Para mostrar o formulário de cartão no seu site, o abacatepay.js usa outra chave, a [chave pública](/pages/transparents/public-key) (`pk_...`), que pode ficar no navegador. A chave de API continua só no backend.
+  Para mostrar o formulário de cartão no seu site, o abacatepay.js usa outra chave, a [chave pública](/pages/pagamentos/cartao-de-credito#chave-pública-e-chave-de-api) (`pk_...`), que pode ficar no navegador. A chave de API continua só no backend.
 </Card>
 
 ## Criar uma chave
@@ -68,7 +68,7 @@ Dê a cada chave só as permissões que a integração usa: uma chave só para l
 
 Cada página de endpoint também diz, no topo, qual permissão ele exige.
 
-As rotas de [Public MRR](/pages/trustMRR/reference) são a exceção: elas não usam a chave de API, e sim o token `mrr_` do app Trust MRR.
+As rotas de [Public MRR](/pages/integracoes/public-mrr) são a exceção: elas não usam a chave de API, e sim o token `mrr_` do plugin Public MRR (Integração → Plugins).
 
 Quem se autentica pela [CLI](/pages/cli/auth) com login, sem chave, não chama as rotas que tiram dinheiro da loja (`WITHDRAW:CREATE`, `REFUND:CREATE` e `SUB_ACCOUNT:WITHDRAW`): a API responde `403`. Para essas rotas, use uma chave de API.
 
