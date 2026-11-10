@@ -3,25 +3,23 @@ title: 'Checar Status'
 openapi: 'GET /transparents/check'
 ---
 
-Verifica o status atual de um checkout transparente PIX pelo seu `id`.
-
-<Note>
-  Esta rota é só para PIX. Para consultar uma cobrança de cartão (`card_...`), use `GET /v2/transparents/get?id=card_...`, que devolve a cobrança completa com o `status`. Veja [Criar cobrança Cartão](/pages/transparents/card#consultar-listar-e-reembolsar).
-</Note>
-
 <Card horizontal>
   Requer a permissão `TRANSPARENT:READ`.
 </Card>
 
-Use este endpoint para confirmar se o cliente já realizou o pagamento do QR Code. O campo `status` indica o estado atual:
+Devolve o `status` e a validade (`expiresAt`) de uma cobrança Pix do checkout transparente. A rota aceita só Pix (`pix_char_...`). Para boleto e cartão, use `GET /v2/transparents/get`, que devolve a cobrança completa.
 
-| Valor | Significado |
-|-------|-------------|
-| `PENDING` | Aguardando pagamento |
-| `PAID` | PIX recebido com sucesso |
-| `EXPIRED` | QR Code expirado sem pagamento |
-| `CANCELLED` | Cancelado |
+<Card title="Entenda o Pix" icon="qrcode" href="/pages/pagamentos/pix#status-do-pix" horizontal>
+  Os status do Pix, quanto tempo o QR Code vale e os webhooks que avisam do pagamento.
+</Card>
 
-<Tip title="Polling ou webhook?" horizontal>
-Prefira [webhooks](/pages/webhooks) a fazer polling — você recebe a confirmação em tempo real sem precisar consultar repetidamente.
-</Tip>
+```bash
+curl "https://api.abacatepay.com/v2/transparents/check?id=pix_char_abc123xyz" \
+  -H "Authorization: Bearer $ABACATEPAY_API_KEY"
+```
+
+## Erros
+
+| Mensagem | Causa |
+|---|---|
+| `Pix QR Code not found` | O `id` não existe ou é de um boleto ou de um cartão. |

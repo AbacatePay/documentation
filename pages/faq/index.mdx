@@ -1,32 +1,32 @@
 ---
-title: 'Perguntas Frequentes'
-description: 'Respostas para as dúvidas mais comuns sobre a AbacatePay — para lojistas e desenvolvedores.'
+title: 'Perguntas frequentes'
+description: 'Respostas rápidas sobre a AbacatePay: formas de pagamento, Pix, boleto, cartão, assinaturas, chaves de API, Modo Teste, webhooks e SDKs.'
 icon: 'circle-question'
 ---
+
+Respostas curtas para as dúvidas mais comuns. Cada uma leva à página com os detalhes.
 
 ### Para lojistas (sem código)
 
 <AccordionGroup>
   <Accordion title="Preciso saber programar para usar a AbacatePay?">
-    Não. Você pode criar cobranças, gerar links de pagamento e gerenciar tudo pelo dashboard sem escrever uma linha de código. A API e os SDKs são para quem quer automatizar o processo dentro de um sistema.
-
-    Veja o guia [Primeiros passos](/pages/comecar/primeiros-passos) para começar sem código.
+    Não. Você cria cobranças e links de pagamento e acompanha tudo pelo dashboard. Veja [Primeiros passos](/pages/comecar/primeiros-passos).
   </Accordion>
 
   <Accordion title="Como recebo meu dinheiro?">
-    O dinheiro dos pagamentos fica no seu saldo na AbacatePay. Você faz um saque a qualquer momento pelo dashboard para transferir para sua conta bancária. PIX cai em segundos, cartão tem um prazo de liquidação. Veja mais em [Como receber seu dinheiro](/pages/concepts/saques).
+    Os pagamentos entram no seu saldo na AbacatePay, e você saca para a sua conta quando quiser. Veja [Saques](/pages/dinheiro/saques).
   </Accordion>
 
   <Accordion title="Posso cobrar pelo WhatsApp ou Instagram?">
-    Sim. Você cria um link de pagamento no dashboard e compartilha esse link em qualquer canal — WhatsApp, Instagram, e-mail, SMS. O cliente clica, escolhe a forma de pagamento e pronto.
+    Sim. Crie um link de pagamento e compartilhe em qualquer canal. Veja [Link de pagamento](/pages/cobrar/link-de-pagamento).
   </Accordion>
 
   <Accordion title="Quais formas de pagamento estão disponíveis?">
-    PIX, cartão de crédito (com parcelamento em até 12x) e boleto bancário. Você pode habilitar ou desabilitar cada forma ao criar uma cobrança.
+    [Pix](/pages/pagamentos/pix), [cartão de crédito](/pages/pagamentos/cartao-de-credito) à vista ou em até 12x e [boleto](/pages/pagamentos/boleto). Cartão e boleto dependem de liberação na conta.
   </Accordion>
 
   <Accordion title="Como faço para cobrar todo mês (mensalidade)?">
-    Crie um produto com recorrência no dashboard. Seu cliente paga uma vez e é cobrado automaticamente a cada ciclo (semanal, mensal, trimestral, semestral ou anual). Veja [O que são Assinaturas](/pages/concepts/subscriptions).
+    Use uma assinatura: o cliente paga a primeira vez e é cobrado sozinho a cada ciclo. Veja [Assinaturas](/pages/cobrar/assinaturas).
   </Accordion>
 
   <Accordion title="Minha conta precisa ser verificada para receber pagamentos reais?">
@@ -76,34 +76,43 @@ icon: 'circle-question'
 
 <AccordionGroup>
   <Accordion title="Meu webhook não está recebendo eventos. O que verificar?">
-    1. Confirme que a URL está acessível publicamente via HTTPS
-    2. Verifique se o endpoint responde com um status `2xx` (de `200` a `299`) — qualquer outro código faz a AbacatePay considerar a entrega como falha
-    3. Confira se o webhook foi criado no ambiente correto (dev ou produção)
-    4. Veja os logs do webhook no dashboard para checar tentativas anteriores
+    Confira se a URL é pública e usa HTTPS, se ela responde com um status `2xx` e se o webhook foi criado no mesmo ambiente da cobrança (Modo Teste ou produção). Veja [Webhooks](/pages/notificacoes/webhooks).
   </Accordion>
 
-  <Accordion title="A AbacatePay tenta reenviar eventos se meu endpoint estiver fora do ar?">
-    Sim. Se o endpoint não responder em 30 segundos, estiver fora do ar ou responder `5xx`, `408` ou `429`, a AbacatePay tenta de novo em 5s, 5min, 30min, 2h, 5h e 10h — até 7 tentativas em cerca de 18 horas. Outros `4xx` não são retentados. Todas as tentativas usam o mesmo `id` do evento: use-o para evitar processamento duplicado. Veja [Entrega e retentativas](/pages/webhooks#entrega-e-retentativas).
+  <Accordion title="A AbacatePay reenvia o evento se meu endpoint estiver fora do ar?">
+    Sim. As tentativas usam o mesmo `id` do evento, que serve para evitar processar o mesmo evento duas vezes. Os prazos estão em [Webhooks](/pages/notificacoes/webhooks).
   </Accordion>
 
   <Accordion title="Como validar que um webhook veio da AbacatePay?">
-    Confira o parâmetro `webhookSecret` da URL: ele precisa ser igual ao secret que você definiu ao criar o webhook. É ele que prova que o evento veio da AbacatePay. Depois, valide o header `X-Webhook-Signature` (HMAC-SHA256 do corpo) para garantir que o corpo não foi alterado. Consulte a [página de segurança de webhooks](/pages/webhooks/security) para exemplos em Node.js, Python e Go.
+    Confira o `webhookSecret` da URL e a assinatura do corpo no header `X-Webhook-Signature`. Veja [Segurança dos webhooks](/pages/notificacoes/seguranca).
   </Accordion>
 </AccordionGroup>
 
 ### Pagamentos e cobranças
 
 <AccordionGroup>
-  <Accordion title="Qual a diferença entre Checkout e Checkout Transparente?">
-    O **Checkout** redireciona o cliente para uma página de pagamento hospedada pela AbacatePay. O **Checkout Transparente** permite que você construa a interface de pagamento na sua própria aplicação, enquanto a AbacatePay processa a transação nos bastidores.
+  <Accordion title="Qual a diferença entre checkout e checkout transparente?">
+    O [checkout](/pages/cobrar/checkout) é uma tela de pagamento pronta da AbacatePay, para onde você leva o cliente. No [checkout transparente](/pages/cobrar/checkout-transparente), o pagamento acontece dentro do seu site ou app.
   </Accordion>
 
   <Accordion title="Como funciona o parcelamento?">
-    O parcelamento está disponível no Checkout com cartão de crédito. Você define o número máximo de parcelas ao criar o checkout. Consulte a [documentação de parcelamento](/pages/payment/installments) para os detalhes de configuração.
+    O cliente parcela no cartão em até 12x, no checkout, no link de pagamento e no checkout transparente. Veja [Parcelamento no cartão](/pages/pagamentos/parcelamento).
   </Accordion>
 
-  <Accordion title="Quanto tempo leva para um PIX ser confirmado?">
-    No Dev mode, a confirmação é imediata após simular o pagamento. Em produção, PIX são confirmados em segundos após o pagamento pelo cliente — você receberá um webhook `transparent.completed` ou `checkout.completed` assim que ocorrer.
+  <Accordion title="Quanto tempo leva para um Pix ser confirmado?">
+    Segundos. A confirmação chega pelo webhook `checkout.completed` ou `transparent.completed`. Veja [Pix](/pages/pagamentos/pix).
+  </Accordion>
+
+  <Accordion title="Como cobro juros e multa no boleto?">
+    Envie `interest` e `fine` ao criar o boleto pela API. Veja [Juros e multa no boleto](/pages/pagamentos/juros-e-multa-boleto).
+  </Accordion>
+
+  <Accordion title="Posso reembolsar um boleto?">
+    Não. Pix e cartão podem ser reembolsados, boleto não. Veja [Reembolsos](/pages/vender/reembolsos).
+  </Accordion>
+
+  <Accordion title="Como sei de qual campanha veio uma venda?">
+    Use UTMs na `url` do checkout ou no campo `utm` do checkout transparente. Veja [UTM e metadados](/pages/vender/utm-e-metadados).
   </Accordion>
 </AccordionGroup>
 
@@ -111,15 +120,15 @@ icon: 'circle-question'
 
 <AccordionGroup>
   <Accordion title="Qual SDK devo usar?">
-    Use o SDK da linguagem do seu backend. Para Node.js/TypeScript é `@abacatepay/sdk`. Consulte a [página de SDKs](/pages/sdks/sdks) para ver todas as opções disponíveis.
+    O da linguagem do seu backend. Para Node.js e TypeScript, é o `@abacatepay/sdk`. Veja [SDKs](/pages/sdks/sdks).
   </Accordion>
 
-  <Accordion title="Posso usar a API diretamente sem SDK?">
-    Sim. Todos os endpoints aceitam requisições HTTP padrão com `Content-Type: application/json`. Os SDKs são conveniência, não obrigação.
+  <Accordion title="Posso usar a API sem SDK?">
+    Sim. Todos os endpoints aceitam requisições HTTP com `Content-Type: application/json`. Veja a [Referência da API](/pages/reference/introduction).
   </Accordion>
 
   <Accordion title="Encontrei um bug no SDK. O que faço?">
-    Abra uma issue no repositório GitHub do SDK específico. Os links estão na [página de cada SDK](/pages/sdks/sdks). Nossa equipe monitora ativamente os repositórios.
+    Abra uma issue no repositório do SDK no GitHub. Os links estão em [SDKs](/pages/sdks/sdks).
   </Accordion>
 </AccordionGroup>
 

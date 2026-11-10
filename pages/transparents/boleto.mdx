@@ -7,47 +7,15 @@ openapi: 'POST /transparents/create'
   Requer a permissão `TRANSPARENT:CREATE`.
 </Card>
 
-Cria um checkout transparente via **Boleto**. A API devolve a linha digitável (`barCode`), uma URL para visualização e impressão do boleto (`url`), e o PIX alternativo (`brCode`/`brCodeBase64`) para a mesma cobrança — tudo em uma única chamada.
+Cria um boleto no checkout transparente. A resposta traz a página do boleto (`url`), o código de barras (`barCode`), a linha digitável (`identificationNumber`) e o Pix do boleto (`brCode` e `brCodeBase64`). Para Pix, veja [Criar cobrança Pix](/pages/transparents/create).
 
-<Note>
-  Para cobrar via PIX, veja [Criar cobrança PIX](/pages/transparents/create).
-</Note>
+<Card title="Entenda o boleto" icon="barcode" href="/pages/pagamentos/boleto" horizontal>
+  Valor mínimo, vencimento, Pix no boleto, status e como testar.
+</Card>
 
----
+Juros e multa por atraso estão em [Juros e multa no boleto](/pages/pagamentos/juros-e-multa-boleto).
 
-## Campos obrigatórios
-
-| Campo | Tipo | Descrição |
-|---|---|---|
-| `method` | `string` | Deve ser `"BOLETO"` |
-| `data.amount` | `number` | Valor em centavos (ex: `25000` = R$ 250,00) |
-| `data.customer.name` | `string` | Nome completo do pagador |
-| `data.customer.taxId` | `string` | CPF ou CNPJ do pagador |
-
-### `data.dueDate` — vencimento (opcional)
-
-Data de vencimento do boleto no formato `YYYY-MM-DD` (ex: `"2026-08-15"`). Se omitido, o vencimento padrão é de **3 dias úteis**.
-
-| Campo | Tipo | Descrição |
-|---|---|---|
-| `dueDate` | `string` | Data de vencimento (`YYYY-MM-DD`). Opcional. |
-
-**Regras:**
-
-- Não pode ser data no passado
-- Máximo de 365 dias no futuro
-
-`dueDate` é a data enviada ao provedor. A resposta continua expondo `expiresAt` (ISO datetime no fim do dia do `dueDate`). Sem juros/multa, após o vencimento o boleto expira (`EXPIRED`). Com juros/multa, pode permanecer aberto para pagamento em atraso.
-
-### `data.utm` — campanha / UTM (opcional)
-
-No **`BoletoTransparentData`** (corpo `data` com `method: "BOLETO"`), você pode incluir o mesmo bloco opcional `utm`: objeto opcional com campos opcionais `source`, `medium`, `campaign`, `term` e `content` (`string`). Valores enviados podem ser vistos no **dashboard** e **não mudam** o fluxo da cobrança.
-
----
-
-## Exemplos mínimos (BOLETO)
-
-Sem `dueDate` (vencimento padrão de 3 dias úteis):
+**Exemplo mínimo** (vence em 3 dias úteis):
 
 ```json
 {
@@ -62,165 +30,62 @@ Sem `dueDate` (vencimento padrão de 3 dias úteis):
 }
 ```
 
-Com `dueDate`:
+**Exemplo com vencimento, juros e multa:**
 
 ```json
 {
   "method": "BOLETO",
   "data": {
     "amount": 5000,
-    "dueDate": "2026-08-15",
-    "customer": {
-      "name": "Cliente",
-      "taxId": "11144477735",
-      "email": "cliente@email.com"
-    }
-  }
-}
-```
-
-Com `utm`:
-
-```json
-{
-  "method": "BOLETO",
-  "data": {
-    "amount": 25000,
-    "customer": {
-      "name": "Mariana Costa",
-      "taxId": "987.654.321-00"
-    },
-    "utm": {
-      "source": "google",
-      "medium": "cpc",
-      "campaign": "boleto_teste"
-    }
-  }
-}
-```
-
----
-
-## Requisição
-
-```json
-{
-  "method": "BOLETO",
-  "data": {
-    "amount": 25000,
-    "dueDate": "2026-08-15",
-    "description": "Fatura de serviço mensal",
+    "dueDate": "2026-12-15",
+    "description": "Fatura de dezembro",
+    "externalId": "fatura-456",
     "customer": {
       "name": "Mariana Costa",
       "taxId": "987.654.321-00",
       "email": "mariana.costa@empresa.com.br",
       "cellphone": "(21) 99876-5432"
     },
-    "metadata": {
-      "faturaId": "fatura-456",
-      "plano": "pro"
-    }
-  }
-}
-```
-
----
-
-## Multa e juros por atraso
-
-Você pode configurar **juros** (`data.interest`) e **multa** (`data.fine`) que serão aplicados se o cliente pagar após a data de vencimento. Ambos os campos são opcionais e independentes — pode-se enviar só `interest`, só `fine`, ambos ou nenhum. Eles só têm efeito quando `method: "BOLETO"` e são ignorados nos demais métodos.
-
-### `data.interest` — juros por atraso / late interest
-
-| Campo | Tipo | Descrição |
-|---|---|---|
-| `value` | `integer ≥ 0` | Percentual de juros **ao mês**, em centésimos de percentual. `100` = 1% ao mês, `250` = 2,5% ao mês. Quando `0` ou omitido, não há juros. |
-
-Os juros seguem o padrão **percentual ao mês, calculados pro rata die** após o vencimento.
-
-> **EN:** `data.interest.value` is an integer in hundredths of a percent representing the **monthly** late interest rate (`100` = 1%/month). It accrues pro rata die after the due date. Omit or use `0` to disable.
-
-### `data.fine` — multa por atraso / late fine
-
-| Campo | Tipo | Descrição |
-|---|---|---|
-| `value` | `integer ≥ 0` | Quando `type = "PERCENTAGE"`: centésimos de percentual (`200` = 2%). Quando `type = "FIXED"`: valor em **centavos** (`1000` = R$ 10,00). Quando `0` ou omitido, sem multa. |
-| `type` | `"PERCENTAGE"` \| `"FIXED"` | `PERCENTAGE` aplica percentual sobre o valor do boleto. `FIXED` aplica um valor fixo em centavos. |
-
-A multa é uma **cobrança única** aplicada uma vez após o vencimento.
-
-> **EN:** `data.fine` is a one-time charge added after the due date. With `type: "PERCENTAGE"`, `value` is in hundredths of a percent. With `type: "FIXED"`, `value` is in cents.
-
-**Exemplo — juros de 1% ao mês + multa fixa de R$ 10,00:**
-```json
-{
-  "method": "BOLETO",
-  "data": {
-    "amount": 5000,
-    "dueDate": "2026-08-15",
-    "customer": {
-      "name": "João Silva",
-      "taxId": "111.444.777-35"
-    },
     "interest": { "value": 100 },
-    "fine": { "value": 1000, "type": "FIXED" }
+    "fine": { "value": 1000, "type": "FIXED" },
+    "metadata": { "faturaId": "fatura-456" }
   }
 }
 ```
 
-**Exemplo — multa percentual de 2%:**
-```json
-{
-  "method": "BOLETO",
-  "data": {
-    "amount": 25000,
-    "customer": {
-      "name": "Mariana Costa",
-      "taxId": "987.654.321-00"
-    },
-    "fine": { "value": 200, "type": "PERCENTAGE" }
-  }
-}
-```
-
-<Note>
-**Unidades / units:** `interest.value` e `fine.value` (com `type = "PERCENTAGE"`) estão em centésimos de percentual — `100` = 1%. `fine.value` (com `type = "FIXED"`) e `amount` estão em centavos — `1000` = R$ 10,00.
-</Note>
-
----
-
-## Resposta
-
-Os mesmos objetos `interest` e `fine` constam na resposta de `POST /transparents/create`, `GET /transparents/get` e `GET /transparents/list` (dentro do payload do boleto), ou ficam `null` quando nenhum dos campos foi configurado. O campo `expiresAt` é o datetime ISO no fim do dia do `dueDate` (ou do vencimento padrão de 3 dias úteis).
+**Resposta:**
 
 ```json
 {
   "data": {
     "id": "bole_k8pqr2mnvx",
-    "amount": 25000,
+    "amount": 5000,
     "status": "PENDING",
     "devMode": false,
-    "barCode": "23793.38128 60007.827263 37000.963779 4 10010000025000",
+    "barCode": "00191878900000050000000002759288002193297817",
+    "identificationNumber": "00190000090275928800021932978170187890000005000",
     "url": "https://app.abacatepay.com/pay/bole_k8pqr2mnvx/boleto",
-    "brCode": "00020126580014BR.GOV.BCB.PIX0136d2b4e5f6-7890-abcd-ef12-34567890abcd5204000053039865802BR5913Mariana Costa6009SAO PAULO62070503***6304F1C2",
+    "brCode": "00020101021226580014BR.GOV.BCB.PIX...",
     "brCodeBase64": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...",
     "platformFee": 250,
     "interest": { "value": 100 },
     "fine": { "value": 1000, "type": "FIXED" },
     "receiptUrl": null,
-    "expiresAt": "2026-08-16T02:59:59.999Z",
-    "createdAt": "2026-07-27T14:22:10.381Z",
-    "updatedAt": "2026-07-27T14:22:10.381Z",
-    "metadata": {
-      "faturaId": "fatura-456",
-      "plano": "pro"
-    }
+    "expiresAt": "2026-12-16T02:58:59.000Z",
+    "createdAt": "2026-12-01T14:22:10.381Z",
+    "updatedAt": "2026-12-01T14:22:10.381Z",
+    "metadata": { "faturaId": "fatura-456" }
   },
   "success": true,
   "error": null
 }
 ```
 
-<Tip horizontal>
-  Abra `url` para exibir o boleto para impressão. Use `barCode` para o cliente digitar a linha digitável no app do banco. Use `brCode`/`brCodeBase64` para oferecer PIX como alternativa sem nenhum esforço adicional.
-</Tip>
+## Erros
+
+| Mensagem | Causa |
+|---|---|
+| `O valor mínimo para boleto é R$ 3,00 (300 centavos)` | `amount` menor que `300`. |
+| `dueDate cannot be in the past` | `dueDate` antes de hoje (horário de Brasília). |
+| `dueDate cannot be more than 365 days in the future` | `dueDate` mais de 365 dias à frente. |
+| `dueDate must be a valid date in YYYY-MM-DD format` | `dueDate` fora do formato `AAAA-MM-DD`. |

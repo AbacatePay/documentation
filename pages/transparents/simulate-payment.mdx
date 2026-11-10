@@ -3,14 +3,24 @@ title: 'Simular Pagamento'
 openapi: 'POST /transparents/simulate-payment'
 ---
 
-Simula o pagamento de um QR Code PIX no ambiente de desenvolvimento. Só funciona com chaves de API de sandbox.
-
 <Card horizontal>
-  Requer a permissão `TRANSPARENT:CREATE`. Disponível apenas em `devMode`.
+  Requer a permissão `TRANSPARENT:CREATE`. Só no Modo Teste.
 </Card>
 
-Use para testar o fluxo completo sem precisar realizar um PIX real: crie um QR Code, simule o pagamento e confirme que seu webhook ou polling recebe o status `PAID`.
+Marca como paga uma cobrança Pix do checkout transparente, para testar o fluxo sem fazer um Pix de verdade. A cobrança passa para `PAID` e o webhook `transparent.completed` é disparado.
 
-<Note>
-Em produção este endpoint retorna erro. Ative o [Modo Teste](/pages/comecar/modo-teste) para usá-lo.
-</Note>
+<Card title="Entenda o Pix" icon="qrcode" href="/pages/pagamentos/pix#testar-no-modo-teste" horizontal>
+  Como testar o Pix no checkout, no link de pagamento e no checkout transparente.
+</Card>
+
+```bash
+curl -X POST "https://api.abacatepay.com/v2/transparents/simulate-payment?id=pix_char_abc123xyz" \
+  -H "Authorization: Bearer $ABACATEPAY_API_KEY"
+```
+
+## Erros
+
+| Mensagem | Causa |
+|---|---|
+| `Simulate payment is only available in dev mode` | A chave é de produção. Use uma chave do [Modo Teste](/pages/comecar/modo-teste). |
+| `Pix QR Code not found` | O `id` não existe, a cobrança não está mais pendente ou o `id` é de um boleto ou de um cartão. |

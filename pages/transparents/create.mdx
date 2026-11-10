@@ -1,5 +1,5 @@
 ---
-title: Criar cobrança PIX
+title: Criar cobrança Pix
 openapi: 'POST /transparents/create'
 ---
 
@@ -7,74 +7,47 @@ openapi: 'POST /transparents/create'
   Requer a permissão `TRANSPARENT:CREATE`.
 </Card>
 
-Cria um checkout transparente via **PIX**. A API devolve o QR Code em imagem (`brCodeBase64`) e o código copia e cola (`brCode`) — o cliente nunca sai do seu site.
+Cria uma cobrança Pix no checkout transparente e devolve o QR Code (`brCodeBase64`) e o código copia e cola (`brCode`). Para boleto, veja [Criar cobrança Boleto](/pages/transparents/boleto); para cartão, [Criar cobrança Cartão](/pages/transparents/card).
 
-<Note>
-  Para cobrar via Boleto, veja [Criar cobrança Boleto](/pages/transparents/boleto).
-</Note>
+<Card title="Entenda o Pix" icon="qrcode" href="/pages/pagamentos/pix" horizontal>
+  Validade do QR Code, valor mínimo, trava de CPF/CNPJ, status, webhooks e como testar.
+</Card>
 
----
+**Exemplo mínimo:**
 
-## Campos obrigatórios
+```json
+{
+  "method": "PIX",
+  "data": {
+    "amount": 10000
+  }
+}
+```
 
-| Campo | Tipo | Descrição |
-|---|---|---|
-| `method` | `string` | Deve ser `"PIX"` |
-| `data.amount` | `number` | Valor em centavos, mínimo `100` (R$ 1,00) (ex: `10000` = R$ 100,00) |
-
-Todos os outros campos são opcionais mas recomendados para melhor rastreabilidade.
-
-### `data.ensureSameTaxId` — travar o pagador (opcional)
-
-Quando `ensureSameTaxId` é `true`, o PIX só é aceito se o **CPF/CNPJ de quem paga** for igual ao `customer.taxId` enviado na criação da cobrança. Se outra pessoa tentar pagar o QR Code, o pagamento é recusado pelo banco.
-
-| Campo | Tipo | Padrão | Descrição |
-|---|---|---|---|
-| `data.ensureSameTaxId` | `boolean` | `false` | Recusa o pagamento quando o CPF/CNPJ do pagador é diferente do `customer.taxId` |
-
-Regras:
-
-- Exige `customer` com `taxId` preenchido. Sem isso, a API responde com erro `ensureSameTaxId requires a customer with taxId`
-- Disponível apenas com `method: "PIX"` — é ignorado no boleto
-- Depende do provedor de PIX da sua conta. Se o provedor ativo não suportar a trava, a API responde com `ensureSameTaxId is not supported by the current PIX provider`
-- Em `devMode` a trava não é aplicada
+**Exemplo completo:**
 
 ```json
 {
   "method": "PIX",
   "data": {
     "amount": 10000,
+    "description": "Pedido 123",
+    "expiresIn": 3600,
+    "externalId": "pedido-123",
     "ensureSameTaxId": true,
     "customer": {
       "name": "Daniel Lima",
       "email": "daniel_lima@abacatepay.com",
       "taxId": "111.444.777-35",
       "cellphone": "(11) 4002-8922"
-    }
+    },
+    "metadata": { "pedidoId": "pedido-123" },
+    "utm": { "source": "newsletter", "medium": "email", "campaign": "lancamento" }
   }
 }
 ```
 
-<Note>
-  Use essa trava em cobranças nominais (assinaturas, mensalidades, faturas) para evitar que o QR Code seja pago por terceiros.
-</Note>
-
-### Dividir com subcontas
-
-Com `data.splits`, parte do PIX vai para o saldo das suas [subcontas](/pages/sub-accounts/reference) quando o cliente paga. O restante fica no seu saldo.
-
-| Campo | Tipo | Descrição |
-|---|---|---|
-| `data.splits[].subAccountId` | `string` | ID da subconta (`sacc_`) que recebe a parte |
-| `data.splits[].amount` | `integer` | Valor em centavos creditado na subconta, mínimo `1` |
-
-Regras:
-
-- Exige as subcontas habilitadas na sua conta e a permissão `TRANSPARENT:CREATE`
-- Disponível apenas com `method: "PIX"`
-- De 1 a 10 subcontas por cobrança, sem repetir a mesma subconta
-- A soma dos `amount` cabe no valor da cobrança menos a taxa (`platformFee`), respeitando a tarifa mínima de PIX por cobrança. Senão, a API responde com `A soma dos splits passa do valor líquido da cobrança`
-- As partes só são creditadas quando o PIX é pago. Cobrança expirada ou cancelada não credita nada
+**Exemplo com split para [subcontas](/pages/dinheiro/subcontas-e-split):**
 
 ```json
 {
@@ -89,82 +62,7 @@ Regras:
 }
 ```
 
-Nesse exemplo, depois do pagamento, uma subconta recebe R$ 70,00, a outra R$ 15,00, e o seu saldo recebe R$ 100,00 menos a taxa e menos as duas partes.
-
-### `data.utm` — campanha / UTM (opcional)
-
-No corpo `data` com **`method`: `"PIX"`**, o objeto `utm` usa o mesmo esquema do **PIX QR Code v1 (`PixQrCodeV1`)**: objeto opcional; cada campo interno também é opcional (`string`).
-
-| Campo | Tipo | Descrição |
-|---|---|---|
-| `utm.source` | `string` | Opcional |
-| `utm.medium` | `string` | Opcional |
-| `utm.campaign` | `string` | Opcional |
-| `utm.term` | `string` | Opcional |
-| `utm.content` | `string` | Opcional |
-
-Quando enviados, podem ser **consultados no dashboard**. Não alteram valores, vencimento nem status da cobrança.
-
----
-
-## Exemplos mínimos (PIX)
-
-Sem `utm`:
-
-```json
-{
-  "method": "PIX",
-  "data": {
-    "amount": 10000
-  }
-}
-```
-
-Com `utm`:
-
-```json
-{
-  "method": "PIX",
-  "data": {
-    "amount": 10000,
-    "utm": {
-      "source": "newsletter",
-      "medium": "email",
-      "campaign": "lancamento_q1",
-      "term": "pix",
-      "content": "cta_hero"
-    }
-  }
-}
-```
-
----
-
-## Requisição
-
-```json
-{
-  "method": "PIX",
-  "data": {
-    "amount": 10000,
-    "description": "Cobrança PIX no checkout transparente",
-    "expiresIn": 3600,
-    "customer": {
-      "name": "Daniel Lima",
-      "email": "daniel_lima@abacatepay.com",
-      "taxId": "111.444.777-35",
-      "cellphone": "(11) 4002-8922"
-    },
-    "metadata": {
-      "pedidoId": "pedido-123"
-    }
-  }
-}
-```
-
----
-
-## Resposta
+**Resposta:**
 
 ```json
 {
@@ -173,22 +71,29 @@ Com `utm`:
     "amount": 10000,
     "status": "PENDING",
     "devMode": false,
-    "brCode": "00020160014BR.GOV.BCB.PIX070503***6304ABCD",
+    "brCode": "00020101021226950014br.gov.bcb.pix...",
     "brCodeBase64": "data:image/png;base64,iVBORw0KG...",
     "platformFee": 80,
     "receiptUrl": null,
-    "createdAt": "2024-11-04T18:38:28.573Z",
-    "updatedAt": "2024-11-04T18:38:28.573Z",
-    "expiresAt": "2024-11-04T19:38:28.573Z",
-    "metadata": {
-      "pedidoId": "pedido-123"
-    }
+    "createdAt": "2026-11-10T18:38:28.573Z",
+    "updatedAt": "2026-11-10T18:38:28.573Z",
+    "expiresAt": "2026-11-10T19:38:28.573Z",
+    "metadata": { "pedidoId": "pedido-123" }
   },
   "success": true,
   "error": null
 }
 ```
 
-<Tip horizontal>
-  Use `brCodeBase64` para renderizar a imagem do QR Code diretamente na sua página. Use `brCode` (copia e cola) para enviar por WhatsApp, Telegram ou e-mail.
-</Tip>
+## Erros
+
+| Mensagem | Causa |
+|---|---|
+| `ensureSameTaxId requires a customer with taxId` | `ensureSameTaxId: true` sem `customer.taxId`. |
+| `ensureSameTaxId is not supported by the current PIX provider` | A trava de CPF/CNPJ não está disponível na sua conta. |
+| `expiresIn must be at least 300 seconds` | `expiresIn` menor que 300. |
+| `Disallowed character in description: ...` | A descrição tem emoji ou outro caractere não permitido. A mensagem diz qual. |
+| `PIX is not available for this store` | O Pix não está liberado na sua conta. |
+| `Split para subcontas não está habilitado para esta loja` | `splits` sem as subcontas liberadas. |
+| `Subconta repetida no split` | A mesma subconta aparece duas vezes em `splits`. |
+| `A soma dos splits passa do valor líquido da cobrança` | As partes somam mais que o valor menos a taxa. |
