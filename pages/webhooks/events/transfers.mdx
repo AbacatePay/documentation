@@ -1,32 +1,39 @@
 ---
-title: 'Transferências'
-description: 'Eventos disparados para transferências de valores para contas externas.'
+title: 'Eventos de envio de Pix (webhook)'
+sidebarTitle: 'Transferências'
+description: 'Payloads de transfer.completed e transfer.failed: saiba pelo webhook quando um Pix enviado do seu saldo para outra pessoa ou empresa foi concluído ou falhou.'
 icon: 'arrow-right-arrow-left'
 ---
 
-Usados para notificar o status de **transferências** (envio de valores para contas externas).
+Os eventos `transfer.*` avisam o resultado de um [envio de Pix](/pages/dinheiro/enviar-pix) do seu saldo para outra pessoa ou empresa, feito pela API ou pelo dashboard em **Financeiro → Pagamentos**. O saque para a conta bancária da loja usa os eventos de [saque](/pages/webhooks/events/payouts). A entrega, as retentativas e a verificação estão em [Webhooks](/pages/notificacoes/webhooks).
+
+| Evento | Quando dispara |
+|---|---|
+| `transfer.completed` | O Pix é concluído, e o dinheiro chega ao destino. |
+| `transfer.failed` | O Pix falha, e o valor volta para o saldo. |
+
+Envios de Pix não existem no [Modo Teste](/pages/comecar/modo-teste), então esses eventos só chegam em produção.
 
 <Tabs>
   <Tab title="transfer.completed">
-    Disparado quando uma transferência é concluída com sucesso.
-
     ```json
     {
+      "id": "log_Er5tY7uI9oP1aS3dF5gH7jK9",
       "event": "transfer.completed",
       "apiVersion": 2,
       "devMode": false,
       "data": {
         "transfer": {
-          "id": "tran_xxx",
-          "externalId": "payout-ext-123",
-          "amount": 1000,
+          "id": "tran_Tr4nS6fE8rP0iX2kQ4mZ6vB8",
+          "externalId": "pagamento-fornecedor-42",
+          "amount": 15000,
           "status": "COMPLETE",
           "method": "PIX",
           "platformFee": 80,
-          "receiptUrl": "https://...",
-          "createdAt": "...",
-          "updatedAt": "...",
-          "endToEndIdentifier": "E123..."
+          "receiptUrl": "https://app.abacatepay.com/receipt/tran_Tr4nS6fE8rP0iX2kQ4mZ6vB8",
+          "createdAt": "2026-11-10T15:10:00.000Z",
+          "updatedAt": "2026-11-10T15:10:04.771Z",
+          "endToEndIdentifier": "E18236120202611101510s9f8e7d6c5b"
         }
       }
     }
@@ -34,28 +41,42 @@ Usados para notificar o status de **transferências** (envio de valores para con
   </Tab>
 
   <Tab title="transfer.failed">
-    Disparado quando uma transferência falha.
-
     ```json
     {
+      "id": "log_Wq1aZ3sX5dC7fV9gB1hN3jM5",
       "event": "transfer.failed",
       "apiVersion": 2,
       "devMode": false,
       "data": {
         "transfer": {
-          "id": "tran_xxx",
-          "externalId": "payout-ext-123",
-          "amount": 1000,
+          "id": "tran_Fa1lE3dT5rA7nS9fE1rX3cV5",
+          "externalId": "pagamento-fornecedor-43",
+          "amount": 15000,
           "status": "FAILED",
           "method": "PIX",
           "platformFee": 80,
-          "receiptUrl": "https://...",
-          "createdAt": "...",
-          "updatedAt": "...",
-          "endToEndIdentifier": "E123..."
+          "receiptUrl": "https://app.abacatepay.com/receipt/tran_Fa1lE3dT5rA7nS9fE1rX3cV5",
+          "createdAt": "2026-11-10T15:12:00.000Z",
+          "updatedAt": "2026-11-10T15:12:30.118Z",
+          "endToEndIdentifier": null
         }
       }
     }
     ```
   </Tab>
 </Tabs>
+
+## Campos
+
+| Campo | Tipo | Descrição |
+|---|---|---|
+| `data.transfer.id` | `string` | ID do envio (`tran_...`). |
+| `data.transfer.externalId` | `string \| null` | O identificador que você enviou ao fazer o Pix pela API. Use para achar o envio no seu sistema. |
+| `data.transfer.amount` | `number` | Valor enviado, em centavos. |
+| `data.transfer.status` | `string` | `COMPLETE` no `transfer.completed` e `FAILED` no `transfer.failed`. |
+| `data.transfer.method` | `string` | `PIX`. |
+| `data.transfer.platformFee` | `number` | Taxa do envio, em centavos. |
+| `data.transfer.receiptUrl` | `string` | Link do comprovante. |
+| `data.transfer.createdAt` | `string` | Quando o envio foi pedido (ISO 8601). |
+| `data.transfer.updatedAt` | `string` | A última mudança de status (ISO 8601). |
+| `data.transfer.endToEndIdentifier` | `string \| null` | Identificador do Pix no Banco Central. O campo sempre vem, com `null` quando não há identificador, como num envio que falhou. |

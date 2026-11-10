@@ -3,10 +3,20 @@ title: 'Buscar um Cupom'
 openapi: "GET /coupons/get"
 ---
 
-Retorna os dados de um cupom pelo seu `code`.
+Retorna um cupom pelo `id`, que é o código do cupom.
 
 <Card horizontal>
   Requer a permissão `COUPON:READ`.
 </Card>
 
-Use `redeemsCount` para acompanhar quantas vezes o cupom já foi utilizado e `status` para verificar se ainda está ativo.
+<Card title="Entenda os cupons" icon="ticket" href="/pages/vender/cupons" horizontal>
+  Status, limite de usos e como o cupom vale no checkout.
+</Card>
+
+Use `redeemsCount` para ver quantos pagamentos já usaram o cupom e `status` (`ACTIVE` ou `DISABLED`) para saber se ele ainda vale.
+
+## Erros
+
+| Mensagem em `error` | Quando acontece |
+|---|---|
+| `Coupon not found` | Não existe cupom com esse código na loja. |

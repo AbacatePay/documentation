@@ -3,26 +3,26 @@ title: 'Buscar um Checkout'
 openapi: "GET /checkouts/get"
 ---
 
-Retorna os dados completos de um checkout pelo seu `id`.
+Retorna um checkout pelo `id`, pelo `externalId` ou pelo `customerId`. Use para conferir o `status` quando o cliente volta ao seu site ou quando chega um [webhook](/pages/notificacoes/webhooks).
 
 <Card horizontal>
   Requer a permissão `CHECKOUT:READ`.
 </Card>
 
-Use este endpoint para verificar o `status` de uma cobrança após o cliente retornar ao seu site, ou ao receber um [webhook](/pages/webhooks) de pagamento.
+<Card title="Entenda o checkout" icon="book-open" href="/pages/cobrar/checkout#status-do-checkout" horizontal>
+  O que significa cada status, quando `paidAmount` é preenchido e o que muda com o upsell.
+</Card>
 
-Informe ao menos um entre `id`, `externalId` e `customerId`. Sem nenhum deles, a API retorna `Provide id, externalId or customerId`.
+**Exemplo:**
+```bash
+curl "https://api.abacatepay.com/v2/checkouts/get?id=bill_abc123xyz" \
+  -H "Authorization: Bearer SUA_CHAVE"
+```
 
-<Warning>
-  Checkouts de assinatura (`frequency: SUBSCRIPTION`) não são retornados por esta rota. Use [Buscar checkout de assinatura](/pages/subscriptions/checkouts-get). Um `id` de checkout de assinatura retorna `This is a subscription checkout. Use /v2/subscriptions/checkouts/get`.
-</Warning>
+## Erros
 
-**Valores de `status`:**
-
-| Valor | Significado |
-|-------|-------------|
-| `PENDING` | Aguardando pagamento |
-| `PAID` | Pago com sucesso |
-| `EXPIRED` | Expirado sem pagamento |
-| `CANCELLED` | Cancelado |
-| `REFUNDED` | Reembolsado |
+| Erro | Motivo |
+|---|---|
+| `Provide id, externalId or customerId` | Nenhum dos três parâmetros foi enviado. |
+| `Billing not found` | Não existe checkout de pagamento único com esse valor na sua loja. Links de pagamento ficam em [Buscar um link de pagamento](/pages/payment-links/one). |
+| `This is a subscription checkout. Use /v2/subscriptions/checkouts/get` | O `id` é de um checkout de assinatura. Use [Buscar checkout de assinatura](/pages/subscriptions/checkouts-get). |

@@ -3,12 +3,14 @@ title: 'Deletar um Cupom'
 openapi: "POST /coupons/delete"
 ---
 
-Remove permanentemente um cupom da sua loja pelo `code`.
+Exclui um cupom pelo `id`, que é o código do cupom. A exclusão não pode ser desfeita.
 
 <Card horizontal>
   Requer a permissão `COUPON:DELETE`.
 </Card>
 
-<Warning>
-Esta operação é irreversível. Se quiser apenas impedir novos usos sem deletar, use [Alternar Status](/pages/coupons/toggle) para desativar o cupom.
-</Warning>
+<Card title="Entenda os cupons" icon="ticket" href="/pages/vender/cupons#status-ativo-desativado-e-excluído" horizontal>
+  Quando desativar e quando excluir um cupom.
+</Card>
+
+Para pausar uma promoção sem perder o cupom, use [Alternar status](/pages/coupons/toggle).

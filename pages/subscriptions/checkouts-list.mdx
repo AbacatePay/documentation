@@ -3,24 +3,19 @@ title: 'Listar checkouts de assinatura'
 openapi: "GET /subscriptions/checkouts/list"
 ---
 
-Retorna os checkouts de assinatura (`bill_...` com `frequency: SUBSCRIPTION`) da sua loja, pagos ou não.
+Retorna os checkouts de assinatura (`bill_...`) da sua loja, pagos ou não. Para listar as assinaturas (`subs_...`), use [Listar assinaturas](/pages/subscriptions/list).
 
 <Card horizontal>
   Requer a permissão `SUBSCRIPTION:READ`.
 </Card>
 
-Use `limit`, `after` e `before` para paginar e `startDate`/`endDate` (`YYYY-MM-DD`) para filtrar por data de criação. Consulte [Paginação e filtro por data](/pages/reference/introduction#paginação-e-filtro-por-data). Cada item segue o mesmo formato do [Listar Checkouts](/pages/payment/list), e os filtros (`id`, `externalId`, `status`, `customerId`, `method`, `keyword`) funcionam da mesma forma.
+<Card title="Entenda as assinaturas" icon="rotate" href="/pages/cobrar/assinaturas" horizontal>
+  A diferença entre o checkout de assinatura e a assinatura, e os status de cada um.
+</Card>
 
-<Tip title="Checkout ou assinatura?" horizontal>
-  Esta rota lista os **checkouts** (`bill_...`). Para listar as **assinaturas** geradas depois do pagamento (`subs_...`), use [Listar assinaturas](/pages/subscriptions/list).
-</Tip>
+Cada item tem o formato do [Listar Checkouts](/pages/payment/list), e os filtros `id`, `externalId`, `status`, `customerId`, `method` e `keyword` funcionam da mesma forma. Use `limit`, `after` e `before` para paginar e `startDate`/`endDate` (`YYYY-MM-DD`) para filtrar pela data de criação. Veja [Paginação e filtro por data](/pages/reference/introduction#paginação-e-filtro-por-data).
 
-**Valores de `status`:**
-
-| Valor | Significado |
-|-------|-------------|
-| `PENDING` | Aguardando o primeiro pagamento |
-| `PAID` | Pago; a assinatura foi criada |
-| `EXPIRED` | Expirado sem pagamento |
-| `CANCELLED` | Cancelado |
-| `REFUNDED` | Reembolsado |
+**Exemplo:**
+```http
+GET /v2/subscriptions/checkouts/list?status=PENDING&limit=20
+```

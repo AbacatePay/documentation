@@ -1,0 +1,20 @@
+---
+title: 'Obter Receita por Período'
+openapi: '/openapi.yaml GET /public-mrr/revenue'
+---
+
+Retorna a receita e o número de transações entre `startDate` e `endDate`, no total e por dia, no horário de Brasília.
+
+<Card horizontal>
+  Use o token `mrr_` do plugin Public MRR, não a chave de API.
+</Card>
+
+<Card title="Entenda o Public MRR" icon="chart-line" href="/pages/integracoes/public-mrr" horizontal>
+  Como gerar o token e como a receita é somada.
+</Card>
+
+**Erros comuns:**
+
+| `error` | Motivo |
+|---|---|
+| `End date must be after start date` | O `endDate` não é depois do `startDate`. O período precisa ter pelo menos dois dias |

@@ -1,0 +1,100 @@
+---
+title: 'Primeiros passos: receba seu primeiro pagamento'
+sidebarTitle: 'Primeiros passos'
+description: 'Crie um produto, gere um link de pagamento e simule uma venda em 10 minutos, sem código. Ou faça a primeira cobrança Pix pela API.'
+icon: 'rocket'
+---
+
+import { Video } from '/snippets/video.jsx'
+
+Em 10 minutos você cria um produto, gera um link de pagamento e simula uma venda no [Modo Teste](/pages/comecar/modo-teste), sem escrever código. No fim da página está o mesmo caminho pela API.
+
+<Video id="https://youtu.be/bWo3UIay4FE" title="Criando seu Primeiro Pagamento - AbacatePay" />
+
+## Pelo dashboard
+
+<Steps>
+  <Step title="Crie sua conta">
+    Acesse [app.abacatepay.com](https://app.abacatepay.com) e clique em **Criar conta**. Ao entrar, escolha **Modo Teste** para explorar sem dinheiro real. Você pode começar a [verificação da conta](/pages/comecar/conta-e-verificacao) depois, ou já escolher **Modo Produção** e testar enquanto a análise não termina.
+  </Step>
+
+  <Step title="Crie um produto">
+    Um produto é o que você vende: um curso, uma consultoria, um pacote.
+
+    1. No menu, vá em **Sua Loja → Produtos** e clique em **Novo produto**.
+    2. Preencha o nome, o preço e a descrição que aparece na tela de pagamento.
+    3. Salve.
+  </Step>
+
+  <Step title="Crie um link de pagamento">
+    1. Vá em **Sua Loja → Links de pagamento** e clique em **Criar link de pagamento**.
+    2. Escolha o produto e as formas de pagamento (Pix, cartão, boleto).
+    3. Se quiser, preencha a **URL de finalização**, para onde o cliente vai depois de pagar, e a **URL de retorno**, para onde ele volta se desistir.
+    4. Salve e copie o link. Ele tem o formato `https://app.abacatepay.com/pay/bill_...`.
+
+    Você pode mandar o link pelo WhatsApp, por e-mail, no Instagram ou num botão do seu site.
+  </Step>
+
+  <Step title="Simule um pagamento">
+    Abra o link e escolha a forma de pagamento. No Modo Teste, o botão final da tela é **Simular Pagamento**: clique nele para aprovar a cobrança sem dinheiro real. No cartão, use um dos [cartões de teste](/pages/comecar/modo-teste#cartões-de-teste).
+  </Step>
+
+  <Step title="Acompanhe o pagamento">
+    Em **Sua Loja → Links de pagamento**, abra o link: o pagamento aparece dentro dele. O link continua **Ativo** e aceita novos pagamentos até você desativá-lo.
+
+    Para avisar o seu sistema a cada pagamento, configure um [webhook](/pages/notificacoes/webhooks).
+  </Step>
+
+  <Step title="Receba de verdade">
+    Para vender com dinheiro real, [verifique sua conta](/pages/comecar/conta-e-verificacao). Depois da aprovação, desligue o Modo Teste e repita os passos acima. O saque do saldo fica em **Financeiro → Saques** e só existe em produção.
+  </Step>
+</Steps>
+
+## Pela API
+
+<Steps>
+  <Step title="Crie uma chave de API">
+    No dashboard, em **Integração → API**, crie uma chave com a permissão `TRANSPARENT:CREATE`. Veja [Chaves de API](/pages/comecar/chaves-de-api).
+  </Step>
+
+  <Step title="Crie uma cobrança Pix de R$ 10,00">
+    ```bash
+    curl -X POST https://api.abacatepay.com/v2/transparents/create \
+      -H "Authorization: Bearer SUA_CHAVE" \
+      -H "Content-Type: application/json" \
+      --data '{
+        "method": "PIX",
+        "data": {
+          "amount": 1000
+        }
+      }'
+    ```
+
+    A resposta traz o `id` da cobrança e o Pix copia e cola em `brCode`. Os valores da API são sempre em centavos.
+  </Step>
+
+  <Step title="Simule o pagamento">
+    Com uma chave do Modo Teste, chame [Simular pagamento](/pages/transparents/simulate-payment) com o `id` da cobrança. Ela passa para `PAID`.
+  </Step>
+
+  <Step title="Receba a confirmação">
+    Cadastre um [webhook](/pages/notificacoes/webhooks) para receber o evento [`transparent.completed`](/pages/webhooks/events/transparent) quando a cobrança for paga.
+  </Step>
+</Steps>
+
+## Próximos passos
+
+<CardGroup cols={2}>
+  <Card icon="rotate" title="Assinaturas" href="/pages/cobrar/assinaturas">
+    Cobre seus clientes automaticamente a cada ciclo.
+  </Card>
+  <Card icon="tag" title="Cupons de desconto" href="/pages/vender/cupons">
+    Crie promoções com desconto fixo ou percentual.
+  </Card>
+  <Card icon="code" title="Checkout transparente" href="/pages/cobrar/checkout-transparente">
+    Receba Pix, boleto e cartão dentro do seu site.
+  </Card>
+  <Card icon="book-open" title="Referência da API" href="/pages/reference/introduction">
+    Base URL, formato de resposta, erros e todos os endpoints.
+  </Card>
+</CardGroup>

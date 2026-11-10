@@ -3,10 +3,20 @@ title: 'Listar links de pagamento'
 openapi: "GET /payment-links/list"
 ---
 
-Retorna todos os links de pagamento (`frequency: MULTIPLE_PAYMENTS`) da sua loja.
+Retorna os links de pagamento (`frequency: MULTIPLE_PAYMENTS`) da sua loja.
 
 <Card horizontal>
   Requer a permissão `CHECKOUT:READ`.
 </Card>
 
-Use `limit`, `after` e `before` para paginar e `startDate`/`endDate` (`YYYY-MM-DD`) para filtrar por data de criação. Consulte [Paginação e filtro por data](/pages/reference/introduction#paginação-e-filtro-por-data). Cada item segue o mesmo formato da resposta do [Criar link de pagamento](/pages/payment-links/create).
+<Card title="Entenda o link de pagamento" icon="book-open" href="/pages/cobrar/link-de-pagamento" horizontal>
+  Status, regras e como acompanhar os pagamentos de cada link.
+</Card>
+
+Use `limit`, `after` e `before` para paginar e `startDate`/`endDate` (`YYYY-MM-DD`) para filtrar por data de criação. Veja [Paginação e filtro por data](/pages/reference/introduction#paginação-e-filtro-por-data). Cada item segue o formato da resposta de [Criar um link de pagamento](/pages/payment-links/create).
+
+**Exemplo: só os links ativos**
+```bash
+curl "https://api.abacatepay.com/v2/payment-links/list?status=ACTIVE" \
+  -H "Authorization: Bearer SUA_CHAVE"
+```

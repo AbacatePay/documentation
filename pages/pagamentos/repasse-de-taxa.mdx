@@ -1,0 +1,146 @@
+---
+title: 'Repasse de juros e taxa do cartão ao cliente'
+sidebarTitle: 'Repasse de taxa'
+description: 'Repasse a taxa do cartão e os juros do parcelamento para o cliente e receba o valor cheio da venda, à vista ou parcelado, no checkout e no link de pagamento.'
+icon: 'percent'
+---
+
+Com o repasse de taxa, o cliente paga a taxa do cartão de crédito, inclusive os juros do parcelamento, e você recebe o preço cheio do produto. Vale à vista e parcelado, no checkout e no link de pagamento.
+
+## Quando usar o repasse
+
+| | Sem repasse | Com repasse |
+|---|---|---|
+| Quem paga a taxa do cartão | Você | O cliente |
+| O que o cliente paga no cartão | O preço | O preço mais o acréscimo da opção escolhida |
+| O que você recebe | O preço menos a taxa | O preço cheio |
+
+Use quando a taxa do parcelamento come a sua margem, como em produtos de ticket alto vendidos em 12x. Sem repasse, a taxa de cada parcela sai do que você recebe (veja [Parcelamento no cartão](/pages/pagamentos/parcelamento#quem-paga-os-juros-do-parcelamento)).
+
+## Como funciona o repasse de taxa
+
+```mermaid
+flowchart LR
+  A[Você liga o repasse] --> B[O checkout calcula o acréscimo de cada parcela]
+  B --> C[O cliente vê o total e paga]
+  C --> D[Você recebe o preço cheio]
+```
+
+- **O acréscimo cobre a sua taxa.** Em cada opção, de 1x até o máximo de parcelas, o cliente paga o menor valor que, descontada a taxa da sua conta, cobre o preço.
+- **Ele muda com as parcelas**, porque a taxa muda. Ele também depende do seu [prazo de recebimento](/pages/pagamentos/cartao-de-credito#prazo-de-recebimento). As taxas da sua conta estão em **Perfil → Taxas**.
+- **Só o cartão tem acréscimo.** Pix, boleto, Apple Pay e Google Pay cobram o preço normal.
+- **Com cupom**, o acréscimo é calculado sobre o valor com desconto, e o cartão é cobrado à vista.
+- **Vale no checkout e no link de pagamento.** Assinatura não aceita repasse.
+- **É definido na criação.** Não dá para ligar o repasse num checkout que já existe: crie outro.
+- **No reembolso**, o cliente recebe de volta tudo o que pagou, com o acréscimo. A taxa do cartão não é devolvida, como em qualquer reembolso. Veja [Reembolsos](/pages/vender/reembolsos).
+
+O repasse depende de a sua conta estar habilitada para ele. Se a opção não aparece no dashboard, ou se a API responde `card.passFeesToCustomer requires card payments through Rinne`, fale com o suporte.
+
+## Pelo dashboard
+
+1. Vá em **Sua Loja → Cobranças** e clique em **Criar cobrança**, ou em **Sua Loja → Links de pagamento** e clique em **Criar link de pagamento**.
+2. Em **Métodos de pagamento**, selecione **Cartão**.
+3. Se quiser parcelar, escolha o máximo em **Parcelas no cartão**.
+4. Ligue **Repassar a taxa do cartão ao cliente** ("O cliente paga a taxa de cada parcela e você recebe o valor cheio"). A opção só fica ativa com **Cartão** selecionado.
+5. Salve.
+
+No checkout, o campo **Parcelas no cartão** mostra o valor de cada parcela e o total da opção, já com o acréscimo. Abaixo, aparece a linha **Total no cartão**, com o valor da taxa do cartão separado.
+
+## Pela API
+
+Envie `card.passFeesToCustomer: true` ao [criar o checkout](/pages/payment/create). O objeto `card` sempre leva `maxInstallments`: use `1` para só à vista, ou o máximo de parcelas para repassar em todas as opções.
+
+<CodeGroup>
+```bash cURL
+curl -X POST https://api.abacatepay.com/v2/checkouts/create \
+  -H "Authorization: Bearer $ABACATEPAY_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "items": [{ "id": "prod_abc123xyz", "quantity": 1 }],
+    "methods": ["PIX", "CARD"],
+    "card": {
+      "maxInstallments": 12,
+      "passFeesToCustomer": true
+    }
+  }'
+```
+
+```js Node.js
+const response = await fetch('https://api.abacatepay.com/v2/checkouts/create', {
+  method: 'POST',
+  headers: {
+    Authorization: `Bearer ${process.env.ABACATEPAY_API_KEY}`,
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    items: [{ id: 'prod_abc123xyz', quantity: 1 }],
+    methods: ['PIX', 'CARD'],
+    card: {
+      maxInstallments: 12,
+      passFeesToCustomer: true,
+    },
+  }),
+})
+
+const { data, error } = await response.json()
+if (error) throw new Error(error)
+
+// Mande o cliente para o checkout
+console.log(data.url) // https://app.abacatepay.com/pay/bill_...
+```
+</CodeGroup>
+
+Para um link de pagamento, mande o mesmo corpo para [Criar link de pagamento](/pages/payment-links/create). No checkout transparente, a cobrança é sempre do valor que você envia em `amount`.
+
+### Onde ler o acréscimo
+
+Depois de um pagamento no cartão, o acréscimo vem em `customerFee`, em centavos:
+
+| Onde | `amount` | `customerFee` |
+|---|---|---|
+| [Buscar checkout](/pages/payment/one) | O preço do checkout | O acréscimo que o cliente pagou |
+| Webhook [`checkout.completed`](/pages/webhooks/events/checkout) | O que o cliente pagou, com o acréscimo | O acréscimo que o cliente pagou |
+
+No webhook, `amount` menos `customerFee` é o preço do produto, já com o desconto se houve cupom. Em pagamentos por Pix ou boleto, não há acréscimo.
+
+### Erros do repasse
+
+| Erro | Quando acontece |
+|---|---|
+| `card.passFeesToCustomer requires CARD in methods` | `CARD` não está em `methods` |
+| `card.passFeesToCustomer is not available for subscriptions` | O checkout é de uma assinatura |
+| `card.passFeesToCustomer requires card payments through Rinne` | A sua conta ainda não está habilitada para o repasse. Fale com o suporte |
+
+## Notificações
+
+O [`checkout.completed`](/pages/webhooks/events/checkout) de um pagamento no cartão traz o `amount` com o acréscimo e o `customerFee`. Na venda parcelada, é um único evento com o total da venda.
+
+## Testar no Modo Teste
+
+O repasse funciona no [Modo Teste](/pages/comecar/modo-teste) como em produção: crie o checkout com `passFeesToCustomer`, abra o link e confira o total de cada parcela. Pague com um [cartão de teste](/pages/comecar/modo-teste#cartões-de-teste) e veja o `customerFee` no webhook.
+
+## Perguntas frequentes
+
+<AccordionGroup>
+  <Accordion title="Funciona em assinatura?">
+    Não. A API responde `card.passFeesToCustomer is not available for subscriptions`.
+  </Accordion>
+  <Accordion title="E com cupom?">
+    O acréscimo é calculado sobre o valor com desconto, e o cartão é cobrado à vista.
+  </Accordion>
+  <Accordion title="O cliente paga acréscimo no Pix, no boleto ou no Apple Pay?">
+    Não. Só o cartão de crédito digitado tem acréscimo. Pix, boleto, Apple Pay e Google Pay cobram o preço normal.
+  </Accordion>
+  <Accordion title="Por que deu `card.passFeesToCustomer requires CARD in methods`?">
+    O repasse só existe no cartão. Inclua `CARD` em `methods`.
+  </Accordion>
+  <Accordion title="Dá para ligar o repasse num checkout que já existe?">
+    Não. O repasse é definido na criação. Crie um checkout novo com o campo.
+  </Accordion>
+  <Accordion title="Qual taxa entra no cálculo?">
+    A taxa do cartão da sua conta para o número de parcelas escolhido, no seu prazo de recebimento. Ela está em **Perfil → Taxas**.
+  </Accordion>
+  <Accordion title="E se eu reembolsar?">
+    O cliente recebe de volta tudo o que pagou, com o acréscimo, e a taxa do cartão não é devolvida. Veja [Reembolsos](/pages/vender/reembolsos).
+  </Accordion>
+</AccordionGroup>

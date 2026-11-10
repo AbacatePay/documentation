@@ -1,17 +1,32 @@
 ---
-title: 'Checkout Transparente'
-description: 'Eventos disparados para pagamentos via Checkout Transparente (PIX, Cartão e Boleto).'
+title: 'Eventos do checkout transparente (webhook)'
+sidebarTitle: 'Checkout transparente'
+description: 'Payloads de transparent.completed, transparent.refunded e transparent.disputed para cobranças Pix, cartão e boleto criadas no checkout transparente.'
 icon: 'credit-card'
 ---
 
-Todo evento chega com o mesmo envelope: `id` (identificador da entrega, repetido nas retentativas automáticas, por isso serve para tratar duplicidade), `event`, `apiVersion`, `devMode` e `data`. Em `data`, o objeto `transparent` traz a cobrança, `customer` traz o cliente (com CPF/CNPJ mascarado) e `payerInformation` muda conforme o método. O link do comprovante vem em `transparent.receiptUrl`.
+Os eventos `transparent.*` avisam os pagamentos, reembolsos e disputas das cobranças do [checkout transparente](/pages/cobrar/checkout-transparente), criadas pela API sem passar pela página de pagamento. A entrega, as retentativas e a verificação estão em [Webhooks](/pages/notificacoes/webhooks).
+
+| Evento | Quando dispara |
+|---|---|
+| `transparent.completed` | Uma cobrança do checkout transparente é paga. |
+| `transparent.refunded` | Uma cobrança do checkout transparente é reembolsada. |
+| `transparent.disputed` | Uma disputa é aberta, ganha ou perdida. O `status` da cobrança mostra a fase. |
+| `transparent.lost` | A disputa de uma cobrança do checkout transparente é perdida. |
+
+Em `data` chegam:
+
+- `transparent`: a cobrança, com o link do comprovante em `receiptUrl` e o seu `metadata`.
+- `customer`: o cliente, com o CPF ou CNPJ mascarado.
+- `payerInformation`: o método usado (`PIX`, `CARD` ou `BOLETO`), as UTMs e quem pagou.
+- `reason`: só no `transparent.refunded` e no `transparent.disputed`.
 
 <Tabs>
   <Tab title="transparent.completed">
-    Disparado quando um pagamento via checkout transparente é confirmado. PIX e Boleto chegam com `status: "PAID"`; cartão chega com `status: "APPROVED"`.
+    Disparado quando a cobrança é paga. Pix e boleto chegam com `status: "PAID"`, e cartão com `status: "APPROVED"`.
 
     <Tabs>
-      <Tab title="PIX">
+      <Tab title="Pix">
         ```json
         {
           "id": "log_Qw8eR2tY4uI6oP1aS3dF5gH7",
@@ -23,6 +38,7 @@ Todo evento chega com o mesmo envelope: `id` (identificador da entrega, repetido
               "id": "pix_char_mXq2Lk7vB9nR4sT8yW1zC6dF",
               "externalId": null,
               "amount": 5000,
+              "customerFee": null,
               "paidAmount": null,
               "platformFee": 80,
               "status": "PAID",
@@ -47,13 +63,7 @@ Todo evento chega com o mesmo envelope: `id` (identificador da entrega, repetido
             },
             "payerInformation": {
               "method": "PIX",
-              "utms": {
-                "source": null,
-                "medium": null,
-                "campaign": null,
-                "term": null,
-                "content": null
-              },
+              "utms": { "source": null, "medium": null, "campaign": null, "term": null, "content": null },
               "PIX": {
                 "name": "Maria Santos",
                 "taxId": "529.***.247-**",
@@ -77,6 +87,7 @@ Todo evento chega com o mesmo envelope: `id` (identificador da entrega, repetido
               "id": "card_Wk3aD8sPq1XyZ7mN2bVc4LtR",
               "externalId": null,
               "amount": 10000,
+              "customerFee": null,
               "paidAmount": null,
               "platformFee": 410,
               "status": "APPROVED",
@@ -95,19 +106,13 @@ Todo evento chega com o mesmo envelope: `id` (identificador da entrega, repetido
             },
             "customer": {
               "id": "cust_aB3dE5fG7hJ9kL1mN3pQ5rS7",
-              "name": "Maria Silva",
+              "name": "Maria Santos",
               "email": "maria@exemplo.com",
               "taxId": "529.***.247-**"
             },
             "payerInformation": {
               "method": "CARD",
-              "utms": {
-                "source": null,
-                "medium": null,
-                "campaign": null,
-                "term": null,
-                "content": null
-              },
+              "utms": { "source": null, "medium": null, "campaign": null, "term": null, "content": null },
               "CARD": {
                 "number": "4242",
                 "brand": "VISA"
@@ -130,6 +135,7 @@ Todo evento chega com o mesmo envelope: `id` (identificador da entrega, repetido
               "id": "card_Lr8pN3vKq2XwT6yB9mZc1HdS",
               "externalId": null,
               "amount": 30000,
+              "customerFee": null,
               "paidAmount": null,
               "platformFee": 811,
               "status": "APPROVED",
@@ -150,19 +156,13 @@ Todo evento chega com o mesmo envelope: `id` (identificador da entrega, repetido
             },
             "customer": {
               "id": "cust_aB3dE5fG7hJ9kL1mN3pQ5rS7",
-              "name": "Maria Silva",
+              "name": "Maria Santos",
               "email": "maria@exemplo.com",
               "taxId": "529.***.247-**"
             },
             "payerInformation": {
               "method": "CARD",
-              "utms": {
-                "source": null,
-                "medium": null,
-                "campaign": null,
-                "term": null,
-                "content": null
-              },
+              "utms": { "source": null, "medium": null, "campaign": null, "term": null, "content": null },
               "CARD": {
                 "number": "4242",
                 "brand": "VISA"
@@ -185,6 +185,7 @@ Todo evento chega com o mesmo envelope: `id` (identificador da entrega, repetido
               "id": "bole_k8pqr2mnvxT4yW6zC1dF3gH5",
               "externalId": null,
               "amount": 25000,
+              "customerFee": null,
               "paidAmount": null,
               "platformFee": 250,
               "status": "PAID",
@@ -209,13 +210,7 @@ Todo evento chega com o mesmo envelope: `id` (identificador da entrega, repetido
             },
             "payerInformation": {
               "method": "BOLETO",
-              "utms": {
-                "source": null,
-                "medium": null,
-                "campaign": null,
-                "term": null,
-                "content": null
-              },
+              "utms": { "source": null, "medium": null, "campaign": null, "term": null, "content": null },
               "BOLETO": {
                 "name": "Mariana Costa",
                 "taxId": "12.***.678/0001-**",
@@ -230,68 +225,13 @@ Todo evento chega com o mesmo envelope: `id` (identificador da entrega, repetido
   </Tab>
 
   <Tab title="transparent.disputed">
-    Disparado quando o pagador abre uma disputa (`status: "UNDER_DISPUTE"`) e de novo quando ela é resolvida: `status: "PAID"` se a disputa foi ganha, `"REFUNDED"` se foi perdida. O motivo vem em `reason`.
+    Disparado quando a disputa é aberta (`status: "UNDER_DISPUTE"`) e de novo quando ela termina: `"PAID"` se foi ganha, `"REFUNDED"` se foi perdida. No cartão a disputa é o chargeback, e no Pix é o MED, com o mesmo formato e `payerInformation.PIX`. Em `reason` vem o motivo informado na disputa ou `"Dispute created"`.
 
     <Tabs>
-      <Tab title="PIX">
+      <Tab title="Aberta">
         ```json
         {
-          "id": "log_Qw8eR2tY4uI6oP1aS3dF5gH7",
-          "event": "transparent.disputed",
-          "apiVersion": 2,
-          "devMode": false,
-          "data": {
-            "transparent": {
-              "id": "pix_char_mXq2Lk7vB9nR4sT8yW1zC6dF",
-              "externalId": null,
-              "amount": 5000,
-              "paidAmount": null,
-              "platformFee": 80,
-              "status": "UNDER_DISPUTE",
-              "items": [],
-              "methods": [],
-              "frequency": "ONE_TIME",
-              "coupons": [],
-              "devMode": false,
-              "customerId": "cust_aB3dE5fG7hJ9kL1mN3pQ5rS7",
-              "createdAt": "2026-10-12T19:00:00.000Z",
-              "updatedAt": "2026-10-12T19:00:05.000Z",
-              "receiptUrl": "https://app.abacatepay.com/receipt/...",
-              "metadata": {
-                "pedidoId": "pedido-456"
-              }
-            },
-            "customer": {
-              "id": "cust_aB3dE5fG7hJ9kL1mN3pQ5rS7",
-              "name": "Maria Santos",
-              "email": "maria@exemplo.com",
-              "taxId": "529.***.247-**"
-            },
-            "payerInformation": {
-              "method": "PIX",
-              "utms": {
-                "source": null,
-                "medium": null,
-                "campaign": null,
-                "term": null,
-                "content": null
-              },
-              "PIX": {
-                "name": "Maria Santos",
-                "taxId": "529.***.247-**",
-                "isSameAsCustomer": true
-              }
-            },
-            "reason": "Dispute created"
-          }
-        }
-        ```
-      </Tab>
-
-      <Tab title="Cartão">
-        ```json
-        {
-          "id": "log_Zx9cV1bN3mL5kJ7hG2fD4sA6",
+          "id": "log_Bv3nM5qW7eR9tY1uI3oP5aS7",
           "event": "transparent.disputed",
           "apiVersion": 2,
           "devMode": false,
@@ -300,6 +240,7 @@ Todo evento chega com o mesmo envelope: `id` (identificador da entrega, repetido
               "id": "card_Wk3aD8sPq1XyZ7mN2bVc4LtR",
               "externalId": null,
               "amount": 10000,
+              "customerFee": null,
               "paidAmount": null,
               "platformFee": 410,
               "status": "UNDER_DISPUTE",
@@ -310,7 +251,7 @@ Todo evento chega com o mesmo envelope: `id` (identificador da entrega, repetido
               "devMode": false,
               "customerId": "cust_aB3dE5fG7hJ9kL1mN3pQ5rS7",
               "createdAt": "2026-10-12T14:20:31.512Z",
-              "updatedAt": "2026-10-12T14:20:32.104Z",
+              "updatedAt": "2026-10-28T09:12:40.220Z",
               "receiptUrl": "https://app.abacatepay.com/receipt/...",
               "metadata": {
                 "pedidoId": "pedido-123"
@@ -318,19 +259,13 @@ Todo evento chega com o mesmo envelope: `id` (identificador da entrega, repetido
             },
             "customer": {
               "id": "cust_aB3dE5fG7hJ9kL1mN3pQ5rS7",
-              "name": "Maria Silva",
+              "name": "Maria Santos",
               "email": "maria@exemplo.com",
               "taxId": "529.***.247-**"
             },
             "payerInformation": {
               "method": "CARD",
-              "utms": {
-                "source": null,
-                "medium": null,
-                "campaign": null,
-                "term": null,
-                "content": null
-              },
+              "utms": { "source": null, "medium": null, "campaign": null, "term": null, "content": null },
               "CARD": {
                 "number": "4242",
                 "brand": "VISA"
@@ -342,53 +277,96 @@ Todo evento chega com o mesmo envelope: `id` (identificador da entrega, repetido
         ```
       </Tab>
 
-      <Tab title="Boleto">
+      <Tab title="Ganha">
         ```json
         {
-          "id": "log_Mn4bV6cX8zL1kJ3hG5fD7sA9",
+          "id": "log_Hg2fD4sA6zX8cV1bN3mL5kJ7",
           "event": "transparent.disputed",
           "apiVersion": 2,
           "devMode": false,
           "data": {
             "transparent": {
-              "id": "bole_k8pqr2mnvxT4yW6zC1dF3gH5",
+              "id": "card_Wk3aD8sPq1XyZ7mN2bVc4LtR",
               "externalId": null,
-              "amount": 25000,
+              "amount": 10000,
+              "customerFee": null,
               "paidAmount": null,
-              "platformFee": 250,
-              "status": "UNDER_DISPUTE",
+              "platformFee": 410,
+              "status": "PAID",
               "items": [],
               "methods": [],
               "frequency": "ONE_TIME",
               "coupons": [],
               "devMode": false,
-              "customerId": "cust_Hk2mP4qR6sT8uV1wX3yZ5aB7",
-              "createdAt": "2026-10-04T14:22:10.381Z",
-              "updatedAt": "2026-10-06T10:15:00.000Z",
+              "customerId": "cust_aB3dE5fG7hJ9kL1mN3pQ5rS7",
+              "createdAt": "2026-10-12T14:20:31.512Z",
+              "updatedAt": "2026-11-20T15:03:11.874Z",
               "receiptUrl": "https://app.abacatepay.com/receipt/...",
               "metadata": {
-                "faturaId": "fatura-456"
+                "pedidoId": "pedido-123"
               }
             },
             "customer": {
-              "id": "cust_Hk2mP4qR6sT8uV1wX3yZ5aB7",
-              "name": "Mariana Costa",
-              "email": "mariana.costa@empresa.com.br",
-              "taxId": "12.***.678/0001-**"
+              "id": "cust_aB3dE5fG7hJ9kL1mN3pQ5rS7",
+              "name": "Maria Santos",
+              "email": "maria@exemplo.com",
+              "taxId": "529.***.247-**"
             },
             "payerInformation": {
-              "method": "BOLETO",
-              "utms": {
-                "source": null,
-                "medium": null,
-                "campaign": null,
-                "term": null,
-                "content": null
-              },
-              "BOLETO": {
-                "name": "Mariana Costa",
-                "taxId": "12.***.678/0001-**",
-                "isSameAsCustomer": true
+              "method": "CARD",
+              "utms": { "source": null, "medium": null, "campaign": null, "term": null, "content": null },
+              "CARD": {
+                "number": "4242",
+                "brand": "VISA"
+              }
+            },
+            "reason": "Dispute created"
+          }
+        }
+        ```
+      </Tab>
+
+      <Tab title="Perdida">
+        ```json
+        {
+          "id": "log_Yt6rE4wQ2aS8dF0gH3jK5lZ7",
+          "event": "transparent.disputed",
+          "apiVersion": 2,
+          "devMode": false,
+          "data": {
+            "transparent": {
+              "id": "card_Wk3aD8sPq1XyZ7mN2bVc4LtR",
+              "externalId": null,
+              "amount": 10000,
+              "customerFee": null,
+              "paidAmount": null,
+              "platformFee": 410,
+              "status": "REFUNDED",
+              "items": [],
+              "methods": [],
+              "frequency": "ONE_TIME",
+              "coupons": [],
+              "devMode": false,
+              "customerId": "cust_aB3dE5fG7hJ9kL1mN3pQ5rS7",
+              "createdAt": "2026-10-12T14:20:31.512Z",
+              "updatedAt": "2026-11-20T15:03:11.874Z",
+              "receiptUrl": "https://app.abacatepay.com/receipt/...",
+              "metadata": {
+                "pedidoId": "pedido-123"
+              }
+            },
+            "customer": {
+              "id": "cust_aB3dE5fG7hJ9kL1mN3pQ5rS7",
+              "name": "Maria Santos",
+              "email": "maria@exemplo.com",
+              "taxId": "529.***.247-**"
+            },
+            "payerInformation": {
+              "method": "CARD",
+              "utms": { "source": null, "medium": null, "campaign": null, "term": null, "content": null },
+              "CARD": {
+                "number": "4242",
+                "brand": "VISA"
               }
             },
             "reason": "Dispute created"
@@ -400,13 +378,13 @@ Todo evento chega com o mesmo envelope: `id` (identificador da entrega, repetido
   </Tab>
 
   <Tab title="transparent.refunded">
-    Disparado quando um pagamento via checkout transparente é reembolsado. O motivo informado no reembolso vem em `reason` (ou `"Refund completed"`, quando não houver).
+    Disparado quando a cobrança é reembolsada. Em `reason` vem o motivo informado no reembolso ou `"Refund completed"`. Veja [Reembolsos](/pages/vender/reembolsos).
 
     <Tabs>
-      <Tab title="PIX">
+      <Tab title="Pix">
         ```json
         {
-          "id": "log_Qw8eR2tY4uI6oP1aS3dF5gH7",
+          "id": "log_Ui9oP1aS3dF5gH7jK9lZ2xC4",
           "event": "transparent.refunded",
           "apiVersion": 2,
           "devMode": false,
@@ -415,6 +393,7 @@ Todo evento chega com o mesmo envelope: `id` (identificador da entrega, repetido
               "id": "pix_char_mXq2Lk7vB9nR4sT8yW1zC6dF",
               "externalId": null,
               "amount": 5000,
+              "customerFee": null,
               "paidAmount": null,
               "platformFee": 80,
               "status": "REFUNDED",
@@ -425,7 +404,7 @@ Todo evento chega com o mesmo envelope: `id` (identificador da entrega, repetido
               "devMode": false,
               "customerId": "cust_aB3dE5fG7hJ9kL1mN3pQ5rS7",
               "createdAt": "2026-10-12T19:00:00.000Z",
-              "updatedAt": "2026-10-12T19:00:05.000Z",
+              "updatedAt": "2026-10-14T11:30:00.000Z",
               "receiptUrl": "https://app.abacatepay.com/receipt/...",
               "metadata": {
                 "pedidoId": "pedido-456"
@@ -439,13 +418,7 @@ Todo evento chega com o mesmo envelope: `id` (identificador da entrega, repetido
             },
             "payerInformation": {
               "method": "PIX",
-              "utms": {
-                "source": null,
-                "medium": null,
-                "campaign": null,
-                "term": null,
-                "content": null
-              },
+              "utms": { "source": null, "medium": null, "campaign": null, "term": null, "content": null },
               "PIX": {
                 "name": "Maria Santos",
                 "taxId": "529.***.247-**",
@@ -461,7 +434,7 @@ Todo evento chega com o mesmo envelope: `id` (identificador da entrega, repetido
       <Tab title="Cartão">
         ```json
         {
-          "id": "log_Zx9cV1bN3mL5kJ7hG2fD4sA6",
+          "id": "log_Kj8hG6fD4sA2zX0cV8bN6mL4",
           "event": "transparent.refunded",
           "apiVersion": 2,
           "devMode": false,
@@ -470,6 +443,7 @@ Todo evento chega com o mesmo envelope: `id` (identificador da entrega, repetido
               "id": "card_Wk3aD8sPq1XyZ7mN2bVc4LtR",
               "externalId": null,
               "amount": 10000,
+              "customerFee": null,
               "paidAmount": null,
               "platformFee": 410,
               "status": "REFUNDED",
@@ -480,7 +454,7 @@ Todo evento chega com o mesmo envelope: `id` (identificador da entrega, repetido
               "devMode": false,
               "customerId": "cust_aB3dE5fG7hJ9kL1mN3pQ5rS7",
               "createdAt": "2026-10-12T14:20:31.512Z",
-              "updatedAt": "2026-10-12T14:20:32.104Z",
+              "updatedAt": "2026-10-14T11:30:00.000Z",
               "receiptUrl": "https://app.abacatepay.com/receipt/...",
               "metadata": {
                 "pedidoId": "pedido-123"
@@ -488,80 +462,19 @@ Todo evento chega com o mesmo envelope: `id` (identificador da entrega, repetido
             },
             "customer": {
               "id": "cust_aB3dE5fG7hJ9kL1mN3pQ5rS7",
-              "name": "Maria Silva",
+              "name": "Maria Santos",
               "email": "maria@exemplo.com",
               "taxId": "529.***.247-**"
             },
             "payerInformation": {
               "method": "CARD",
-              "utms": {
-                "source": null,
-                "medium": null,
-                "campaign": null,
-                "term": null,
-                "content": null
-              },
+              "utms": { "source": null, "medium": null, "campaign": null, "term": null, "content": null },
               "CARD": {
                 "number": "4242",
                 "brand": "VISA"
               }
             },
-            "reason": "Cliente pediu o cancelamento"
-          }
-        }
-        ```
-      </Tab>
-
-      <Tab title="Boleto">
-        ```json
-        {
-          "id": "log_Mn4bV6cX8zL1kJ3hG5fD7sA9",
-          "event": "transparent.refunded",
-          "apiVersion": 2,
-          "devMode": false,
-          "data": {
-            "transparent": {
-              "id": "bole_k8pqr2mnvxT4yW6zC1dF3gH5",
-              "externalId": null,
-              "amount": 25000,
-              "paidAmount": null,
-              "platformFee": 250,
-              "status": "REFUNDED",
-              "items": [],
-              "methods": [],
-              "frequency": "ONE_TIME",
-              "coupons": [],
-              "devMode": false,
-              "customerId": "cust_Hk2mP4qR6sT8uV1wX3yZ5aB7",
-              "createdAt": "2026-10-04T14:22:10.381Z",
-              "updatedAt": "2026-10-06T10:15:00.000Z",
-              "receiptUrl": "https://app.abacatepay.com/receipt/...",
-              "metadata": {
-                "faturaId": "fatura-456"
-              }
-            },
-            "customer": {
-              "id": "cust_Hk2mP4qR6sT8uV1wX3yZ5aB7",
-              "name": "Mariana Costa",
-              "email": "mariana.costa@empresa.com.br",
-              "taxId": "12.***.678/0001-**"
-            },
-            "payerInformation": {
-              "method": "BOLETO",
-              "utms": {
-                "source": null,
-                "medium": null,
-                "campaign": null,
-                "term": null,
-                "content": null
-              },
-              "BOLETO": {
-                "name": "Mariana Costa",
-                "taxId": "12.***.678/0001-**",
-                "isSameAsCustomer": true
-              }
-            },
-            "reason": "Cliente pediu o cancelamento"
+            "reason": "Refund completed"
           }
         }
         ```
@@ -572,7 +485,8 @@ Todo evento chega com o mesmo envelope: `id` (identificador da entrega, repetido
 
 ## Cartão: o que muda
 
-- **Status de pago é `APPROVED`.** Depois, quando a adquirente repassa o valor, a cobrança passa a `PAID` sem novo webhook.
-- **Uma venda, um evento.** Na venda parcelada chega um único `transparent.completed`, com o `id` da primeira parcela, `amount` com o total da venda e os campos `installmentCount`, `installmentAmount`, `installmentNumber` e `installmentGroupId`. A taxa é calculada sobre a venda inteira e dividida entre as parcelas; o `platformFee` do evento é a parte da primeira parcela.
-- **Bandeira e final do cartão ficam em `payerInformation.CARD`** (`brand` e `number`).
-- **O `cardToken` não vem no webhook.** Guarde o que volta na resposta de [Criar cobrança Cartão](/pages/transparents/card) ou consulte com `GET /v2/transparents/get`.
+- **O status de pago é `APPROVED`.** Depois, quando o valor é liquidado, a cobrança passa a `PAID` sem novo webhook.
+- **Uma venda, um evento.** Na venda parcelada chega um único `transparent.completed`, com o `id` da primeira parcela, `amount` com o total da venda e os campos `installmentCount`, `installmentAmount`, `installmentNumber` e `installmentGroupId`. A taxa é calculada sobre a venda inteira e dividida entre as parcelas, e o `platformFee` do evento é a parte da primeira parcela. Veja [Parcelamento no cartão](/pages/pagamentos/parcelamento).
+- **Repasse de taxa:** `amount` traz o total pago pelo cliente, e `customerFee` traz o acréscimo. Veja [Repasse de taxa](/pages/pagamentos/repasse-de-taxa).
+- **Bandeira e final do cartão** ficam em `payerInformation.CARD` (`brand` e `number`).
+- **O `cardToken` não vem no webhook.** Guarde o que volta na resposta de [Criar cobrança no cartão](/pages/transparents/card) ou consulte a cobrança pela API.

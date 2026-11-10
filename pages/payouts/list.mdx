@@ -3,10 +3,12 @@ title: 'Listar Saques'
 openapi: "GET /payouts/list"
 ---
 
-Retorna todos os saques realizados pela sua conta.
+Lista os saques da sua conta, do mais recente para o mais antigo. Os envios de Pix para terceiros ficam em [Listar Pix](/pages/pix/list), e os saques das subcontas não entram nesta lista.
 
 <Card horizontal>
   Requer a permissão `WITHDRAW:READ`.
 </Card>
 
-Use `limit`, `after` e `before` para paginar e `startDate`/`endDate` (`YYYY-MM-DD`) para filtrar por data de criação. Consulte [Paginação e filtro por data](/pages/reference/introduction#paginação-e-filtro-por-data). Cada item segue o mesmo formato da resposta do [Criar Saque](/pages/payouts/create), incluindo `status`, `amount`, `platformFee` e `receiptUrl`.
+<Card title="Entenda os saques" icon="money-bill-transfer" href="/pages/dinheiro/saques" horizontal>
+  Status, taxa, limites e eventos do saque.
+</Card>

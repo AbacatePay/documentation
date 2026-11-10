@@ -3,10 +3,21 @@ title: 'Buscar um Cliente'
 openapi: "GET /customers/get"
 ---
 
-Retorna os dados de um cliente pelo seu `id`.
+Retorna um cliente pelo `id`, pelo `email` ou pelo `taxId`. Informe ao menos um desses filtros.
 
 <Card horizontal>
   Requer a permissão `CUSTOMER:READ`.
 </Card>
 
-Use para recuperar o `id` de um cliente antes de criar uma cobrança ou para verificar os dados cadastrados.
+<Card title="Entenda os clientes" icon="users" href="/pages/vender/clientes" horizontal>
+  Campos do cadastro e como os dados são guardados.
+</Card>
+
+O `taxId` pode ir com ou sem pontuação.
+
+## Erros
+
+| Mensagem em `error` | Quando acontece |
+|---|---|
+| `Customer not found` | Nenhum cliente da loja corresponde ao filtro. |
+| `Expected string to match 'email' format` | `email` inválido. |

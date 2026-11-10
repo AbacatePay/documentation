@@ -3,10 +3,20 @@ title: 'Buscar um produto'
 openapi: "GET /products/get"
 ---
 
-Retorna os dados de um produto pelo seu `id`.
+Retorna um produto pelo `id`, pelo `externalId` ou pelo `name`. Informe ao menos um desses filtros.
 
 <Card horizontal>
   Requer a permissão `PRODUCT:READ`.
 </Card>
 
-Use para verificar `status`, `price`, `cycle`, `trialDays` e demais atributos antes de criar um checkout com o produto.
+<Card title="Entenda os produtos" icon="box" href="/pages/vender/produtos" horizontal>
+  Status, ciclo, período de teste e os demais campos do produto.
+</Card>
+
+Produtos excluídos não aparecem na busca.
+
+## Erros
+
+| Mensagem em `error` | Quando acontece |
+|---|---|
+| `Product not found` | Nenhum produto ativo da loja corresponde ao filtro. |

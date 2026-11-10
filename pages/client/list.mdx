@@ -3,10 +3,14 @@ title: 'Listar Clientes'
 openapi: "GET /customers/list"
 ---
 
-Retorna todos os clientes cadastrados na sua loja.
+Retorna os clientes da sua loja, incluindo os que vieram dos pagamentos. Clientes excluídos não aparecem.
 
 <Card horizontal>
   Requer a permissão `CUSTOMER:READ`.
 </Card>
 
-Use `limit`, `after` e `before` para paginar e `startDate`/`endDate` (`YYYY-MM-DD`) para filtrar por data de criação. Consulte [Paginação e filtro por data](/pages/reference/introduction#paginação-e-filtro-por-data). Cada item segue o mesmo formato da resposta do [Criar Cliente](/pages/client/create), incluindo `id`, `email`, `name` e `taxId`.
+<Card title="Entenda os clientes" icon="users" href="/pages/vender/clientes" horizontal>
+  Campos do cadastro e como a AbacatePay evita duplicados.
+</Card>
+
+Use `limit`, `after` e `before` para paginar e `startDate`/`endDate` (`YYYY-MM-DD`) para filtrar por data de criação. Consulte [Paginação e filtro por data](/pages/reference/introduction#paginação-e-filtro-por-data).

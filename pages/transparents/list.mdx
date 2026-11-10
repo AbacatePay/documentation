@@ -3,15 +3,19 @@ title: 'Listar Checkouts Transparentes'
 openapi: "GET /transparents/list"
 ---
 
-Retorna as cobranças do checkout transparente da sua loja: PIX, Boleto e Cartão.
-
 <Card horizontal>
   Requer a permissão `TRANSPARENT:READ`.
 </Card>
 
-Use `limit`, `after` e `before` para paginar e `startDate`/`endDate` (`YYYY-MM-DD`) para filtrar por data de criação. Consulte [Paginação e filtro por data](/pages/reference/introduction#paginação-e-filtro-por-data). Cada item segue o formato da resposta de criação do seu método: [PIX](/pages/transparents/create), [Boleto](/pages/transparents/boleto) ou [Cartão](/pages/transparents/card).
+Retorna as cobranças do checkout transparente da sua loja: Pix, boleto e cartão. Cada item segue o formato da resposta de criação do seu método: [Pix](/pages/transparents/create), [boleto](/pages/transparents/boleto) ou [cartão](/pages/transparents/card).
 
-Para filtrar por método, use `method`. Por exemplo, só as cobranças de cartão:
+<Card title="Entenda o checkout transparente" icon="code" href="/pages/cobrar/checkout-transparente" horizontal>
+  Como funciona o pagamento dentro do seu site, com Pix, boleto e cartão.
+</Card>
+
+Use `limit`, `after` e `before` para paginar e `startDate`/`endDate` (`YYYY-MM-DD`) para filtrar por data de criação. Veja [Paginação e filtro por data](/pages/reference/introduction#paginação-e-filtro-por-data). Para filtrar, use também `method`, `status`, `externalId` ou `id`. Em `method`, o Pix do checkout transparente é `PIX_QRCODE`.
+
+Por exemplo, só as cobranças de cartão:
 
 ```bash
 curl "https://api.abacatepay.com/v2/transparents/list?method=CARD&limit=20" \

@@ -3,12 +3,26 @@ title: 'Buscar um link de pagamento'
 openapi: "GET /payment-links/get"
 ---
 
-Retorna os dados de um link de pagamento pelo seu `id`.
+Retorna um link de pagamento pelo `id` ou pelo `externalId`. O campo `frequency` vem como `MULTIPLE_PAYMENTS`.
 
 <Card horizontal>
   Requer a permissão `CHECKOUT:READ`.
 </Card>
 
-O campo `frequency` virá como `MULTIPLE_PAYMENTS`. Use `paidAmount` para acompanhar o total arrecadado via esse link ao longo do tempo.
+<Card title="Entenda o link de pagamento" icon="book-open" href="/pages/cobrar/link-de-pagamento" horizontal>
+  Status, `paidAmount` e como somar os pagamentos do link.
+</Card>
 
-Informe ao menos um entre `id`, `externalId` e `customerId`. Checkouts de assinatura não são retornados por esta rota; use [Buscar checkout de assinatura](/pages/subscriptions/checkouts-get).
+**Exemplo:**
+```bash
+curl "https://api.abacatepay.com/v2/payment-links/get?id=bill_abc123xyz" \
+  -H "Authorization: Bearer SUA_CHAVE"
+```
+
+## Erros
+
+| Erro | Motivo |
+|---|---|
+| `Provide id, externalId or customerId` | Nem `id` nem `externalId` foram enviados. |
+| `Billing not found` | Não existe link de pagamento com esse valor na sua loja. Checkouts de pagamento único ficam em [Buscar um Checkout](/pages/payment/one). |
+| `This is a subscription checkout. Use /v2/subscriptions/checkouts/get` | O `id` é de um checkout de assinatura. Use [Buscar checkout de assinatura](/pages/subscriptions/checkouts-get). |

@@ -3,6 +3,18 @@ title: 'Deletar um webhook'
 openapi: "POST /webhooks/delete"
 ---
 
+Exclui um webhook. Ele para de receber eventos, e as tentativas de entrega pendentes são descartadas.
+
 <Card horizontal>
   Requer a permissão `WEBHOOK:DELETE`.
 </Card>
+
+<Card title="Entenda os webhooks" icon="webhook" href="/pages/notificacoes/webhooks" horizontal>
+  Como a entrega funciona, as retentativas, os requisitos da URL e a lista de eventos.
+</Card>
+
+## Erros
+
+| Status | `error` | Quando |
+|---|---|---|
+| `400` | `Webhook not found` | Não existe webhook com esse `id` no ambiente da chave, ou ele já foi excluído. |

@@ -1,0 +1,85 @@
+---
+title: 'Chaves de API e permissões'
+description: 'Crie uma chave de API da AbacatePay, escolha as permissões de cada rota e guarde a chave com segurança. Veja também os erros de autenticação.'
+icon: 'key'
+---
+
+A chave de API identifica a sua conta e autoriza cada requisição. Ela vai no header `Authorization` de toda chamada:
+
+```bash
+Authorization: Bearer SUA_CHAVE
+```
+
+A chave fica só no seu backend. Ela também define o ambiente: uma chave do [Modo Teste](/pages/comecar/modo-teste) (`abc_dev_...`) simula transações, e uma chave de produção (`abc_prod_...`) movimenta dinheiro real. A URL é a mesma.
+
+<Card title="Chave de API não é chave pública" horizontal>
+  Para mostrar o formulário de cartão no seu site, o abacatepay.js usa outra chave, a [chave pública](/pages/pagamentos/cartao-de-credito#chave-pública-e-chave-de-api) (`pk_...`), que pode ficar no navegador. A chave de API continua só no backend.
+</Card>
+
+## Criar uma chave
+
+1. No dashboard, vá em **Integração → API** e clique em **Nova chave**. Para criar chaves, a conta precisa ter a verificação em duas etapas (2FA) ativa; se não tiver, o dashboard pede para ativar.
+2. Escolha a **versão**. Use a **API v2**. Chaves da v1 e da v2 não se misturam: uma chave v1 numa rota v2 recebe `401 API key version mismatch`.
+3. Escolha o **escopo** e as **permissões** (veja abaixo) e escreva uma **descrição** que diga onde a chave é usada, como “Loja principal” ou “Integração do ERP”.
+4. Copie a chave. Ela aparece **uma única vez**; depois, a lista mostra só uma parte dela. Guarde num gerenciador de segredos ou numa variável de ambiente.
+
+A chave é criada no ambiente em que o dashboard está: com o Modo Teste ligado, sai uma chave de teste.
+
+Para tirar uma chave de uso, clique em **Excluir** na lista. As requisições com ela passam a receber `401`.
+
+## Permissões
+
+Cada rota exige uma permissão. Sem ela, a API responde **401** com `Insufficient permissions`.
+
+Dê a cada chave só as permissões que a integração usa: uma chave só para ler clientes, outra só para criar cobranças. As permissões não podem ser editadas depois que a chave é criada. Para mudar o acesso, crie uma chave nova e exclua a antiga.
+
+| Permissão | Rotas |
+| --------- | ----- |
+| `CHECKOUT:CREATE` | `POST /checkouts/create`, `POST /payment-links/create` |
+| `CHECKOUT:READ` | `GET /checkouts/get`, `GET /checkouts/list`, `GET /payment-links/get`, `GET /payment-links/list` |
+| `CHECKOUT:DELETE` | `POST /checkouts/delete`, `POST /payment-links/delete` |
+| `REFUND:CREATE` | `POST /checkouts/refund`, `POST /payment-links/refund`, `POST /transparents/refund` |
+| `TRANSPARENT:CREATE` | `POST /transparents/create`, `POST /transparents/simulate-payment` |
+| `TRANSPARENT:READ` | `GET /transparents/get`, `GET /transparents/list`, `GET /transparents/check` |
+| `SUBSCRIPTION:CREATE` | `POST /subscriptions/create`, `POST /subscriptions/change-plan`, `POST /subscriptions/record-usage` |
+| `SUBSCRIPTION:READ` | `GET /subscriptions/get`, `GET /subscriptions/list`, `GET /subscriptions/checkouts/get`, `GET /subscriptions/checkouts/list` |
+| `SUBSCRIPTION:DELETE` | `POST /subscriptions/cancel`, `POST /subscriptions/checkouts/delete` |
+| `CUSTOMER:CREATE` | `POST /customers/create` |
+| `CUSTOMER:READ` | `GET /customers/get`, `GET /customers/list` |
+| `CUSTOMER:DELETE` | `POST /customers/delete` |
+| `CHECKOUT:CREATE`, `SUBSCRIPTION:CREATE` ou `CUSTOMER:CREATE` (qualquer uma) | `POST /customer-portal/create` |
+| `PRODUCT:CREATE` | `POST /products/create` |
+| `PRODUCT:READ` | `GET /products/get`, `GET /products/list` |
+| `PRODUCT:DELETE` | `POST /products/delete` |
+| `COUPON:CREATE` | `POST /coupons/create` |
+| `COUPON:READ` | `GET /coupons/get`, `GET /coupons/list` |
+| `COUPON:UPDATE` | `POST /coupons/toggle` |
+| `COUPON:DELETE` | `POST /coupons/delete` |
+| `WEBHOOK:CREATE` | `POST /webhooks/create` |
+| `WEBHOOK:READ` | `GET /webhooks/get`, `GET /webhooks/list` |
+| `WEBHOOK:DELETE` | `POST /webhooks/delete` |
+| `WITHDRAW:CREATE` | `POST /payouts/create`, `POST /pix/send` |
+| `WITHDRAW:READ` | `GET /payouts/get`, `GET /payouts/list`, `GET /pix/get`, `GET /pix/list` |
+| `SUB_ACCOUNT:CREATE` | `POST /sub-accounts/create` |
+| `SUB_ACCOUNT:READ` | `GET /sub-accounts/get`, `GET /sub-accounts/list` |
+| `SUB_ACCOUNT:WITHDRAW` | `POST /sub-accounts/withdraw` |
+| `STORE:READ` | `GET /stores/get` |
+| `BANK_STATEMENT:READ` | `GET /bank-statement/list` |
+
+Cada página de endpoint também diz, no topo, qual permissão ele exige.
+
+As rotas de [Public MRR](/pages/integracoes/public-mrr) são a exceção: elas não usam a chave de API, e sim o token `mrr_` do plugin Public MRR (Integração → Plugins).
+
+Quem se autentica pela [CLI](/pages/cli/auth) com login, sem chave, não chama as rotas que tiram dinheiro da loja (`WITHDRAW:CREATE`, `REFUND:CREATE` e `SUB_ACCOUNT:WITHDRAW`): a API responde `403`. Para essas rotas, use uma chave de API.
+
+## Erros de autenticação
+
+Os erros de chave e de permissão respondem `401`, com a causa no campo `error`. A lista completa está na [Introdução da Referência](/pages/reference/introduction#erros-de-autenticação).
+
+## Boas práticas
+
+- Guarde a chave em variável de ambiente ou num gerenciador de segredos, nunca no código.
+- Não publique a chave em repositórios, prints ou grupos.
+- Use uma chave por integração, com só as permissões necessárias.
+- Exclua na hora qualquer chave que possa ter vazado.
+- A AbacatePay **nunca** pede a sua chave.

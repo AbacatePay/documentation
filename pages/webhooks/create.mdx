@@ -3,6 +3,36 @@ title: 'Criar um webhook'
 openapi: "POST /webhooks/create"
 ---
 
+Cadastra uma URL para receber os eventos escolhidos. O webhook criado pela API é sempre v2 e fica no ambiente da chave (Modo Teste ou produção).
+
 <Card horizontal>
   Requer a permissão `WEBHOOK:CREATE`.
 </Card>
+
+<Card title="Entenda os webhooks" icon="webhook" href="/pages/notificacoes/webhooks" horizontal>
+  Como a entrega funciona, as retentativas, os requisitos da URL e a lista de eventos.
+</Card>
+
+## Exemplo
+
+```json
+{
+  "name": "Pagamentos da loja",
+  "endpoint": "https://meusite.com/webhooks/abacatepay",
+  "secret": "f72179170ec5a0c845c0fcd18457e241006d09363b2d2a7d296d7bffbcd027c4",
+  "events": ["checkout.completed", "subscription.renewed"]
+}
+```
+
+O `secret` é um valor que você cria, com 32 caracteres ou mais. A AbacatePay o envia em cada entrega para você conferir a origem, e ele não é usado para assinar o corpo. Veja [Segurança dos webhooks](/pages/notificacoes/seguranca).
+
+## Erros
+
+| Status | `error` | Quando |
+|---|---|---|
+| `400` | `Webhook secret must be at least 32 characters long` | O `secret` tem menos de 32 caracteres. |
+| `400` | `URL validation failed: Webhook URL must use HTTPS protocol` | O `endpoint` não é HTTPS. |
+| `400` | `URL validation failed: Webhook URL cannot point to a private or reserved IP address` | O `endpoint` é `localhost` ou um IP privado ou reservado. |
+| `400` | `URL validation failed: Webhook URL resolves to a private or reserved IP address` | O domínio do `endpoint` aponta para um IP privado ou reservado. |
+| `400` | `URL validation failed: Webhook URL hostname could not be resolved` | O domínio do `endpoint` não existe no DNS. |
+| `400` | `A webhook with this configuration already exists` | Já existe um webhook com essa configuração. |

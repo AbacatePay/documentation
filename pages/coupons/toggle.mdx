@@ -3,10 +3,24 @@ title: 'Alternar Status de um Cupom'
 openapi: "POST /coupons/toggle"
 ---
 
-Ativa ou desativa um cupom. Cupons inativos não podem ser aplicados em checkouts.
+Alterna o status de um cupom pelo `id`, que é o código do cupom: `ACTIVE` vira `DISABLED` e `DISABLED` vira `ACTIVE`. Um cupom desativado é recusado no checkout.
 
 <Card horizontal>
   Requer a permissão `COUPON:UPDATE`.
 </Card>
 
-Chame este endpoint sempre que quiser pausar uma promoção temporariamente ou reativá-la sem precisar recriar o cupom.
+<Card title="Entenda os cupons" icon="ticket" href="/pages/vender/cupons#status-ativo-desativado-e-excluído" horizontal>
+  Quando desativar e quando excluir um cupom.
+</Card>
+
+```json
+{
+  "id": "BEMVINDO10"
+}
+```
+
+## Erros
+
+| Mensagem em `error` | Quando acontece |
+|---|---|
+| `Coupon not found` | Não existe cupom ativo ou desativado com esse código. |

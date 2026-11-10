@@ -1,12 +1,14 @@
 ---
-title: Listar PIX
+title: Listar Pix
 openapi: 'GET /pix/list'
 ---
 
-Retorna todas as transações PIX enviadas pela sua conta.
+Lista os Pix enviados a terceiros pela sua conta, do mais recente para o mais antigo. Os saques ficam em [Listar saques](/pages/payouts/list).
 
 <Card horizontal>
   Requer a permissão `WITHDRAW:READ`.
 </Card>
 
-Use `limit`, `after` e `before` para paginar e `startDate`/`endDate` (`YYYY-MM-DD`) para filtrar por data de criação. Consulte [Paginação e filtro por data](/pages/reference/introduction#paginação-e-filtro-por-data). Cada item segue o mesmo formato da resposta do [Enviar PIX](/pages/pix/create), incluindo `status`, `amount`, `platformFee` e `receiptUrl`.
+<Card title="Entenda o Enviar Pix" icon="paper-plane" href="/pages/dinheiro/enviar-pix" horizontal>
+  Status, taxa, limites e eventos do envio.
+</Card>

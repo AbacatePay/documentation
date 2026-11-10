@@ -3,10 +3,14 @@ title: 'Listar produtos'
 openapi: "GET /products/list"
 ---
 
-Retorna todos os produtos do seu catálogo.
+Retorna os produtos do seu catálogo, com status `ACTIVE` ou `ARCHIVED`. Produtos excluídos não aparecem.
 
 <Card horizontal>
   Requer a permissão `PRODUCT:READ`.
 </Card>
 
-Use `limit`, `after` e `before` para paginar e `startDate`/`endDate` (`YYYY-MM-DD`) para filtrar por data de criação. Consulte [Paginação e filtro por data](/pages/reference/introduction#paginação-e-filtro-por-data). Cada item segue o mesmo formato da resposta do [Criar Produto](/pages/products/create), incluindo `id`, `name`, `price`, `cycle`, `trialDays` e `status`.
+<Card title="Entenda os produtos" icon="box" href="/pages/vender/produtos" horizontal>
+  Avulso ou assinatura, status e os campos de cada produto.
+</Card>
+
+Use `limit`, `after` e `before` para paginar e `startDate`/`endDate` (`YYYY-MM-DD`) para filtrar por data de criação. Consulte [Paginação e filtro por data](/pages/reference/introduction#paginação-e-filtro-por-data).

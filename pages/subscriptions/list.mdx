@@ -3,38 +3,24 @@ title: 'Listar assinaturas'
 openapi: "GET /subscriptions/list"
 ---
 
-Retorna as assinaturas (`subs_...`) da sua loja.
+Retorna as assinaturas (`subs_...`) da sua loja. Os checkouts de assinatura (`bill_...`), inclusive os que ainda não foram pagos, ficam em [Listar checkouts de assinatura](/pages/subscriptions/checkouts-list).
 
 <Card horizontal>
   Requer a permissão `SUBSCRIPTION:READ`.
 </Card>
 
-Use `limit`, `after` e `before` para paginar e `startDate`/`endDate` (`YYYY-MM-DD`) para filtrar por data de criação. Consulte [Paginação e filtro por data](/pages/reference/introduction#paginação-e-filtro-por-data).
+<Card title="Entenda as assinaturas" icon="rotate" href="/pages/cobrar/assinaturas" horizontal>
+  Status, ciclos, retentativas, teste grátis e cancelamento.
+</Card>
 
-<Warning>
-  Esta rota lista **assinaturas**, não checkouts. A assinatura só passa a existir depois que o cliente paga o checkout de assinatura. Para listar os checkouts de assinatura (`bill_...`), inclusive os que ainda não foram pagos, use [Listar checkouts de assinatura](/pages/subscriptions/checkouts-list).
-</Warning>
+| Filtro | Descrição |
+|---|---|
+| `status` | `ACTIVE` ou `CANCELLED` |
+| `checkoutId` | Checkout de assinatura (`bill_...`) que originou a assinatura. Um `checkoutId` que não existe devolve lista vazia. |
 
-## Encontrar as assinaturas de um checkout
+Use `limit`, `after` e `before` para paginar e `startDate`/`endDate` (`YYYY-MM-DD`) para filtrar pela data de criação. Veja [Paginação e filtro por data](/pages/reference/introduction#paginação-e-filtro-por-data).
 
-Cada assinatura traz o `checkoutId` do checkout de assinatura que a originou. Um mesmo checkout pode gerar várias assinaturas, uma por cliente que o pagou. Para encontrá-las, filtre por `checkoutId`:
-
+**Exemplo: a assinatura gerada por um checkout**
 ```http
 GET /v2/subscriptions/list?checkoutId=bill_abc123xyz
 ```
-
-Um `checkoutId` que não existe retorna lista vazia.
-
-## Filtros
-
-| Parâmetro    | Descrição |
-|--------------|-----------|
-| `status`     | `ACTIVE` ou `CANCELLED` |
-| `checkoutId` | Checkout de assinatura (`bill_...`) que originou a assinatura |
-
-**Valores de `status`:**
-
-| Valor | Significado |
-|-------|-------------|
-| `ACTIVE` | Assinatura ativa, com cobranças automáticas a cada ciclo |
-| `CANCELLED` | Cancelada; nenhuma cobrança futura é gerada |

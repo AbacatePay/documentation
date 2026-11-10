@@ -1,18 +1,14 @@
 ---
 title: 'abacatepay.js'
-description: 'Referência do script que mostra o formulário de cartão no seu site e gera o token ctok_: opções, métodos, eventos, erros e exemplo em React.'
+description: 'Referência do script que mostra o formulário de cartão no seu site e gera o token ctok_: instalação, opções, métodos, eventos e erros.'
 icon: 'js'
 ---
 
-O **abacatepay.js** é o script que coloca o formulário de cartão no seu site. Ele cuida de três coisas:
+O **abacatepay.js** é o script de navegador que mostra o formulário de cartão do checkout transparente e gera o token `ctok_`, usado em [Criar cobrança Cartão](/pages/transparents/card).
 
-- desenha os campos do cartão num iframe seguro (o número e o CVV nunca passam pelo seu código);
-- faz a autenticação 3DS quando o banco do cliente exige, numa janela que abre e fecha sozinha;
-- devolve o token `ctok_`, que o seu backend usa para [criar a cobrança](/pages/transparents/card).
-
-<Note>
-  Quer o fluxo completo, do formulário à cobrança? Siga o [passo a passo](/pages/guides/cartao-transparente). Esta página é a referência do script.
-</Note>
+<Card title="Entenda o checkout transparente de cartão" icon="credit-card" href="/pages/pagamentos/cartao-de-credito#no-checkout-transparente" horizontal>
+  Como o script, a chave pública e o seu backend trabalham juntos, com exemplo de uso básico e em React. O passo a passo completo está no tutorial de checkout transparente com cartão.
+</Card>
 
 ## Instalação
 
@@ -22,42 +18,7 @@ Coloque a tag no `<head>` da página de pagamento:
 <script src="https://abacatepay.com/abacatepay.js"></script>
 ```
 
-O script cria o objeto global `AbacatePay`. Use sempre esse endereço: não copie o arquivo para o seu servidor, porque ele é atualizado por nós. Não existe pacote npm do abacatepay.js; em React, Vue ou Next.js, carregue a mesma tag (veja o [exemplo em React](#exemplo-em-react)).
-
-## Uso básico
-
-```html
-<div id="cartao"></div>
-<button id="pagar" disabled>Pagar</button>
-
-<script type="module">
-  const botao = document.getElementById('pagar')
-
-  const checkout = AbacatePay.create({
-    publicKey: 'pk_sua_chave_publica',
-    amount: 10000, // centavos: o mesmo valor que o backend vai cobrar
-    onCardChange: ({ canTokenize }) => {
-      botao.disabled = !canTokenize
-    },
-  })
-
-  await checkout.mount('#cartao')
-
-  botao.addEventListener('click', async () => {
-    botao.disabled = true
-    const { token } = await checkout.tokenize({
-      name: 'Maria Silva',
-      email: 'maria@exemplo.com',
-      taxId: '529.982.247-25',
-    })
-    // envie o token para o seu backend em até 60 segundos
-  })
-</script>
-```
-
-<Tip>
-  Use `<script type="module">` (ou uma função `async`) para poder usar `await`. Num `<script>` comum, `await` fora de função é erro de sintaxe e nada acontece.
-</Tip>
+O script cria o objeto global `AbacatePay`. Use sempre esse endereço: não copie o arquivo para o seu servidor, porque ele é atualizado por nós. Não existe pacote npm do abacatepay.js; em React, Vue ou Next.js, carregue a mesma tag (o exemplo em React está em [Cartão de crédito](/pages/pagamentos/cartao-de-credito#no-checkout-transparente)).
 
 ---
 
@@ -67,7 +28,7 @@ Cria o checkout. Não desenha nada ainda: isso é papel do `mount()`.
 
 | Opção | Tipo | Obrigatório | Descrição |
 |---|---|---|---|
-| `publicKey` | `string` | Sim | Sua [chave pública](/pages/transparents/public-key) (`pk_...`) |
+| `publicKey` | `string` | Sim | Sua [chave pública](/pages/pagamentos/cartao-de-credito#chave-pública-e-chave-de-api) (`pk_...`) |
 | `amount` | `number` | Sim | Valor total em centavos, inteiro, a partir de `100`. Precisa ser igual ao `amount` da cobrança |
 | `locale` | `'pt'` \| `'en'` \| `'es'` | Não | Idioma do formulário. Padrão: `'pt'` |
 | `icons` | `boolean` | Não | Mostra os ícones das bandeiras nos campos. Padrão: `false` |
@@ -79,7 +40,7 @@ Cria o checkout. Não desenha nada ainda: isso é papel do `mount()`.
 
 `create()` lança um erro na hora se `publicKey` estiver vazia ou se `amount` for menor que `100`.
 
-Os callbacks são opcionais. Você pode usar só `await` com `try`/`catch` nos métodos, ou só os callbacks, ou os dois.
+Os callbacks são opcionais. Você pode usar só `await` com `try`/`catch` nos métodos, ou só os callbacks, ou os dois. Para usar `await`, coloque o código num `<script type="module">` ou numa função `async`.
 
 ---
 
@@ -94,6 +55,8 @@ Devolve uma `Promise` que resolve quando o formulário está pronto e rejeita co
 ### `checkout.tokenize(cliente, endereço?)`
 
 Valida o cartão, faz o 3DS quando o banco exige e devolve o token. Chame no clique do botão de pagar, nunca antes: o token vale só 60 segundos.
+
+Quando o banco pede 3DS, o `tokenize()` abre uma janela por cima da página, com o título **Autenticação do cartão**, e só resolve depois que o cliente termina. Se ele não confirmar, rejeita com `THREE_DS_FAILED`.
 
 **`cliente`** (obrigatório):
 
@@ -191,28 +154,23 @@ try {
 | `NETWORK` | Falha de rede | Tente de novo |
 | `UNKNOWN` | Erro inesperado | Tente de novo; se repetir, fale com o suporte |
 
-Mensagens mais comuns com `code: 'API'`:
+Mensagens mais comuns com `code: 'API'`, no `mount()` ou no `tokenize()`:
 
-| `error.message` | Causa |
-|---|---|
-| `Invalid or revoked public key` | Chave pública errada ou trocada |
-| `CARD_TRANSPARENTS is not available for this store` | Sua conta ainda não tem cartão liberado |
-| `payer.taxId must be a valid CPF or CNPJ` | CPF ou CNPJ inválido |
-| `Property 'payer.email' should be email` | E-mail inválido |
-| `Não foi possível processar o pagamento com este cartão` | O cartão não pôde ser validado. Peça outro cartão |
-| `Too many requests. Try again shortly.` | Muitas tentativas em um minuto. Aguarde um minuto |
+| `error.message` | Causa | O que fazer |
+|---|---|---|
+| `Invalid or revoked public key` | A chave pública não existe, está incompleta ou foi trocada | Copie de novo em **Integração → Checkout próprio** |
+| `CARD_TRANSPARENTS is not available for this store` | Sua conta ainda não tem o checkout transparente de cartão liberado | Fale com o suporte |
+| `Store is not configured for Rinne card payments` | Sua conta ainda não está pronta para receber cartão em produção | Fale com o suporte |
+| `payer.taxId must be a valid CPF or CNPJ` | CPF ou CNPJ inválido | Peça para conferir |
+| `Property 'payer.email' should be email` | E-mail inválido | Peça para conferir |
+| `Não foi possível processar o pagamento com este cartão` | O cartão não pôde ser validado | Peça outro cartão |
+| `Too many requests. Try again shortly.` | Muitas tentativas de cartão em um minuto, pela mesma chave ou pelo mesmo IP | Aguarde um minuto |
 
 ---
 
-## 3DS
+## Modo Teste
 
-Em produção, alguns bancos pedem que o cliente confirme a compra (código por SMS, aprovação no app do banco). Quando isso acontece, o `tokenize()` abre uma janela por cima da página, com o título **Autenticação do cartão**, e só resolve depois que o cliente termina. Você não precisa fazer nada além de esperar a `Promise`.
-
-Se o cliente não confirmar, o `tokenize()` rejeita com `THREE_DS_FAILED`.
-
-## Dev mode
-
-Com a [chave pública de teste](/pages/transparents/public-key#teste-e-produção), o abacatepay.js mostra um formulário de teste: campos simples, já preenchidos com o cartão `4242 4242 4242 4242`, sem 3DS e sem cobrança real. Para simular recusas, troque o número pelos [cartões de teste](/pages/devmode#testando-pagamentos-com-cartão).
+Com a chave pública de teste, o abacatepay.js mostra um formulário de teste: campos simples, já preenchidos com o cartão `4242 4242 4242 4242`, sem 3DS e sem cobrança real. Para simular recusas, troque o número pelos [cartões de teste](/pages/comecar/modo-teste#cartões-de-teste).
 
 ## Aparência
 
@@ -232,76 +190,4 @@ AbacatePay.create({
 })
 ```
 
-O `theme` vale para o formulário seguro de produção. O formulário de teste do Dev mode tem visual fixo.
-
----
-
-## Exemplo em React
-
-Coloque a tag do script no `index.html` (no Next.js, use `<Script src="https://abacatepay.com/abacatepay.js" strategy="beforeInteractive" />` no layout raiz). O componente cobra pelo mesmo backend do [passo a passo](/pages/guides/cartao-transparente) (`POST /pagar`):
-
-```jsx PagamentoCartao.jsx
-'use client'
-
-import { useEffect, useRef, useState } from 'react'
-
-export function PagamentoCartao({ publicKey, amount, cliente }) {
-  const area = useRef(null)
-  const checkout = useRef(null)
-  const [podePagar, setPodePagar] = useState(false)
-  const [mensagem, setMensagem] = useState('')
-
-  useEffect(() => {
-    let cancelado = false
-    const host = area.current.appendChild(document.createElement('div')) // um por montagem (StrictMode)
-    const instancia = window.AbacatePay.create({
-      publicKey,
-      amount,
-      onCardChange: ({ canTokenize }) => setPodePagar(canTokenize),
-    })
-    checkout.current = instancia
-    instancia.mount(host).catch((error) => !cancelado && setMensagem(error.message))
-    return () => {
-      cancelado = true
-      instancia.destroy()
-      host.remove()
-    }
-  }, [publicKey, amount])
-
-  async function pagar() {
-    setPodePagar(false) // evita cobrança em dobro
-    try {
-      const { token } = await checkout.current.tokenize(cliente)
-      const resposta = await fetch('/pagar', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token, cliente }),
-      })
-      const { success, status, error } = await resposta.json()
-      setMensagem(success ? `Pagamento recebido (${status})` : error)
-      if (success) return
-    } catch (error) {
-      setMensagem(error.message)
-    }
-    setPodePagar(checkout.current.canTokenize)
-  }
-
-  return (
-    <div>
-      <div ref={area} />
-      <button type="button" onClick={pagar} disabled={!podePagar}>Pagar</button>
-      {mensagem && <p role="alert">{mensagem}</p>}
-    </div>
-  )
-}
-```
-
-Uso:
-
-```jsx
-<PagamentoCartao
-  publicKey="pk_sua_chave_publica"
-  amount={10000}
-  cliente={{ name: 'Maria Silva', email: 'maria@exemplo.com', taxId: '529.982.247-25', cellphone: '11999999999' }}
-/>
-```
+O `theme` vale para o formulário seguro de produção. O formulário de teste do Modo Teste tem visual fixo.
