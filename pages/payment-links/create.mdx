@@ -3,20 +3,21 @@ title: Criar um link de pagamento
 openapi: 'POST /payment-links/create'
 ---
 
-Cria um link de pagamento que pode ser pago por múltiplos clientes — ideal para vendas em massa, rifas ou formulários de inscrição sem criar um checkout por cliente.
+Cria um link de pagamento: um checkout que aceita vários pagamentos, de clientes diferentes. A API devolve a `url` para você compartilhar.
 
 <Card horizontal>
   Requer a permissão `CHECKOUT:CREATE`.
 </Card>
 
-<Card title="Obrigatório" horizontal>
-  Envie `"frequency": "MULTIPLE_PAYMENTS"` junto com `items`. O restante dos parâmetros é idêntico ao [Checkout](/pages/payment/create).
+<Card title="Entenda o link de pagamento" icon="book-open" href="/pages/cobrar/link-de-pagamento" horizontal>
+  A diferença para o checkout, o que o link não aceita e como acompanhar os pagamentos.
 </Card>
+
+O corpo é o mesmo de [Criar um Checkout](/pages/payment/create), sem `customerId` e sem `upSellProductId`. A rota já define o tipo: não mande `frequency`.
 
 **Exemplo:**
 ```json
 {
-  "frequency": "MULTIPLE_PAYMENTS",
   "items": [
     { "id": "prod_abc123xyz", "quantity": 1 }
   ],
@@ -26,32 +27,22 @@ Cria um link de pagamento que pode ser pago por múltiplos clientes — ideal pa
 }
 ```
 
-**Exemplo com multa e juros (apenas BOLETO):**
+**Exemplo com parcelamento no cartão:**
 ```json
 {
-  "frequency": "MULTIPLE_PAYMENTS",
-  "methods": ["BOLETO"],
-  "dueDate": "2026-08-15",
   "items": [
     { "id": "prod_abc123xyz", "quantity": 1 }
   ],
-  "interest": { "value": 100 },
-  "fine": { "value": 200, "type": "PERCENTAGE" }
+  "methods": ["PIX", "CARD"],
+  "card": { "maxInstallments": 6 }
 }
 ```
 
-<Tip title="Use a url retornada" horizontal>
-Compartilhe `data.url` — cada cliente que acessar o link pode pagar de forma independente.
-</Tip>
+## Erros
 
-<Tip title="Pular as etapas de dados do cliente" horizontal>
-Acrescente `?skip_customer=true` e/ou `skip_address=true` à `url` para o cliente ir direto ao pagamento. Veja [as regras](/pages/payment/reference#pular-as-etapas-de-dados-do-cliente).
-</Tip>
+Além dos erros de [Criar um Checkout](/pages/payment/create#erros):
 
-<Tip title="Vencimento do boleto" horizontal>
-Use `dueDate` (`YYYY-MM-DD`) para definir a data de vencimento. Se omitido, o padrão é 3 dias úteis. Só se aplica a `methods: ["BOLETO"]` — veja a [referência completa](/pages/payment/reference#data-de-vencimento-do-boleto).
-</Tip>
-
-<Tip title="Multa e juros no boleto" horizontal>
-Use `interest` e `fine` para configurar juros por atraso e multa caso o pagamento ocorra depois do vencimento. Os campos só se aplicam a `methods: ["BOLETO"]` e seguem o mesmo formato do checkout — veja a [referência completa](/pages/payment/reference#multa-e-juros-no-boleto).
-</Tip>
+| Erro | Motivo |
+|---|---|
+| `You cannot pass a customer for a checkout with multiple payments frequency` | O link não aceita `customerId`: cada cliente preenche os próprios dados. |
+| `Apple Pay and Google Pay are only available for one-time checkouts` | Apple Pay e Google Pay só valem no checkout. |

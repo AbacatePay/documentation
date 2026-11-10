@@ -3,18 +3,22 @@ title: 'Listar Checkouts'
 openapi: "GET /checkouts/list"
 ---
 
-Retorna os checkouts de pagamento único (`frequency: ONE_TIME`) da sua loja, em ordem cronológica decrescente.
+Retorna os checkouts de pagamento único (`frequency: ONE_TIME`) da sua loja, do mais novo para o mais antigo.
 
 <Card horizontal>
   Requer a permissão `CHECKOUT:READ`.
 </Card>
 
-Use os parâmetros de paginação `limit`, `after` e `before` para navegar pelos resultados, e `startDate`/`endDate` (`YYYY-MM-DD`) para filtrar por data de criação. Consulte [Paginação e filtro por data](/pages/reference/introduction#paginação-e-filtro-por-data). Cada item da lista segue o mesmo formato da resposta do [Criar Checkout](/pages/payment/create).
+<Card title="Entenda o checkout" icon="book-open" href="/pages/cobrar/checkout#status-do-checkout" horizontal>
+  O que significa cada status e quando ele muda.
+</Card>
 
-<Info>
-  Links de pagamento e checkouts de assinatura não entram nesta lista. Use [Listar links de pagamento](/pages/payment-links/list) e [Listar checkouts de assinatura](/pages/subscriptions/checkouts-list).
-</Info>
+Use `limit`, `after` e `before` para paginar e `startDate`/`endDate` (`YYYY-MM-DD`) para filtrar por data de criação. Veja [Paginação e filtro por data](/pages/reference/introduction#paginação-e-filtro-por-data). Cada item segue o formato da resposta de [Criar um Checkout](/pages/payment/create).
 
-<Tip title="Filtrando por status" horizontal>
-Combine com `status` para buscar só cobranças pendentes, pagas ou canceladas.
-</Tip>
+Links de pagamento e checkouts de assinatura não entram nesta lista. Use [Listar links de pagamento](/pages/payment-links/list) e [Listar checkouts de assinatura](/pages/subscriptions/checkouts-list).
+
+**Exemplo: só os checkouts pagos**
+```bash
+curl "https://api.abacatepay.com/v2/checkouts/list?status=PAID&limit=20" \
+  -H "Authorization: Bearer SUA_CHAVE"
+```

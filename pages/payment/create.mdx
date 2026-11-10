@@ -3,14 +3,14 @@ title: Criar um Checkout
 openapi: 'POST /checkouts/create'
 ---
 
-Gera uma página de pagamento hospedada. Você envia os produtos; a API devolve a `url` para redirecionar o cliente.
+Cria um checkout: uma página de pagamento hospedada pela AbacatePay, que aceita um pagamento. Você envia os produtos e a API devolve a `url` para mandar ao cliente.
 
 <Card horizontal>
   Requer a permissão `CHECKOUT:CREATE`.
 </Card>
 
-<Card title="Obrigatório" horizontal>
-  Só `items` é obrigatório — lista com `id` do produto e `quantity`.
+<Card title="Entenda o checkout" icon="book-open" href="/pages/cobrar/checkout" horizontal>
+  Regras, valor mínimo, status, formas de pagamento e personalização da página.
 </Card>
 
 **Exemplo mínimo:**
@@ -30,17 +30,18 @@ Gera uma página de pagamento hospedada. Você envia os produtos; a API devolve 
   ],
   "customerId": "cust_abc123xyz",
   "externalId": "pedido-123",
-  "returnUrl": "https://seusite.com/voltar",
-  "completionUrl": "https://seusite.com/sucesso",
+  "returnUrl": "https://seusite.com/carrinho",
+  "completionUrl": "https://seusite.com/obrigado",
   "methods": ["PIX", "CARD"],
   "card": {
-    "maxInstallments": 12
+    "maxInstallments": 3
   },
+  "coupons": ["PROMO10"],
   "metadata": { "origem": "app-mobile" }
 }
 ```
 
-**Exemplo com upsell:**
+**Exemplo com [upsell](/pages/vender/upsell):**
 ```json
 {
   "items": [
@@ -50,22 +51,11 @@ Gera uma página de pagamento hospedada. Você envia os produtos; a API devolve 
 }
 ```
 
-**Exemplo com vencimento customizado (apenas BOLETO):**
+**Exemplo com [boleto, vencimento, juros e multa](/pages/pagamentos/juros-e-multa-boleto):**
 ```json
 {
   "methods": ["BOLETO"],
-  "dueDate": "2026-08-15",
-  "items": [
-    { "id": "prod_abc123xyz", "quantity": 1 }
-  ]
-}
-```
-
-**Exemplo com multa e juros (apenas BOLETO):**
-```json
-{
-  "methods": ["BOLETO"],
-  "dueDate": "2026-08-15",
+  "dueDate": "2026-12-15",
   "items": [
     { "id": "prod_abc123xyz", "quantity": 1 }
   ],
@@ -74,34 +64,20 @@ Gera uma página de pagamento hospedada. Você envia os produtos; a API devolve 
 }
 ```
 
-<Tip title="Upsell" horizontal>
-Use `upSellProductId` para oferecer um produto adicional ao cliente após a conclusão do pagamento. O produto deve ser **avulso** (sem `cycle`) e estar com status `ACTIVE`. Veja a [referência completa de upsell](/pages/payment/reference#upsell).
-</Tip>
+## Erros
 
-<Tip title="Vencimento do boleto" horizontal>
-Use `dueDate` (`YYYY-MM-DD`) para definir a data de vencimento. Se omitido, o padrão é 3 dias úteis. Só se aplica a `methods: ["BOLETO"]`. Veja a [referência completa](/pages/payment/reference#data-de-vencimento-do-boleto).
-</Tip>
-
-<Tip title="Multa e juros no boleto" horizontal>
-Use `interest` e `fine` para configurar juros por atraso e multa caso o cliente pague depois do vencimento. Os campos só se aplicam a `methods: ["BOLETO"]` e são ignorados nos demais métodos. Veja a [referência completa](/pages/payment/reference#multa-e-juros-no-boleto).
-</Tip>
-
-<Tip title="Parcelamento no cartão" horizontal>
-Use `card.maxInstallments` (1–12) para permitir que o cliente parcele no cartão. O valor mínimo por parcela é R$ 10,00. Veja a [doc completa de parcelamento](/pages/payment/installments).
-</Tip>
-
-<Tip title="Repasse da taxa do cartão" horizontal>
-Use `card.passFeesToCustomer: true` para o cliente pagar a taxa do cartão e você receber o preço cheio. O acréscimo pago vem em `customerFee`. Veja [como funciona](/pages/payment/installments#repassar-a-taxa-ao-cliente).
-</Tip>
-
-<Tip title="Use a url retornada" horizontal>
-Redirecione o cliente para `data.url` — é lá que ele finaliza o pagamento.
-</Tip>
-
-<Tip title="Pular as etapas de dados do cliente" horizontal>
-Acrescente `?skip_customer=true` à `url` para tirar a etapa de dados pessoais e `skip_address=true` para tirar a de endereço. Veja [como fica cada forma de pagamento](/pages/payment/reference#pular-as-etapas-de-dados-do-cliente).
-</Tip>
-
-<Note>
-Para cobranças recorrentes use [Assinaturas](/pages/subscriptions/create). Para um link que múltiplos clientes podem pagar use [Links de pagamento](/pages/payment-links/create).
-</Note>
+| Erro | Motivo |
+|---|---|
+| `Product prod_... not found` | Um dos itens não existe na sua loja. `items[].id` aceita o `id` ou o `externalId` do produto. |
+| `Total price must be at least 100 cents` | O total ficou abaixo de R$ 1,00. |
+| `O valor mínimo para boleto é R$ 3,00 (300 centavos)` | Com `BOLETO` em `methods`, o total precisa ser de pelo menos R$ 3,00. |
+| `At least one payment method is required` | `methods` veio vazio. |
+| `PIX is not available for this store` | A forma de pagamento não está liberada na sua conta. Vale também para `CARD` e `BOLETO`. |
+| `Customer not found` | O `customerId` não existe na sua loja. |
+| `Could not find coupons PROMO10` | Um dos códigos de `coupons` não existe na sua loja. |
+| `interest/fine requires BOLETO in methods` | `interest` e `fine` só valem com `BOLETO` em `methods`. |
+| `dueDate requires BOLETO in methods` | `dueDate` só vale com `BOLETO` em `methods`. |
+| `card.maxInstallments requires CARD in methods` | O parcelamento só vale com `CARD` em `methods`. |
+| `Total below minimum for 3x (R$10 per installment)` | Cada parcela precisa ser de pelo menos R$ 10,00. |
+| `Up sell product must be active` | O produto de `upSellProductId` foi arquivado. Ele também não pode ter `cycle`. |
+| `returnUrl must use http or https only` | A URL precisa começar com `http://` ou `https://`. Vale também para `completionUrl`. |
