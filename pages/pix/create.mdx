@@ -32,7 +32,8 @@ Envia um Pix do saldo da sua conta para a chave Pix de outra pessoa ou empresa.
 |---|---|
 | `Property 'pix' is missing` | O destino não veio em `pix`. Mandar `pixKey` e `pixKeyType` no topo cai aqui |
 | `Property 'pix.type' is missing` | `pix` veio sem `type` e `key`, por exemplo com `pixKey` e `pixKeyType` dentro dele |
-| `externalId já usado em outro envio com valor diferente` | Já existe um envio com esse `externalId` e outro `amount` |
+| `externalId já usado em outro envio com valor diferente` | Já existe um envio de Pix ou saque com esse `externalId` e outro `amount` |
+| `externalId já usado em um envio de outro saldo (da loja ou de outra subconta)` | O `externalId` já foi usado no saque de uma subconta |
 | `Essa chave Pix é da própria loja. Para mandar dinheiro pra ela, faça um saque.` | A chave é do CPF ou CNPJ da sua conta. Use [Criar um saque](/pages/payouts/create) |
 | `Invalid BRCode` | O Pix Copia e Cola é inválido ou é de cobrança (dinâmico), sem a chave do destinatário |
 | `Saldo insuficiente` | O `amount` passa do saldo disponível, já descontado o débito de disputa em aberto |

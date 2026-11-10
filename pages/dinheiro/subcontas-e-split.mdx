@@ -53,6 +53,8 @@ flowchart LR
 - Cada subconta faz um saque a cada 30 segundos. Subcontas diferentes podem sacar em sequência, e o saque de uma subconta não trava o saque da sua loja.
 - Enquanto a sua conta tiver débito de contestação em aberto, ele é descontado do saldo disponível para saque das subcontas.
 - Se o envio falhar, o valor volta para o saldo da subconta.
+- O `externalId` é obrigatório e evita saque em dobro. Repetir o saque com o mesmo `externalId` e o mesmo `amount`, por exemplo depois de um timeout, devolve o saque que já existe, em qualquer status, sem mandar outro Pix. Se ele voltou `FAILED`, tente de novo com outro `externalId`.
+- Com o mesmo `externalId` e outro `amount`, a API responde `externalId já usado em outro envio com valor diferente`. Se o `externalId` já foi usado num saque ou envio de Pix da sua loja, ou no saque de outra subconta, a API responde `externalId já usado em um envio de outro saldo (da loja ou de outra subconta)`.
 
 ### Permissões
 
