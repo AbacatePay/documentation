@@ -1,32 +1,39 @@
 ---
-title: 'Saques'
-description: 'Eventos disparados para saques (retirada de saldo da plataforma).'
+title: 'Eventos de saque (webhook)'
+sidebarTitle: 'Saques'
+description: 'Payloads de payout.completed e payout.failed: saiba pelo webhook quando o saque do seu saldo para a conta bancária da loja foi concluído ou falhou.'
 icon: 'money-bill-transfer'
 ---
 
-Usados para notificar o status de **saques** (retirada de saldo da plataforma).
+Os eventos `payout.*` avisam o resultado de um [saque](/pages/dinheiro/saques), a transferência do seu saldo para a conta bancária da loja, feito pelo dashboard ou pela API. O envio de Pix para outra pessoa ou empresa usa os eventos de [transferência](/pages/webhooks/events/transfers). A entrega, as retentativas e a verificação estão em [Webhooks](/pages/notificacoes/webhooks).
+
+| Evento | Quando dispara |
+|---|---|
+| `payout.completed` | O saque é concluído, e o dinheiro chega à conta bancária da loja. |
+| `payout.failed` | O saque falha, e o valor volta para o saldo. |
+
+Saques não existem no [Modo Teste](/pages/comecar/modo-teste), então esses eventos só chegam em produção.
 
 <Tabs>
   <Tab title="payout.completed">
-    Disparado quando um saque é concluído com sucesso. O campo `endToEndIdentifier` está presente apenas em saques concluídos.
-
     ```json
     {
+      "id": "log_Sd4fG6hJ8kL0zX2cV4bN6mQ8",
       "event": "payout.completed",
       "apiVersion": 2,
       "devMode": false,
       "data": {
         "withdraw": {
-          "id": "tran_xxx",
-          "amount": 1000,
+          "id": "tran_Wd3eR5tY7uI9oP1aS3dF5gH7",
+          "amount": 50000,
           "status": "COMPLETE",
           "method": "PIX",
           "platformFee": 80,
-          "receiptUrl": "https://...",
+          "receiptUrl": "https://app.abacatepay.com/receipt/tran_Wd3eR5tY7uI9oP1aS3dF5gH7",
           "externalId": null,
-          "createdAt": "...",
-          "updatedAt": "...",
-          "endToEndIdentifier": "E123..."
+          "createdAt": "2026-11-10T13:30:00.000Z",
+          "updatedAt": "2026-11-10T13:30:08.412Z",
+          "endToEndIdentifier": "E18236120202611101330s0a1b2c3d4e"
         }
       }
     }
@@ -34,27 +41,42 @@ Usados para notificar o status de **saques** (retirada de saldo da plataforma).
   </Tab>
 
   <Tab title="payout.failed">
-    Disparado quando um saque falha.
-
     ```json
     {
+      "id": "log_Jk6lZ8xC0vB2nM4qW6eR8tY0",
       "event": "payout.failed",
       "apiVersion": 2,
       "devMode": false,
       "data": {
         "withdraw": {
-          "id": "tran_xxx",
-          "amount": 1000,
+          "id": "tran_Qz2wX4cE6vR8bT0nY2mU4iO6",
+          "amount": 50000,
           "status": "FAILED",
           "method": "PIX",
           "platformFee": 80,
-          "receiptUrl": "https://...",
+          "receiptUrl": "https://app.abacatepay.com/receipt/tran_Qz2wX4cE6vR8bT0nY2mU4iO6",
           "externalId": null,
-          "createdAt": "...",
-          "updatedAt": "..."
+          "createdAt": "2026-11-10T13:30:00.000Z",
+          "updatedAt": "2026-11-10T13:31:02.090Z",
+          "endToEndIdentifier": null
         }
       }
     }
     ```
   </Tab>
 </Tabs>
+
+## Campos
+
+| Campo | Tipo | Descrição |
+|---|---|---|
+| `data.withdraw.id` | `string` | ID do saque (`tran_...`). |
+| `data.withdraw.amount` | `number` | Valor do saque, em centavos. |
+| `data.withdraw.status` | `string` | `COMPLETE` no `payout.completed` e `FAILED` no `payout.failed`. |
+| `data.withdraw.method` | `string` | Como o dinheiro foi enviado, como `PIX`. |
+| `data.withdraw.platformFee` | `number` | Taxa do saque, em centavos. |
+| `data.withdraw.receiptUrl` | `string` | Link do comprovante. |
+| `data.withdraw.externalId` | `string \| null` | O identificador que você enviou ao criar o saque pela API. |
+| `data.withdraw.createdAt` | `string` | Quando o saque foi pedido (ISO 8601). |
+| `data.withdraw.updatedAt` | `string` | A última mudança de status (ISO 8601). |
+| `data.withdraw.endToEndIdentifier` | `string \| null` | Identificador do Pix no Banco Central. O campo sempre vem, com `null` quando não há identificador, como num saque que falhou. |
