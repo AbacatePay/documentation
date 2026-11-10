@@ -3,10 +3,14 @@ title: 'Listar cupons'
 openapi: "GET /coupons/list"
 ---
 
-Retorna todos os cupons da sua loja, incluindo ativos e inativos.
+Retorna os cupons da sua loja, ativos (`ACTIVE`) e desativados (`DISABLED`). Cupons excluídos não aparecem.
 
 <Card horizontal>
   Requer a permissão `COUPON:READ`.
 </Card>
 
-Use `limit`, `after` e `before` para paginar e `startDate`/`endDate` (`YYYY-MM-DD`) para filtrar por data de criação. Consulte [Paginação e filtro por data](/pages/reference/introduction#paginação-e-filtro-por-data). Cada item segue o mesmo formato da resposta do [Criar Cupom](/pages/coupons/create), incluindo `status`, `redeemsCount` e `maxRedeems`.
+<Card title="Entenda os cupons" icon="ticket" href="/pages/vender/cupons" horizontal>
+  Status, limite de usos e validade.
+</Card>
+
+Filtre por `status` (`ACTIVE` ou `DISABLED`). Use `limit`, `after` e `before` para paginar e `startDate`/`endDate` (`YYYY-MM-DD`) para filtrar por data de criação. Consulte [Paginação e filtro por data](/pages/reference/introduction#paginação-e-filtro-por-data).

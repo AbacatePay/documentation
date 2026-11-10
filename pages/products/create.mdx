@@ -3,35 +3,20 @@ title: 'Criar um produto'
 openapi: "POST /products/create"
 ---
 
-Cria um produto no seu catálogo para usar em checkouts, assinaturas e links de pagamento.
+Cria um produto no seu catálogo para usar em checkouts, links de pagamento e assinaturas.
 
 <Card horizontal>
   Requer a permissão `PRODUCT:CREATE`.
 </Card>
 
-<Card title="Obrigatórios" horizontal>
-  `externalId` (único no seu sistema), `name`, `price` (em centavos) e `currency` (sempre `"BRL"`).
+<Card title="Entenda os produtos" icon="box" href="/pages/vender/produtos" horizontal>
+  Avulso ou assinatura, preço, `externalId`, imagem, arquivo para download e período de teste.
 </Card>
 
-**Produto digital com arquivo para download** (passe `fileUrl` com a URL pública de um PDF):
+**Produto avulso:**
 ```json
 {
-  "externalId": "ebook-001",
-  "name": "E-book: Guia Completo",
-  "price": 4990,
-  "currency": "BRL",
-  "fileUrl": "https://exemplo.com/guia-completo.pdf"
-}
-```
-
-<Note title="fileUrl" horizontal>
-  `fileUrl` deve apontar para um PDF público acessível. Tamanho máximo: 20 MB. O arquivo é armazenado pela AbacatePay e o comprador recebe acesso após o pagamento. O campo `hasFile: true` na resposta confirma o vínculo.
-</Note>
-
-**Produto avulso** (pagamento único — omita `cycle`):
-```json
-{
-  "externalId": "prod-123",
+  "externalId": "camiseta-premium",
   "name": "Camiseta Premium",
   "price": 8990,
   "currency": "BRL",
@@ -39,22 +24,11 @@ Cria um produto no seu catálogo para usar em checkouts, assinaturas e links de 
 }
 ```
 
-**Produto de assinatura** (defina `cycle`):
+**Produto de assinatura com 7 dias grátis:**
 ```json
 {
   "externalId": "plano-mensal",
   "name": "Plano Mensal",
-  "price": 4990,
-  "currency": "BRL",
-  "cycle": "MONTHLY"
-}
-```
-
-**Produto de assinatura com período de teste gratuito** (defina `trialDays`):
-```json
-{
-  "externalId": "plano-mensal-trial",
-  "name": "Plano Mensal com 7 dias grátis",
   "price": 4990,
   "currency": "BRL",
   "cycle": "MONTHLY",
@@ -62,12 +36,27 @@ Cria um produto no seu catálogo para usar em checkouts, assinaturas e links de 
 }
 ```
 
-**Valores de `cycle`:** `WEEKLY` · `MONTHLY` · `QUARTERLY` · `SEMIANNUALLY` · `ANNUALLY`
+**Produto com arquivo para download:**
+```json
+{
+  "externalId": "ebook-guia",
+  "name": "E-book: Guia Completo",
+  "price": 2990,
+  "currency": "BRL",
+  "fileUrl": "https://exemplo.com/guia-completo.pdf"
+}
+```
 
-<Note title="trialDays" horizontal>
-  `trialDays` exige `cycle`. Valor inteiro entre 1 e 90. O cliente não é cobrado durante o período de teste — a primeira cobrança ocorre ao final do trial.
-</Note>
+## Erros
 
-<Tip title="ID retornado" horizontal>
-Guarde o `data.id` retornado — é ele que você passa como `items[].id` ao criar checkouts e assinaturas.
-</Tip>
+| Mensagem em `error` | Quando acontece |
+|---|---|
+| `Product with externalId already exists` | Já existe um produto com esse `externalId` na loja. |
+| `price must be at least 1` | `price` menor que 1 centavo. |
+| `trialDays must be between 1 and 90` | `trialDays` fora do intervalo. |
+| `Failed to fetch image from the provided URL` | A AbacatePay não conseguiu baixar o `imageUrl`. |
+| `The provided URL does not point to a valid image` | O `imageUrl` não é PNG, JPEG, GIF nem WebP. |
+| `Image size exceeds the 5MB limit` | A imagem passa de 5 MB. |
+| `Failed to fetch file from the provided URL` | A AbacatePay não conseguiu baixar o `fileUrl`. |
+| `The provided URL does not point to a valid PDF file` | O `fileUrl` não é um PDF. |
+| `File size exceeds the 20MB limit` | O PDF passa de 20 MB. |

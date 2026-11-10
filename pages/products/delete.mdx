@@ -3,12 +3,12 @@ title: 'Deletar um Produto'
 openapi: "POST /products/delete"
 ---
 
-Remove um produto do catálogo pelo seu `id`.
+Exclui um produto do catálogo pelo `id`. O produto é arquivado: some da listagem e da busca, e a resposta traz ele com `status: "ARCHIVED"`.
 
 <Card horizontal>
   Requer a permissão `PRODUCT:DELETE`.
 </Card>
 
-<Warning>
-Produtos vinculados a checkouts ou assinaturas ativos não devem ser deletados — isso pode causar inconsistências nas cobranças em andamento.
-</Warning>
+<Card title="Entenda os produtos" icon="box" href="/pages/vender/produtos#como-excluir-ou-desativar-um-produto" horizontal>
+  O que acontece com assinaturas, links e cobranças de um produto excluído.
+</Card>

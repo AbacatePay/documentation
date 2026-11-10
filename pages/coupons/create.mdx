@@ -3,19 +3,19 @@ title: 'Criar um cupom'
 openapi: "POST /coupons/create"
 ---
 
-Cria um cupom de desconto que seus clientes aplicam no checkout.
+Cria um cupom de desconto que seus clientes aplicam no checkout. Se já existe um cupom com o mesmo `code`, devolve o cupom existente e ignora os valores novos.
 
 <Card horizontal>
   Requer a permissão `COUPON:CREATE`.
 </Card>
 
-<Card title="Obrigatórios" horizontal>
-  `code` (único na sua loja), `discountKind` (`PERCENTAGE` ou `FIXED`) e `discount` (valor do desconto).
+<Card title="Entenda os cupons" icon="ticket" href="/pages/vender/cupons" horizontal>
+  Percentual ou fixo, limite de usos, validade e como aceitar o cupom no checkout.
 </Card>
 
-**`PERCENTAGE`** desconta uma porcentagem do total, informada em centésimos de ponto percentual: `100` = 1%, `1000` = 10% e o máximo é `10000` (100%). **`FIXED`** desconta um valor fixo em centavos (mínimo `100`, ou seja, R$ 1,00).
+Obrigatórios: `code`, `discountKind`, `discount` e `maxRedeems`.
 
-**Exemplo — 10% de desconto ilimitado:**
+**10% de desconto, usos ilimitados:**
 ```json
 {
   "code": "BEMVINDO10",
@@ -26,16 +26,28 @@ Cria um cupom de desconto que seus clientes aplicam no checkout.
 }
 ```
 
-**Exemplo — R$ 20,00 fixo, válido 50 vezes:**
+**R$ 20,00 de desconto, 50 usos, válido em dezembro:**
 ```json
 {
-  "code": "PROMO20",
+  "code": "NATAL20",
   "discountKind": "FIXED",
   "discount": 2000,
-  "maxRedeems": 50
+  "maxRedeems": 50,
+  "startsAt": "2026-12-01T00:00:00-03:00",
+  "expiresAt": "2026-12-31T23:59:59-03:00"
 }
 ```
 
-<Tip title="maxRedeems" horizontal>
-`-1` significa usos ilimitados. Qualquer valor positivo limita o número total de resgates.
-</Tip>
+## Erros
+
+| Mensagem em `error` | Quando acontece |
+|---|---|
+| `maxRedeems must be -1 or a positive integer` | `maxRedeems` é `0` ou negativo diferente de `-1`. |
+| `discount must not be negative` | `discount` negativo. |
+| `Discount must be at most 10000 (100%)` | `PERCENTAGE` acima de `10000`. |
+| `Discount must be greater than 100` | `FIXED` abaixo de `100` (R$ 1,00). |
+| `Invalid startsAt: use an ISO 8601 date` | `startsAt` em formato inválido. |
+| `Invalid expiresAt: use an ISO 8601 date` | `expiresAt` em formato inválido. |
+| `Coupon start date must be after today` | `startsAt` antes do dia seguinte, no horário de Brasília. |
+| `Coupon end date must be after today` | `expiresAt` antes do dia seguinte, no horário de Brasília. |
+| `Coupon start date must be before end date` | `startsAt` depois de `expiresAt`. |

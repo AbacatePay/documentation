@@ -3,26 +3,35 @@ title: 'Criar um Cliente'
 openapi: "POST /customers/create"
 ---
 
-Cadastra um cliente para pré-preencher o checkout e reutilizar em várias cobranças.
+Cadastra um cliente para cobrar sem pedir os dados de novo no checkout. Se o cliente já existe, devolve o cadastro existente atualizado.
 
 <Card horizontal>
   Requer a permissão `CUSTOMER:CREATE`.
 </Card>
 
-<Card title="Obrigatório" horizontal>
-  Só `data.email` é obrigatório. Inclua `name`, `taxId` e `cellphone` sempre que tiver — melhora a experiência no checkout.
+<Card title="Entenda os clientes" icon="users" href="/pages/vender/clientes" horizontal>
+  Campos, como a AbacatePay evita duplicados e quando o checkout pula a etapa de dados.
 </Card>
 
-**Exemplo:**
+Só `email` é obrigatório, e o corpo é plano (sem `data`).
+
+**Exemplo mínimo:**
+```json
+{
+  "email": "joao@exemplo.com"
+}
+```
+
+**Exemplo completo:**
 ```json
 {
   "email": "joao@exemplo.com",
   "name": "João Silva",
   "taxId": "11144477735",
-  "cellphone": "+5511999999999",
-  "zipCode": "01310-100",
+  "cellphone": "11999999999",
+  "zipCode": "01310100",
   "address": {
-    "zipCode": "01310-100",
+    "zipCode": "01310100",
     "street": "Avenida Paulista",
     "number": "1000",
     "neighborhood": "Bela Vista",
@@ -34,18 +43,12 @@ Cadastra um cliente para pré-preencher o checkout e reutilizar em várias cobra
 }
 ```
 
-<Note>
-Os valores de `metadata` precisam ser texto. `{ "pedidos": 3 }` é recusado; envie `{ "pedidos": "3" }`.
-</Note>
+## Erros
 
-<Note>
-`address` é opcional. Se enviar, só `complement` pode ficar de fora, e `state` é a UF com 2 letras.
-</Note>
-
-<Tip title="Reuse o customerId" horizontal>
-Guarde o `data.id` retornado e passe como `customerId` ao criar checkouts — o cliente não precisa preencher os dados novamente.
-</Tip>
-
-<Note>
-Cliente é único por CPF/CNPJ. Se já existir um cadastro com o mesmo `taxId`, a API devolve o registro existente em vez de criar um duplicado.
-</Note>
+| Mensagem em `error` | Quando acontece |
+|---|---|
+| `email must be a valid email` | `email` inválido. |
+| `Invalid taxId` | CPF ou CNPJ inválido. |
+| `Invalid zipCode` | `zipCode` sem 8 dígitos. |
+| `Invalid address.zipCode` | `address.zipCode` sem 8 dígitos. |
+| `address.state must be 2 characters long` | `address.state` sem 2 letras. |
