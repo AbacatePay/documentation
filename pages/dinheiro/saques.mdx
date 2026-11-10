@@ -118,9 +118,18 @@ curl -X POST https://api.abacatepay.com/v2/payouts/create \
 ```
 
 - `pix.type` aceita `CPF`, `CNPJ`, `PHONE`, `EMAIL`, `RANDOM` e `BR_CODE`.
-- `externalId` é opcional: use para achar o saque no seu sistema.
+- `externalId` é opcional, mas mande sempre: além de achar o saque no seu sistema, ele evita saque em dobro (veja abaixo).
 - `receiptUrl` é o link do comprovante.
 - Pela API, você não escolhe o saldo. A AbacatePay usa o de Pix e boleto quando ele cobre o valor; senão, o de cartão. Se nenhum dos dois cobre sozinho, a API responde `Não é possível sacar os saldos de PIX e cartão no mesmo saque`.
+
+### Idempotência pelo `externalId`
+
+Se você repetir o `POST` com o mesmo `externalId` e o mesmo `amount`, por exemplo depois de um timeout, a API devolve o saque que já existe e não manda outro Pix. Isso vale em qualquer status: se o saque voltou `FAILED`, tente de novo com outro `externalId`.
+
+- Com o mesmo `externalId` e outro `amount`, a API responde `externalId já usado em outro envio com valor diferente`.
+- Os saques e os envios de [Enviar Pix](/pages/dinheiro/enviar-pix) da conta dividem os mesmos `externalId`: um `externalId` já usado num envio de Pix devolve aquele envio.
+- Se o `externalId` já foi usado no saque de uma [subconta](/pages/dinheiro/subcontas-e-split), a API responde `externalId já usado em um envio de outro saldo (da loja ou de outra subconta)`.
+- Sem `externalId`, cada chamada cria um saque novo.
 
 Para acompanhar, use [Buscar saque](/pages/payouts/get), pelo `id` ou pelo `externalId`, e [Listar saques](/pages/payouts/list), as duas com a permissão `WITHDRAW:READ`. Os erros de cada rota estão na página dela.
 

@@ -10,7 +10,7 @@ Saca o saldo disponível da sua conta por Pix para uma chave no mesmo CPF ou CNP
 </Card>
 
 <Card title="Entenda os saques" icon="money-bill-transfer" href="/pages/dinheiro/saques" horizontal>
-  Mínimo de R$ 3,50, taxa, saldo de origem, limites diário e noturno, intervalo de 30 segundos e eventos.
+  Mínimo de R$ 3,50, taxa, saldo de origem, limites diário e noturno, intervalo de 30 segundos, idempotência pelo `externalId` e eventos.
 </Card>
 
 **Exemplo:**
@@ -31,6 +31,8 @@ Saca o saldo disponível da sua conta por Pix para uma chave no mesmo CPF ou CNP
 |---|---|
 | `Property 'pix' is missing` | O destino não veio em `pix`. Mandar `pixKey` e `pixKeyType` no topo cai aqui |
 | `Property 'pix.type' is missing` | `pix` veio sem `type` e `key`, por exemplo com `pixKey` e `pixKeyType` dentro dele |
+| `externalId já usado em outro envio com valor diferente` | Já existe um saque ou envio de Pix com esse `externalId` e outro `amount` |
+| `externalId já usado em um envio de outro saldo (da loja ou de outra subconta)` | O `externalId` já foi usado no saque de uma subconta |
 | `Saldo insuficiente` | O `amount` passa do saldo disponível, já descontado o débito de disputa em aberto |
 | `Não é possível sacar os saldos de PIX e cartão no mesmo saque` | Nenhum dos dois saldos cobre o valor sozinho |
 | `Essa chave Pix não está em nome da sua empresa. Para enviar a outra pessoa ou empresa, inclusive sócios, use a tela Pagamentos.` | A chave é de outro CPF ou CNPJ. Para pagar outra pessoa, use [Enviar Pix](/pages/pix/create) |

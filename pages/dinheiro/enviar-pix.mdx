@@ -57,7 +57,11 @@ Com `BR_CODE`, o Pix vai para a chave que está dentro do código, com o `amount
 
 ### Idempotência pelo `externalId`
 
-Na API, o `externalId` é obrigatório e funciona como chave de idempotência. Se você repetir o `POST` com o mesmo `externalId` e o mesmo `amount`, por exemplo depois de um timeout, a API devolve o envio que já existe e não manda outro Pix. Com o mesmo `externalId` e outro `amount`, a API responde `externalId já usado em outro envio com valor diferente`.
+Na API, o `externalId` é obrigatório e funciona como chave de idempotência. Se você repetir o `POST` com o mesmo `externalId` e o mesmo `amount`, por exemplo depois de um timeout, a API devolve o envio que já existe e não manda outro Pix. Isso vale em qualquer status: se o envio voltou `FAILED`, tente de novo com outro `externalId`.
+
+- Com o mesmo `externalId` e outro `amount`, a API responde `externalId já usado em outro envio com valor diferente`.
+- Os envios de Pix e os [saques](/pages/dinheiro/saques) da conta dividem os mesmos `externalId`: um `externalId` já usado num saque devolve aquele saque.
+- Se o `externalId` já foi usado no saque de uma [subconta](/pages/dinheiro/subcontas-e-split), a API responde `externalId já usado em um envio de outro saldo (da loja ou de outra subconta)`.
 
 ## Como enviar Pix pelo dashboard
 

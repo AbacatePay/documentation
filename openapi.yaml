@@ -2622,7 +2622,7 @@ paths:
                     hidden: true
                 externalId:
                   type: string
-                  description: Identificador do payout no seu sistema.
+                  description: Identificador do payout no seu sistema e chave de idempotência. Repetir o `POST` com o mesmo `externalId` e o mesmo `amount` devolve o saque que já existe, em qualquer status, sem mandar outro PIX. Com outro `amount`, ou já usado no saque de uma subconta, a API recusa. Sem `externalId`, cada chamada cria um saque novo.
                   example: saque-123
                 pix:
                   type: object
@@ -2939,7 +2939,7 @@ paths:
                   example: 10000
                 externalId:
                   type: string
-                  description: Identificador único do PIX em seu sistema.
+                  description: Identificador único do PIX em seu sistema e chave de idempotência. Repetir o `POST` com o mesmo `externalId` e o mesmo `amount` devolve o envio que já existe, em qualquer status, sem mandar outro PIX. Com outro `amount`, ou já usado no saque de uma subconta, a API recusa.
                   example: pix-123
                 description:
                   type: string
@@ -3348,7 +3348,7 @@ paths:
                   type: string
                   minLength: 1
                   maxLength: 100
-                  description: Identificador do saque no seu sistema.
+                  description: Identificador do saque no seu sistema e chave de idempotência. Repetir o `POST` com o mesmo `externalId` e o mesmo `amount` devolve o saque que já existe, em qualquer status, sem mandar outro PIX. Com outro `amount`, ou já usado num saque ou envio de PIX da loja ou no saque de outra subconta, a API recusa.
                   example: repasse-vendedor-42-out
                 description:
                   type: string

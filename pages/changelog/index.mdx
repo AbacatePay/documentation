@@ -11,6 +11,19 @@ Feedbacks também são bem-vindos no nosso Discord (#dev).
 
 ## Atualizações Recentes
 
+<Update label="10 de Nov, 2026">
+## Saques idempotentes pelo `externalId`
+
+`POST /v2/payouts/create` e `POST /v2/sub-accounts/withdraw` agora tratam o `externalId` como chave de idempotência, como o `POST /v2/pix/send`.
+
+- Repetir o `POST` com o mesmo `externalId` e o mesmo `amount`, por exemplo depois de um timeout, devolve o saque que já existe, em qualquer status, e não manda outro Pix.
+- Com o mesmo `externalId` e outro `amount`, a API responde `externalId já usado em outro envio com valor diferente`.
+- Saques e envios de Pix da loja dividem os mesmos `externalId`. Um `externalId` usado no saque de uma subconta não vale para a loja nem para outra subconta: a API responde `externalId já usado em um envio de outro saldo (da loja ou de outra subconta)`.
+- No `POST /v2/payouts/create`, o `externalId` continua opcional. Sem ele, cada chamada cria um saque novo.
+
+Veja [Saques](/pages/dinheiro/saques#idempotência-pelo-externalid) e [Subcontas](/pages/dinheiro/subcontas-e-split#regras-do-saque-da-subconta).
+</Update>
+
 <Update label="02 de Nov, 2026">
 ## Subcontas e split no PIX
 

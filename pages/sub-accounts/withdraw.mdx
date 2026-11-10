@@ -10,7 +10,7 @@ Saca o saldo de uma subconta por Pix para a chave CPF/CNPJ do titular. Não há 
 </Card>
 
 <Card title="Entenda as subcontas" icon="sitemap" href="/pages/dinheiro/subcontas-e-split" horizontal>
-  Mínimo, taxa, limites, intervalo de 30 segundos por subconta e eventos do saque.
+  Mínimo, taxa, limites, intervalo de 30 segundos por subconta, idempotência pelo `externalId` e eventos do saque.
 </Card>
 
 **Exemplo:**
@@ -27,6 +27,8 @@ Saca o saldo de uma subconta por Pix para a chave CPF/CNPJ do titular. Não há 
 
 | `error` | Motivo |
 |---|---|
+| `externalId já usado em outro envio com valor diferente` | Já existe um saque dessa subconta com esse `externalId` e outro `amount` |
+| `externalId já usado em um envio de outro saldo (da loja ou de outra subconta)` | O `externalId` já foi usado num saque ou envio de Pix da sua loja, ou no saque de outra subconta |
 | `Saldo insuficiente` | O `amount` passa do `balance.available` da subconta, já descontado o débito de contestação em aberto da sua conta |
 | `Aguarde alguns segundos antes de solicitar outro saque` | A subconta fez um saque há menos de 30 segundos |
 | `Limite de saque diário atingido` | O saque passaria do limite diário da sua conta |
