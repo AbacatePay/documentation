@@ -1244,7 +1244,7 @@ paths:
                       description: >-
                         Repassa a taxa do cartão ao cliente: ele paga o preço mais o
                         acréscimo, e você recebe o preço cheio. Requer `CARD` em
-                        `methods`. Não vale para assinaturas.
+                        `methods`.
                       default: false
                       example: true
       responses:
@@ -1626,7 +1626,7 @@ paths:
                       description: >-
                         Repassa a taxa do cartão ao cliente: ele paga o preço mais o
                         acréscimo, e você recebe o preço cheio. Requer `CARD` em
-                        `methods`. Não vale para assinaturas.
+                        `methods`.
                       default: false
                       example: true
                 customerId:
@@ -3649,6 +3649,15 @@ paths:
                       minimum: 1
                       maximum: 12
                       example: 12
+                    passFeesToCustomer:
+                      type: boolean
+                      description: >-
+                        Repassa a taxa do cartão ao cliente: ele paga o preço mais o
+                        acréscimo, e você recebe o preço cheio. A primeira cobrança e
+                        cada renovação são à vista, com o acréscimo calculado pela taxa
+                        vigente da conta. Requer `CARD` em `methods`.
+                      default: false
+                      example: true
                 upSellProductId:
                   type: string
                   description: >

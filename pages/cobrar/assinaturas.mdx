@@ -55,7 +55,8 @@ As regras:
 - **Um produto por checkout.** Mais de um produto no mesmo checkout de assinatura precisa ser liberado na sua conta pelo suporte, e todos os produtos têm que ter o mesmo ciclo.
 - **Um checkout, um cliente.** Depois do pagamento, o checkout de assinatura fica `PAID` e o link não aceita outro pagamento. Para cada cliente, crie um checkout.
 - **A data se repete.** A próxima cobrança cai na mesma data da contratação, a cada ciclo. Com teste grátis, a contagem começa no fim do teste. O campo `nextChargeAt` da assinatura traz a data da próxima cobrança.
-- **Sem parcelamento.** A assinatura no cartão é sempre à vista, e não aceita [repasse de taxa](/pages/pagamentos/repasse-de-taxa).
+- **Sem parcelamento.** A assinatura no cartão é sempre à vista.
+- **Repasse de taxa.** Com `card.passFeesToCustomer: true`, o cliente paga a taxa do cartão em cada cobrança, recalculada a cada renovação com a taxa vigente da sua conta. Veja [Repasse de taxa](/pages/pagamentos/repasse-de-taxa).
 - **Liberação.** Em produção, a conta precisa ter assinaturas liberadas. No [Modo Teste](/pages/comecar/modo-teste), elas funcionam sem liberação.
 
 ## Formas de pagamento

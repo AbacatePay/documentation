@@ -275,7 +275,11 @@ paths:
                   description: Se verdadeiro cupons podem ser usados na billing
                 coupons: 
                   type: array
-                  description: Lista de cupons disponíveis para resem usados com a billing
+                  description: >-
+                    Lista de cupons disponíveis para serem usados com a billing. Os
+                    códigos são verificados na criação, a menos que `allowCoupons`
+                    seja `false`: código que não existe responde `Could not find
+                    coupons`.
                   example: ['ABKT10', "ABKT5", "PROMO10"]
                   default: []
                   maxItems: 50

@@ -11,6 +11,19 @@ Feedbacks também são bem-vindos no nosso Discord (#dev).
 
 ## Atualizações Recentes
 
+<Update label="16 de Nov, 2026">
+## Cupom com parcelamento, carteiras no link e repasse de taxa na assinatura
+
+- **Cupom com parcelamento.** O cartão parcela também quando o cliente aplica um cupom. As parcelas saem do valor com desconto, e cada uma precisa ter pelo menos R$ 10,00. Com repasse de taxa, o acréscimo de cada opção é calculado sobre o valor com desconto.
+- **Apple Pay e Google Pay no link de pagamento.** `POST /v2/payment-links/create` aceita `APPLE_PAY` e `GOOGLE_PAY` em `methods`, e o dashboard oferece as carteiras ao criar e editar o link. Na assinatura, o erro agora é `Apple Pay and Google Pay are not available for subscriptions`.
+- **Repasse de taxa na assinatura.** `POST /v2/subscriptions/create` aceita `card.passFeesToCustomer`. A primeira cobrança e cada renovação são à vista, com o acréscimo calculado pela taxa vigente da sua conta. A opção também está no dashboard, ao criar o checkout de assinatura.
+- **Parcelamento liberado por conta.** O parcelamento no cartão precisa estar liberado na sua conta. Sem a liberação, a API responde `Card installments are not available for this store`.
+- **Boleto liberado por conta também no checkout transparente.** Sem a liberação, `POST /v2/transparents/create` com `method: "BOLETO"` responde `Boleto is not available for this store`.
+- **Cupons da v1 sempre verificados.** No `POST /v1/billing/create`, os códigos em `coupons` são verificados mesmo sem `allowCoupons`. Código que não existe responde `Could not find coupons`. Só `allowCoupons: false` descarta os cupons.
+
+Veja [Parcelamento](/pages/pagamentos/parcelamento), [Apple Pay e Google Pay](/pages/pagamentos/apple-pay-google-pay) e [Repasse de taxa](/pages/pagamentos/repasse-de-taxa).
+</Update>
+
 <Update label="10 de Nov, 2026">
 ## Saques idempotentes pelo `externalId`
 

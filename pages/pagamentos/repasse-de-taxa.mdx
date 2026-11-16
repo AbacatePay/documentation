@@ -29,8 +29,8 @@ flowchart LR
 - **O acréscimo cobre a sua taxa.** Em cada opção, de 1x até o máximo de parcelas, o cliente paga o menor valor que, descontada a taxa da sua conta, cobre o preço.
 - **Ele muda com as parcelas**, porque a taxa muda. Ele também depende do seu [prazo de recebimento](/pages/pagamentos/cartao-de-credito#prazo-de-recebimento). As taxas da sua conta estão em **Perfil → Taxas**.
 - **Só o cartão tem acréscimo.** Pix, boleto, Apple Pay e Google Pay cobram o preço normal.
-- **Com cupom**, o acréscimo é calculado sobre o valor com desconto, e o cartão é cobrado à vista.
-- **Vale no checkout e no link de pagamento.** Assinatura não aceita repasse.
+- **Com cupom**, o acréscimo é calculado sobre o valor com desconto, em cada opção de parcela.
+- **Vale no checkout, no link de pagamento e na assinatura.** Na assinatura, a cobrança é sempre à vista, e cada renovação calcula o acréscimo com a taxa da sua conta no dia.
 - **É definido na criação.** Não dá para ligar o repasse num checkout que já existe: crie outro.
 - **No reembolso**, o cliente recebe de volta tudo o que pagou, com o acréscimo. A taxa do cartão não é devolvida, como em qualquer reembolso. Veja [Reembolsos](/pages/vender/reembolsos).
 
@@ -38,9 +38,9 @@ O repasse depende de a sua conta estar habilitada para ele. Se a opção não ap
 
 ## Pelo dashboard
 
-1. Vá em **Sua Loja → Cobranças** e clique em **Criar cobrança**, ou em **Sua Loja → Links de pagamento** e clique em **Criar link de pagamento**.
+1. Vá em **Sua Loja → Cobranças** e clique em **Criar cobrança**, em **Sua Loja → Links de pagamento** e clique em **Criar link de pagamento**, ou crie um checkout de assinatura em **Assinaturas**.
 2. Em **Métodos de pagamento**, selecione **Cartão**.
-3. Se quiser parcelar, escolha o máximo em **Parcelas no cartão**.
+3. Se quiser parcelar, escolha o máximo em **Parcelas no cartão**. Na assinatura não há parcelas.
 4. Ligue **Repassar a taxa do cartão ao cliente** ("O cliente paga a taxa de cada parcela e você recebe o valor cheio"). A opção só fica ativa com **Cartão** selecionado.
 5. Salve.
 
@@ -108,7 +108,6 @@ No webhook, `amount` menos `customerFee` é o preço do produto, já com o desco
 | Erro | Quando acontece |
 |---|---|
 | `card.passFeesToCustomer requires CARD in methods` | `CARD` não está em `methods` |
-| `card.passFeesToCustomer is not available for subscriptions` | O checkout é de uma assinatura |
 | `card.passFeesToCustomer requires card payments through Rinne` | A sua conta ainda não está habilitada para o repasse. Fale com o suporte |
 
 ## Notificações
@@ -123,10 +122,10 @@ O repasse funciona no [Modo Teste](/pages/comecar/modo-teste) como em produção
 
 <AccordionGroup>
   <Accordion title="Funciona em assinatura?">
-    Não. A API responde `card.passFeesToCustomer is not available for subscriptions`.
+    Sim, no cartão. Envie `card.passFeesToCustomer: true` ao [criar a assinatura](/pages/subscriptions/create). A primeira cobrança e cada renovação são à vista, e o acréscimo é recalculado a cada ciclo com a taxa vigente da sua conta. No Pix Automático não há acréscimo.
   </Accordion>
   <Accordion title="E com cupom?">
-    O acréscimo é calculado sobre o valor com desconto, e o cartão é cobrado à vista.
+    O acréscimo é calculado sobre o valor com desconto, e o cliente pode parcelar como sem cupom.
   </Accordion>
   <Accordion title="O cliente paga acréscimo no Pix, no boleto ou no Apple Pay?">
     Não. Só o cartão de crédito digitado tem acréscimo. Pix, boleto, Apple Pay e Google Pay cobram o preço normal.
