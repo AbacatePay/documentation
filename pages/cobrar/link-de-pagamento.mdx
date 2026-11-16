@@ -25,7 +25,7 @@ No dashboard, os dois ficam em telas diferentes: o link em **Sua Loja → Links 
 | Rota da API | `POST /payment-links/create` | `POST /checkouts/create` |
 | Status | `ACTIVE` ou `CANCELLED` | `PENDING`, `PAID`, `REDEEMED`, `UNDER_DISPUTE` ou `REFUNDED` |
 | Cliente definido na criação (`customerId`) | Não | Sim |
-| Apple Pay e Google Pay | Não | Sim |
+| Apple Pay e Google Pay | Sim | Sim |
 | [Upsell](/pages/vender/upsell) | Não | Sim, pela API |
 | [Parcelamento](/pages/pagamentos/parcelamento) e [repasse de taxa](/pages/pagamentos/repasse-de-taxa) | Sim | Sim |
 | `paidAmount` | Fica `null` | O valor pago |
@@ -56,7 +56,7 @@ Desativado (`CANCELLED`), o link para de abrir e não aceita novos pagamentos. O
 
 - **Mesmas regras do checkout.** Valor mínimo, itens, cupons, idempotência por `externalId`, URLs de finalização e de retorno e as flags `skip_customer` e `skip_address` funcionam como no [checkout](/pages/cobrar/checkout#regras).
 - **Sem cliente fixo.** Cada cliente preenche os próprios dados na página. Mandar `customerId` dá erro: `You cannot pass a customer for a checkout with multiple payments frequency`.
-- **Sem Apple Pay e Google Pay.** As carteiras só valem no checkout. Mandar `APPLE_PAY` ou `GOOGLE_PAY` em `methods` dá erro: `Apple Pay and Google Pay are only available for one-time checkouts`.
+- **Apple Pay e Google Pay.** O link aceita `APPLE_PAY` e `GOOGLE_PAY` em `methods`, como o checkout. Veja [Apple Pay e Google Pay](/pages/pagamentos/apple-pay-google-pay).
 - **Sem upsell.** A oferta de [upsell](/pages/vender/upsell) depois da compra só existe no checkout.
 - **Parcelamento e repasse de taxa.** O link aceita `card.maxInstallments` e `card.passFeesToCustomer`, como o checkout. Veja [Parcelamento no cartão](/pages/pagamentos/parcelamento) e [Repasse de taxa](/pages/pagamentos/repasse-de-taxa).
 - **Boleto.** `dueDate`, `interest` e `fine` exigem `BOLETO` em `methods`. Veja [Boleto](/pages/pagamentos/boleto).

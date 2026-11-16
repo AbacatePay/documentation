@@ -13,7 +13,7 @@ Ofereça as carteiras quando muitos clientes compram pelo celular: o pagamento s
 | Onde | Apple Pay e Google Pay |
 |---|---|
 | [Checkout](/pages/cobrar/checkout) avulso | Sim |
-| [Link de pagamento](/pages/cobrar/link-de-pagamento) | Não |
+| [Link de pagamento](/pages/cobrar/link-de-pagamento) | Sim |
 | [Assinaturas](/pages/cobrar/assinaturas) | Não |
 | [Checkout transparente](/pages/cobrar/checkout-transparente) | Não |
 | [Parcelamento](/pages/pagamentos/parcelamento) | Não. Sempre à vista |
@@ -54,15 +54,15 @@ O botão do Apple Pay só aparece em dispositivos e navegadores compatíveis. O 
 
 ## Pelo dashboard
 
-1. Vá em **Sua Loja → Cobranças** e clique em **Criar cobrança**.
+1. Vá em **Sua Loja → Cobranças** e clique em **Criar cobrança**, ou em **Links de pagamento** e crie um link.
 2. Em **Métodos de pagamento**, selecione **Apple Pay** e **Google Pay**, junto com os outros métodos que quiser.
 3. Salve e mande o link para o cliente.
 
-As opções **Apple Pay** e **Google Pay** só aparecem quando a sua conta tem as carteiras liberadas. Elas não aparecem em **Criar link de pagamento**, porque o link de pagamento não aceita carteiras. Não há outra configuração no dashboard.
+Num link que já existe, você também pode incluir as carteiras ao editar os métodos de pagamento. As opções **Apple Pay** e **Google Pay** só aparecem quando a sua conta tem as carteiras liberadas. Não há outra configuração no dashboard.
 
 ## Pela API
 
-Inclua `APPLE_PAY` e `GOOGLE_PAY` em `methods` ao [criar o checkout](/pages/payment/create):
+Inclua `APPLE_PAY` e `GOOGLE_PAY` em `methods` ao [criar o checkout](/pages/payment/create) ou o [link de pagamento](/pages/payment-links/create):
 
 ```bash
 curl -X POST https://api.abacatepay.com/v2/checkouts/create \
@@ -80,7 +80,7 @@ Você pode oferecer só uma das carteiras. O checkout criado traz os métodos em
 
 | Erro | Quando acontece |
 |---|---|
-| `Apple Pay and Google Pay are only available for one-time checkouts` | As carteiras foram enviadas num link de pagamento ou num checkout de assinatura |
+| `Apple Pay and Google Pay are not available for subscriptions` | As carteiras foram enviadas num checkout de assinatura |
 | `CARD is not available for this store` | A sua conta ainda não tem o cartão ativado |
 | `Apple Pay and Google Pay are not available for this store` | A sua conta tem cartão, mas ainda não tem as carteiras liberadas. Fale com o suporte |
 | `Apple Pay and Google Pay require the store to be on Rinne` | A sua conta ainda não está habilitada para as carteiras. Fale com o suporte |
@@ -108,7 +108,7 @@ O webhook não diz qual carteira o cliente usou. Contestações e reembolsos seg
     Não. O pagamento pelas carteiras é sempre à vista. Para parcelar, o cliente escolhe **Crédito**.
   </Accordion>
   <Accordion title="Funciona no link de pagamento ou na assinatura?">
-    Não. Apple Pay e Google Pay valem só no checkout avulso.
+    No link de pagamento, sim: cada cliente que abre o link pode pagar com a carteira. Na assinatura, não, porque a carteira não deixa o cartão salvo para as renovações.
   </Accordion>
   <Accordion title="O cliente paga acréscimo com o repasse de taxa ligado?">
     Não. Nas carteiras, o cliente paga o preço normal.

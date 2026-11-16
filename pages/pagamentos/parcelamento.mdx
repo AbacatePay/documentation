@@ -15,7 +15,7 @@ Com o parcelamento, o cliente divide a compra no cartão de crédito em até 12 
 | [Checkout transparente](/pages/cobrar/checkout-transparente) | Sim, no número de parcelas que você enviar |
 | [One click buy](/pages/pagamentos/one-click-buy) (cartão salvo) | Sim |
 | [Assinaturas](/pages/cobrar/assinaturas) | Não |
-| Compra com [cupom](/pages/vender/cupons) | Não. O cartão é cobrado à vista |
+| Compra com [cupom](/pages/vender/cupons) | Sim. As parcelas saem do valor com desconto |
 | [Apple Pay e Google Pay](/pages/pagamentos/apple-pay-google-pay) | Não. Sempre à vista |
 | [Upsell](/pages/vender/upsell) | Não. Sempre à vista |
 
@@ -125,6 +125,7 @@ Os campos só aparecem quando a venda tem mais de uma parcela.
 |---|---|
 | `card.maxInstallments must be an integer between 1 and 12` | `maxInstallments` fora de 1 a 12 |
 | `card.maxInstallments requires CARD in methods` | `CARD` não está em `methods` |
+| `Card installments are not available for this store` | O parcelamento não está liberado na sua conta. Fale com o suporte |
 | `Total below minimum for 6x (R$10 per installment)` | O total não chega a R$ 10,00 por parcela no máximo escolhido. O número muda com as parcelas |
 | `amount must be at least 3000 cents for 3 installments` | No checkout transparente, `amount` abaixo de R$ 10,00 por parcela |
 
@@ -146,13 +147,13 @@ No [Modo Teste](/pages/comecar/modo-teste), crie o checkout com `maxInstallments
     Não. O cliente paga o preço dividido nas parcelas, e a taxa do parcelamento sai do que você recebe. Para que o cliente pague a taxa, use o [repasse de taxa](/pages/pagamentos/repasse-de-taxa).
   </Accordion>
   <Accordion title="Por que o checkout não mostra 12x?">
-    Ou o máximo definido é menor, ou o total não chega a R$ 10,00 por parcela. Um produto de R$ 50,00 parcela em até 5x.
+    Ou o máximo definido é menor, ou o total não chega a R$ 10,00 por parcela. Um produto de R$ 50,00 parcela em até 5x. Com cupom, a conta é feita sobre o valor com desconto, então algumas opções podem sumir.
   </Accordion>
   <Accordion title="Posso parcelar uma assinatura?">
     Não. Assinaturas são cobradas à vista a cada ciclo.
   </Accordion>
   <Accordion title="O parcelamento funciona com cupom?">
-    Não. Com cupom, o cartão é cobrado à vista.
+    Sim. As parcelas saem do valor com desconto, e cada uma precisa ter pelo menos R$ 10,00. Se o desconto deixar uma opção abaixo disso, ela some do checkout.
   </Accordion>
   <Accordion title="Recebo um webhook a cada parcela?">
     Não. Chega um único evento por venda, com o total e o número de parcelas.

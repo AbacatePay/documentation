@@ -31,7 +31,7 @@ sequenceDiagram
 
 - **Valor mínimo:** R$ 3,00 (`300` centavos). Abaixo disso, a API responde `O valor mínimo para boleto é R$ 3,00 (300 centavos)`. No checkout, o mínimo vale para o total dos itens.
 - **Dados de quem paga:** o boleto exige nome e CPF/CNPJ. No checkout e no link, o cliente preenche. No checkout transparente, você envia em `customer`.
-- **Liberação:** o boleto precisa estar liberado na sua conta. Sem isso, a API responde `BOLETO is not available for this store`.
+- **Liberação:** o boleto precisa estar liberado na sua conta. Sem isso, a API responde `BOLETO is not available for this store` ao criar o checkout, e `Boleto is not available for this store` no checkout transparente.
 - **Sem reembolso:** boleto pago não pode ser reembolsado. Veja [Reembolsos](/pages/vender/reembolsos).
 
 ## Vencimento do boleto
