@@ -12,6 +12,17 @@ Feedbacks também são bem-vindos no nosso Discord (#dev).
 ## Atualizações Recentes
 
 <Update label="17 de Nov, 2026">
+## Split de pagamento no boleto, no cartão, no checkout e no link
+
+- **Split no boleto e no cartão do checkout transparente.** `POST /v2/transparents/create` aceita `splits` também com `method: "BOLETO"` e `method: "CARD"`. No cartão parcelado, cada parcela credita a parte dela na subconta quando fica disponível: o total dividido pelas parcelas, com a sobra na última.
+- **Split no checkout e no link de pagamento.** `POST /v2/checkouts/create` e `POST /v2/payment-links/create` aceitam `splits`. Cada pagamento credita as partes nas subcontas. Assinaturas não aceitam split.
+- **Validação no pior caso.** A soma do split precisa caber no que a loja recebe com o menor valor (cupons aceitos) e a maior taxa (forma de pagamento, número de parcelas e prazo de recebimento). Boleto com multa ou juros não aceita split.
+- **Extrato da subconta** mostra de onde veio cada split, como **Split recebido · Cartão, parcela 2 de 3**.
+
+Veja [Subcontas e split](/pages/dinheiro/subcontas-e-split).
+</Update>
+
+<Update label="17 de Nov, 2026">
 ## Cupom e repasse de taxa no checkout transparente
 
 - **Cupom no checkout transparente.** `POST /v2/transparents/create` aceita `coupon` no Pix, no boleto e no cartão. A cobrança sai com o valor com desconto, e o uso conta quando ela é paga. Um cupom que zera o valor é recusado com `Coupon cannot make a transparent charge free`.

@@ -41,6 +41,20 @@ Cria um checkout: uma página de pagamento hospedada pela AbacatePay, que aceita
 }
 ```
 
+**Exemplo com [split para subcontas](/pages/dinheiro/subcontas-e-split):**
+```json
+{
+  "items": [
+    { "id": "prod_abc123xyz", "quantity": 1 }
+  ],
+  "methods": ["PIX", "CARD"],
+  "card": { "maxInstallments": 3 },
+  "splits": [
+    { "subAccountId": "sacc_9f8Kq2LmX4vTzR7pWn3bYc1H", "amount": 3000 }
+  ]
+}
+```
+
 **Exemplo com [upsell](/pages/vender/upsell):**
 ```json
 {
@@ -79,5 +93,6 @@ Cria um checkout: uma página de pagamento hospedada pela AbacatePay, que aceita
 | `dueDate requires BOLETO in methods` | `dueDate` só vale com `BOLETO` em `methods`. |
 | `card.maxInstallments requires CARD in methods` | O parcelamento só vale com `CARD` em `methods`. |
 | `Total below minimum for 3x (R$10 per installment)` | Cada parcela precisa ser de pelo menos R$ 10,00. |
+| `A soma dos splits passa do valor líquido da cobrança (CARD em 3x)` | O `splits` não cabe no pior caso da cobrança. Veja [Subcontas e split](/pages/dinheiro/subcontas-e-split#quanto-cabe-no-split). |
 | `Up sell product must be active` | O produto de `upSellProductId` foi arquivado. Ele também não pode ter `cycle`. |
 | `returnUrl must use http or https only` | A URL precisa começar com `http://` ou `https://`. Vale também para `completionUrl`. |
