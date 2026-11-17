@@ -3645,7 +3645,10 @@ paths:
                   properties:
                     maxInstallments:
                       type: integer
-                      description: Número máximo de parcelas oferecidas no checkout.
+                      description: >-
+                        Número máximo de parcelas oferecidas no checkout. Maior que `1` só em
+                        produto de ciclo `SEMIANNUALLY` ou `ANNUALLY`, com pelo menos R$ 10,00
+                        por parcela. Cada renovação é cobrada no mesmo número de parcelas.
                       minimum: 1
                       maximum: 12
                       example: 12
@@ -3654,8 +3657,8 @@ paths:
                       description: >-
                         Repassa a taxa do cartão ao cliente: ele paga o preço mais o
                         acréscimo, e você recebe o preço cheio. A primeira cobrança e
-                        cada renovação são à vista, com o acréscimo calculado pela taxa
-                        vigente da conta. Requer `CARD` em `methods`.
+                        cada renovação calculam o acréscimo pela taxa vigente da conta,
+                        no número de parcelas da assinatura. Requer `CARD` em `methods`.
                       default: false
                       example: true
                 upSellProductId:

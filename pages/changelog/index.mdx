@@ -11,6 +11,16 @@ Feedbacks também são bem-vindos no nosso Discord (#dev).
 
 ## Atualizações Recentes
 
+<Update label="17 de Nov, 2026">
+## Assinatura parcelada, assinatura com vários produtos e link com cliente
+
+- **Assinatura semestral e anual parcelada.** `POST /v2/subscriptions/create` aceita `card.maxInstallments` maior que `1` quando o produto tem ciclo `SEMIANNUALLY` ou `ANNUALLY`. O cliente parcela a primeira cobrança, e cada renovação é cobrada de novo no cartão salvo, no mesmo número de parcelas, com pelo menos R$ 10,00 por parcela. Nos outros ciclos, a API responde `Card installments are only available for semiannual and annual subscriptions`. No dashboard, o checkout de assinatura de produto anual ganhou o campo **Parcelas no cartão**.
+- **Assinatura com vários produtos.** O checkout de assinatura e a troca de plano aceitam mais de um produto em `items` sem liberação na conta. Os produtos continuam precisando ter o mesmo ciclo.
+- **Link de pagamento com cliente.** Abra o link com `?customer_id=cust_...` no fim da URL, e o checkout já vem com os dados do cliente cadastrado, sem amarrar o link a ele.
+
+Veja [Assinaturas](/pages/cobrar/assinaturas), [Parcelamento](/pages/pagamentos/parcelamento) e [Link de pagamento](/pages/cobrar/link-de-pagamento#link-com-cliente-já-cadastrado).
+</Update>
+
 <Update label="16 de Nov, 2026">
 ## Cupom com parcelamento, carteiras no link e repasse de taxa na assinatura
 

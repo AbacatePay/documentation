@@ -30,6 +30,20 @@ Cria um checkout de assinatura (`bill_...`). Depois que o cliente paga na `url` 
 }
 ```
 
+**Exemplo anual em até 12x** (produto com `cycle: "ANNUALLY"`):
+```json
+{
+  "items": [
+    { "id": "prod_anual123", "quantity": 1 }
+  ],
+  "customerId": "cust_abc123xyz",
+  "methods": ["CARD"],
+  "card": { "maxInstallments": 12 }
+}
+```
+
+O cliente escolhe as parcelas no checkout, e cada renovação é cobrada no mesmo número de parcelas.
+
 **Exemplo no [Pix Automático](/pages/cobrar/pix-automatico):**
 ```json
 {
@@ -49,7 +63,6 @@ Cria um checkout de assinatura (`bill_...`). Depois que o cliente paga na `url` 
 | `No subscription product with cycle found for billing` | Nenhum produto de `items` tem `cycle`. |
 | `Subscription checkout: every item must have a billing cycle` | Algum produto de `items` não tem `cycle`. |
 | `All products in a subscription checkout must share the same billing cycle` | Os produtos de `items` têm ciclos diferentes. |
-| `Multiple products are not available for subscription checkouts on this store` | Mais de um produto em `items`, sem a liberação na conta. |
 | `PIX Automático is not available for this store` | `PIX` em `methods`, sem o Pix Automático liberado. |
 | `Subscription is not available for this store` | A conta não tem assinaturas liberadas em produção. |
-| `Subscription checkouts do not support card installments` | `card.maxInstallments` maior que `1`. |
+| `Card installments are only available for semiannual and annual subscriptions` | `card.maxInstallments` maior que `1` num produto de ciclo semanal, mensal ou trimestral. |
