@@ -24,6 +24,7 @@ Cria uma cobrança de **cartão de crédito** no checkout transparente, com o to
 | `data.cardToken` | `string` | `token` ou `cardToken` | Cartão salvo, devolvido numa cobrança anterior (até 200 caracteres). Veja [One click buy](/pages/pagamentos/one-click-buy) |
 | `data.installmentCount` | `integer` | Não | Parcelas, de `1` (à vista) a `12`. Padrão `1`. Veja [Parcelamento no cartão](/pages/pagamentos/parcelamento) |
 | `data.coupon` | `string` | Não | Código de um [cupom](/pages/vender/cupons) da sua conta. O desconto vale sobre `amount` |
+| `data.splits` | `array` | Não | Partes da venda creditadas nas suas [subcontas](/pages/dinheiro/subcontas-e-split), com `subAccountId` e `amount` em centavos (até 10). No parcelado, cada parcela credita a parte dela quando fica disponível |
 | `data.passFeesToCustomer` | `boolean` | Não | [Repasse de taxa](/pages/pagamentos/repasse-de-taxa): o cliente paga o acréscimo da taxa da parcela escolhida, e você recebe `amount` (menos o cupom). Padrão `false` |
 | `data.customer.name` | `string` | Sim | Nome do cliente, até 150 caracteres |
 | `data.customer.email` | `string` | Sim | E-mail válido, até 150 caracteres |
