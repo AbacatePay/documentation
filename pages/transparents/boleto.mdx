@@ -85,7 +85,12 @@ Juros e multa por atraso estão em [Juros e multa no boleto](/pages/pagamentos/j
 
 | Mensagem | Causa |
 |---|---|
-| `O valor mínimo para boleto é R$ 3,00 (300 centavos)` | `amount` menor que `300`. |
+| `O valor mínimo para boleto é R$ 3,00 (300 centavos)` | `amount` menor que `300`, ou o valor com o cupom abaixo de `300`. |
+| `Could not find coupon <código>` | O cupom de `coupon` não existe na sua conta. |
+| `Coupon is not active` | O cupom está desativado ou foi excluído. |
+| `Coupon usage limit reached` | O cupom já atingiu o `maxRedeems`. |
+| `Price after coupon must be more than 100 or free.` | Com o desconto, o valor ficaria entre R$ 0,01 e R$ 0,99. |
+| `Coupon cannot make a transparent charge free` | O cupom zera o valor. O checkout transparente não aceita cobrança de R$ 0,00. |
 | `dueDate cannot be in the past` | `dueDate` antes de hoje (horário de Brasília). |
 | `dueDate cannot be more than 365 days in the future` | `dueDate` mais de 365 dias à frente. |
 | `dueDate must be a valid date in YYYY-MM-DD format` | `dueDate` fora do formato `AAAA-MM-DD`. |

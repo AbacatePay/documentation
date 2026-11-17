@@ -39,6 +39,7 @@ sequenceDiagram
 - **Um cupom por pagamento.** O cliente aplica um código de cada vez.
 - **A validação é na hora de pagar.** O cupom precisa estar `ACTIVE`, dentro da validade e com usos sobrando.
 - **Cada pagamento conta um uso.** O `redeemsCount` sobe a cada pagamento feito com o cupom. Num link de pagamento, o cupom vale para cada pagamento do link.
+- **No checkout transparente, você aplica o cupom.** Envie o código em `coupon` ao criar a cobrança Pix, boleto ou cartão. Qualquer cupom ativo da sua conta vale, e o cupom que zera o valor é recusado. Veja [Checkout transparente](/pages/cobrar/checkout-transparente#cupom-e-repasse-de-taxa).
 
 ### Limite de usos (`maxRedeems`)
 

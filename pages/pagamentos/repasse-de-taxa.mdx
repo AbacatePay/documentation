@@ -1,11 +1,11 @@
 ---
 title: 'Repasse de juros e taxa do cartão ao cliente'
 sidebarTitle: 'Repasse de taxa'
-description: 'Repasse a taxa do cartão e os juros do parcelamento para o cliente e receba o valor cheio da venda, à vista ou parcelado, no checkout e no link de pagamento.'
+description: 'Repasse a taxa do cartão e os juros do parcelamento para o cliente e receba o valor cheio da venda, à vista ou parcelado, no checkout, no link de pagamento, na assinatura e no checkout transparente.'
 icon: 'percent'
 ---
 
-Com o repasse de taxa, o cliente paga a taxa do cartão de crédito, inclusive os juros do parcelamento, e você recebe o preço cheio do produto. Vale à vista e parcelado, no checkout e no link de pagamento.
+Com o repasse de taxa, o cliente paga a taxa do cartão de crédito, inclusive os juros do parcelamento, e você recebe o preço cheio do produto. Vale à vista e parcelado, no checkout, no link de pagamento, na assinatura e no checkout transparente.
 
 ## Quando usar o repasse
 
@@ -92,6 +92,17 @@ console.log(data.url) // https://app.abacatepay.com/pay/bill_...
 
 Para um link de pagamento, mande o mesmo corpo para [Criar link de pagamento](/pages/payment-links/create). No checkout transparente, a cobrança é sempre do valor que você envia em `amount`.
 
+### No checkout transparente
+
+Envie `passFeesToCustomer: true` em [Criar cobrança Cartão](/pages/transparents/card). O `amount` é o preço, e a AbacatePay soma o acréscimo da parcela escolhida em `installmentCount`.
+
+O acréscimo muda com a parcela, então o seu servidor pergunta o total antes: [Cotar cobrança](/pages/transparents/quote) devolve o `total` e o `customerFee` de cada opção. O cartão é tokenizado no abacatepay.js com o `total` da opção que o cliente escolheu.
+
+```bash
+curl "https://api.abacatepay.com/v2/transparents/quote?amount=30000&passFeesToCustomer=true" \
+  -H "Authorization: Bearer $ABACATEPAY_API_KEY"
+```
+
 ### Onde ler o acréscimo
 
 Depois de um pagamento no cartão, o acréscimo vem em `customerFee`, em centavos:
@@ -109,6 +120,7 @@ No webhook, `amount` menos `customerFee` é o preço do produto, já com o desco
 |---|---|
 | `card.passFeesToCustomer requires CARD in methods` | `CARD` não está em `methods` |
 | `card.passFeesToCustomer requires card payments through Rinne` | A sua conta ainda não está habilitada para o repasse. Fale com o suporte |
+| `passFeesToCustomer requires card payments through Rinne` | O mesmo, no checkout transparente |
 
 ## Notificações
 

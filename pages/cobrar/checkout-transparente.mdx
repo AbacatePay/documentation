@@ -62,6 +62,7 @@ Crie uma chave de API com a permissão `TRANSPARENT:CREATE` em **Integração �
 | [Criar cobrança Pix](/pages/transparents/create) | `POST /transparents/create` com `method: "PIX"` |
 | [Criar cobrança Boleto](/pages/transparents/boleto) | `POST /transparents/create` com `method: "BOLETO"` |
 | [Criar cobrança Cartão](/pages/transparents/card) | `POST /transparents/create` com `method: "CARD"` |
+| [Cotar cobrança](/pages/transparents/quote) | `GET /transparents/quote`: valor com cupom e total de cada parcela, com ou sem repasse de taxa |
 | [Checar status](/pages/transparents/check) | `GET /transparents/check`, para cobranças Pix |
 | [Listar cobranças](/pages/transparents/list) | `GET /transparents/list` |
 | [Reembolsar](/pages/transparents/refund) | `POST /transparents/refund`. Veja [Reembolsos](/pages/vender/reembolsos) |
@@ -73,6 +74,12 @@ Depois que o pagamento confirma, `receiptUrl` traz o link do comprovante. No das
 <Video id="https://youtu.be/TwEArVdl-SE" title="Comprovante - AbacatePay" />
 
 O vídeo também está em [Comprovante](/pages/videos/comprovante).
+
+## Cupom e repasse de taxa
+
+- **Cupom.** Envie `coupon` com o código de um [cupom](/pages/vender/cupons) da sua conta, no Pix, no boleto ou no cartão. A cobrança sai com o valor com desconto, e o uso conta quando ela é paga.
+- **Repasse de taxa.** No cartão, `passFeesToCustomer: true` faz o cliente pagar o acréscimo da taxa da parcela escolhida, e você recebe o preço. Veja [Repasse de taxa](/pages/pagamentos/repasse-de-taxa).
+- **Cotação.** Com cupom ou repasse no cartão, chame [Cotar cobrança](/pages/transparents/quote) antes de tokenizar: o cartão é tokenizado com o total da opção escolhida.
 
 ## Notificações
 

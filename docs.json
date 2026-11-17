@@ -219,6 +219,7 @@
                   "pages/transparents/create",
                   "pages/transparents/boleto",
                   "pages/transparents/card",
+                  "pages/transparents/quote",
                   "pages/transparents/list",
                   "pages/transparents/check",
                   "pages/transparents/simulate-payment",
