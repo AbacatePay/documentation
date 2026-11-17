@@ -2210,6 +2210,24 @@ paths:
                         precisa ter pelo menos R$ 10,00.
                       x-mint:
                         hidden: true
+                    coupon:
+                      type: string
+                      maxLength: 100
+                      description: >-
+                        PIX, BOLETO e CARD — código de um cupom da sua conta. A
+                        cobrança sai com o valor com desconto, e o uso conta
+                        quando ela é paga. Cupom que zera o valor é recusado.
+                      example: BEMVINDO10
+                    passFeesToCustomer:
+                      type: boolean
+                      default: false
+                      description: >-
+                        CARD — repasse de taxa: o cliente paga o acréscimo da
+                        parcela escolhida, e você recebe `amount` (menos o
+                        cupom). Com `token`, o cartão é tokenizado com o
+                        `total` de `GET /transparents/quote`.
+                      x-mint:
+                        hidden: true
                     metadata:
                       type: object
                       description: >-
@@ -2307,6 +2325,95 @@ paths:
                   error:
                     type: string
                     example: Token de autenticação inválido ou ausente.
+  /transparents/quote:
+    get:
+      summary: Cotar cobrança
+      description: >-
+        Valor com o cupom e o total de cada opção de parcela no cartão, com o
+        acréscimo do repasse de taxa quando pedido. Não reserva o cupom.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: amount
+          in: query
+          required: true
+          description: Preço em centavos, o mesmo de `data.amount` na criação.
+          schema:
+            type: integer
+            minimum: 100
+            example: 30000
+        - name: coupon
+          in: query
+          required: false
+          description: Código de um cupom da sua conta.
+          schema:
+            type: string
+            example: BEMVINDO10
+        - name: passFeesToCustomer
+          in: query
+          required: false
+          description: '`true` soma o acréscimo do repasse de taxa em cada opção.'
+          schema:
+            type: boolean
+            default: false
+      responses:
+        '200':
+          description: Cotação calculada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      amount:
+                        type: integer
+                        example: 30000
+                      coupon:
+                        type: string
+                        nullable: true
+                        example: BEMVINDO10
+                      discount:
+                        type: integer
+                        example: 3000
+                      amountAfterDiscount:
+                        type: integer
+                        example: 27000
+                      installments:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            installmentCount:
+                              type: integer
+                              example: 3
+                            installmentAmount:
+                              type: integer
+                              example: 9306
+                            customerFee:
+                              type: integer
+                              example: 916
+                            total:
+                              type: integer
+                              description: Total que passa no cartão. É o `amount` do `AbacatePay.create`.
+                              example: 27916
+                  error:
+                    type: string
+                    example: null
+                    nullable: true
+                  success:
+                    $ref: '#/components/schemas/Success'
+        '400':
+          description: Cupom inválido ou repasse não habilitado.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Could not find coupon BEMVINDO10
   /transparents/get:
     get:
       summary: Buscar um Checkout Transparente

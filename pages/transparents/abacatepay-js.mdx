@@ -29,7 +29,7 @@ Cria o checkout. Não desenha nada ainda: isso é papel do `mount()`.
 | Opção | Tipo | Obrigatório | Descrição |
 |---|---|---|---|
 | `publicKey` | `string` | Sim | Sua [chave pública](/pages/pagamentos/cartao-de-credito#chave-pública-e-chave-de-api) (`pk_...`) |
-| `amount` | `number` | Sim | Valor total em centavos, inteiro, a partir de `100`. Precisa ser igual ao `amount` da cobrança |
+| `amount` | `number` | Sim | Valor total em centavos, inteiro, a partir de `100`. Precisa ser igual ao `amount` da cobrança. Com cupom ou repasse de taxa, use o `total` da opção escolhida na [cotação](/pages/transparents/quote) |
 | `locale` | `'pt'` \| `'en'` \| `'es'` | Não | Idioma do formulário. Padrão: `'pt'` |
 | `icons` | `boolean` | Não | Mostra os ícones das bandeiras nos campos. Padrão: `false` |
 | `theme` | `object` | Não | Aparência dos campos. Veja [Aparência](#aparência) |

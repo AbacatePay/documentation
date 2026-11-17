@@ -47,6 +47,20 @@ Cria uma cobrança Pix no checkout transparente e devolve o QR Code (`brCodeBase
 }
 ```
 
+**Exemplo com [cupom](/pages/vender/cupons):**
+
+```json
+{
+  "method": "PIX",
+  "data": {
+    "amount": 10000,
+    "coupon": "BEMVINDO10"
+  }
+}
+```
+
+O QR Code sai com o valor com desconto (R$ 90,00 com um cupom de 10%), e o uso do cupom conta quando o Pix é pago.
+
 **Exemplo com split para [subcontas](/pages/dinheiro/subcontas-e-split):**
 
 ```json
@@ -96,4 +110,9 @@ Cria uma cobrança Pix no checkout transparente e devolve o QR Code (`brCodeBase
 | `PIX is not available for this store` | O Pix não está liberado na sua conta. |
 | `Split para subcontas não está habilitado para esta loja` | `splits` sem as subcontas liberadas. |
 | `Subconta repetida no split` | A mesma subconta aparece duas vezes em `splits`. |
-| `A soma dos splits passa do valor líquido da cobrança` | As partes somam mais que o valor menos a taxa. |
+| `A soma dos splits passa do valor líquido da cobrança` | As partes somam mais que o valor menos a taxa. Com cupom, o valor é o com desconto. |
+| `Could not find coupon <código>` | O cupom de `coupon` não existe na sua conta. |
+| `Coupon is not active` | O cupom está desativado ou foi excluído. |
+| `Coupon usage limit reached` | O cupom já atingiu o `maxRedeems`. |
+| `Price after coupon must be more than 100 or free.` | Com o desconto, o valor ficaria entre R$ 0,01 e R$ 0,99. |
+| `Coupon cannot make a transparent charge free` | O cupom zera o valor. O checkout transparente não aceita cobrança de R$ 0,00. |

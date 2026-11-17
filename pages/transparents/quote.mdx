@@ -1,0 +1,77 @@
+---
+title: Cotar cobrança
+description: 'Valor com o cupom e o total de cada opção de parcela, com ou sem repasse de taxa, antes de tokenizar o cartão no checkout transparente.'
+openapi: 'GET /transparents/quote'
+---
+
+<Card horizontal>
+  Requer a permissão `TRANSPARENT:CREATE`.
+</Card>
+
+Calcula quanto o cliente vai pagar no checkout transparente: o valor com o [cupom](/pages/vender/cupons) e o total de cada opção de parcela no cartão, com o acréscimo do [repasse de taxa](/pages/pagamentos/repasse-de-taxa) quando pedido. Chame do seu servidor, mostre as opções ao cliente e tokenize o cartão com o `total` da opção escolhida.
+
+A cotação não reserva o cupom: o uso só conta quando a cobrança é paga.
+
+## Parâmetros
+
+| Parâmetro | Tipo | Obrigatório | Descrição |
+|---|---|---|---|
+| `amount` | `integer` | Sim | Preço em centavos, a partir de `100`, o mesmo que vai em `data.amount` na criação |
+| `coupon` | `string` | Não | Código de um cupom da sua conta |
+| `passFeesToCustomer` | `boolean` | Não | `true` soma o acréscimo da taxa em cada opção. Padrão `false` |
+
+## Resposta
+
+| Campo | Descrição |
+|---|---|
+| `data.amount` | O `amount` enviado |
+| `data.coupon` | O cupom aplicado, ou `null` |
+| `data.discount` | Desconto do cupom, em centavos |
+| `data.amountAfterDiscount` | Valor com o desconto. É o valor do Pix e do boleto |
+| `data.installments` | Opções de parcela no cartão, de 1x até o máximo |
+| `data.installments[].installmentCount` | Número de parcelas |
+| `data.installments[].installmentAmount` | Valor de cada parcela, arredondado para cima. A diferença sai na última |
+| `data.installments[].customerFee` | Acréscimo do repasse de taxa. `0` sem repasse |
+| `data.installments[].total` | Total que passa no cartão. É o `amount` do `AbacatePay.create` |
+
+As opções vão até 12x, com pelo menos R$ 10,00 por parcela do valor com desconto. Sem o parcelamento liberado na sua conta, só vem a opção à vista.
+
+## Erros
+
+| Mensagem | Causa |
+|---|---|
+| `Could not find coupon <código>` | O cupom não existe na sua conta. |
+| `Coupon is not active` | O cupom está desativado ou foi excluído. |
+| `Coupon usage limit reached` | O cupom já atingiu o `maxRedeems`. |
+| `Price after coupon must be more than 100 or free.` | Com o desconto, o valor ficaria entre R$ 0,01 e R$ 0,99. |
+| `Coupon cannot make a transparent charge free` | O cupom zera o valor. |
+| `passFeesToCustomer requires card payments through Rinne` | Sua conta ainda não está habilitada para o repasse. Fale com o suporte. |
+
+<RequestExample>
+```bash cURL
+curl "https://api.abacatepay.com/v2/transparents/quote?amount=30000&coupon=BEMVINDO10&passFeesToCustomer=true" \
+  -H "Authorization: Bearer $ABACATEPAY_API_KEY"
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+{
+  "data": {
+    "amount": 30000,
+    "coupon": "BEMVINDO10",
+    "discount": 3000,
+    "amountAfterDiscount": 27000,
+    "installments": [
+      { "installmentCount": 1, "installmentAmount": 27583, "customerFee": 583, "total": 27583 },
+      { "installmentCount": 2, "installmentAmount": 13958, "customerFee": 916, "total": 27916 },
+      { "installmentCount": 3, "installmentAmount": 9306, "customerFee": 916, "total": 27916 }
+    ]
+  },
+  "success": true,
+  "error": null
+}
+```
+</ResponseExample>
+
+O exemplo mostra só três opções. Os acréscimos dependem das taxas da sua conta.

@@ -12,6 +12,16 @@ Feedbacks também são bem-vindos no nosso Discord (#dev).
 ## Atualizações Recentes
 
 <Update label="17 de Nov, 2026">
+## Cupom e repasse de taxa no checkout transparente
+
+- **Cupom no checkout transparente.** `POST /v2/transparents/create` aceita `coupon` no Pix, no boleto e no cartão. A cobrança sai com o valor com desconto, e o uso conta quando ela é paga. Um cupom que zera o valor é recusado com `Coupon cannot make a transparent charge free`.
+- **Repasse de taxa no cartão transparente.** Com `passFeesToCustomer: true`, o cliente paga o acréscimo da taxa da parcela escolhida, e você recebe o preço.
+- **Cotação.** `GET /v2/transparents/quote` devolve o valor com o cupom e o total de cada opção de parcela, com ou sem repasse. Com cupom ou repasse, tokenize o cartão no abacatepay.js com o `total` da opção escolhida.
+
+Veja [Criar cobrança Cartão](/pages/transparents/card#cupom-e-repasse-de-taxa) e [Cotar cobrança](/pages/transparents/quote).
+</Update>
+
+<Update label="17 de Nov, 2026">
 ## Assinatura parcelada, assinatura com vários produtos e link com cliente
 
 - **Assinatura semestral e anual parcelada.** `POST /v2/subscriptions/create` aceita `card.maxInstallments` maior que `1` quando o produto tem ciclo `SEMIANNUALLY` ou `ANNUALLY`. O cliente parcela a primeira cobrança, e cada renovação é cobrada de novo no cartão salvo, no mesmo número de parcelas, com pelo menos R$ 10,00 por parcela. Nos outros ciclos, a API responde `Card installments are only available for semiannual and annual subscriptions`. No dashboard, o checkout de assinatura de produto anual ganhou o campo **Parcelas no cartão**.

@@ -19,10 +19,12 @@ Cria uma cobrança de **cartão de crédito** no checkout transparente, com o to
 | Campo | Tipo | Obrigatório | Descrição |
 |---|---|---|---|
 | `method` | `string` | Sim | Sempre `"CARD"` |
-| `data.amount` | `integer` | Sim | Valor total em centavos, a partir de `100`. Com `token`, igual ao `amount` do `AbacatePay.create` |
+| `data.amount` | `integer` | Sim | Preço em centavos, a partir de `100`, sem desconto nem acréscimo. Com `token` e sem cupom ou repasse, igual ao `amount` do `AbacatePay.create` |
 | `data.token` | `string` | `token` ou `cardToken` | Token `ctok_...` do `tokenize()` do abacatepay.js. Vale 60 segundos e uma cobrança |
 | `data.cardToken` | `string` | `token` ou `cardToken` | Cartão salvo, devolvido numa cobrança anterior (até 200 caracteres). Veja [One click buy](/pages/pagamentos/one-click-buy) |
 | `data.installmentCount` | `integer` | Não | Parcelas, de `1` (à vista) a `12`. Padrão `1`. Veja [Parcelamento no cartão](/pages/pagamentos/parcelamento) |
+| `data.coupon` | `string` | Não | Código de um [cupom](/pages/vender/cupons) da sua conta. O desconto vale sobre `amount` |
+| `data.passFeesToCustomer` | `boolean` | Não | [Repasse de taxa](/pages/pagamentos/repasse-de-taxa): o cliente paga o acréscimo da taxa da parcela escolhida, e você recebe `amount` (menos o cupom). Padrão `false` |
 | `data.customer.name` | `string` | Sim | Nome do cliente, até 150 caracteres |
 | `data.customer.email` | `string` | Sim | E-mail válido, até 150 caracteres |
 | `data.customer.taxId` | `string` | Sim | CPF ou CNPJ válido, com ou sem máscara |
@@ -30,6 +32,22 @@ Cria uma cobrança de **cartão de crédito** no checkout transparente, com o to
 | `data.metadata` | `object` | Não | Seus dados de referência, devolvidos na resposta. Todos os valores precisam ser texto: `{ "pedidoId": "123" }` |
 
 Envie `token` **ou** `cardToken`, nunca os dois. Outros campos de `data`, como `description` e `externalId`, são ignorados na cobrança de cartão.
+
+## Cupom e repasse de taxa
+
+Com `coupon` ou `passFeesToCustomer`, o valor que passa no cartão muda: é o preço menos o desconto, mais o acréscimo da taxa. O 3D Secure autentica esse valor, então o cartão precisa ser tokenizado com ele.
+
+1. No seu servidor, chame [Cotar cobrança](/pages/transparents/quote) com o `amount`, o `coupon` e o `passFeesToCustomer`. A resposta traz o `total` de cada opção de parcela.
+2. Mostre as opções ao cliente. Ele escolhe a parcela.
+3. No navegador, crie o `AbacatePay.create` com o `total` da opção escolhida e gere o `ctok_`.
+4. Crie a cobrança com o mesmo `amount`, `coupon`, `passFeesToCustomer` e o `installmentCount` escolhido.
+
+Com `cardToken` (cartão salvo) não há 3D Secure: basta enviar os campos na criação.
+
+- **Parcelas sobre o valor com desconto.** Cada parcela precisa ter pelo menos R$ 10,00 do valor com desconto.
+- **O uso do cupom conta no pagamento.** Se a cobrança for recusada, o uso não conta.
+- **Sem cobrança grátis.** Um cupom que zera o valor é recusado.
+- **Repasse só no cartão.** No Pix e no boleto não há acréscimo.
 
 ## Exemplos de requisição
 
@@ -69,6 +87,26 @@ Envie `token` **ou** `cardToken`, nunca os dois. Outros campos de `data`, como `
     }
     ```
   </Tab>
+  <Tab title="Com cupom e repasse">
+    ```json
+    {
+      "method": "CARD",
+      "data": {
+        "amount": 30000,
+        "installmentCount": 3,
+        "coupon": "BEMVINDO10",
+        "passFeesToCustomer": true,
+        "token": "ctok_9fK2mQ7xLp4vR8sT1wYz3nBc",
+        "customer": {
+          "name": "Maria Silva",
+          "email": "maria@exemplo.com",
+          "taxId": "529.982.247-25",
+          "cellphone": "(11) 99999-9999"
+        }
+      }
+    }
+    ```
+  </Tab>
   <Tab title="Parcelado">
     ```json
     {
@@ -94,7 +132,7 @@ Envie `token` **ou** `cardToken`, nunca os dois. Outros campos de `data`, como `
 | Campo | Descrição |
 |---|---|
 | `data.id` | ID da cobrança (`card_...`). Use para consultar e reembolsar |
-| `data.amount` | Valor total da venda, em centavos. No parcelado, é o total e não a parcela |
+| `data.amount` | Valor total da venda, em centavos, como passou no cartão (com o desconto e o acréscimo do repasse). No parcelado, é o total e não a parcela |
 | `data.currency` | Moeda da cobrança (`BRL`) |
 | `data.status` | Situação da cobrança. Veja [Status do pagamento](/pages/pagamentos/cartao-de-credito#status-do-pagamento) |
 | `data.devMode` | `true` quando a cobrança foi criada com uma chave do Modo Teste |
@@ -114,10 +152,14 @@ Erros voltam com `success: false` e a mensagem em `error`:
 - **`Não foi possível processar o pagamento com este cartão`** (400): o cartão foi recusado. A mensagem é a mesma para qualquer motivo. Peça outro cartão.
 - **`Invalid or expired card token`** (400): o `ctok_` passou de 60 segundos, já foi usado, é de outra loja ou de outro ambiente. Gere outro com `tokenize()`.
 - **`amount does not match the tokenized amount`** (400): o `amount` é diferente do usado no `AbacatePay.create`. O token foi gasto: gere outro.
+- **`the card must be tokenized with the charged total of <N> cents`** (400): com `coupon` ou `passFeesToCustomer`, o `ctok_` não foi gerado com o total cobrado. Use o `total` da [cotação](/pages/transparents/quote) no `AbacatePay.create`. O token foi gasto: gere outro.
+- **`Could not find coupon <código>`**, **`Coupon is not active`**, **`Coupon usage limit reached`** (400): o cupom não existe, está desativado ou excluído, ou já atingiu o limite de usos.
+- **`Coupon cannot make a transparent charge free`** (400): o cupom zera o valor.
+- **`passFeesToCustomer requires card payments through Rinne`** (400): sua conta ainda não está habilitada para o repasse. Fale com o suporte.
 - **`Card token not found`** (400): o `cardToken` não existe nesta loja e neste ambiente.
 - **`Provide exactly one of token (ctok_) or cardToken`** (400): faltou o cartão, ou foram enviados os dois.
 - **`customer.taxId must be a valid CPF or CNPJ`** (400): CPF ou CNPJ inválido.
-- **`amount must be at least 2000 cents for 2 installments`** (400): parcela abaixo de R$ 10,00. O número muda conforme as parcelas.
+- **`amount must be at least 2000 cents for 2 installments`** (400): parcela abaixo de R$ 10,00, contando o desconto do cupom. O número muda conforme as parcelas.
 - **`CARD_TRANSPARENTS is not available for this store`** (400): sua conta ainda não tem o checkout transparente de cartão liberado. Fale com o suporte.
 - **`Card payments are temporarily unavailable. Please try again later.`** (400): pagamentos com cartão suspensos temporariamente. Tente mais tarde.
 - **`Unauthorized`** (401): faltou o header `Authorization: Bearer <chave de API>`.

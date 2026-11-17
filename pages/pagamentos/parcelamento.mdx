@@ -32,7 +32,7 @@ flowchart LR
 - **Mínimo de R$ 10,00 por parcela.** Para oferecer 3x, o total precisa ser de pelo menos R$ 30,00; para 12x, de R$ 120,00.
 - **O valor da compra é o total.** O cliente vê o valor de cada parcela, e as parcelas podem variar alguns centavos por arredondamento.
 - **A venda é aprovada de uma vez**, no limite do cartão do cliente. Para você, cada parcela entra no saldo por conta própria.
-- **Sem cupom.** Quando o cliente aplica um cupom, o cartão é cobrado à vista.
+- **Com cupom, sobre o valor com desconto.** O mínimo de R$ 10,00 por parcela vale para o valor com desconto.
 
 ## Quem paga os juros do parcelamento
 
@@ -73,7 +73,7 @@ Depois do pagamento, o campo `installmentsCount` traz o número de parcelas esco
 
 ### No checkout transparente
 
-Envie `installmentCount`, de `1` a `12`, em [Criar cobrança Cartão](/pages/transparents/card). O `amount` é o total da venda.
+Envie `installmentCount`, de `1` a `12`, em [Criar cobrança Cartão](/pages/transparents/card). O `amount` é o total da venda. Para mostrar as opções de parcela ao cliente, com cupom ou repasse de taxa, use [Cotar cobrança](/pages/transparents/quote).
 
 ```json
 {
