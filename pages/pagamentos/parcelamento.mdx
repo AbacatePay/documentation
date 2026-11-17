@@ -14,7 +14,7 @@ Com o parcelamento, o cliente divide a compra no cartão de crédito em até 12 
 | [Link de pagamento](/pages/cobrar/link-de-pagamento) | Sim, até o máximo que você definir |
 | [Checkout transparente](/pages/cobrar/checkout-transparente) | Sim, no número de parcelas que você enviar |
 | [One click buy](/pages/pagamentos/one-click-buy) (cartão salvo) | Sim |
-| [Assinaturas](/pages/cobrar/assinaturas) | Não |
+| [Assinaturas](/pages/cobrar/assinaturas) | Só nos ciclos semestral e anual. Cada renovação é cobrada nas mesmas parcelas |
 | Compra com [cupom](/pages/vender/cupons) | Sim. As parcelas saem do valor com desconto |
 | [Apple Pay e Google Pay](/pages/pagamentos/apple-pay-google-pay) | Não. Sempre à vista |
 | [Upsell](/pages/vender/upsell) | Não. Sempre à vista |
@@ -150,7 +150,7 @@ No [Modo Teste](/pages/comecar/modo-teste), crie o checkout com `maxInstallments
     Ou o máximo definido é menor, ou o total não chega a R$ 10,00 por parcela. Um produto de R$ 50,00 parcela em até 5x. Com cupom, a conta é feita sobre o valor com desconto, então algumas opções podem sumir.
   </Accordion>
   <Accordion title="Posso parcelar uma assinatura?">
-    Não. Assinaturas são cobradas à vista a cada ciclo.
+    Sim, nos ciclos semestral e anual. A primeira cobrança é uma venda parcelada, e cada renovação é cobrada de novo no cartão salvo, no mesmo número de parcelas. Cada parcela precisa ter pelo menos R$ 10,00. Nos ciclos semanal, mensal e trimestral, a assinatura é à vista. Veja [Assinaturas](/pages/cobrar/assinaturas).
   </Accordion>
   <Accordion title="O parcelamento funciona com cupom?">
     Sim. As parcelas saem do valor com desconto, e cada uma precisa ter pelo menos R$ 10,00. Se o desconto deixar uma opção abaixo disso, ela some do checkout.

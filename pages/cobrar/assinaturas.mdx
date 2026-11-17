@@ -52,10 +52,10 @@ São dois recursos, com IDs e rotas próprias:
 As regras:
 
 - **O produto precisa ter ciclo.** Só produto criado com `cycle` entra numa assinatura. O valor de cada cobrança é o preço do produto vezes a quantidade.
-- **Um produto por checkout.** Mais de um produto no mesmo checkout de assinatura precisa ser liberado na sua conta pelo suporte, e todos os produtos têm que ter o mesmo ciclo.
+- **Um ou mais produtos.** O checkout de assinatura aceita vários produtos em `items`, desde que todos tenham o mesmo ciclo. Cada cobrança soma os produtos.
 - **Um checkout, um cliente.** Depois do pagamento, o checkout de assinatura fica `PAID` e o link não aceita outro pagamento. Para cada cliente, crie um checkout.
 - **A data se repete.** A próxima cobrança cai na mesma data da contratação, a cada ciclo. Com teste grátis, a contagem começa no fim do teste. O campo `nextChargeAt` da assinatura traz a data da próxima cobrança.
-- **Sem parcelamento.** A assinatura no cartão é sempre à vista.
+- **Parcelamento só no semestral e no anual.** Com `card.maxInstallments` maior que `1`, o cliente parcela a primeira cobrança no cartão, e cada renovação é cobrada de novo no cartão salvo, no mesmo número de parcelas. Cada parcela precisa ter pelo menos R$ 10,00. Nos ciclos semanal, mensal e trimestral, a assinatura é à vista. O parcelamento precisa estar liberado na sua conta. Veja [Parcelamento no cartão](/pages/pagamentos/parcelamento).
 - **Repasse de taxa.** Com `card.passFeesToCustomer: true`, o cliente paga a taxa do cartão em cada cobrança, recalculada a cada renovação com a taxa vigente da sua conta. Veja [Repasse de taxa](/pages/pagamentos/repasse-de-taxa).
 - **Liberação.** Em produção, a conta precisa ter assinaturas liberadas. No [Modo Teste](/pages/comecar/modo-teste), elas funcionam sem liberação.
 
@@ -171,7 +171,7 @@ flowchart LR
 - **Uma troca pendente por vez.** Uma chamada nova substitui a troca que ainda não foi aplicada.
 - **Mesmo ciclo.** Os produtos novos precisam ter o mesmo ciclo da assinatura.
 - **Valor mínimo de R$ 1,00** para o novo plano.
-- **Só assinatura ativa.** Mais de um produto no plano precisa de liberação, como na criação.
+- **Só assinatura ativa.** O plano novo pode ter mais de um produto.
 - **Pix Automático:** a troca só é aceita se o valor continuar o mesmo.
 
 O `subscription.plan_changed` dispara duas vezes: no pedido, com `pendingUpdateId`, `newAmount` e `status: "PENDING"`; e quando a troca é aplicada, já com o novo `amount` na assinatura.
@@ -217,7 +217,7 @@ Excluir o checkout de assinatura não cancela a assinatura que ele gerou.
 
 1. Em **Sua Loja → Produtos**, crie o produto. Em **Tipo de cobrança**, escolha **Assinatura** e ative os ciclos com o preço de cada um (Mensal, Trimestral, Anual ou Semanal). Cada ciclo ativado vira um produto.
 2. Em **Sua Loja → Assinaturas**, clique em **Criar checkout**.
-3. Escolha o **Produto de assinatura**, o **Cliente** (opcional) e os **Métodos de pagamento**. Se quiser, preencha a **URL de finalização** e a **URL de retorno**. Clique em **Cadastrar**.
+3. Escolha o **Produto de assinatura**, o **Cliente** (opcional) e os **Métodos de pagamento**. Em produto anual, com **Cartão** selecionado, escolha também as **Parcelas no cartão**. Se quiser, preencha a **URL de finalização** e a **URL de retorno**. Clique em **Cadastrar**.
 4. Na aba **Checkouts**, abra o checkout em **Ver detalhes** e copie a URL para mandar ao cliente.
 5. Depois do pagamento, a assinatura aparece na aba **Assinaturas**. Para cancelar, abra a assinatura e clique em **Cancelar assinatura** no menu de ações.
 
@@ -232,6 +232,8 @@ Algumas opções existem só pela API:
 | Teste grátis (`trialDays`) | Não | Sim |
 | Retentativas (`retryPolicy`) | Não, usa o padrão | Sim |
 | Cupom | Não | Sim |
+| Mais de um produto | Não | Sim |
+| Parcelamento | Sim, no ciclo anual | Sim, nos ciclos semestral e anual |
 | Criar checkout e cancelar | Sim | Sim |
 | Trocar o plano | Não | Sim |
 | Cobrança por uso | Não | Sim |
@@ -304,6 +306,10 @@ Os payloads estão em [Eventos de assinatura](/pages/webhooks/events/subscriptio
 
   <Accordion title="O cliente pode trocar o cartão da assinatura?">
     Sim, pelo [Portal do cliente](/pages/vender/portal-do-cliente), enquanto a assinatura estiver ativa. Se houver uma cobrança em retentativa, ela é cobrada no cartão novo.
+  </Accordion>
+
+  <Accordion title="Posso parcelar uma assinatura?">
+    Sim, nos ciclos semestral e anual. O cliente parcela a primeira cobrança, e cada renovação é cobrada no cartão salvo, nas mesmas parcelas, com pelo menos R$ 10,00 por parcela. Nos outros ciclos, a cobrança é à vista.
   </Accordion>
 
   <Accordion title="Como mudo o valor de uma assinatura?">

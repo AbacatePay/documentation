@@ -25,6 +25,7 @@ No dashboard, os dois ficam em telas diferentes: o link em **Sua Loja → Links 
 | Rota da API | `POST /payment-links/create` | `POST /checkouts/create` |
 | Status | `ACTIVE` ou `CANCELLED` | `PENDING`, `PAID`, `REDEEMED`, `UNDER_DISPUTE` ou `REFUNDED` |
 | Cliente definido na criação (`customerId`) | Não | Sim |
+| Cliente por acesso (`?customer_id=`) | Sim | Não |
 | Apple Pay e Google Pay | Sim | Sim |
 | [Upsell](/pages/vender/upsell) | Não | Sim, pela API |
 | [Parcelamento](/pages/pagamentos/parcelamento) e [repasse de taxa](/pages/pagamentos/repasse-de-taxa) | Sim | Sim |
@@ -56,6 +57,7 @@ Desativado (`CANCELLED`), o link para de abrir e não aceita novos pagamentos. O
 
 - **Mesmas regras do checkout.** Valor mínimo, itens, cupons, idempotência por `externalId`, URLs de finalização e de retorno e as flags `skip_customer` e `skip_address` funcionam como no [checkout](/pages/cobrar/checkout#regras).
 - **Sem cliente fixo.** Cada cliente preenche os próprios dados na página. Mandar `customerId` dá erro: `You cannot pass a customer for a checkout with multiple payments frequency`.
+- **Cliente por acesso.** Para quem já é seu cliente, abra o link com `?customer_id=cust_...` no fim. Veja [Link com cliente já cadastrado](#link-com-cliente-já-cadastrado).
 - **Apple Pay e Google Pay.** O link aceita `APPLE_PAY` e `GOOGLE_PAY` em `methods`, como o checkout. Veja [Apple Pay e Google Pay](/pages/pagamentos/apple-pay-google-pay).
 - **Sem upsell.** A oferta de [upsell](/pages/vender/upsell) depois da compra só existe no checkout.
 - **Parcelamento e repasse de taxa.** O link aceita `card.maxInstallments` e `card.passFeesToCustomer`, como o checkout. Veja [Parcelamento no cartão](/pages/pagamentos/parcelamento) e [Repasse de taxa](/pages/pagamentos/repasse-de-taxa).
@@ -129,6 +131,18 @@ Desativado (`CANCELLED`), o link para de abrir e não aceita novos pagamentos. O
 
 As rotas de checkout (`/checkouts/get` e `/checkouts/list`) não trazem links de pagamento.
 
+## Link com cliente já cadastrado
+
+Para mandar o link a alguém que já é seu [cliente](/pages/vender/clientes), adicione o ID dele ao fim da URL:
+
+```
+https://app.abacatepay.com/pay/bill_abc123xyz?customer_id=cust_abc123xyz
+```
+
+- Com nome, e-mail e CPF/CNPJ no cadastro, o checkout não pede os dados pessoais, e a cobrança sai no nome do cliente.
+- O link continua aberto para todo mundo. Quem abrir sem o parâmetro preenche os próprios dados, como sempre.
+- Um `customer_id` que não é da sua conta, que foi excluído ou que é de outro ambiente (produção ou Modo Teste) é ignorado, e o checkout pede os dados normalmente.
+
 ## Notificações
 
 Cada pagamento do link gera um `checkout.completed`, com `checkout.frequency: "MULTIPLE_PAYMENTS"` e `checkout.status: "ACTIVE"`. O `checkout.amount` do evento é o valor daquele pagamento: para saber quanto o link arrecadou, some os eventos.
@@ -159,7 +173,7 @@ Crie o link com o [Modo Teste](/pages/comecar/modo-teste) ligado ou com uma chav
   </Accordion>
 
   <Accordion title="Posso definir o cliente que vai pagar?">
-    Não. Para cobrar um cliente específico, crie um [checkout](/pages/cobrar/checkout) com `customerId`.
+    Não na criação: o link é de todos. Para um cliente que já tem cadastro, mande o link com `?customer_id=cust_...` no fim, e o checkout abre com os dados dele. Veja [Link com cliente já cadastrado](#link-com-cliente-já-cadastrado). Para uma cobrança só dele, crie um [checkout](/pages/cobrar/checkout) com `customerId`.
   </Accordion>
 
   <Accordion title="Dá para mudar o link depois de criado?">
